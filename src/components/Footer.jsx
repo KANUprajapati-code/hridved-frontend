@@ -1,0 +1,68 @@
+
+import { Facebook, Instagram, Twitter, Mail, Phone, MapPin } from 'lucide-react';
+import { Link } from 'react-router-dom';
+
+const Footer = () => {
+    return (
+        <footer className="bg-primary text-white pt-12 pb-6">
+            <div className="container mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
+                {/* About */}
+                <div>
+                    <img src="/logo-modified.png" alt="HRIDVED" className="h-12 w-auto mb-4" />
+                    <p className="text-gray-300 text-sm">
+                        Authentic Ayurvedic medicines and treatments since 1921.
+                        Bringing the wisdom of Ayurveda to the modern world.
+                    </p>
+                </div>
+
+                {/* Quick Links */}
+                <div>
+                    <h3 className="text-lg font-bold mb-4">Quick Links</h3>
+                    <ul className="space-y-2 text-sm text-gray-300">
+                        <li><Link to="/" className="text-gray-300">Home</Link></li>
+                        <li><Link to="/about" className="text-gray-300">About Us</Link></li>
+                        <li><Link to="/shop" className="text-gray-300">Shop</Link></li>
+                        <li><Link to="/blogs" className="text-gray-300">Blog</Link></li>
+                        <li><Link to="/contact" className="text-gray-300">Contact Us</Link></li>
+                        <li><Link to="/return-policy" className="text-gray-300">Return & Refund Policy</Link></li>
+                        <li><Link to="/privacy" className="text-gray-300">Privacy Policy</Link></li>
+                    </ul>
+                </div>
+
+                {/* Contact */}
+                <div>
+                    <h3 className="text-lg font-bold mb-4">Contact</h3>
+                    <ul className="space-y-4 text-sm text-gray-300">
+                        <li className="flex items-center space-x-2">
+                            <MapPin size={18} />
+                            <span>123 Ayurveda Lane, Kerala, India</span>
+                        </li>
+                        <li className="flex items-center space-x-2">
+                            <Phone size={18} />
+                            <span>+91 98765 43210</span>
+                        </li>
+                        <li className="flex items-center space-x-2">
+                            <Mail size={18} />
+                            <span>support@hridved.com</span>
+                        </li>
+                    </ul>
+                </div>
+
+                {/* Socials */}
+                <div>
+                    <h3 className="text-lg font-bold mb-4">Follow Us</h3>
+                    <div className="flex space-x-4">
+                        <a href="#" className="text-gray-300 hover:text-secondary"><Facebook /></a>
+                        <a href="#" className="text-gray-300 hover:text-secondary"><Instagram /></a>
+                        <a href="#" className="text-gray-300 hover:text-secondary"><Twitter /></a>
+                    </div>
+                </div>
+            </div>
+            <div className="border-t border-gray-700 mt-8 pt-4 text-center text-sm text-gray-400">
+                &copy; {new Date().getFullYear()} HRIDVED. All rights reserved.
+            </div>
+        </footer>
+    );
+};
+
+export default Footer;

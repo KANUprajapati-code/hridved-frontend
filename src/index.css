@@ -1,0 +1,195 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply antialiased text-gray-900 font-body bg-background;
+  letter-spacing: -0.01em;
+}
+
+/* Responsive headings with improved typography */
+h1 {
+  @apply text-3xl md:text-4xl lg:text-5xl font-display font-bold tracking-tight leading-tight;
+  letter-spacing: -0.02em;
+}
+
+h2 {
+  @apply text-2xl md:text-3xl lg:text-4xl font-display font-bold tracking-tight leading-snug;
+  letter-spacing: -0.015em;
+}
+
+h3 {
+  @apply text-xl md:text-2xl font-display font-semibold tracking-tight;
+  letter-spacing: -0.01em;
+}
+
+h4 {
+  @apply text-lg md:text-xl font-semibold tracking-tight;
+}
+
+h5 {
+  @apply text-base md:text-lg font-semibold;
+}
+
+h6 {
+  @apply text-sm md:text-base font-semibold uppercase tracking-wide;
+}
+
+p {
+  @apply text-base leading-relaxed;
+}
+
+a {
+  @apply transition-colors duration-200;
+}
+
+/* Form elements */
+input, button, select, textarea {
+  @apply text-base font-body;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="date"],
+textarea,
+select {
+  @apply w-full px-4 py-2.5 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-500 transition-all duration-200;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="number"]:focus,
+input[type="date"]:focus,
+textarea:focus,
+select:focus {
+  @apply border-primary outline-none ring-2 ring-primary ring-opacity-20;
+}
+
+input[type="text"]::placeholder,
+input[type="email"]::placeholder,
+input[type="password"]::placeholder,
+input[type="number"]::placeholder,
+textarea::placeholder {
+  @apply text-gray-400;
+}
+
+/* Button base styles */
+button {
+  @apply transition-all duration-200 font-medium;
+}
+
+button:disabled {
+  @apply opacity-50 cursor-not-allowed;
+}
+
+/* Media responsive */
+img, video, iframe {
+  @apply max-w-full h-auto block;
+}
+
+/* Utility classes */
+.container-full {
+  @apply w-full max-w-7xl mx-auto px-4 md:px-6 lg:px-8;
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, #053807 0%, #D4AF37 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.shadow-card {
+  @apply shadow-md hover:shadow-xl transition-shadow duration-300;
+}
+
+.badge {
+  @apply inline-block px-3 py-1 text-xs font-bold uppercase tracking-wider rounded-full;
+}
+
+.badge-primary {
+  @apply badge bg-primary text-white;
+}
+
+.badge-secondary {
+  @apply badge bg-secondary text-primary;
+}
+
+.badge-success {
+  @apply badge bg-green-100 text-green-800;
+}
+
+.badge-error {
+  @apply badge bg-red-100 text-red-800;
+}
+
+.badge-warning {
+  @apply badge bg-yellow-100 text-yellow-800;
+}
+
+/* Selection styling */
+::selection {
+  @apply bg-primary text-white;
+}
+
+::-moz-selection {
+  @apply bg-primary text-white;
+}
+
+/* Link styling */
+a {
+  @apply text-primary hover:text-secondary transition-colors;
+}
+
+a:focus-visible {
+  @apply outline-2 outline-offset-2 outline-primary rounded;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}

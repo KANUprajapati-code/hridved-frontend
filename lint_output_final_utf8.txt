@@ -1,0 +1,116 @@
+﻿
+> client@0.0.0 lint
+> eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0
+
+
+C:\Users\HP\OneDrive\Desktop\aayurveda\client\src\components\AdminSidebar.jsx
+  3:71  warning  'Settings' is defined but never used  no-unused-vars
+
+C:\Users\HP\OneDrive\Desktop\aayurveda\client\src\components\AnimatedButton.jsx
+  2:30  warning  'tapVariants' is defined but never used  no-unused-vars
+
+C:\Users\HP\OneDrive\Desktop\aayurveda\client\src\components\AnimatedImage.jsx
+  2:10  warning  'imageHoverVariants' is defined but never used  no-unused-vars
+
+C:\Users\HP\OneDrive\Desktop\aayurveda\client\src\components\GoogleAuthButton.jsx
+  12:11  warning  'user' is assigned a value but never used  no-unused-vars
+  48:54  warning  'reject' is defined but never used         no-unused-vars
+
+C:\Users\HP\OneDrive\Desktop\aayurveda\client\src\components\Header.jsx
+  7:44  warning  'tapVariants' is defined but never used  no-unused-vars
+
+C:\Users\HP\OneDrive\Desktop\aayurveda\client\src\components\LazyImage.jsx
+  13:12  warning  'imageRef' is assigned a value but never used     no-unused-vars
+  13:22  warning  'setImageRef' is assigned a value but never used  no-unused-vars
+
+C:\Users\HP\OneDrive\Desktop\aayurveda\client\src\components\ScrollReveal.jsx
+  3:10  warning  'scrollRevealVariants' is defined but never used  no-unused-vars
+
+C:\Users\HP\OneDrive\Desktop\aayurveda\client\src\components\ScrollRevealContainer.jsx
+  3:10  warning  'containerVariants' is defined but never used  no-unused-vars
+  3:29  warning  'itemVariants' is defined but never used       no-unused-vars
+
+C:\Users\HP\OneDrive\Desktop\aayurveda\client\src\context\AuthContext.jsx
+  6:14  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+C:\Users\HP\OneDrive\Desktop\aayurveda\client\src\context\CartContext.jsx
+  8:14  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+C:\Users\HP\OneDrive\Desktop\aayurveda\client\src\context\CheckoutContext.jsx
+   1:8   warning  'React' is defined but never used                                                                                               no-unused-vars
+   5:14  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+  26:12  warning  'shippingOptions' is assigned a value but never used                                                                            no-unused-vars
+
+C:\Users\HP\OneDrive\Desktop\aayurveda\client\src\context\FlyingElementContext.jsx
+  3:14  warning  Fast refresh only works when a file only exports components. Move your React context(s) to a separate file  react-refresh/only-export-components
+
+C:\Users\HP\OneDrive\Desktop\aayurveda\client\src\context\ToastContext.jsx
+  3:14  warning  Fast refresh only works when a file only exports components. Move your React context(s) to a separate file  react-refresh/only-export-components
+
+C:\Users\HP\OneDrive\Desktop\aayurveda\client\src\hooks\useScrollReveal.js
+  2:24  warning  'useMotionValue' is defined but never used  no-unused-vars
+
+C:\Users\HP\OneDrive\Desktop\aayurveda\client\src\pages\BlogPage.jsx
+  3:39  warning  'User' is defined but never used  no-unused-vars
+
+C:\Users\HP\OneDrive\Desktop\aayurveda\client\src\pages\CheckoutPage.jsx
+  1:8  warning  'React' is defined but never used  no-unused-vars
+
+C:\Users\HP\OneDrive\Desktop\aayurveda\client\src\pages\CheckoutShippingPage.jsx
+   9:25  warning  'Check' is defined but never used             no-unused-vars
+  11:7   warning  'API_URL' is assigned a value but never used  no-unused-vars
+
+C:\Users\HP\OneDrive\Desktop\aayurveda\client\src\pages\CheckoutSuccessPage.jsx
+  9:49  warning  'CreditCard' is defined but never used  no-unused-vars
+  9:61  warning  'DollarSign' is defined but never used  no-unused-vars
+
+C:\Users\HP\OneDrive\Desktop\aayurveda\client\src\pages\DoctorBookingPage.jsx
+  242:46  error  'Video' is not defined  react/jsx-no-undef
+
+C:\Users\HP\OneDrive\Desktop\aayurveda\client\src\pages\DoctorConsultation.jsx
+  23:12  warning  '_loading' is assigned a value but never used  no-unused-vars
+
+C:\Users\HP\OneDrive\Desktop\aayurveda\client\src\pages\OrderPage.jsx
+  13:34  warning  'amount' is defined but never used  no-unused-vars
+
+C:\Users\HP\OneDrive\Desktop\aayurveda\client\src\pages\PrivacyPolicy.jsx
+  1:8  warning  'React' is defined but never used  no-unused-vars
+
+C:\Users\HP\OneDrive\Desktop\aayurveda\client\src\pages\ProfilePage.jsx
+  3:29  warning  'useLocation' is defined but never used  no-unused-vars
+
+C:\Users\HP\OneDrive\Desktop\aayurveda\client\src\pages\ShippingPage.jsx
+  3:23  warning  'Link' is defined but never used  no-unused-vars
+
+C:\Users\HP\OneDrive\Desktop\aayurveda\client\src\pages\ShopPage.jsx
+  6:18  warning  'ChevronDown' is defined but never used  no-unused-vars
+
+C:\Users\HP\OneDrive\Desktop\aayurveda\client\src\pages\TrackOrderPage.jsx
+  3:25  warning  'Package' is defined but never used  no-unused-vars
+
+C:\Users\HP\OneDrive\Desktop\aayurveda\client\src\pages\admin\AdminDashboard.jsx
+  3:77  warning  'Package' is defined but never used   no-unused-vars
+  3:86  warning  'Settings' is defined but never used  no-unused-vars
+
+C:\Users\HP\OneDrive\Desktop\aayurveda\client\src\pages\admin\BlogListPage.jsx
+  14:12  warning  'searchParams' is assigned a value but never used     no-unused-vars
+  14:26  warning  'setSearchParams' is assigned a value but never used  no-unused-vars
+
+C:\Users\HP\OneDrive\Desktop\aayurveda\client\src\pages\admin\DoctorListPage.jsx
+  3:39  warning  'Video' is defined but never used  no-unused-vars
+  3:46  warning  'Eye' is defined but never used    no-unused-vars
+
+C:\Users\HP\OneDrive\Desktop\aayurveda\client\src\pages\admin\OrderListPage.jsx
+  5:13  warning  'Check' is defined but never used  no-unused-vars
+
+C:\Users\HP\OneDrive\Desktop\aayurveda\client\src\utils\performance.js
+  93:43  warning  'width' is assigned a value but never used    no-unused-vars
+  93:57  warning  'height' is assigned a value but never used   no-unused-vars
+  93:72  warning  'quality' is assigned a value but never used  no-unused-vars
+
+C:\Users\HP\OneDrive\Desktop\aayurveda\client\src\utils\seoUtils.js
+  88:56  warning  'currentPage' is defined but never used  no-unused-vars
+  88:69  warning  'totalPages' is defined but never used   no-unused-vars
+
+Γ£û 45 problems (1 error, 44 warnings)
+
