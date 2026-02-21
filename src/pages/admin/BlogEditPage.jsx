@@ -1,7 +1,6 @@
 import { useState, useEffect, useContext, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { Save, ArrowLeft, Upload, X, Eye, EyeOff } from 'lucide-react';
-import { ArrowLeft } from 'lucide-react';
 import api from '../../utils/api';
 import { ToastContext } from '../../context/ToastContext';
 
