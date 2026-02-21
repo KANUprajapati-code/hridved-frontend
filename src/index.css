@@ -187,18 +187,7 @@ img, video, iframe {
   @apply py-8 sm:py-12 md:py-16 lg:py-20 px-4 sm:px-6 md:px-8 lg:px-12;
 }
 
-/* Text alignment utilities */
-.text-left {
-  @apply text-left;
-}
-
-.text-center {
-  @apply text-center;
-}
-
-.text-right {
-  @apply text-right;
-}
+/* Text alignment utilities are built into Tailwind - no need to redefine */
 
 /* Typography utilities */
 .text-gradient {
