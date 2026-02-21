@@ -2,10 +2,12 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Trash2, ShoppingBag, Truck, ShieldCheck, RefreshCw, Plus, Minus, ArrowRight } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
-import { useState } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import AnimatedPage from '../components/AnimatedPage';
 import ScrollReveal from '../components/ScrollReveal';
 import AnimatedButton from '../components/AnimatedButton';
+import ProductCard from '../components/ProductCard';
+import api from '../utils/api';
 
 const CartPage = () => {
     const { cart, removeFromCart, updateCartItemQuantity } = useCart();
@@ -14,6 +16,19 @@ const CartPage = () => {
     const [promoCode, setPromoCode] = useState('');
     const [appliedCoupon, setAppliedCoupon] = useState(null);
     const [couponError, setCouponError] = useState('');
+    const [recommendedProducts, setRecommendedProducts] = useState([]);
+
+    useEffect(() => {
+        const fetchRecommendations = async () => {
+            try {
+                const { data } = await api.get('/products?isBestseller=true&limit=4');
+                setRecommendedProducts(data.products || []);
+            } catch (error) {
+                console.error('Error fetching recommendations:', error);
+            }
+        };
+        fetchRecommendations();
+    }, []);
 
     const cartItems = cart?.cartItems || [];
 
@@ -66,14 +81,6 @@ const CartPage = () => {
     const shipping = discountedSubtotal > 499 ? 0 : 50;
     const tax = Math.round(discountedSubtotal * 0.18); // 18% GST
     const total = discountedSubtotal + shipping + tax;
-
-    // Dummy recommended products (replace with real data in production)
-    const recommendedProducts = [
-        { id: 101, name: 'Ayurvedic Soap Bar', price: 85, image: 'https://images.unsplash.com/photo-1600857544200-b2f666a9a2ec?w=200&q=80' },
-        { id: 102, name: 'Ashwagandha Tablets', price: 320, image: 'https://images.unsplash.com/photo-1611079830811-865ecdd7d792?w=200&q=80' },
-        { id: 103, name: 'Amla Hair Oil', price: 195, image: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=200&q=80' },
-        { id: 104, name: 'Tulsi Cough Syrup', price: 120, image: 'https://images.unsplash.com/photo-1584362917165-526a968579e8?w=200&q=80' },
-    ];
 
     if (cartItems.length === 0) {
         return (
@@ -309,20 +316,9 @@ const CartPage = () => {
                     {/* You Might Also Like */}
                     <div className="mt-20">
                         <h3 className="text-2xl font-serif font-bold text-gray-800 mb-8">You Might Also Like</h3>
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                             {recommendedProducts.map((product) => (
-                                <ScrollReveal key={product.id}>
-                                    <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow group">
-                                        <div className="h-40 bg-gray-50 rounded-lg overflow-hidden mb-4 relative">
-                                            <img src={product.image} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                                        </div>
-                                        <h4 className="font-bold text-gray-800 text-sm mb-1">{product.name}</h4>
-                                        <div className="flex items-center justify-between mt-2">
-                                            <span className="text-primary font-bold">₹{product.price}</span>
-                                            <button className="text-xs border border-gray-200 rounded px-2 py-1 hover:bg-primary hover:text-white transition">Add</button>
-                                        </div>
-                                    </div>
-                                </ScrollReveal>
+                                <ProductCard key={product._id} product={product} />
                             ))}
                         </div>
                     </div>

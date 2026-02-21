@@ -70,10 +70,10 @@ const Header = () => {
                 {/* Desktop Nav */}
                 <nav className="hidden lg:flex space-x-6 xl:space-x-8 items-center font-medium mx-4">
                     <Link to="/" className="hover:text-secondary transition text-gray-100">Home</Link>
-                    <Link to="/about" className="hover:text-secondary transition text-gray-100">About Us</Link>
                     <Link to="/shop" className="hover:text-secondary transition text-gray-100">Shop</Link>
-                    <Link to="/consultation" className="hover:text-secondary transition text-gray-100">Consult Doctor</Link>
-                    <Link to="/blogs" className="hover:text-secondary transition text-gray-100">Wellness Blog</Link>
+                    <Link to="/consultation" className="hover:text-secondary transition text-gray-100">Consultation</Link>
+                    <Link to="/blogs" className="hover:text-secondary transition text-gray-100">Blog</Link>
+                    <Link to="/about" className="hover:text-secondary transition text-gray-100">About us</Link>
                     <Link to="/contact" className="hover:text-secondary transition text-gray-100">Contact</Link>
                 </nav>
 
@@ -234,9 +234,10 @@ const Header = () => {
                                 />
                             </form>
                             <Link to="/" className="text-lg font-medium text-gray-800 hover:text-primary" onClick={() => setIsOpen(false)}>Home</Link>
-                            <Link to="/about" className="text-lg font-medium text-gray-800 hover:text-primary" onClick={() => setIsOpen(false)}>About Us</Link>
                             <Link to="/shop" className="text-lg font-medium text-gray-800 hover:text-primary" onClick={() => setIsOpen(false)}>Shop</Link>
-                            <Link to="/blogs" className="text-lg font-medium text-gray-800 hover:text-primary" onClick={() => setIsOpen(false)}>Wellness Blog</Link>
+                            <Link to="/consultation" className="text-lg font-medium text-gray-800 hover:text-primary" onClick={() => setIsOpen(false)}>Consultation</Link>
+                            <Link to="/blogs" className="text-lg font-medium text-gray-800 hover:text-primary" onClick={() => setIsOpen(false)}>Blog</Link>
+                            <Link to="/about" className="text-lg font-medium text-gray-800 hover:text-primary" onClick={() => setIsOpen(false)}>About us</Link>
                             <Link to="/contact" className="text-lg font-medium text-gray-800 hover:text-primary" onClick={() => setIsOpen(false)}>Contact</Link>
                             <Link to="/cart" className="text-lg font-medium text-gray-800 hover:text-primary flex justify-center items-center gap-2" onClick={() => setIsOpen(false)}>
                                 Cart <span className="bg-primary text-white text-xs px-2 py-0.5 rounded-full">{cart?.cartItems?.length || 0}</span>

@@ -324,9 +324,9 @@ const HomePage = () => {
                                     <h2 className="text-3xl md:text-4xl font-serif font-bold text-primary mb-2">Ayurvedic Wisdom</h2>
                                     <p className="text-gray-500">Tips, guides, and insights for a healthier life.</p>
                                 </div>
-                                {/* <Link to="/blogs" className="text-primary font-bold hover:text-secondary group flex items-center">
+                                <Link to="/blogs" className="text-primary font-bold hover:text-secondary group flex items-center">
                                     Read All Articles <ArrowRight size={20} className="ml-2 group-hover:translate-x-1 transition-transform" />
-                                </Link>*/}
+                                </Link>
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">

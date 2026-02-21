@@ -1,41 +1,80 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useContext } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import api from '../utils/api';
 import { Star, Truck, ShieldCheck, ShoppingCart, Clock, Heart, Zap } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
+import { ToastContext } from '../context/ToastContext';
 import ImageZoom from '../components/ImageZoom';
 import PincodeShippingCheck from '../components/PincodeShippingCheck';
 import AnimatedPage from '../components/AnimatedPage';
 import ScrollReveal from '../components/ScrollReveal';
 import AnimatedButton from '../components/AnimatedButton';
 import { useFlyingElement } from '../hooks/useFlyingElement';
+import ProductCard from '../components/ProductCard';
 
 const ProductPage = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const [product, setProduct] = useState(null);
+    const [relatedProducts, setRelatedProducts] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [reviewLoading, setReviewLoading] = useState(false);
+    const [rating, setRating] = useState(0);
+    const [comment, setComment] = useState('');
     const [qty, setQty] = useState(1);
     const { addToCart } = useCart();
+    const { user } = useAuth();
+    const { addToast } = useContext(ToastContext) || {};
     const [activeTab, setActiveTab] = useState('description');
 
     // Animation hooks
     const { animateAddToCart } = useFlyingElement();
     const imageRef = useRef(null);
 
+    const fetchProduct = async () => {
+        try {
+            setLoading(true);
+            const { data } = await api.get(`/products/${id}`);
+            setProduct(data);
+
+            // Fetch all products to filter related ones (simple approach)
+            const { data: allProductsData } = await api.get('/products');
+            const filtered = allProductsData.products
+                .filter(p => p.category === data.category && p._id !== data._id)
+                .slice(0, 4);
+            setRelatedProducts(filtered);
+        } catch (error) {
+            console.error("Error fetching product", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     useEffect(() => {
-        const fetchProduct = async () => {
-            try {
-                const { data } = await api.get(`/products/${id}`);
-                setProduct(data);
-            } catch (error) {
-                console.error("Error fetching product", error);
-            } finally {
-                setLoading(false);
-            }
-        };
         fetchProduct();
     }, [id]);
+
+    const submitReviewHandler = async (e) => {
+        e.preventDefault();
+        if (rating === 0) {
+            if (addToast) addToast('Please select a rating', 'error');
+            return;
+        }
+
+        try {
+            setReviewLoading(true);
+            await api.post(`/products/${id}/reviews`, { rating, comment });
+            if (addToast) addToast('Review submitted successfully!', 'success');
+            setRating(0);
+            setComment('');
+            fetchProduct();
+        } catch (error) {
+            if (addToast) addToast(error.response?.data?.message || 'Failed to submit review', 'error');
+        } finally {
+            setReviewLoading(false);
+        }
+    };
 
     const handleAddToCart = () => {
         // Trigger flying animation
@@ -223,7 +262,7 @@ const ProductPage = () => {
                                 {activeTab === 'reviews' && (
                                     <div>
                                         {product.reviews.length === 0 ? (
-                                            <div className="text-center py-10 bg-gray-50 rounded">No reviews yet. Be the first to review!</div>
+                                            <div className="text-center py-10 bg-gray-50 rounded-xl">No reviews yet. Be the first to review!</div>
                                         ) : (
                                             product.reviews.map(review => (
                                                 <div key={review._id} className="border-b pb-4 mb-4 last:border-0">
@@ -240,11 +279,88 @@ const ProductPage = () => {
                                                 </div>
                                             ))
                                         )}
+
+                                        {/* Write a review form */}
+                                        <div className="mt-12 pt-8 border-t border-gray-100">
+                                            <h3 className="text-xl font-serif font-bold text-gray-900 mb-6 text-center">Write a Customer Review</h3>
+                                            {user ? (
+                                                <form onSubmit={submitReviewHandler} className="max-w-lg mx-auto space-y-6">
+                                                    <div>
+                                                        <label className="block text-sm font-bold text-gray-700 mb-2">Rating</label>
+                                                        <div className="flex gap-2">
+                                                            {[1, 2, 3, 4, 5].map((star) => (
+                                                                <button
+                                                                    key={star}
+                                                                    type="button"
+                                                                    onClick={() => setRating(star)}
+                                                                    className={`p-1 transition-colors ${rating >= star ? 'text-yellow-400' : 'text-gray-300'}`}
+                                                                >
+                                                                    <Star size={32} fill={rating >= star ? "currentColor" : "none"} />
+                                                                </button>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                    <div>
+                                                        <label htmlFor="comment" className="block text-sm font-bold text-gray-700 mb-2">Comment</label>
+                                                        <textarea
+                                                            id="comment"
+                                                            rows="4"
+                                                            value={comment}
+                                                            onChange={(e) => setComment(e.target.value)}
+                                                            className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-primary transition-colors text-sm"
+                                                            placeholder="Share your experience with this product..."
+                                                            required
+                                                        ></textarea>
+                                                    </div>
+                                                    <div className="text-center">
+                                                        <AnimatedButton
+                                                            type="submit"
+                                                            disabled={reviewLoading}
+                                                            className="bg-primary text-white px-10 py-3 rounded-full font-bold shadow-lg hover:shadow-xl transition-all disabled:opacity-50 border-none"
+                                                        >
+                                                            {reviewLoading ? 'Submitting...' : 'Post Review'}
+                                                        </AnimatedButton>
+                                                    </div>
+                                                </form>
+                                            ) : (
+                                                <div className="text-center py-6 bg-gray-50 rounded-xl">
+                                                    <p className="text-gray-600 mb-4 font-medium">Please sign in to write a review</p>
+                                                    <Link to={`/login?redirect=product/${id}`}>
+                                                        <AnimatedButton className="bg-primary text-white px-8 py-2 rounded-full font-bold border-none">
+                                                            Login to Review
+                                                        </AnimatedButton>
+                                                    </Link>
+                                                </div>
+                                            )}
+                                        </div>
                                     </div>
                                 )}
                             </div>
                         </div>
                     </ScrollReveal>
+
+                    {/* Related Products */}
+                    {relatedProducts.length > 0 && (
+                        <div className="mt-20">
+                            <ScrollReveal>
+                                <div className="flex justify-between items-end mb-10">
+                                    <div>
+                                        <h2 className="text-3xl font-serif font-bold text-primary">Related Products</h2>
+                                        <p className="text-gray-500 mt-2">More items you might find helpful from {product.category}.</p>
+                                    </div>
+                                    <Link to="/shop" className="text-primary font-bold text-sm tracking-wider uppercase hover:text-secondary hover:underline underline-offset-4">
+                                        View All
+                                    </Link>
+                                </div>
+
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                                    {relatedProducts.map((p) => (
+                                        <ProductCard key={p._id} product={p} />
+                                    ))}
+                                </div>
+                            </ScrollReveal>
+                        </div>
+                    )}
                 </div>
             </div>
         </AnimatedPage>

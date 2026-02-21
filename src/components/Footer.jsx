@@ -8,7 +8,7 @@ const Footer = () => {
             <div className="container mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
                 {/* About */}
                 <div>
-                    <img src="/logo-modified.png" alt="HRIDVED" className="h-12 w-auto mb-4" />
+                    <img src="/logo-asset4.png" alt="HRIDVED" className="h-12 w-auto mb-4" />
                     <p className="text-gray-300 text-sm">
                         Authentic Ayurvedic medicines and treatments since 1921.
                         Bringing the wisdom of Ayurveda to the modern world.
@@ -20,12 +20,12 @@ const Footer = () => {
                     <h3 className="text-lg font-bold mb-4">Quick Links</h3>
                     <ul className="space-y-2 text-sm text-gray-300">
                         <li><Link to="/" className="text-gray-300">Home</Link></li>
-                        <li><Link to="/about" className="text-gray-300">About Us</Link></li>
                         <li><Link to="/shop" className="text-gray-300">Shop</Link></li>
+                        <li><Link to="/consultation" className="text-gray-300">Consultation</Link></li>
                         <li><Link to="/blogs" className="text-gray-300">Blog</Link></li>
-                        <li><Link to="/contact" className="text-gray-300">Contact Us</Link></li>
-                        <li><Link to="/return-policy" className="text-gray-300">Return & Refund Policy</Link></li>
-                        <li><Link to="/privacy" className="text-gray-300">Privacy Policy</Link></li>
+                        <li><Link to="/about" className="text-gray-300">About us</Link></li>
+                        <li><Link to="/return-policy" className="text-gray-300">Return refund vadu</Link></li>
+                        <li><Link to="/privacy" className="text-gray-300">Privacy policy</Link></li>
                     </ul>
                 </div>
 

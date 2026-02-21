@@ -212,7 +212,7 @@ const BlogPage = () => {
                                                 <span className="text-xs font-medium text-gray-600">{blog.author}</span>
                                             </div>
                                             <Link
-                                                to={`/blog/${blog.slug}`}
+                                                to={`/blog/${blog.slug || blog._id}`}
                                                 className="text-secondary font-bold text-xs flex items-center gap-1 hover:gap-2 transition-all"
                                             >
                                                 Read More <ChevronRight size={12} />
