@@ -432,7 +432,7 @@ a:focus-visible {
 
 /* Accessibility utilities */
 .sr-only {
-  @apply absolute w-1 h-1 p-0 -m-1 overflow-hidden clip-path-inset;
+  @apply absolute w-1 h-1 p-0 -m-1 overflow-hidden;
   clip-path: inset(50%);
 }
 
