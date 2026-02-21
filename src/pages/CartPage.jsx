@@ -8,6 +8,7 @@ import ScrollReveal from '../components/ScrollReveal';
 import AnimatedButton from '../components/AnimatedButton';
 import ProductCard from '../components/ProductCard';
 import api from '../utils/api';
+import { ToastContext } from '../context/ToastContext';
 
 const CartPage = () => {
     const { cart, removeFromCart, updateCartItemQuantity } = useCart();
@@ -17,6 +18,7 @@ const CartPage = () => {
     const [appliedCoupon, setAppliedCoupon] = useState(null);
     const [couponError, setCouponError] = useState('');
     const [recommendedProducts, setRecommendedProducts] = useState([]);
+    const { addToast } = useContext(ToastContext);
 
     useEffect(() => {
         const fetchRecommendations = async () => {
@@ -32,14 +34,6 @@ const CartPage = () => {
 
     const cartItems = cart?.cartItems || [];
 
-    // Mock coupon data - replace with API call in production
-    const validCoupons = {
-        'WELLNESS20': { discount: 20, type: 'percentage' },
-        'SAVE50': { discount: 50, type: 'fixed' },
-        'FIRST10': { discount: 10, type: 'percentage' },
-        'HEALTHY25': { discount: 25, type: 'percentage' },
-    };
-
     const checkoutHandler = () => {
         if (!user) {
             navigate('/login?redirect=checkout/address');
@@ -48,14 +42,23 @@ const CartPage = () => {
         }
     };
 
-    const handleApplyCoupon = () => {
-        const coupon = validCoupons[promoCode.toUpperCase()];
-        if (coupon) {
-            setAppliedCoupon({ code: promoCode.toUpperCase(), ...coupon });
+    const handleApplyCoupon = async () => {
+        if (!promoCode) return;
+
+        try {
+            const { data } = await api.post('/coupons/validate', {
+                code: promoCode,
+                cartTotal: subtotal
+            });
+
+            setAppliedCoupon(data);
             setCouponError('');
-        } else {
-            setCouponError('Invalid coupon code');
+            if (addToast) addToast('Coupon applied successfully!', 'success');
+        } catch (error) {
+            const msg = error.response?.data?.message || 'Invalid coupon code';
+            setCouponError(msg);
             setAppliedCoupon(null);
+            if (addToast) addToast(msg, 'error');
         }
     };
 

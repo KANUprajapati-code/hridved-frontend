@@ -60,6 +60,8 @@ import BlogEditPage from './pages/admin/BlogEditPage';
 import TipListPage from './pages/admin/TipListPage';
 import TipEditPage from './pages/admin/TipEditPage';
 import AboutEditPage from './pages/admin/AboutEditPage';
+import PromoCodeListPage from './pages/admin/PromoCodeListPage';
+import PromoCodeEditPage from './pages/admin/PromoCodeEditPage';
 
 
 
@@ -137,6 +139,9 @@ function App() {
                                             <Route path="tiplist" element={<TipListPage />} />
                                             <Route path="tip/:id/edit" element={<TipEditPage />} />
                                             <Route path="about" element={<AboutEditPage />} />
+                                            <Route path="promocodelist" element={<PromoCodeListPage />} />
+                                            <Route path="promocode/add" element={<PromoCodeEditPage />} />
+                                            <Route path="promocode/:id/edit" element={<PromoCodeEditPage />} />
                                         </Route>
                                     </Routes>
                                 </AnimatePresence>

@@ -1,6 +1,6 @@
 
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, ShoppingBag, ShoppingCart, Users, FileText, Settings, LogOut, MessageSquare, Layout, ListOrdered } from 'lucide-react';
+import { LayoutDashboard, ShoppingBag, ShoppingCart, Users, FileText, Settings, LogOut, MessageSquare, Layout, ListOrdered, Tag } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 const AdminSidebar = () => {
@@ -17,6 +17,7 @@ const AdminSidebar = () => {
         { name: 'Orders', path: '/admin/orderlist', icon: <ShoppingCart size={20} /> },
         { name: 'Users', path: '/admin/userlist', icon: <Users size={20} /> },
         { name: 'Doctors', path: '/admin/doctorlist', icon: <Users size={20} /> },
+        { name: 'Promo Codes', path: '/admin/promocodelist', icon: <Tag size={20} /> },
         { name: 'Content', path: '/admin/homepage', icon: <Layout size={20} /> },
         { name: 'Messages', path: '/admin/contactlist', icon: <MessageSquare size={20} /> },
         { name: 'Blog', path: '/admin/bloglist', icon: <FileText size={20} /> },
