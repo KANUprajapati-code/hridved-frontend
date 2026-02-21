@@ -95,8 +95,8 @@ const DoctorEditPage = () => {
 
     return (
         <div className="max-w-4xl mx-auto">
-            <Link to="/admin/doctorlist" className="inline-flex items-center text-gray-500 hover:text-primary mb-6 transition-colors">
-                <ArrowLeft size={20} className="mr-2" /> Back to Doctors
+            <Link to="/admin/doctorlist" className="text-gray-500 hover:text-primary mb-4 flex items-center gap-2 transition-colors">
+                <ArrowLeft size={18} /> Go Back
             </Link>
 
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">

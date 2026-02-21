@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext, useCallback } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { Plus, Search, Edit2, Trash2, Eye, EyeOff, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Plus, Search, Edit2, Trash2, Eye, EyeOff, ChevronLeft, ChevronRight, ArrowLeft } from 'lucide-react';
 import api from '../../utils/api';
 import { ToastContext } from '../../context/ToastContext';
 
@@ -101,7 +101,10 @@ const BlogListPage = () => {
     }
 
     return (
-        <div>
+        <div className="container mx-auto px-4 py-8">
+            <Link to="/admin" className="flex items-center gap-2 text-gray-600 hover:text-primary mb-6 transition-colors font-medium">
+                <ArrowLeft size={20} /> Back to Dashboard
+            </Link>
             {/* Header */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
                 <div>

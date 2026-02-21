@@ -1,7 +1,8 @@
 
 import { useState, useEffect } from 'react';
 import api from '../../utils/api';
-import { Mail, Phone, Calendar } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Trash2, Mail, Phone, MapPin, ArrowLeft } from 'lucide-react';
 
 const ContactListPage = () => {
     const [contacts, setContacts] = useState([]);
@@ -25,7 +26,10 @@ const ContactListPage = () => {
 
     return (
         <div className="container mx-auto px-4 py-8">
-            <h1 className="text-3xl font-serif font-bold text-primary mb-6">Contact Messages</h1>
+            <Link to="/admin" className="flex items-center gap-2 text-gray-600 hover:text-primary mb-6 transition-colors">
+                <ArrowLeft size={20} /> Back to Dashboard
+            </Link>
+            <h1 className="text-2xl font-bold mb-6">Contact Messages</h1>
 
             {contacts.length === 0 ? (
                 <p>No messages found.</p>

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import api from '../../utils/api';
-import { Upload } from 'lucide-react';
+import { Upload, ArrowLeft } from 'lucide-react';
 
 const TipEditPage = () => {
     const { id } = useParams();
@@ -73,7 +73,9 @@ const TipEditPage = () => {
 
     return (
         <div className="container mx-auto px-4 py-8 max-w-2xl">
-            <Link to="/admin/tiplist" className="text-gray-500 hover:text-primary mb-4 block">&larr; Go Back</Link>
+            <Link to="/admin/tiplist" className="text-gray-500 hover:text-primary mb-4 flex items-center gap-2 transition-colors">
+                <ArrowLeft size={18} /> Go Back
+            </Link>
 
             <div className="bg-white p-8 rounded-lg shadow-md border">
                 <h1 className="text-2xl font-serif font-bold text-primary mb-6">Edit Tip</h1>

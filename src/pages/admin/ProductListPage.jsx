@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Edit, Trash2, Plus } from 'lucide-react';
+import { Edit, Trash2, Plus, ArrowLeft } from 'lucide-react';
 import api from '../../utils/api';
 
 const ProductListPage = () => {
@@ -50,6 +50,9 @@ const ProductListPage = () => {
 
     return (
         <div className="container mx-auto px-4 py-8">
+            <Link to="/admin" className="flex items-center gap-2 text-gray-600 hover:text-primary mb-6 transition-colors">
+                <ArrowLeft size={20} /> Back to Dashboard
+            </Link>
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-3xl font-serif font-bold text-primary">Products</h1>
                 <button
@@ -98,7 +101,7 @@ const ProductListPage = () => {
                     </tbody>
                 </table>
             </div>
-        </div>
+        </div >
     );
 };
 

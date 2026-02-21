@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { Save, ArrowLeft, Upload, X, Eye, EyeOff } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import api from '../../utils/api';
 import { ToastContext } from '../../context/ToastContext';
 
@@ -466,6 +467,9 @@ const BlogEditPage = () => {
                         <h3 className="text-lg font-bold text-gray-900 mb-4">Publishing Options</h3>
 
                         <div className="space-y-3">
+                            <Link to="/admin/bloglist" className="flex items-center gap-2 text-gray-600 hover:text-primary mb-6 transition-colors font-medium">
+                                <ArrowLeft size={20} /> Back to Blogs
+                            </Link>
                             <label className="flex items-center gap-3 cursor-pointer p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors">
                                 <input
                                     type="checkbox"

@@ -1,7 +1,8 @@
 
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import api from '../../utils/api';
-import { Trash2, Check, X, Edit } from 'lucide-react';
+import { Trash2, Check, X, Edit, ArrowLeft } from 'lucide-react';
 
 const UserListPage = () => {
     const [users, setUsers] = useState([]);
@@ -49,6 +50,9 @@ const UserListPage = () => {
 
     return (
         <div className="container mx-auto px-4 py-8">
+            <Link to="/admin" className="flex items-center gap-2 text-gray-600 hover:text-primary mb-6 transition-colors">
+                <ArrowLeft size={20} /> Back to Dashboard
+            </Link>
             <h1 className="text-3xl font-serif font-bold text-primary mb-6">Users</h1>
             <div className="bg-white rounded-lg shadow overflow-x-auto">
                 <table className="min-w-full text-left">

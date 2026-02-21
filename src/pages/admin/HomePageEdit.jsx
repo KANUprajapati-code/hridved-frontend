@@ -1,7 +1,8 @@
 
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import api from '../../utils/api';
-import { Save } from 'lucide-react';
+import { Save, ArrowLeft } from 'lucide-react';
 
 const HomePageEdit = () => {
     const [loading, setLoading] = useState(true);
@@ -78,6 +79,9 @@ const HomePageEdit = () => {
 
     return (
         <div className="container mx-auto px-4 py-8">
+            <Link to="/admin" className="flex items-center gap-2 text-gray-600 hover:text-primary mb-6 transition-colors">
+                <ArrowLeft size={20} /> Back to Dashboard
+            </Link>
             <h1 className="text-3xl font-bold font-serif text-primary mb-8">Edit Home Page Content</h1>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
