@@ -1,26 +1,24 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,700&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 /* Custom scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f5f9;
+  background: #fdfbf7;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 4px;
+  background: #e5d3b3;
+  border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: #d4af37;
 }
 
 html {
@@ -32,47 +30,52 @@ body {
   letter-spacing: -0.01em;
 }
 
-/* Responsive headings with improved typography */
+/* Responsive headings with Inter font - Apple Style */
+h1,
+h2,
+h3,
+h4 {
+  @apply font-sans tracking-tight leading-tight text-[#1d1d1f];
+}
+
 h1 {
-  @apply text-3xl md:text-4xl lg:text-5xl font-display font-bold tracking-tight leading-tight;
-  letter-spacing: -0.02em;
+  @apply text-4xl md:text-5xl lg:text-[80px] font-semibold;
+  letter-spacing: -0.015em;
+  line-height: 1.05;
 }
 
 h2 {
-  @apply text-2xl md:text-3xl lg:text-4xl font-display font-bold tracking-tight leading-snug;
-  letter-spacing: -0.015em;
-}
-
-h3 {
-  @apply text-xl md:text-2xl font-display font-semibold tracking-tight;
+  @apply text-3xl md:text-4xl lg:text-5xl font-semibold;
   letter-spacing: -0.01em;
 }
 
-h4 {
-  @apply text-lg md:text-xl font-semibold tracking-tight;
-}
-
-h5 {
-  @apply text-base md:text-lg font-semibold;
-}
-
-h6 {
-  @apply text-sm md:text-base font-semibold uppercase tracking-wide;
+h3 {
+  @apply text-2xl md:text-3xl font-semibold;
+  letter-spacing: -0.005em;
 }
 
 p {
-  @apply text-base leading-relaxed;
+  @apply text-base md:text-xl leading-relaxed text-[#86868b] font-normal;
+  letter-spacing: -0.012em;
 }
 
-a {
-  @apply transition-colors duration-200;
+/* Glassmorphism Utilities */
+.glass {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
-/* Form elements */
-input, button, select, textarea {
-  @apply text-base font-body;
+.glass-dark {
+  background: rgba(29, 29, 31, 0.85);
+  /* Apple charcoal */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+/* Premium Form Elements */
 input[type="text"],
 input[type="email"],
 input[type="password"],
@@ -80,116 +83,73 @@ input[type="number"],
 input[type="date"],
 textarea,
 select {
-  @apply w-full px-4 py-2.5 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-500 transition-all duration-200;
+  @apply w-full px-5 py-3.5 border border-gray-200 rounded-2xl bg-white/50 backdrop-blur-sm text-gray-900 placeholder-gray-400 transition-all duration-300;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
 }
 
-input[type="text"]:focus,
-input[type="email"]:focus,
-input[type="password"]:focus,
-input[type="number"]:focus,
-input[type="date"]:focus,
+input:focus,
 textarea:focus,
 select:focus {
-  @apply border-primary outline-none ring-2 ring-primary ring-opacity-20;
+  @apply border-primary outline-none ring-4 ring-primary/10 bg-white;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
 }
 
-input[type="text"]::placeholder,
-input[type="email"]::placeholder,
-input[type="password"]::placeholder,
-input[type="number"]::placeholder,
-textarea::placeholder {
-  @apply text-gray-400;
+/* Button Refinements */
+.btn-premium {
+  @apply px-8 py-3.5 rounded-full font-bold transition-all duration-500 flex items-center justify-center gap-2 active:scale-95;
 }
 
-/* Button base styles */
-button {
-  @apply transition-all duration-200 font-medium;
+.btn-primary {
+  @apply btn-premium bg-primary text-white hover:bg-primary/90 hover:shadow-xl hover:shadow-primary/20;
 }
 
-button:disabled {
-  @apply opacity-50 cursor-not-allowed;
-}
-
-/* Media responsive */
-img, video, iframe {
-  @apply max-w-full h-auto block;
+.btn-secondary {
+  @apply btn-premium bg-secondary text-primary hover:bg-secondary/90 hover:shadow-xl hover:shadow-secondary/20;
 }
 
 /* Utility classes */
 .container-full {
-  @apply w-full max-w-7xl mx-auto px-4 md:px-6 lg:px-8;
+  @apply w-full max-w-7xl mx-auto px-6 md:px-10 lg:px-12;
 }
 
 .text-gradient {
-  background: linear-gradient(135deg, #053807 0%, #D4AF37 100%);
+  background: linear-gradient(135deg, #1d1d1f 0%, #424245 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
-.shadow-card {
-  @apply shadow-md hover:shadow-xl transition-shadow duration-300;
+.card-premium {
+  @apply bg-white rounded-2xl border border-gray-100 hover:border-gray-200 transition-all duration-500 overflow-hidden;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.02), 0 2px 4px -2px rgb(0 0 0 / 0.02);
 }
 
-.badge {
-  @apply inline-block px-3 py-1 text-xs font-bold uppercase tracking-wider rounded-full;
+.card-premium:hover {
+  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.05), 0 8px 10px -6px rgb(0 0 0 / 0.05);
+  transform: translateY(-2px);
 }
 
-.badge-primary {
-  @apply badge bg-primary text-white;
+/* Section Spacing */
+.section-padding {
+  @apply py-12 md:py-24 lg:py-32;
 }
 
-.badge-secondary {
-  @apply badge bg-secondary text-primary;
-}
-
-.badge-success {
-  @apply badge bg-green-100 text-green-800;
-}
-
-.badge-error {
-  @apply badge bg-red-100 text-red-800;
-}
-
-.badge-warning {
-  @apply badge bg-yellow-100 text-yellow-800;
-}
-
-/* Selection styling */
-::selection {
-  @apply bg-primary text-white;
-}
-
-::-moz-selection {
-  @apply bg-primary text-white;
-}
-
-/* Link styling */
-a {
-  @apply text-primary hover:text-secondary transition-colors;
-}
-
-a:focus-visible {
-  @apply outline-2 outline-offset-2 outline-primary rounded;
-}
-
-/* Animations */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
+/* Floating Animation */
+@keyframes float {
+  0% {
+    transform: translateY(0px);
   }
-  to {
-    opacity: 1;
+
+  50% {
+    transform: translateY(-10px);
+  }
+
+  100% {
+    transform: translateY(0px);
   }
 }
 
-@keyframes slideIn {
-  from {
-    transform: translateY(10px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
+.animate-float {
+  animation: float 4s ease-in-out infinite;
 }

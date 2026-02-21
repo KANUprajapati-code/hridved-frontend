@@ -2,13 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCheckout } from '../context/CheckoutContext';
 import CheckoutStepIndicator from '../components/CheckoutStepIndicator';
-import axios from 'axios';
-import AnimatedPage from '../components/AnimatedPage';
-import AnimatedButton from '../components/AnimatedButton';
-import ScrollReveal from '../components/ScrollReveal';
-import { CheckCircle, Package, Calendar, Truck, CreditCard, DollarSign, Home, Phone, ShoppingBag, List, Check } from 'lucide-react';
-
-const API_URL = import.meta.env.VITE_API_URL || 'https://hridved-opal.vercel.app/api';
+import api from '../utils/api';
 
 export default function CheckoutSuccessPage() {
     const navigate = useNavigate();
@@ -27,13 +21,7 @@ export default function CheckoutSuccessPage() {
     const fetchOrderDetails = React.useCallback(async () => {
         try {
             setLoading(true);
-            const token = localStorage.getItem('authToken');
-            const response = await axios.get(
-                `${API_URL}/checkout/order/${checkoutData.orderId}`,
-                {
-                    headers: { Authorization: `Bearer ${token}` }
-                }
-            );
+            const response = await api.get(`/checkout/order/${checkoutData.orderId}`);
             setOrderDetails(response.data);
         } catch (error) {
             console.error('Error fetching order details:', error);

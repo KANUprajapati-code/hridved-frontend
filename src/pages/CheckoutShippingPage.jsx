@@ -9,8 +9,6 @@ import AnimatedButton from '../components/AnimatedButton';
 import ScrollReveal from '../components/ScrollReveal';
 import { Truck, MapPin, Check, ChevronLeft, ArrowRight } from 'lucide-react';
 
-const API_URL = import.meta.env.VITE_API_URL || 'https://hridved-opal.vercel.app/api';
-
 export default function CheckoutShippingPage() {
     const navigate = useNavigate();
     const { cart } = useCart();

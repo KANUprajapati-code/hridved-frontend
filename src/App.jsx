@@ -28,6 +28,8 @@ import CheckoutPaymentPage from './pages/CheckoutPaymentPage';
 import CheckoutSuccessPage from './pages/CheckoutSuccessPage';
 import TrackOrderPage from './pages/TrackOrderPage';
 import OrderPage from './pages/OrderPage';
+import PaymentSuccess from './pages/PaymentSuccess';
+import PaymentFailed from './pages/PaymentFailed';
 
 import BlogPage from './pages/BlogPage';
 import BlogDetailPage from './pages/BlogDetailPage';
@@ -99,6 +101,8 @@ function App() {
                                             <Route path="/checkout/shipping" element={<CheckoutShippingPage />} />
                                             <Route path="/checkout/payment" element={<CheckoutPaymentPage />} />
                                             <Route path="/checkout/success" element={<CheckoutSuccessPage />} />
+                                            <Route path="/payment-success" element={<PaymentSuccess />} />
+                                            <Route path="/payment-failed" element={<PaymentFailed />} />
 
                                             <Route path="/order/:id" element={<OrderPage />} />
                                             <Route path="/track-order" element={<TrackOrderPage />} />

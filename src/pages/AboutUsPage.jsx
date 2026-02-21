@@ -5,7 +5,7 @@ import ScrollReveal from '../components/ScrollReveal';
 import AnimatedImage from '../components/AnimatedImage';
 import AnimatedButton from '../components/AnimatedButton';
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../utils/api';
 
 const AboutUsPage = () => {
     const [aboutData, setAboutData] = useState(null);
@@ -14,7 +14,7 @@ const AboutUsPage = () => {
     useEffect(() => {
         const fetchAboutData = async () => {
             try {
-                const { data } = await axios.get('/api/about');
+                const { data } = await api.get('/about');
                 setAboutData(data);
             } catch (error) {
                 console.error('Error fetching about data:', error);

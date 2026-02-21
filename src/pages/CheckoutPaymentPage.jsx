@@ -9,8 +9,7 @@ import AnimatedPage from '../components/AnimatedPage';
 import AnimatedButton from '../components/AnimatedButton';
 import ScrollReveal from '../components/ScrollReveal';
 import { CreditCard, Lock, ShieldCheck, ChevronLeft, ArrowRight, MapPin, Package } from 'lucide-react';
-
-const API_URL = import.meta.env.VITE_API_URL || 'https://hridved-opal.vercel.app/api';
+import PaymentButton from '../components/PaymentButton';
 
 export default function CheckoutPaymentPage() {
     const navigate = useNavigate();
@@ -33,17 +32,7 @@ export default function CheckoutPaymentPage() {
             navigate('/cart');
             return;
         }
-
-        // Load Razorpay script
-        loadRazorpayScript();
     }, [checkoutData, navigate, cart]);
-
-    const loadRazorpayScript = () => {
-        const script = document.createElement('script');
-        script.src = 'https://checkout.razorpay.com/v1/checkout.js';
-        script.async = true;
-        document.body.appendChild(script);
-    };
 
     const calculateTotals = () => {
         const cartItems = cart?.cartItems || [];
@@ -106,83 +95,9 @@ export default function CheckoutPaymentPage() {
     };
 
     const handlePayment = async (e) => {
-        e.preventDefault();
-
-        if (!user) {
-            navigate('/login');
-            return;
-        }
-
-        try {
-            setLoading(true);
-            clearError();
-
-            // Create backend order first
-            const orderData = await createOrderBackend();
-            const { totalPrice } = calculateTotals();
-
-            // Create Razorpay order
-            const razorpayOrder = await createRazorpayOrder(totalPrice);
-
-            // Get Razorpay key
-            const keyResponse = await api.get('/razorpay/key');
-            const razorpayKey = keyResponse.data;
-
-            // Open Razorpay checkout
-            const options = {
-                key: razorpayKey,
-                amount: totalPrice * 100, // Amount in paise
-                currency: 'INR',
-                name: 'Aayurveda',
-                description: 'Order Payment',
-                order_id: razorpayOrder.id,
-                handler: async (response) => {
-                    try {
-                        // Verify payment and save order
-                        const verifyResponse = await api.put(
-                            `/checkout/confirm-payment/${orderData._id}`,
-                            {
-                                razorpayPaymentId: response.razorpay_payment_id,
-                                razorpayOrderId: response.razorpay_order_id,
-                                razorpaySignature: response.razorpay_signature,
-                            }
-                        );
-
-                        if (verifyResponse.data.success) {
-                            // Clear cart
-                            localStorage.removeItem('cart');
-
-                            // Update checkout context
-                            setOrderId(orderData._id, verifyResponse.data.order);
-                            updateStep(4);
-
-                            // Redirect to success page
-                            navigate('/checkout/success');
-                        }
-                    } catch (error) {
-                        console.error('Error verifying payment:', error);
-                        setErrorMessage('Payment verified but order creation failed. Please contact support.');
-                    } finally {
-                        setLoading(false);
-                    }
-                },
-                prefill: {
-                    name: user.name,
-                    email: user.email,
-                    contact: checkoutData.address?.mobileNumber,
-                },
-                theme: {
-                    color: '#2874f0',
-                },
-            };
-
-            const rzp = new window.Razorpay(options);
-            rzp.open();
-        } catch (error) {
-            console.error('Error initiating payment:', error);
-            setErrorMessage(error.message || 'Failed to initiate payment');
-            setLoading(false);
-        }
+        if (e) e.preventDefault();
+        // The PaymentButton component now handles the redirection and internal logic
+        // We just need to make sure the order is created first.
     };
 
     const { itemsPrice, taxPrice, shippingPrice, totalPrice } = calculateTotals();
@@ -301,17 +216,11 @@ export default function CheckoutPaymentPage() {
                                         </div>
 
                                         <div className="mt-auto">
-                                            <AnimatedButton
-                                                type="submit"
-                                                disabled={loading || creatingOrder}
-                                                className="w-full bg-primary text-white py-4 rounded-xl font-bold text-lg shadow-lg hover:bg-opacity-90 hover:shadow-xl transition-all transform hover:-translate-y-1 disabled:bg-gray-300 disabled:cursor-not-allowed border-none flex items-center justify-center gap-2"
-                                            >
-                                                {loading || creatingOrder ? (
-                                                    <>Processing...</>
-                                                ) : (
-                                                    <>Pay ₹{totalPrice.toLocaleString()} <ArrowRight size={20} /></>
-                                                )}
-                                            </AnimatedButton>
+                                            <PaymentButton
+                                                amount={totalPrice}
+                                                onBeforePayment={createOrderBackend}
+                                                onError={(err) => setErrorMessage(err)}
+                                            />
 
                                             <div className="mt-4 flex items-center justify-center gap-2 text-xs text-gray-500">
                                                 <Lock size={12} />

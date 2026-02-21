@@ -106,36 +106,38 @@ const ProductPage = () => {
                                     {product.description.substring(0, 150)}...
                                 </p>
 
-                                <div className="flex flex-col sm:flex-row gap-4 mb-8">
-                                    <div className="flex items-center border border-gray-300 rounded-full h-12 w-32">
+                                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-8">
+                                    <div className="flex items-center border border-gray-300 rounded-full h-12 w-full sm:w-32 justify-between">
                                         <button
                                             onClick={() => setQty(Math.max(1, qty - 1))}
-                                            className="w-10 h-full hover:bg-gray-100 rounded-l-full flex items-center justify-center text-gray-600 font-bold text-xl"
+                                            className="w-12 sm:w-10 h-full hover:bg-gray-100 rounded-l-full flex items-center justify-center text-gray-600 font-bold text-xl"
                                         >-</button>
                                         <div className="flex-1 text-center font-bold text-gray-800">{qty}</div>
                                         <button
                                             onClick={() => setQty(Math.min(product.countInStock || 10, qty + 1))}
-                                            className="w-10 h-full hover:bg-gray-100 rounded-r-full flex items-center justify-center text-gray-600 font-bold text-xl"
+                                            className="w-12 sm:w-10 h-full hover:bg-gray-100 rounded-r-full flex items-center justify-center text-gray-600 font-bold text-xl"
                                         >+</button>
                                     </div>
-                                    <AnimatedButton
-                                        onClick={handleBuyNow}
-                                        disabled={product.countInStock === 0}
-                                        className="flex-1 bg-orange-500 text-white h-12 rounded-full font-bold hover:bg-opacity-90 transition shadow-lg hover:shadow-xl flex items-center justify-center gap-2 disabled:bg-gray-400 disabled:cursor-not-allowed border-none"
-                                    >
-                                        <Zap size={20} />
-                                        Buy Now
-                                    </AnimatedButton>
-                                    <AnimatedButton
-                                        onClick={handleAddToCart}
-                                        disabled={product.countInStock === 0}
-                                        className="flex-1 bg-primary text-white h-12 rounded-full font-bold hover:bg-opacity-90 transition shadow-lg hover:shadow-xl flex items-center justify-center gap-2 disabled:bg-gray-400 disabled:cursor-not-allowed border-none"
-                                    >
-                                        <ShoppingCart size={20} />
-                                        {product.countInStock === 0 ? 'Out of Stock' : 'Add to Cart'}
-                                    </AnimatedButton>
+                                    <div className="flex flex-1 gap-2 sm:gap-4">
+                                        <AnimatedButton
+                                            onClick={handleBuyNow}
+                                            disabled={product.countInStock === 0}
+                                            className="flex-1 bg-orange-500 text-white h-12 rounded-full font-bold hover:bg-opacity-90 transition shadow-lg hover:shadow-xl flex items-center justify-center gap-2 disabled:bg-gray-400 disabled:cursor-not-allowed border-none text-sm px-2"
+                                        >
+                                            <Zap size={18} />
+                                            Buy Now
+                                        </AnimatedButton>
+                                        <AnimatedButton
+                                            onClick={handleAddToCart}
+                                            disabled={product.countInStock === 0}
+                                            className="flex-1 bg-primary text-white h-12 rounded-full font-bold hover:bg-opacity-90 transition shadow-lg hover:shadow-xl flex items-center justify-center gap-2 disabled:bg-gray-400 disabled:cursor-not-allowed border-none text-sm px-2"
+                                        >
+                                            <ShoppingCart size={18} />
+                                            {product.countInStock === 0 ? 'Out of Stock' : 'Add to Cart'}
+                                        </AnimatedButton>
+                                    </div>
                                     <button
-                                        className="w-12 h-12 rounded-full border border-gray-200 flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-50 transition shadow-sm"
+                                        className="hidden sm:flex w-12 h-12 rounded-full border border-gray-200 items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-50 transition shadow-sm"
                                         title="Add to Wishlist"
                                     >
                                         <Heart size={20} />
@@ -170,25 +172,25 @@ const ProductPage = () => {
                         <div className="mt-12 bg-white rounded-xl shadow-sm border border-gray-100 p-8">
                             <div className="flex border-b border-gray-100 mb-8 overflow-x-auto">
                                 <button
-                                    className={`pb-4 px-6 font-bold text-lg whitespace-nowrap transition-colors ${activeTab === 'description' ? 'text-primary border-b-2 border-primary' : 'text-gray-400 hover:text-gray-600'}`}
+                                    className={`pb-4 px-4 sm:px-6 font-bold text-base sm:text-lg whitespace-nowrap transition-colors ${activeTab === 'description' ? 'text-primary border-b-2 border-primary' : 'text-gray-400 hover:text-gray-600'}`}
                                     onClick={() => setActiveTab('description')}
                                 >
                                     Description
                                 </button>
                                 <button
-                                    className={`pb-4 px-6 font-bold text-lg whitespace-nowrap transition-colors ${activeTab === 'benefits' ? 'text-primary border-b-2 border-primary' : 'text-gray-400 hover:text-gray-600'}`}
+                                    className={`pb-4 px-4 sm:px-6 font-bold text-base sm:text-lg whitespace-nowrap transition-colors ${activeTab === 'benefits' ? 'text-primary border-b-2 border-primary' : 'text-gray-400 hover:text-gray-600'}`}
                                     onClick={() => setActiveTab('benefits')}
                                 >
                                     Benefits
                                 </button>
                                 <button
-                                    className={`pb-4 px-6 font-bold text-lg whitespace-nowrap transition-colors ${activeTab === 'usage' ? 'text-primary border-b-2 border-primary' : 'text-gray-400 hover:text-gray-600'}`}
+                                    className={`pb-4 px-4 sm:px-6 font-bold text-base sm:text-lg whitespace-nowrap transition-colors ${activeTab === 'usage' ? 'text-primary border-b-2 border-primary' : 'text-gray-400 hover:text-gray-600'}`}
                                     onClick={() => setActiveTab('usage')}
                                 >
                                     How to Use
                                 </button>
                                 <button
-                                    className={`pb-4 px-6 font-bold text-lg whitespace-nowrap transition-colors ${activeTab === 'reviews' ? 'text-primary border-b-2 border-primary' : 'text-gray-400 hover:text-gray-600'}`}
+                                    className={`pb-4 px-4 sm:px-6 font-bold text-base sm:text-lg whitespace-nowrap transition-colors ${activeTab === 'reviews' ? 'text-primary border-b-2 border-primary' : 'text-gray-400 hover:text-gray-600'}`}
                                     onClick={() => setActiveTab('reviews')}
                                 >
                                     Reviews ({product.numReviews})

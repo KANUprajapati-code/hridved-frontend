@@ -9,7 +9,7 @@ const GoogleAuthButton = ({ text = 'Continue with Google', redirect = '/' }) => 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [googleClientId, setGoogleClientId] = useState(null);
-  const { user } = useAuth();
+  const { user, googleLogin } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -53,15 +53,12 @@ const GoogleAuthButton = ({ text = 'Continue with Google', redirect = '/' }) => 
         callback: async (tokenResponse) => {
           if (tokenResponse && tokenResponse.access_token) {
             try {
-              // Send access token to backend
-              const backendResponse = await api.post('/auth/google', {
-                accessToken: tokenResponse.access_token,
-              });
+              // Use googleLogin from AuthContext
+              await googleLogin(tokenResponse.access_token);
 
-              if (backendResponse.data.user) {
-                // Redirect to specified page
-                navigate(redirect);
-              }
+              // Redirect to specified page with FULL REFRESH to ensure state is clean
+              // This satisfies the user's request for "auto metic refresh"
+              window.location.href = redirect;
             } catch (err) {
               console.error('Backend Google auth error:', err);
               setError(err.response?.data?.message || 'Google authentication failed with backend.');

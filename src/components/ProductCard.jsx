@@ -2,85 +2,121 @@ import { Link } from 'react-router-dom';
 import { Star, ShoppingCart, Eye, Heart } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useState } from 'react';
+import { motion } from 'framer-motion';
 import ProductImage from './ProductImage';
 
 const ProductCard = ({ product, onQuickView }) => {
     const { addToCart } = useCart();
     const [isWishlisted, setIsWishlisted] = useState(false);
 
-    // Randomize a badge for demo purposes (mimicking the design)
-    const badge = Math.random() > 0.7 ? (Math.random() > 0.5 ? 'New' : 'Sale') : null;
-    const badgeColor = badge === 'New' ? 'bg-green-500' : 'bg-red-500';
-
     return (
-        <div className="bg-white rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col h-full group">
-            <div className="relative overflow-hidden h-64 bg-gray-50 rounded-t-xl">
-                {badge && (
-                    <span className={`absolute top-3 left-3 ${badgeColor} text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider z-10`}>
-                        {badge}
+        <motion.div
+            layout
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="card-premium group bg-white flex flex-col h-full relative"
+        >
+            {/* Badge container */}
+            <div className="absolute top-4 left-4 z-20 flex flex-col gap-2">
+                {product.isBestseller && (
+                    <motion.span
+                        initial={{ x: -20, opacity: 0 }}
+                        animate={{ x: 0, opacity: 1 }}
+                        className="glass text-primary text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest shadow-lg"
+                    >
+                        Bestseller
+                    </motion.span>
+                )}
+                {product.countInStock > 0 && product.countInStock <= 5 && (
+                    <span className="bg-red-500 text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest shadow-lg">
+                        Only {product.countInStock} Left
                     </span>
                 )}
-                <Link to={`/product/${product._id}`} className="block h-full w-full group/image">
+            </div>
+
+            {/* Image Section */}
+            <div className="relative h-72 overflow-hidden bg-gray-50 flex items-center justify-center">
+                <Link to={`/product/${product._id}`} className="w-full h-full block">
                     <ProductImage
                         src={product.image}
                         alt={product.name}
-                        className="w-full h-full group-hover/image:scale-105 transition-transform duration-500"
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                     />
                 </Link>
-                {/* Overlay with Quick View and Wishlist */}
-                <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-300 flex items-center justify-center gap-3">
-                    <button
+
+                {/* Hover Actions - Visible on mobile/touch, hover on desktop */}
+                <div className="absolute inset-0 bg-black/10 lg:bg-black/20 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-3">
+                    <motion.button
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
                         onClick={() => onQuickView && onQuickView(product)}
-                        className="bg-white text-gray-900 p-3 rounded-full shadow-lg hover:bg-gray-100 transition-all opacity-0 group-hover:opacity-100 transform -translate-y-2 group-hover:translate-y-0 transition-transform"
+                        className="w-12 h-12 bg-white rounded-full flex items-center justify-center text-primary shadow-2xl hover:bg-primary hover:text-white transition-all transform translate-y-0 lg:-translate-y-4 lg:group-hover:translate-y-0 duration-300"
                         title="Quick View"
                     >
                         <Eye size={20} />
-                    </button>
-                    <button
+                    </motion.button>
+
+                    <motion.button
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
                         onClick={() => setIsWishlisted(!isWishlisted)}
-                        className={`p-3 rounded-full shadow-lg transition-all opacity-0 group-hover:opacity-100 transform -translate-y-2 group-hover:translate-y-0 transition-transform ${
-                            isWishlisted ? 'bg-red-100 text-red-600' : 'bg-white text-gray-900 hover:bg-gray-100'
-                        }`}
+                        className={`w-12 h-12 rounded-full flex items-center justify-center shadow-2xl transition-all transform translate-y-0 lg:translate-y-4 lg:group-hover:translate-y-0 duration-300 delay-75 ${isWishlisted ? 'bg-red-500 text-white' : 'bg-white text-primary hover:bg-red-50'
+                            }`}
                         title="Add to Wishlist"
                     >
                         <Heart size={20} fill={isWishlisted ? "currentColor" : "none"} />
-                    </button>
+                    </motion.button>
                 </div>
+
+                {product.countInStock === 0 && (
+                    <div className="absolute inset-0 bg-black/50 backdrop-blur-[2px] flex items-center justify-center z-10">
+                        <span className="bg-white/10 border border-white/20 text-white text-[10px] font-black px-4 py-2 rounded-full uppercase tracking-[0.2em] backdrop-blur-md">
+                            Sold Out
+                        </span>
+                    </div>
+                )}
             </div>
 
-            <div className="p-4 flex flex-col flex-grow">
-                <div className="flex justify-between items-start mb-2">
-                    <div className="flex text-yellow-500 text-xs">
-                        {[...Array(5)].map((_, i) => (
-                            <Star key={i} size={12} fill={i < (product.rating || 4) ? "currentColor" : "none"} className={i < (product.rating || 4) ? "text-yellow-400" : "text-gray-300"} />
-                        ))}
-                        <span className="text-gray-400 ml-1 text-xs">({product.numReviews || 0})</span>
-                    </div>
+            {/* Info Section */}
+            <div className="p-6 flex flex-col flex-grow">
+                <div className="mb-2">
+                    <Link to={`/shop?category=${product.category}`} className="text-[10px] font-black text-secondary uppercase tracking-[0.1em] hover:text-primary transition-colors">
+                        {product.category}
+                    </Link>
                 </div>
 
-                <Link to={`/product/${product._id}`} className="block flex-grow">
-                    <h3 className="font-serif font-bold text-gray-800 text-lg mb-1 group-hover:text-primary transition-colors line-clamp-2">
-                        {product.name}
-                    </h3>
-                    <p className="text-xs text-gray-500 uppercase tracking-wide mb-3">{product.category}</p>
+                <Link to={`/product/${product._id}`} className="group-hover:text-primary transition-colors">
+                    <h3 className="text-lg font-bold text-gray-800 line-clamp-2 mb-3 leading-snug">{product.name}</h3>
                 </Link>
 
-                <div className="flex justify-between items-center mt-auto pt-3 border-t border-gray-50">
+                <div className="mt-auto flex items-center justify-between pt-4 border-t border-gray-50">
                     <div className="flex flex-col">
-                        <span className="text-xl font-bold text-gray-900">₹{product.price}</span>
-                        {badge === 'Sale' && <span className="text-xs text-gray-400 line-through">₹{Math.round(product.price * 1.2)}</span>}
+                        <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">Investment</span>
+                        <span className="text-2xl font-black text-primary font-display">₹{product.price}</span>
                     </div>
-
-                    <button
-                        onClick={() => addToCart(product)}
-                        className="bg-primary text-white p-2.5 rounded-full hover:bg-secondary hover:text-primary transition-all duration-300 shadow-md hover:shadow-lg transform active:scale-95"
-                        title="Add to Cart"
-                    >
-                        <ShoppingCart size={18} />
-                    </button>
+                    <div className="flex flex-col items-end">
+                        <button
+                            onClick={() => addToCart(product)}
+                            className="bg-primary text-white p-3 rounded-xl hover:bg-secondary hover:text-primary transition-all duration-300 shadow-md hover:shadow-xl transform active:scale-95 mb-1"
+                            title="Add to Cart"
+                        >
+                            <ShoppingCart size={18} />
+                        </button>
+                        <div className="flex text-secondary gap-0.5">
+                            {[...Array(5)].map((_, i) => (
+                                <Star
+                                    key={i}
+                                    size={10}
+                                    className={i < (product.rating || 0) ? "text-secondary" : "text-gray-200"}
+                                    fill={i < (product.rating || 0) ? "currentColor" : "none"}
+                                />
+                            ))}
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
+        </motion.div>
     );
 };
 
