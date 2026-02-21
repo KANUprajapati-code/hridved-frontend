@@ -55,37 +55,37 @@ const Header = () => {
         <motion.header
             variants={headerVariants}
             animate={isVisible ? 'visible' : 'hidden'}
-            className={`sticky top-0 z-50 transition-all duration-300 bg-primary text-white ${scrolled ? 'shadow-md py-1' : 'py-2'}`}
+            className={`sticky top-0 z-50 transition-all duration-300 bg-primary text-white ${scrolled ? 'shadow-lg py-2' : 'py-3 sm:py-4'}`}
         >
-            <div className="container mx-auto px-4 flex justify-between items-center relative">
+            <div className="container-full flex justify-between items-center relative">
                 {/* Logo */}
-                <Link to="/" className="flex-shrink-0">
+                <Link to="/" className="flex-shrink-0 transition-transform hover:scale-105">
                     <img
                         src="/logo-asset4.png"
                         alt="HRIDVED"
-                        className="h-14 md:h-10 w-auto object-contain transition-transform hover:scale-105"
+                        className="h-12 sm:h-14 md:h-16 w-auto object-contain"
                     />
                 </Link>
 
                 {/* Desktop Nav */}
-                <nav className="hidden lg:flex space-x-6 xl:space-x-8 items-center font-medium mx-4">
-                    <Link to="/" className="hover:text-secondary transition text-gray-100">Home</Link>
-                    <Link to="/about" className="hover:text-secondary transition text-gray-100">About Us</Link>
-                    <Link to="/shop" className="hover:text-secondary transition text-gray-100">Shop</Link>
-                    <Link to="/consultation" className="hover:text-secondary transition text-gray-100">Consult Doctor</Link>
-                    <Link to="/blogs" className="hover:text-secondary transition text-gray-100">Wellness Blog</Link>
-                    <Link to="/contact" className="hover:text-secondary transition text-gray-100">Contact</Link>
+                <nav className="hidden lg:flex gap-6 xl:gap-8 items-center font-medium">
+                    <Link to="/" className="text-gray-100 hover:text-secondary transition-colors text-sm xl:text-base">Home</Link>
+                    <Link to="/about" className="text-gray-100 hover:text-secondary transition-colors text-sm xl:text-base">About Us</Link>
+                    <Link to="/shop" className="text-gray-100 hover:text-secondary transition-colors text-sm xl:text-base">Shop</Link>
+                    <Link to="/consultation" className="text-gray-100 hover:text-secondary transition-colors text-sm xl:text-base">Consult Doctor</Link>
+                    <Link to="/blogs" className="text-gray-100 hover:text-secondary transition-colors text-sm xl:text-base">Wellness Blog</Link>
+                    <Link to="/contact" className="text-gray-100 hover:text-secondary transition-colors text-sm xl:text-base">Contact</Link>
                 </nav>
 
                 {/* Search, Cart, User Actions */}
-                <div className="flex items-center space-x-3 sm:space-x-4 md:space-x-6">
+                <div className="flex items-center gap-2 sm:gap-4 md:gap-6">
                     {/* Search Component */}
                     <div className="relative">
                         <AnimatePresence>
                             {isSearchOpen && (
                                 <motion.form
                                     initial={{ width: 0, opacity: 0 }}
-                                    animate={{ width: typeof window !== 'undefined' && window.innerWidth < 640 ? '160px' : '240px', opacity: 1 }}
+                                    animate={{ width: typeof window !== 'undefined' && window.innerWidth < 640 ? '140px' : '220px', opacity: 1 }}
                                     exit={{ width: 0, opacity: 0 }}
                                     onSubmit={handleSearch}
                                     className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center"
@@ -94,13 +94,13 @@ const Header = () => {
                                         autoFocus
                                         type="text"
                                         placeholder="Search..."
-                                        className="rounded-full px-4 py-1.5 text-sm focus:outline-none w-full shadow-sm bg-white/20 text-white placeholder-gray-300 backdrop-blur-sm border border-white/30"
+                                        className="rounded-full px-4 py-2 text-sm focus:outline-none w-full shadow-md bg-white/20 text-white placeholder-gray-300 backdrop-blur-sm border border-white/30 focus:border-secondary focus:bg-white/30 transition-all"
                                         value={keyword}
                                         onChange={(e) => setKeyword(e.target.value)}
                                         onBlur={() => !keyword && setIsSearchOpen(false)}
                                     />
-                                    <button type="submit" className="absolute right-3 top-1/2 -translate-y-1/2 hover:text-secondary text-white">
-                                        <Search size={16} />
+                                    <button type="submit" className="absolute right-3 top-1/2 -translate-y-1/2 hover:text-secondary text-white transition-colors">
+                                        <Search size={18} />
                                     </button>
                                 </motion.form>
                             )}
@@ -111,20 +111,21 @@ const Header = () => {
                                 whileHover={{ scale: 1.1 }}
                                 whileTap={{ scale: 0.9 }}
                                 onClick={() => setIsSearchOpen(true)}
-                                className="p-2 rounded-full hover:bg-black/5 transition text-white"
+                                className="p-2.5 sm:p-3 rounded-full hover:bg-white/10 transition-colors text-white"
+                                aria-label="Search products"
                             >
-                                <Search size={22} />
+                                <Search size={20} className="sm:w-6 sm:h-6" />
                             </motion.button>
                         )}
                     </div>
 
                     {/* Cart */}
                     <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                        <Link to="/cart" id="cart-icon-container" className="relative p-2 block hover:text-secondary transition text-white">
-                            <ShoppingCart size={22} />
+                        <Link to="/cart" id="cart-icon-container" className="relative p-2.5 sm:p-3 block hover:text-secondary transition-colors text-white rounded-full hover:bg-white/10">
+                            <ShoppingCart size={20} className="sm:w-6 sm:h-6" />
                             {cart?.cartItems?.length > 0 && (
                                 <motion.span
-                                    className="absolute top-0 right-0 bg-secondary text-primary text-[10px] font-bold rounded-full h-4 w-4 flex items-center justify-center border-2 border-white"
+                                    className="absolute top-1 right-1 bg-secondary text-primary text-[9px] sm:text-[10px] font-bold rounded-full h-5 w-5 sm:h-5 sm:w-5 flex items-center justify-center border-2 border-white"
                                     animate={{ scale: [1, 1.2, 1] }}
                                     transition={{ duration: 0.3 }}
                                 >
@@ -137,19 +138,18 @@ const Header = () => {
                     {/* User Menu - Desktop only or in mobile drawer */}
                     <div className="hidden sm:block">
                         {loading ? (
-                            <div className="p-2 flex items-center justify-center">
+                            <div className="p-2.5 sm:p-3 flex items-center justify-center">
                                 <LoadingSpinner size="sm" />
                             </div>
                         ) : user ? (
-                            <div
-                                className="relative"
-                            >
+                            <div className="relative">
                                 <motion.button
-                                    className="p-2 flex items-center hover:text-secondary transition text-white"
+                                    className="p-2.5 sm:p-3 flex items-center hover:text-secondary transition-colors text-white rounded-full hover:bg-white/10"
                                     onClick={() => setShowUserMenu(!showUserMenu)}
                                     whileTap={{ scale: 0.95 }}
+                                    aria-label="User menu"
                                 >
-                                    <User size={22} />
+                                    <User size={20} className="sm:w-6 sm:h-6" />
                                 </motion.button>
                                 <AnimatePresence>
                                     {showUserMenu && (
@@ -164,19 +164,19 @@ const Header = () => {
                                                 initial="closed"
                                                 animate="open"
                                                 exit="closed"
-                                                className="absolute right-0 mt-2 w-48 bg-white border rounded-xl shadow-xl z-50 overflow-hidden"
+                                                className="absolute right-0 mt-3 w-56 bg-white border border-gray-200 rounded-xl shadow-xl z-50 overflow-hidden"
                                             >
                                                 <Link
                                                     to="/profile"
-                                                    className="block px-4 py-3 hover:bg-gray-50 hover:text-primary text-gray-800 text-sm font-medium border-b border-gray-50 tracking-wide"
+                                                    className="block px-5 py-3 hover:bg-gray-50 hover:text-primary text-gray-800 text-sm font-medium border-b border-gray-100 transition-colors"
                                                     onClick={() => setShowUserMenu(false)}
                                                 >
-                                                    Profile
+                                                    My Profile
                                                 </Link>
                                                 {user.isAdmin && (
                                                     <Link
                                                         to="/admin"
-                                                        className="block px-4 py-3 hover:bg-gray-50 hover:text-primary text-gray-800 text-sm font-medium border-b border-gray-50 tracking-wide"
+                                                        className="block px-5 py-3 hover:bg-gray-50 hover:text-primary text-gray-800 text-sm font-medium border-b border-gray-100 transition-colors"
                                                         onClick={() => setShowUserMenu(false)}
                                                     >
                                                         Admin Dashboard
@@ -184,7 +184,7 @@ const Header = () => {
                                                 )}
                                                 <button
                                                     onClick={() => { logout(); setShowUserMenu(false); }}
-                                                    className="block w-full text-left px-4 py-3 hover:bg-red-50 text-red-500 text-sm font-medium transition-colors"
+                                                    className="block w-full text-left px-5 py-3 hover:bg-red-50 text-red-600 text-sm font-medium transition-colors"
                                                 >
                                                     Logout
                                                 </button>
@@ -195,7 +195,7 @@ const Header = () => {
                             </div>
                         ) : (
                             <motion.div whileTap={{ scale: 0.95 }}>
-                                <Link to="/login" className="text-sm font-bold tracking-tight hover:text-secondary transition text-white">LOGIN</Link>
+                                <Link to="/login" className="px-4 py-2 text-sm font-semibold hover:text-secondary transition-colors text-white bg-white/10 rounded-lg hover:bg-white/20">Login</Link>
                             </motion.div>
                         )}
                     </div>
@@ -204,10 +204,11 @@ const Header = () => {
                     <div className="lg:hidden">
                         <motion.button
                             onClick={() => setIsOpen(!isOpen)}
-                            className="p-2 rounded-lg text-white"
+                            className="p-2.5 rounded-lg text-white hover:bg-white/10 transition-colors"
                             whileTap={{ scale: 0.9 }}
+                            aria-label="Toggle menu"
                         >
-                            {isOpen ? <X size={26} /> : <Menu size={26} />}
+                            {isOpen ? <X size={24} /> : <Menu size={24} />}
                         </motion.button>
                     </div>
                 </div>
@@ -217,41 +218,41 @@ const Header = () => {
             <AnimatePresence>
                 {isOpen && (
                     <motion.div
-                        className="lg:hidden bg-white border-t border-gray-100 shadow-lg absolute w-full top-full left-0"
-                        initial={{ opacity: 0, y: -10 }}
+                        className="lg:hidden bg-white border-t border-gray-200 shadow-xl absolute w-full top-full left-0"
+                        initial={{ opacity: 0, y: -15 }}
                         animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        transition={{ duration: 0.2 }}
+                        exit={{ opacity: 0, y: -15 }}
+                        transition={{ duration: 0.25 }}
                     >
-                        <div className="px-6 py-6 flex flex-col space-y-4 text-center">
-                            <form onSubmit={handleSearch} className="relative mb-4">
+                        <div className="px-6 py-6 flex flex-col gap-4">
+                            <form onSubmit={handleSearch} className="relative mb-2">
                                 <input
                                     type="text"
                                     placeholder="Search products..."
-                                    className="border border-gray-300 rounded-full px-4 py-2 w-full focus:outline-none focus:border-primary"
+                                    className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary focus:ring-opacity-20 transition-all"
                                     value={keyword}
                                     onChange={(e) => setKeyword(e.target.value)}
                                 />
                             </form>
-                            <Link to="/" className="text-lg font-medium text-gray-800 hover:text-primary" onClick={() => setIsOpen(false)}>Home</Link>
-                            <Link to="/about" className="text-lg font-medium text-gray-800 hover:text-primary" onClick={() => setIsOpen(false)}>About Us</Link>
-                            <Link to="/shop" className="text-lg font-medium text-gray-800 hover:text-primary" onClick={() => setIsOpen(false)}>Shop</Link>
-                            <Link to="/blogs" className="text-lg font-medium text-gray-800 hover:text-primary" onClick={() => setIsOpen(false)}>Wellness Blog</Link>
-                            <Link to="/contact" className="text-lg font-medium text-gray-800 hover:text-primary" onClick={() => setIsOpen(false)}>Contact</Link>
-                            <Link to="/cart" className="text-lg font-medium text-gray-800 hover:text-primary flex justify-center items-center gap-2" onClick={() => setIsOpen(false)}>
-                                Cart <span className="bg-primary text-white text-xs px-2 py-0.5 rounded-full">{cart?.cartItems?.length || 0}</span>
+                            <Link to="/" className="px-4 py-3 text-base font-medium text-gray-800 hover:bg-gray-50 hover:text-primary rounded-lg transition-colors" onClick={() => setIsOpen(false)}>Home</Link>
+                            <Link to="/about" className="px-4 py-3 text-base font-medium text-gray-800 hover:bg-gray-50 hover:text-primary rounded-lg transition-colors" onClick={() => setIsOpen(false)}>About Us</Link>
+                            <Link to="/shop" className="px-4 py-3 text-base font-medium text-gray-800 hover:bg-gray-50 hover:text-primary rounded-lg transition-colors" onClick={() => setIsOpen(false)}>Shop</Link>
+                            <Link to="/blogs" className="px-4 py-3 text-base font-medium text-gray-800 hover:bg-gray-50 hover:text-primary rounded-lg transition-colors" onClick={() => setIsOpen(false)}>Wellness Blog</Link>
+                            <Link to="/contact" className="px-4 py-3 text-base font-medium text-gray-800 hover:bg-gray-50 hover:text-primary rounded-lg transition-colors" onClick={() => setIsOpen(false)}>Contact</Link>
+                            <Link to="/cart" className="px-4 py-3 text-base font-medium text-gray-800 hover:bg-gray-50 hover:text-primary rounded-lg transition-colors flex items-center justify-between" onClick={() => setIsOpen(false)}>
+                                Cart <span className="bg-primary text-white text-xs font-bold px-2.5 py-1 rounded-full">{cart?.cartItems?.length || 0}</span>
                             </Link>
                             {loading ? (
-                                <div className="flex justify-center p-2">
+                                <div className="flex justify-center p-3">
                                     <LoadingSpinner size="sm" />
                                 </div>
                             ) : user ? (
                                 <>
-                                    <Link to="/profile" className="text-lg font-medium text-gray-800 hover:text-primary" onClick={() => setIsOpen(false)}>My Profile</Link>
-                                    <button onClick={() => { logout(); setIsOpen(false); }} className="text-lg font-medium text-red-500 hover:text-red-600">Logout</button>
+                                    <Link to="/profile" className="px-4 py-3 text-base font-medium text-gray-800 hover:bg-gray-50 hover:text-primary rounded-lg transition-colors border-t border-gray-100 mt-2" onClick={() => setIsOpen(false)}>My Profile</Link>
+                                    <button onClick={() => { logout(); setIsOpen(false); }} className="px-4 py-3 text-base font-medium text-red-600 hover:bg-red-50 rounded-lg transition-colors text-left">Logout</button>
                                 </>
                             ) : (
-                                <Link to="/login" className="bg-primary text-white py-2 px-6 rounded-full inline-block mx-auto hover:bg-opacity-90" onClick={() => setIsOpen(false)}>Login</Link>
+                                <Link to="/login" className="px-4 py-3 bg-primary text-white font-semibold rounded-lg text-center hover:bg-primary/90 transition-colors mt-2" onClick={() => setIsOpen(false)}>Login</Link>
                             )}
                         </div>
                     </motion.div>

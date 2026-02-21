@@ -78,17 +78,17 @@ const CartPage = () => {
     if (cartItems.length === 0) {
         return (
             <AnimatedPage>
-                <div className="container mx-auto px-4 py-20 text-center">
-                    <div className="flex justify-center mb-6">
-                        <div className="bg-primary/10 p-6 rounded-full text-primary">
-                            <ShoppingBag size={48} />
+                <div className="container-full py-16 sm:py-20 md:py-24 text-center">
+                    <div className="flex justify-center mb-6 sm:mb-8">
+                        <div className="bg-primary/10 p-6 sm:p-8 rounded-full text-primary">
+                            <ShoppingBag size={52} className="sm:w-16 sm:h-16" />
                         </div>
                     </div>
-                    <h2 className="text-3xl font-serif font-bold mb-4 text-gray-800">Your Cart is Empty</h2>
-                    <p className="text-gray-500 mb-8 max-w-md mx-auto">Looks like you haven&apos;t added any Ayurvedic wellness products to your cart yet.</p>
+                    <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold mb-4 sm:mb-6 text-gray-900">Your Cart is Empty</h2>
+                    <p className="text-gray-700 text-base sm:text-lg mb-8 sm:mb-10 max-w-2xl mx-auto leading-relaxed">Looks like you haven&apos;t added any Ayurvedic wellness products to your cart yet.</p>
                     <Link to="/shop">
-                        <AnimatedButton className="bg-primary text-white px-8 py-3 rounded-full hover:bg-opacity-90 transition inline-flex items-center font-bold shadow-lg hover:shadow-xl border-none">
-                            Explore Shop <ArrowRight size={18} className="ml-2" />
+                        <AnimatedButton className="bg-primary text-white px-8 sm:px-10 py-3.5 sm:py-4 rounded-full hover:bg-primary/90 transition-all inline-flex items-center justify-center gap-2 font-semibold shadow-lg hover:shadow-xl border-none">
+                            Explore Shop <ArrowRight size={20} />
                         </AnimatedButton>
                     </Link>
                 </div>
@@ -100,69 +100,71 @@ const CartPage = () => {
         <AnimatedPage>
             <div className="bg-background min-h-screen">
                 {/* Free Shipping Banner */}
-                <div className="bg-primary text-white text-center py-2 text-sm font-medium tracking-wide">
+                <div className="bg-primary text-white text-center py-3 sm:py-4 text-sm sm:text-base font-semibold tracking-wide">
                     Free Shipping Above ₹499
                 </div>
 
-                <div className="container mx-auto px-4 py-8">
-                    <div className="flex items-center text-sm text-gray-500 mb-8">
-                        <Link to="/shop" className="hover:text-primary flex items-center">
-                            <ArrowRight size={14} className="rotate-180 mr-2" /> Continue Shopping
+                <div className="container-full py-6 sm:py-8 md:py-10">
+                    <div className="flex items-center text-sm text-gray-600 mb-8 sm:mb-10">
+                        <Link to="/shop" className="hover:text-primary transition-colors flex items-center gap-2">
+                            <ArrowRight size={16} className="rotate-180" /> Continue Shopping
                         </Link>
                     </div>
 
-                    <div className="flex justify-between items-end mb-8">
-                        <h1 className="text-4xl font-serif font-bold text-gray-900">Shopping Cart</h1>
-                        <span className="bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-sm font-medium">{cartItems.reduce((acc, item) => acc + item.qty, 0)} Items</span>
+                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4 sm:gap-6 mb-10 sm:mb-12">
+                        <h1 className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-gray-900">Shopping Cart</h1>
+                        <span className="bg-gray-100 text-gray-700 px-4 py-2 rounded-full text-sm sm:text-base font-semibold">{cartItems.reduce((acc, item) => acc + item.qty, 0)} Items</span>
                     </div>
 
-                    <div className="flex flex-col lg:flex-row gap-12">
+                    <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
                         {/* Left Side: Cart Items */}
-                        <div className="lg:w-2/3 space-y-6">
+                        <div className="lg:w-2/3 space-y-4 sm:space-y-6">
                             {cartItems.map((item, index) => (
                                 <ScrollReveal key={item.product} delay={index * 0.1}>
-                                    <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm flex flex-col sm:flex-row gap-6 items-center sm:items-start transition hover:shadow-md">
-                                        <Link to={`/product/${item.product}`} className="w-full sm:w-32 h-32 flex-shrink-0 bg-gray-50 rounded-lg overflow-hidden">
-                                            <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                                    <div className="bg-white p-5 sm:p-6 md:p-8 rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-all flex flex-col sm:flex-row gap-6 items-start">
+                                        <Link to={`/product/${item.product}`} className="w-full sm:w-36 h-36 flex-shrink-0 bg-gray-100 rounded-lg overflow-hidden">
+                                            <img src={item.image} alt={item.name} className="w-full h-full object-cover hover:scale-105 transition-transform" />
                                         </Link>
 
-                                        <div className="flex-grow w-full text-center sm:text-left">
-                                            <p className="text-xs text-secondary font-bold uppercase tracking-wider mb-1">AYURVEDA</p>
-                                            <Link to={`/product/${item.product}`} className="font-serif font-bold text-lg text-gray-800 hover:text-primary transition-colors block mb-2">
+                                        <div className="flex-grow w-full">
+                                            <p className="text-xs text-secondary font-bold uppercase tracking-wider mb-2">Ayurvedic Product</p>
+                                            <Link to={`/product/${item.product}`} className="font-serif font-bold text-lg sm:text-xl text-gray-900 hover:text-primary transition-colors block mb-3">
                                                 {item.name}
                                             </Link>
-                                            <div className="flex items-center justify-center sm:justify-start gap-4 text-sm text-gray-500 mb-4">
-                                                <button className="hover:text-primary flex items-center gap-1">
+                                            <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-sm text-gray-600 mb-4">
+                                                <button className="hover:text-primary transition-colors flex items-center gap-1.5">
                                                     <span>♡</span> Save for later
                                                 </button>
                                                 <button
                                                     onClick={() => removeFromCart(item.product)}
-                                                    className="text-red-400 hover:text-red-600 flex items-center gap-1"
+                                                    className="text-red-600 hover:text-red-700 transition-colors flex items-center gap-1.5"
                                                 >
-                                                    <Trash2 size={14} /> Remove
+                                                    <Trash2 size={16} /> Remove
                                                 </button>
                                             </div>
                                         </div>
 
-                                        <div className="flex flex-col items-center sm:items-end gap-4 w-full sm:w-auto">
-                                            <div className="flex items-center border border-gray-200 rounded-lg overflow-hidden">
+                                        <div className="flex flex-row sm:flex-col items-center sm:items-end gap-4 sm:gap-5 w-full sm:w-auto border-t sm:border-t-0 sm:border-l border-gray-200 pt-4 sm:pt-0 sm:pl-6">
+                                            <div className="flex items-center border border-gray-300 rounded-lg overflow-hidden bg-gray-50">
                                                 <button
-                                                    className="px-3 py-1.5 hover:bg-gray-50 text-gray-600"
+                                                    className="px-3 py-2 hover:bg-gray-100 text-gray-700 transition-colors"
                                                     onClick={() => updateCartItemQuantity(item.product, Math.max(1, item.qty - 1))}
+                                                    aria-label="Decrease quantity"
                                                 >
-                                                    <Minus size={14} />
+                                                    <Minus size={16} />
                                                 </button>
-                                                <span className="w-10 text-center font-medium text-sm border-x border-gray-200 py-1.5">{item.qty}</span>
+                                                <span className="w-12 text-center font-semibold text-base border-x border-gray-300 py-2">{item.qty}</span>
                                                 <button
-                                                    className="px-3 py-1.5 hover:bg-gray-50 text-gray-600"
+                                                    className="px-3 py-2 hover:bg-gray-100 text-gray-700 transition-colors"
                                                     onClick={() => updateCartItemQuantity(item.product, item.qty + 1)}
+                                                    aria-label="Increase quantity"
                                                 >
-                                                    <Plus size={14} />
+                                                    <Plus size={16} />
                                                 </button>
                                             </div>
                                             <div className="text-right">
-                                                <span className="block font-bold text-lg text-gray-900">₹{item.price * item.qty}</span>
-                                                {item.qty > 1 && <span className="text-xs text-gray-400">₹{item.price} each</span>}
+                                                <span className="block font-bold text-lg sm:text-xl text-gray-900">₹{item.price * item.qty}</span>
+                                                {item.qty > 1 && <span className="text-xs text-gray-500">₹{item.price} each</span>}
                                             </div>
                                         </div>
                                     </div>

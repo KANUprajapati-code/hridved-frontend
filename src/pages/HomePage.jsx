@@ -101,7 +101,7 @@ const HomePage = () => {
         <AnimatedPage>
             <div className="min-h-screen bg-background">
                 {/* Hero Section */}
-                <section className="relative h-[600px] md:h-[700px] overflow-hidden">
+                <section className="relative h-[500px] sm:h-[600px] md:h-[700px] lg:h-[800px] overflow-hidden">
                     <div className="absolute inset-0">
                         {/* Placeholder for the Woman Yoga Image */}
                         <AnimatedImage
@@ -110,29 +110,29 @@ const HomePage = () => {
                             className="w-full h-full object-cover"
                             zoomIntensity={1.05}
                         />
-                        <div className="absolute inset-0 bg-black/30 pointer-events-none"></div>
+                        <div className="absolute inset-0 bg-black/35 pointer-events-none"></div>
                     </div>
 
-                    <div className="container mx-auto px-4 relative z-10 h-full flex flex-col justify-center">
+                    <div className="container-full relative z-10 h-full flex flex-col justify-center">
                         <ScrollReveal>
-                            <div className="max-w-2xl text-white">
-                                <span className="bg-secondary text-primary font-bold px-3 py-1 rounded-full text-sm uppercase tracking-wider mb-4 inline-block">
+                            <div className="max-w-3xl text-white">
+                                <span className="bg-secondary text-primary font-bold px-4 py-1.5 rounded-full text-xs sm:text-sm uppercase tracking-wider mb-6 inline-block">
                                     New In
                                 </span>
-                                <h1 className="text-5xl md:text-7xl font-serif font-bold mb-6 leading-tight">
+                                <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-serif font-bold mb-6 sm:mb-8 leading-tight text-center sm:text-left">
                                     {content?.hero?.title || <>Ancient Ayurveda.<br /> Modern Wellness.</>}
                                 </h1>
-                                <p className="text-lg md:text-xl mb-8 text-gray-100 font-light max-w-lg">
+                                <p className="text-base sm:text-lg md:text-xl mb-8 sm:mb-10 text-gray-100 font-light max-w-xl leading-relaxed">
                                     {content?.hero?.subtitle || "Experience the healing power of nature with our authentic formulations adapted for your modern lifestyle."}
                                 </p>
-                                <div className="flex flex-wrap gap-4">
+                                <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
                                     <Link to="/shop">
-                                        <AnimatedButton className="bg-secondary text-primary px-8 py-3 rounded-full font-bold hover:bg-white transition-colors duration-300 border-none">
+                                        <AnimatedButton className="w-full sm:w-auto bg-secondary text-primary px-8 py-3.5 rounded-full font-bold hover:bg-white transition-all duration-300 border-none shadow-lg hover:shadow-xl text-center">
                                             {content?.hero?.ctaText || "Shop Now"}
                                         </AnimatedButton>
                                     </Link>
                                     <Link to="/consultation">
-                                        <AnimatedButton variant="outline" className="bg-transparent border-2 border-white text-white px-8 py-3 rounded-full font-bold hover:bg-white hover:text-primary transition-colors duration-300">
+                                        <AnimatedButton variant="outline" className="w-full sm:w-auto bg-transparent border-2 border-white text-white px-8 py-3.5 rounded-full font-bold hover:bg-white hover:text-primary transition-all duration-300 text-center">
                                             Consult Doctor
                                         </AnimatedButton>
                                     </Link>
@@ -143,15 +143,15 @@ const HomePage = () => {
                 </section>
 
                 {/* Shop by Category Section - Circular Icons */}
-                <section className="py-20 bg-white">
-                    <div className="container mx-auto px-4">
+                <section className="py-16 sm:py-20 md:py-24 bg-white">
+                    <div className="container-full">
                         <ScrollReveal>
-                            <div className="text-center mb-16">
-                                <h2 className="text-3xl md:text-4xl font-serif font-bold text-primary mb-3">Shop by Category</h2>
-                                <p className="text-gray-500">Explore our curated collections for your specific needs.</p>
+                            <div className="text-center mb-12 sm:mb-16 md:mb-20">
+                                <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-primary mb-3 sm:mb-4">Shop by Category</h2>
+                                <p className="text-gray-600 text-base sm:text-lg">Explore our curated collections for your specific needs.</p>
                             </div>
 
-                            <div className="flex flex-wrap justify-center gap-8 md:gap-12">
+                            <div className="flex flex-wrap justify-center gap-10 sm:gap-12 md:gap-16">
                                 {[
                                     { name: 'Hair Care', img: 'https://images.unsplash.com/photo-1522337660859-02fbefca4702?w=500&auto=format&fit=crop&q=60' },
                                     { name: 'Skin Care', img: 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=500&auto=format&fit=crop&q=60' },
@@ -173,15 +173,15 @@ const HomePage = () => {
                 </section>
 
                 {/* Best Sellers Section */}
-                <section className="py-20 bg-background/50">
-                    <div className="container mx-auto px-4">
+                <section className="py-16 sm:py-20 md:py-24 bg-background/50">
+                    <div className="container-full">
                         <ScrollReveal>
-                            <div className="flex justify-between items-end mb-10">
+                            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-6 mb-12 sm:mb-16">
                                 <div>
-                                    <h2 className="text-3xl md:text-4xl font-serif font-bold text-primary">Our Bestsellers</h2>
-                                    <p className="text-gray-500 mt-2">Customer favorites that deliver results.</p>
+                                    <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-primary">Our Bestsellers</h2>
+                                    <p className="text-gray-600 text-base sm:text-lg mt-3 sm:mt-4">Customer favorites that deliver results.</p>
                                 </div>
-                                <Link to="/shop" className="text-primary font-bold text-sm tracking-wider uppercase hover:text-secondary hover:underline underline-offset-4">
+                                <Link to="/shop" className="text-primary font-semibold text-sm tracking-wider uppercase hover:text-secondary transition-colors hover:underline underline-offset-4">
                                     View All Products
                                 </Link>
                             </div>
@@ -192,12 +192,12 @@ const HomePage = () => {
                 </section>
 
                 {/* Feature Split Section: Tradition Meets Science */}
-                <section className="py-24 bg-white overflow-hidden">
-                    <div className="container mx-auto px-4">
-                        <div className="flex flex-col md:flex-row items-center gap-12 lg:gap-20">
-                            <div className="md:w-1/2 relative">
+                <section className="py-16 sm:py-20 md:py-24 lg:py-32 bg-white overflow-hidden">
+                    <div className="container-full">
+                        <div className="flex flex-col lg:flex-row items-center gap-10 sm:gap-12 lg:gap-20">
+                            <div className="lg:w-1/2 relative">
                                 <ScrollReveal direction="left">
-                                    <div className="absolute top-0 right-0 w-3/4 h-3/4 bg-primary/10 rounded-full -z-10 translate-x-10 -translate-y-10"></div>
+                                    <div className="absolute top-0 right-0 w-3/4 h-3/4 bg-primary/10 rounded-full -z-10 translate-x-10 -translate-y-10 hidden md:block"></div>
                                     {content?.tradition?.image ? (
                                         <AnimatedImage
                                             src={content.tradition.image}
@@ -218,20 +218,20 @@ const HomePage = () => {
                                     </div>
                                 </ScrollReveal>
                             </div>
-                            <div className="md:w-1/2">
+                            <div className="lg:w-1/2">
                                 <ScrollReveal direction="right">
-                                    <span className="text-secondary font-bold uppercase tracking-widest text-sm mb-2 block">Our Philosophy</span>
-                                    <h2 className="text-4xl md:text-5xl font-serif font-bold text-primary mb-6">
+                                    <span className="text-secondary font-bold uppercase tracking-widest text-xs sm:text-sm mb-3 sm:mb-4 block">Our Philosophy</span>
+                                    <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-primary mb-6 sm:mb-8">
                                         {content?.tradition?.title || <>Where Tradition<br />Meets Science</>}
                                     </h2>
-                                    <p className="text-gray-600 mb-6 leading-relaxed whitespace-pre-line">
+                                    <p className="text-gray-700 text-base sm:text-lg mb-6 sm:mb-8 leading-relaxed whitespace-pre-line">
                                         {content?.tradition?.subtitle ||
                                             `Founded in 1921, HRIDVED has been at the forefront of the Ayurvedic revolution for over a century. We combine the deep spiritual knowledge of ancient texts with cutting-edge manufacturing technology.
                                         
                                         Today, we produce over 500+ classical and proprietary medicines in our GMP-certified facilities, ensuring that every product you receive is safe, effective, and authentic.`}
                                     </p>
-                                    <Link to="/about" className="inline-flex items-center text-primary font-bold border-b-2 border-secondary pb-1 hover:text-secondary transition-colors">
-                                        Learn More About Us <ArrowRight size={18} className="ml-2" />
+                                    <Link to="/about" className="inline-flex items-center gap-2 text-primary font-semibold text-base border-b-2 border-secondary pb-1 hover:text-secondary transition-colors">
+                                        Learn More About Us <ArrowRight size={20} />
                                     </Link>
                                 </ScrollReveal>
                             </div>
@@ -241,12 +241,12 @@ const HomePage = () => {
 
                 {/* Testimonials Section */}
                 {content?.testimonials?.items?.length > 0 && (
-                    <section className="py-20 bg-primary/5">
-                        <div className="container mx-auto px-4">
+                    <section className="py-16 sm:py-20 md:py-24 bg-primary/5">
+                        <div className="container-full">
                             <ScrollReveal>
-                                <div className="text-center mb-16">
-                                    <h2 className="text-3xl md:text-4xl font-serif font-bold text-primary mb-3">What Our Customers Say</h2>
-                                    <p className="text-gray-500">Real stories from our community.</p>
+                                <div className="text-center mb-12 sm:mb-16 md:mb-20">
+                                    <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-primary mb-3 sm:mb-4">What Our Customers Say</h2>
+                                    <p className="text-gray-600 text-base sm:text-lg">Real stories from our community.</p>
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                                     {content.testimonials.items.map((item, idx) => (
@@ -273,15 +273,15 @@ const HomePage = () => {
                 )}
 
                 {/* Why Choose Us */}
-                <section className="py-20 bg-background">
-                    <div className="container mx-auto px-4">
+                <section className="py-16 sm:py-20 md:py-24 bg-background">
+                    <div className="container-full">
                         <ScrollReveal>
-                            <div className="text-center mb-16">
-                                <h2 className="text-3xl md:text-4xl font-serif font-bold text-primary mb-4">Why Choose HRIDVED</h2>
-                                <p className="text-gray-500 max-w-2xl mx-auto">Experience the difference that comes from a century of dedication to purity and quality.</p>
+                            <div className="text-center mb-12 sm:mb-16 md:mb-20">
+                                <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-primary mb-4 sm:mb-5">Why Choose HRIDVED</h2>
+                                <p className="text-gray-600 text-base sm:text-lg max-w-2xl mx-auto">Experience the difference that comes from a century of dedication to purity and quality.</p>
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 sm:gap-10">
                                 <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-all text-center group">
                                     <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6 text-primary group-hover:bg-primary group-hover:text-white transition-colors duration-300">
                                         <Leaf size={32} />
@@ -349,23 +349,23 @@ const HomePage = () => {
                     </div>
                 </section>
                 {/* Newsletter Section */}
-                <section className="py-20 bg-primary text-white">
-                    <div className="container mx-auto px-4 text-center">
+                <section className="py-16 sm:py-20 md:py-24 bg-primary text-white">
+                    <div className="container-full text-center">
                         <ScrollReveal>
-                            <h2 className="text-3xl md:text-4xl font-serif font-bold mb-4">Join the Ayurveda Journey</h2>
-                            <p className="text-gray-300 mb-8 max-w-2xl mx-auto">
+                            <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold mb-4 sm:mb-6">Join the Ayurveda Journey</h2>
+                            <p className="text-gray-200 text-base sm:text-lg mb-8 sm:mb-10 max-w-2xl mx-auto leading-relaxed">
                                 Subscribe to our newsletter for holistic wellness tips, exclusive offers, and early access to new Ayurvedic formulations.
                             </p>
-                            <form className="max-w-md mx-auto flex flex-col sm:flex-row gap-4">
+                            <form className="max-w-md mx-auto flex flex-col sm:flex-row gap-3 sm:gap-4">
                                 <input
                                     type="email"
                                     placeholder="Your Email Address"
-                                    className="flex-grow px-6 py-3 rounded-full text-gray-800 focus:outline-none focus:ring-2 focus:ring-secondary"
+                                    className="flex-grow px-6 py-3.5 rounded-full text-gray-900 font-medium placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-secondary transition-all"
                                     required
                                 />
                                 <AnimatedButton
                                     type="submit"
-                                    className="bg-secondary text-primary px-8 py-3 rounded-full font-bold hover:bg-white transition-colors duration-300 border-none"
+                                    className="bg-secondary text-primary px-8 py-3.5 rounded-full font-bold hover:bg-white transition-all duration-300 border-none shadow-lg hover:shadow-xl whitespace-nowrap"
                                 >
                                     Subscribe
                                 </AnimatedButton>

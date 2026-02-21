@@ -4,62 +4,70 @@ import { Link } from 'react-router-dom';
 
 const Footer = () => {
     return (
-        <footer className="bg-primary text-white pt-12 pb-6">
-            <div className="container mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
-                {/* About */}
-                <div>
-                    <img src="/logo-modified.png" alt="HRIDVED" className="h-12 w-auto mb-4" />
-                    <p className="text-gray-300 text-sm">
-                        Authentic Ayurvedic medicines and treatments since 1921.
-                        Bringing the wisdom of Ayurveda to the modern world.
-                    </p>
-                </div>
+        <footer className="bg-primary text-white py-16 sm:py-20 md:py-24">
+            <div className="container-full">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 sm:gap-10 mb-12">
+                    {/* About */}
+                    <div className="space-y-4">
+                        <img src="/logo-modified.png" alt="HRIDVED" className="h-14 w-auto" />
+                        <p className="text-gray-200 text-sm leading-relaxed">
+                            Authentic Ayurvedic medicines and treatments since 1921. Bringing the wisdom of Ayurveda to the modern world.
+                        </p>
+                    </div>
 
-                {/* Quick Links */}
-                <div>
-                    <h3 className="text-lg font-bold mb-4">Quick Links</h3>
-                    <ul className="space-y-2 text-sm text-gray-300">
-                        <li><Link to="/" className="text-gray-300">Home</Link></li>
-                        <li><Link to="/about" className="text-gray-300">About Us</Link></li>
-                        <li><Link to="/shop" className="text-gray-300">Shop</Link></li>
-                        <li><Link to="/blogs" className="text-gray-300">Blog</Link></li>
-                        <li><Link to="/contact" className="text-gray-300">Contact Us</Link></li>
-                        <li><Link to="/return-policy" className="text-gray-300">Return & Refund Policy</Link></li>
-                        <li><Link to="/privacy" className="text-gray-300">Privacy Policy</Link></li>
-                    </ul>
-                </div>
+                    {/* Quick Links */}
+                    <div className="space-y-4">
+                        <h3 className="text-lg md:text-base font-semibold tracking-tight">Quick Links</h3>
+                        <ul className="space-y-3 text-sm text-gray-200">
+                            <li><Link to="/" className="hover:text-secondary transition-colors">Home</Link></li>
+                            <li><Link to="/about" className="hover:text-secondary transition-colors">About Us</Link></li>
+                            <li><Link to="/shop" className="hover:text-secondary transition-colors">Shop</Link></li>
+                            <li><Link to="/blogs" className="hover:text-secondary transition-colors">Blog</Link></li>
+                            <li><Link to="/contact" className="hover:text-secondary transition-colors">Contact Us</Link></li>
+                            <li><Link to="/return-policy" className="hover:text-secondary transition-colors">Return Policy</Link></li>
+                            <li><Link to="/privacy" className="hover:text-secondary transition-colors">Privacy Policy</Link></li>
+                        </ul>
+                    </div>
 
-                {/* Contact */}
-                <div>
-                    <h3 className="text-lg font-bold mb-4">Contact</h3>
-                    <ul className="space-y-4 text-sm text-gray-300">
-                        <li className="flex items-center space-x-2">
-                            <MapPin size={18} />
-                            <span>123 Ayurveda Lane, Kerala, India</span>
-                        </li>
-                        <li className="flex items-center space-x-2">
-                            <Phone size={18} />
-                            <span>+91 98765 43210</span>
-                        </li>
-                        <li className="flex items-center space-x-2">
-                            <Mail size={18} />
-                            <span>support@hridved.com</span>
-                        </li>
-                    </ul>
-                </div>
+                    {/* Contact */}
+                    <div className="space-y-4">
+                        <h3 className="text-lg md:text-base font-semibold tracking-tight">Contact</h3>
+                        <ul className="space-y-4 text-sm text-gray-200">
+                            <li className="flex items-start gap-3">
+                                <MapPin size={20} className="flex-shrink-0 mt-0.5" />
+                                <span>123 Ayurveda Lane, Kerala, India</span>
+                            </li>
+                            <li className="flex items-start gap-3">
+                                <Phone size={20} className="flex-shrink-0 mt-0.5" />
+                                <span>+91 98765 43210</span>
+                            </li>
+                            <li className="flex items-start gap-3">
+                                <Mail size={20} className="flex-shrink-0 mt-0.5" />
+                                <span>support@hridved.com</span>
+                            </li>
+                        </ul>
+                    </div>
 
-                {/* Socials */}
-                <div>
-                    <h3 className="text-lg font-bold mb-4">Follow Us</h3>
-                    <div className="flex space-x-4">
-                        <a href="#" className="text-gray-300 hover:text-secondary"><Facebook /></a>
-                        <a href="#" className="text-gray-300 hover:text-secondary"><Instagram /></a>
-                        <a href="#" className="text-gray-300 hover:text-secondary"><Twitter /></a>
+                    {/* Socials */}
+                    <div className="space-y-4">
+                        <h3 className="text-lg md:text-base font-semibold tracking-tight">Follow Us</h3>
+                        <div className="flex gap-4">
+                            <a href="#" className="p-2.5 bg-white/10 rounded-lg hover:bg-secondary hover:text-primary transition-colors" aria-label="Facebook">
+                                <Facebook size={20} />
+                            </a>
+                            <a href="#" className="p-2.5 bg-white/10 rounded-lg hover:bg-secondary hover:text-primary transition-colors" aria-label="Instagram">
+                                <Instagram size={20} />
+                            </a>
+                            <a href="#" className="p-2.5 bg-white/10 rounded-lg hover:bg-secondary hover:text-primary transition-colors" aria-label="Twitter">
+                                <Twitter size={20} />
+                            </a>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div className="border-t border-gray-700 mt-8 pt-4 text-center text-sm text-gray-400">
-                &copy; {new Date().getFullYear()} HRIDVED. All rights reserved.
+                
+                <div className="border-t border-white/20 pt-8 text-center text-sm text-gray-300">
+                    &copy; {new Date().getFullYear()} HRIDVED. All rights reserved.
+                </div>
             </div>
         </footer>
     );

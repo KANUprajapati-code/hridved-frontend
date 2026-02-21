@@ -85,15 +85,15 @@ const ShopPage = () => {
         <AnimatedPage>
             <div className="bg-background min-h-screen font-sans">
                 {/* Minimal Header with Breadcrumbs */}
-                <div className="bg-white border-b border-gray-100 py-4">
-                    <div className="container mx-auto px-4">
-                        <div className="flex items-center text-xs text-gray-500 mb-2">
-                            <Link to="/" className="hover:text-primary">Home</Link>
-                            <span className="mx-2">/</span>
-                            <span className="text-gray-800 font-bold">Shop</span>
+                <div className="bg-white border-b border-gray-200 py-6 sm:py-8">
+                    <div className="container-full">
+                        <div className="flex items-center text-xs sm:text-sm text-gray-600 mb-3 sm:mb-4">
+                            <Link to="/" className="hover:text-primary transition-colors">Home</Link>
+                            <span className="mx-2 text-gray-400">/</span>
+                            <span className="text-gray-900 font-semibold">Shop</span>
                         </div>
-                        <h1 className="text-3xl md:text-4xl font-serif font-bold text-primary">Ayurvedic Apothecary</h1>
-                        <p className="text-gray-500 mt-2 text-sm max-w-2xl">
+                        <h1 className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-primary mb-3 sm:mb-4">Ayurvedic Apothecary</h1>
+                        <p className="text-gray-700 text-base sm:text-lg max-w-2xl leading-relaxed">
                             Explore our curated range of herbal formulations, oils, and wellness essentials rooted in 100+ years of healing traditions.
                         </p>
                     </div>
