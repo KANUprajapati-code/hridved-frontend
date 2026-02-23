@@ -111,9 +111,7 @@ const BlogEditPage = () => {
         setUploading(true);
 
         try {
-            const { data } = await api.post('/upload', formData, {
-                headers: { 'Content-Type': 'multipart/form-data' },
-            });
+            const { data } = await api.post('/upload', formData);
             setFunction(data);
             if (addToast) addToast('Image uploaded successfully', 'success');
         } catch (error) {

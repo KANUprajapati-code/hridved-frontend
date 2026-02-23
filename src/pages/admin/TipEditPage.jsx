@@ -38,12 +38,7 @@ const TipEditPage = () => {
         setUploading(true);
 
         try {
-            const config = {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            };
-            const { data } = await api.post('/upload', formData, config);
+            const { data } = await api.post('/upload', formData);
             // Fix path to use forward slashes
             const normalizedPath = data.replace(/\\/g, '/');
             setImage(normalizedPath);

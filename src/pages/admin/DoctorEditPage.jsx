@@ -53,13 +53,7 @@ const DoctorEditPage = () => {
         setUploading(true);
 
         try {
-            const config = {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            };
-
-            const { data } = await api.post('/upload', formData, config);
+            const { data } = await api.post('/upload', formData);
             setImage(data);
             setUploading(false);
         } catch (error) {
