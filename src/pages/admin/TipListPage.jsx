@@ -92,10 +92,10 @@ const TipListPage = () => {
                                 <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                     <div className="flex items-center gap-4">
                                         <Link to={`/admin/tip/${tip._id}/edit`} className="text-blue-600 hover:text-blue-900">
-                                            <Edit size={18} />
+                                            <Edit2 size={18} />
                                         </Link>
                                         <button onClick={() => deleteHandler(tip._id)} className="text-red-600 hover:text-red-900">
-                                            <Trash size={18} />
+                                            <Trash2 size={18} />
                                         </button>
                                     </div>
                                 </td>

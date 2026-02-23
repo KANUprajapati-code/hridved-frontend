@@ -29,8 +29,8 @@ export default {
             },
             fontFamily: {
                 sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
-                serif: ['Playfair Display', 'Georgia', 'serif'],
-                display: ['Playfair Display', 'serif'],
+                serif: ['Lora', 'serif'],
+                display: ['Cormorant Garamond', 'serif'],
                 body: ['Inter', 'sans-serif'],
             },
             fontSize: {

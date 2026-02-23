@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
@@ -386,13 +386,9 @@ export default function CheckoutAddressPage() {
                                         <span>Subtotal</span>
                                         <span>₹{cart.cartItems.reduce((acc, item) => acc + (item.price * item.qty), 0).toLocaleString()}</span>
                                     </div>
-                                    <div className="flex justify-between text-gray-600">
-                                        <span>Tax (18%)</span>
-                                        <span>₹{(Math.round(cart.cartItems.reduce((acc, item) => acc + (item.price * item.qty), 0) * 0.18 * 100) / 100).toLocaleString()}</span>
-                                    </div>
                                     <div className="border-t border-gray-200 my-2 pt-2 flex justify-between font-bold text-gray-900 text-lg">
                                         <span>Total</span>
-                                        <span>₹{(cart.cartItems.reduce((acc, item) => acc + (item.price * item.qty), 0) + (Math.round(cart.cartItems.reduce((acc, item) => acc + (item.price * item.qty), 0) * 0.18 * 100) / 100)).toLocaleString()}</span>
+                                        <span>₹{(cart.cartItems.reduce((acc, item) => acc + (item.price * item.qty), 0)).toLocaleString()}</span>
                                     </div>
                                 </div>
                                 <p className="text-[10px] text-gray-400 mt-2 text-right">* Shipping calculated at next step</p>

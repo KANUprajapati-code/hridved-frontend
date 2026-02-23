@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../../utils/api';
-import { Trash2, Check, X, Edit, ArrowLeft } from 'lucide-react';
+import { Trash2, Check, X, Edit2, ArrowLeft } from 'lucide-react';
 
 const UserListPage = () => {
     const [users, setUsers] = useState([]);
@@ -85,7 +85,7 @@ const UserListPage = () => {
                                             className="text-blue-600 hover:text-blue-800"
                                             title={user.isAdmin ? "Remove Admin" : "Make Admin"}
                                         >
-                                            <Edit size={18} />
+                                            <Edit2 size={18} />
                                         </button>
                                         {!user.isAdmin && (
                                             <button

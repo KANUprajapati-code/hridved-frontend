@@ -249,6 +249,9 @@ const Header = () => {
                             ) : user ? (
                                 <>
                                     <Link to="/profile" className="text-lg font-medium text-gray-800 hover:text-primary" onClick={() => setIsOpen(false)}>My Profile</Link>
+                                    {user.isAdmin && (
+                                        <Link to="/admin" className="text-lg font-medium text-secondary hover:text-primary font-bold" onClick={() => setIsOpen(false)}>Admin Panel</Link>
+                                    )}
                                     <button onClick={() => { logout(); setIsOpen(false); }} className="text-lg font-medium text-red-500 hover:text-red-600">Logout</button>
                                 </>
                             ) : (

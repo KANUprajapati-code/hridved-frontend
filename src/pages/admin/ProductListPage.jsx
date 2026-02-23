@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Edit, Trash2, Plus, ArrowLeft } from 'lucide-react';
+import { Edit2, Trash2, Plus, ArrowLeft } from 'lucide-react';
 import api from '../../utils/api';
 
 const ProductListPage = () => {
@@ -87,7 +87,7 @@ const ProductListPage = () => {
                                 <td className="py-3 px-4 text-sm">HRIDVED</td>
                                 <td className="py-3 px-4 text-sm flex gap-3">
                                     <Link to={`/admin/product/${product._id}/edit`} className="text-blue-600 hover:text-blue-800">
-                                        <Edit size={18} />
+                                        <Edit2 size={18} />
                                     </Link>
                                     <button
                                         onClick={() => deleteHandler(product._id)}

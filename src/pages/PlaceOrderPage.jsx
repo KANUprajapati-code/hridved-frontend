@@ -30,7 +30,7 @@ const PlaceOrderPage = () => {
         cartItems.reduce((acc, item) => acc + item.price * item.qty, 0)
     );
     const shippingPrice = addDecimals(itemsPrice > 500 ? 0 : 50);
-    const taxPrice = addDecimals(Number((0.05 * itemsPrice).toFixed(2))); // 5% Tax
+    const taxPrice = addDecimals(0);
     const totalPrice = (
         Number(itemsPrice) +
         Number(shippingPrice) +
@@ -139,10 +139,6 @@ const PlaceOrderPage = () => {
                         <div className="flex justify-between mb-2">
                             <span>Shipping</span>
                             <span>₹{shippingPrice}</span>
-                        </div>
-                        <div className="flex justify-between mb-2">
-                            <span>Tax</span>
-                            <span>₹{taxPrice}</span>
                         </div>
                         <div className="flex justify-between mt-4 pt-4 border-t font-bold text-xl text-primary">
                             <span>Total</span>

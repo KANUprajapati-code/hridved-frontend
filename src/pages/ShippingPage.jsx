@@ -227,15 +227,11 @@ const ShippingPage = () => {
                                     <span>Shipping</span>
                                     <span className="font-bold text-green-600">{shipping === 0 ? "FREE" : `₹${shipping}`}</span>
                                 </div>
-                                <div className="flex justify-between text-gray-600 text-sm">
-                                    <span>GST (5%)</span>
-                                    <span className="font-bold text-gray-900">₹{(subtotal * 0.05).toFixed(2)}</span>
-                                </div>
                             </div>
 
                             <div className="border-t border-gray-100 pt-4 flex justify-between items-center mb-6">
                                 <span className="font-bold text-lg text-gray-900">Total</span>
-                                <span className="font-bold text-2xl text-primary">₹{(total + subtotal * 0.05).toFixed(2)}</span>
+                                <span className="font-bold text-2xl text-primary">₹{total.toLocaleString()}</span>
                             </div>
 
                             <div className="flex gap-2">

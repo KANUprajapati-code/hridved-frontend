@@ -92,7 +92,7 @@ const ShopPage = () => {
                             <span className="mx-2">/</span>
                             <span className="text-gray-800 font-bold">Shop</span>
                         </div>
-                        <h1 className="text-3xl md:text-4xl font-serif font-bold text-primary">Ayurvedic Apothecary</h1>
+                        <h1 className="text-3xl md:text-5xl font-display font-bold text-primary">Ayurvedic Apothecary</h1>
                         <p className="text-gray-500 mt-2 text-sm max-w-2xl">
                             Explore our curated range of herbal formulations, oils, and wellness essentials rooted in 100+ years of healing traditions.
                         </p>
@@ -116,7 +116,7 @@ const ShopPage = () => {
                         <div className={`fixed inset-0 z-[60] bg-black/50 md:relative md:inset-auto md:z-0 md:bg-transparent transition-opacity duration-300 ${showMobileFilters ? 'opacity-100 visible' : 'opacity-0 invisible md:visible md:opacity-100'}`}>
                             <div className={`absolute left-0 top-0 h-full w-4/5 max-w-xs bg-white p-6 overflow-y-auto md:p-0 md:bg-transparent md:h-auto md:w-full md:max-w-none md:static transform transition-transform duration-300 ${showMobileFilters ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
                                 <div className="flex items-center justify-between mb-8 md:hidden">
-                                    <h3 className="text-xl font-serif font-bold text-primary">Filters</h3>
+                                    <h3 className="text-xl font-display font-bold text-primary">Filters</h3>
                                     <button onClick={() => setShowMobileFilters(false)} className="text-gray-400 hover:text-primary">
                                         <Filter size={24} className="rotate-90" />
                                     </button>
@@ -293,7 +293,7 @@ const ShopPage = () => {
                     <ScrollReveal>
                         <div className="mt-20 bg-green-50 rounded-3xl p-8 md:p-12 flex flex-col md:flex-row items-center justify-between border border-green-100">
                             <div className="md:w-1/2 mb-8 md:mb-0">
-                                <h2 className="text-3xl font-serif font-bold text-primary mb-4">Ayurveda for Every Body</h2>
+                                <h2 className="text-3xl md:text-4xl font-display font-bold text-primary mb-4">Ayurveda for Every Body</h2>
                                 <p className="text-gray-600 mb-6 leading-relaxed max-w-lg">
                                     All HRIDVED products are crafted following authentic scriptures and modern quality standards. Whether you&apos;re looking for skin radiance, digestion support, or stress relief, our holistic remedies are designed to restore balance to your Doshas.
                                 </p>

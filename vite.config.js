@@ -20,4 +20,18 @@ export default defineConfig({
             },
         },
     },
+    build: {
+        rollupOptions: {
+            output: {
+                manualChunks: {
+                    'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+                    'vendor-ui': ['framer-motion', 'lucide-react'],
+                    'vendor-auth': ['@react-oauth/google'],
+                    'vendor-payments': ['@stripe/react-stripe-js', '@stripe/stripe-js'],
+                    'vendor-utils': ['axios'],
+                }
+            }
+        },
+        chunkSizeWarningLimit: 1000
+    }
 })

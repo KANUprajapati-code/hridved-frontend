@@ -1,9 +1,8 @@
-
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, ShoppingBag, ShoppingCart, Users, FileText, Settings, LogOut, MessageSquare, Layout, ListOrdered, Tag } from 'lucide-react';
+import { LayoutDashboard, ShoppingBag, ShoppingCart, Users, FileText, LogOut, MessageSquare, Layout, ListOrdered, Tag, ArrowLeft, X } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
-const AdminSidebar = () => {
+const AdminSidebar = ({ isMobileOpen, setIsMobileOpen }) => {
     const location = useLocation();
     const { logout } = useAuth();
 
@@ -26,39 +25,67 @@ const AdminSidebar = () => {
     ];
 
     return (
-        <div className="w-64 bg-primary min-h-screen fixed left-0 top-0 text-white transition-all duration-300 z-50 flex flex-col hidden md:flex">
-            {/* Logo Area */}
-            <div className="p-6 border-b border-white/10 flex items-center gap-3">
-                <div className="w-8 h-8 bg-secondary rounded-full flex items-center justify-center text-primary font-bold">A</div>
-                <h2 className="text-xl font-serif font-bold tracking-wide">Admin Portal</h2>
-            </div>
+        <>
+            {/* Sidebar Backdrop for mobile */}
+            {isMobileOpen && (
+                <div
+                    className="fixed inset-0 bg-black/60 z-[60] md:hidden backdrop-blur-sm"
+                    onClick={() => setIsMobileOpen(false)}
+                />
+            )}
 
-            {/* Navigation */}
-            <nav className="flex-1 py-6 space-y-1">
-                <p className="px-6 text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Main Menu</p>
-                {navItems.map((item) => (
+            <div className={`w-64 bg-primary h-screen fixed left-0 top-0 text-white transition-all duration-300 z-[70] flex flex-col ${isMobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
+                {/* Back to Site Button & Close Button */}
+                <div className="p-4 bg-black/20 flex items-center justify-between">
                     <Link
-                        key={item.path}
-                        to={item.path}
-                        className={`flex items-center gap-3 px-6 py-3 transition-colors ${isActive(item.path)}`}
+                        to="/"
+                        className="flex items-center gap-2 text-secondary hover:text-white transition-colors text-xs font-bold uppercase tracking-wider"
                     >
-                        {item.icon}
-                        <span className="font-medium">{item.name}</span>
+                        <ArrowLeft size={14} />
+                        Website
                     </Link>
-                ))}
-            </nav>
+                    <button
+                        onClick={() => setIsMobileOpen(false)}
+                        className="md:hidden text-gray-400 hover:text-white"
+                    >
+                        <X size={20} />
+                    </button>
+                </div>
 
-            {/* Bottom Section */}
-            <div className="p-4 border-t border-white/10">
-                <button
-                    onClick={logout}
-                    className="flex items-center gap-3 px-2 py-3 text-red-300 hover:text-red-100 w-full transition-colors"
-                >
-                    <LogOut size={20} />
-                    <span>Logout</span>
-                </button>
+                {/* Logo Area */}
+                <div className="p-6 border-b border-white/10 flex items-center gap-3">
+                    <div className="w-8 h-8 bg-secondary rounded-full flex items-center justify-center text-primary font-bold shadow-inner">A</div>
+                    <h2 className="text-xl font-display font-bold tracking-wide">Admin</h2>
+                </div>
+
+                {/* Navigation */}
+                <nav className="flex-1 py-4 space-y-1 overflow-y-auto custom-scrollbar">
+                    <p className="px-6 text-[10px] font-bold text-gray-500 uppercase tracking-[0.2em] mb-4">Management</p>
+                    {navItems.map((item) => (
+                        <Link
+                            key={item.path}
+                            to={item.path}
+                            className={`flex items-center gap-3 px-6 py-3 transition-colors ${isActive(item.path)}`}
+                            onClick={() => setIsMobileOpen(false)}
+                        >
+                            {item.icon}
+                            <span className="font-medium text-sm">{item.name}</span>
+                        </Link>
+                    ))}
+                </nav>
+
+                {/* Bottom Section */}
+                <div className="p-4 border-t border-white/10 bg-black/5">
+                    <button
+                        onClick={logout}
+                        className="flex items-center gap-3 px-2 py-3 text-red-400 hover:text-red-300 w-full transition-colors font-bold text-sm"
+                    >
+                        <LogOut size={18} />
+                        <span>Logout</span>
+                    </button>
+                </div>
             </div>
-        </div>
+        </>
     );
 };
 

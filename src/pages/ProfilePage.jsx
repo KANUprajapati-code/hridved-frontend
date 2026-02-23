@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from 'react';
-import { useNavigate, Link, useLocation } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../utils/api';
 import { User, Package, LogOut, MapPin, AlertCircle } from 'lucide-react';
@@ -8,7 +8,6 @@ import { User, Package, LogOut, MapPin, AlertCircle } from 'lucide-react';
 const ProfilePage = () => {
     const { user, logout, updateProfile } = useAuth();
     const navigate = useNavigate();
-    // const location = useLocation();
 
     const [activeTab, setActiveTab] = useState('profile');
 

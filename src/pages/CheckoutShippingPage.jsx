@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCheckout } from '../context/CheckoutContext';
 import { useCart } from '../context/CartContext';
@@ -28,7 +28,7 @@ export default function CheckoutShippingPage() {
         fetchShippingRates();
     }, [checkoutData.address, navigate]);
 
-    const fetchShippingRates = React.useCallback(async () => {
+    const fetchShippingRates = useCallback(async () => {
         try {
             setLoading(true);
             clearError();
@@ -205,13 +205,9 @@ export default function CheckoutShippingPage() {
                                             {checkoutData.shippingCost === 0 ? 'Free' : `₹${checkoutData.shippingCost}`}
                                         </span>
                                     </div>
-                                    <div className="flex justify-between text-gray-600">
-                                        <span>Tax (18%)</span>
-                                        <span>₹{(Math.round(cart.cartItems.reduce((acc, item) => acc + (item.price * item.qty), 0) * 0.18 * 100) / 100).toLocaleString()}</span>
-                                    </div>
                                     <div className="border-t border-gray-200 my-2 pt-2 flex justify-between font-bold text-gray-900 text-lg">
                                         <span>Total</span>
-                                        <span>₹{(cart.cartItems.reduce((acc, item) => acc + (item.price * item.qty), 0) + (checkoutData.shippingCost || 0) + (Math.round(cart.cartItems.reduce((acc, item) => acc + (item.price * item.qty), 0) * 0.18 * 100) / 100)).toLocaleString()}</span>
+                                        <span>₹{(cart.cartItems.reduce((acc, item) => acc + (item.price * item.qty), 0) + (checkoutData.shippingCost || 0)).toLocaleString()}</span>
                                     </div>
                                 </div>
                             </div>

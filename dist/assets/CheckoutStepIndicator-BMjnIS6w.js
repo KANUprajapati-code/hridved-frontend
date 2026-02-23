@@ -1,0 +1,13 @@
+import{c as d,j as n}from"./index-DsP1R5yV.js";import{R as u}from"./vendor-react-B8KVy-C4.js";import{m as r}from"./vendor-ui-DMuw5F6C.js";function p(){const{checkoutData:t}=d(),i=[{number:1,label:"Address",id:"address"},{number:2,label:"Shipping",id:"shipping"},{number:3,label:"Payment",id:"payment"},{number:4,label:"Success",id:"success"}],a={hidden:{opacity:0,y:10},visible:{opacity:1,y:0,transition:{duration:.5,staggerChildren:.1}}},s={hidden:{opacity:0,y:10},visible:{opacity:1,y:0,transition:{duration:.3}}},c={idle:{scale:1},active:{scale:1.15,boxShadow:"0 0 0 8px rgba(59, 130, 246, 0.2)",transition:{type:"spring",stiffness:300,damping:20}},completed:{scale:1,transition:{duration:.2}}},l={hidden:{scaleX:0},active:{scaleX:1,transition:{duration:.5,ease:"easeInOut"}}};return n.jsx(r.div,{className:"w-full py-6 bg-white border-b border-gray-100",variants:a,initial:"hidden",animate:"visible",children:n.jsx("div",{className:"container mx-auto px-4 max-w-2xl",children:n.jsx("div",{className:"flex items-center justify-between gap-2",children:i.map((e,o)=>n.jsxs(u.Fragment,{children:[n.jsxs(r.div,{className:"flex flex-col items-center flex-1",variants:s,children:[n.jsx(r.div,{className:`
+                                        w-10 h-10 rounded-full flex items-center justify-center mb-2 font-bold text-sm
+                                        transition-all duration-300
+                                        ${t.currentStep>e.number?"bg-green-500 text-white":t.currentStep===e.number?"bg-blue-500 text-white border-2 border-blue-600":"bg-gray-100 text-gray-600 border-2 border-gray-200"}
+                                    `,variants:c,animate:t.currentStep>e.number?"completed":t.currentStep===e.number?"active":"idle",children:t.currentStep>e.number?n.jsx(r.span,{animate:{scale:[.8,1.2,1]},transition:{duration:.3},children:"✓"}):n.jsx("span",{children:e.number})}),n.jsx(r.p,{className:`
+                                        text-xs font-medium whitespace-nowrap text-center
+                                        transition-colors duration-300
+                                        ${t.currentStep>=e.number?"text-blue-600":"text-gray-600"}
+                                    `,animate:{opacity:t.currentStep>=e.number?1:.6},children:e.label})]}),o<i.length-1&&n.jsx(r.div,{className:`
+                                        h-1 flex-1 rounded-full mb-6
+                                        transition-all duration-300
+                                        ${t.currentStep>e.number?"bg-green-500":t.currentStep===e.number?"bg-blue-300":"bg-gray-200"}
+                                    `,variants:l,animate:t.currentStep>e.number?"active":"hidden",initial:"hidden"})]},e.id))})})})}export{p as C};

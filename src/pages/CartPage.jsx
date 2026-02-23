@@ -82,7 +82,7 @@ const CartPage = () => {
 
     const discountedSubtotal = subtotal - discount;
     const shipping = discountedSubtotal > 499 ? 0 : 50;
-    const tax = Math.round(discountedSubtotal * 0.18); // 18% GST
+    const tax = 0;
     const total = discountedSubtotal + shipping + tax;
 
     if (cartItems.length === 0) {
@@ -214,16 +214,11 @@ const CartPage = () => {
                                             <span className="font-bold text-green-600">{shipping === 0 ? "FREE" : `₹${shipping}`}</span>
                                         </div>
 
-                                        <div className="flex justify-between text-gray-600">
-                                            <span>Tax (18% GST)</span>
-                                            <span className="font-bold text-gray-900">₹{tax.toLocaleString()}</span>
-                                        </div>
 
                                         <div className="border-t border-gray-100 pt-4 flex justify-between items-center">
                                             <span className="font-bold text-lg text-gray-900">Total Amount</span>
                                             <span className="font-bold text-2xl text-primary">₹{total.toLocaleString()}</span>
                                         </div>
-                                        <p className="text-xs text-gray-400 text-right">Inclusive of all taxes</p>
                                     </div>
 
                                     <div className="mb-6">

@@ -17,9 +17,8 @@ export default function CheckoutPaymentPage() {
     const { cart } = useCart();
     const { checkoutData, updateStep, setErrorMessage, clearError, setOrderId } = useCheckout();
 
-    const [loading, setLoading] = useState(false);
+    const [loading] = useState(false);
     const [creatingOrder, setCreatingOrder] = useState(false);
-    const [, setLocalOrderId] = useState(null);
 
     useEffect(() => {
         if (!checkoutData.address || !checkoutData.shippingMethod) {
@@ -37,7 +36,7 @@ export default function CheckoutPaymentPage() {
     const calculateTotals = () => {
         const cartItems = cart?.cartItems || [];
         const itemsPrice = cartItems.reduce((total, item) => total + (item.price * item.qty), 0);
-        const taxPrice = Math.round(itemsPrice * 0.18 * 100) / 100;
+        const taxPrice = 0;
         const shippingPrice = checkoutData.shippingCost || 0;
         const totalPrice = itemsPrice + taxPrice + shippingPrice;
 
@@ -136,10 +135,6 @@ export default function CheckoutPaymentPage() {
                                             <div className="flex justify-between text-gray-600">
                                                 <span>Subtotal</span>
                                                 <span>₹{itemsPrice.toLocaleString()}</span>
-                                            </div>
-                                            <div className="flex justify-between text-gray-600">
-                                                <span>Tax (5%)</span>
-                                                <span>₹{taxPrice.toLocaleString()}</span>
                                             </div>
                                             <div className="flex justify-between text-gray-600">
                                                 <span>Shipping</span>

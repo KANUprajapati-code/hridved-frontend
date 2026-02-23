@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import api from '../../utils/api';
 import { Link } from 'react-router-dom';
-import { Trash2, Mail, Phone, MapPin, ArrowLeft } from 'lucide-react';
+import { Trash2, Mail, Phone, MapPin, ArrowLeft, Calendar } from 'lucide-react';
 
 const ContactListPage = () => {
     const [contacts, setContacts] = useState([]);

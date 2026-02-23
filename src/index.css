@@ -1,4 +1,4 @@
-﻿@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,700&display=swap');
+﻿@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -11,16 +11,34 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f5f9;
+  background: #fdfbf7;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: #e5d3b3;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: #d4af37;
+}
+
+/* Specific custom scrollbar for sidebar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(212, 175, 55, 0.3);
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(212, 175, 55, 0.5);
 }
 
 html {
@@ -29,35 +47,35 @@ html {
 
 body {
   @apply antialiased text-gray-900 font-body bg-background;
-  letter-spacing: -0.01em;
+  letter-spacing: 0.01em;
 }
 
 /* Responsive headings with improved typography */
 h1 {
-  @apply text-3xl md:text-4xl lg:text-5xl font-display font-bold tracking-tight leading-tight;
-  letter-spacing: -0.02em;
-}
-
-h2 {
-  @apply text-2xl md:text-3xl lg:text-4xl font-display font-bold tracking-tight leading-snug;
-  letter-spacing: -0.015em;
-}
-
-h3 {
-  @apply text-xl md:text-2xl font-display font-semibold tracking-tight;
+  @apply text-3xl md:text-5xl lg:text-7xl font-display font-bold leading-tight;
   letter-spacing: -0.01em;
 }
 
+h2 {
+  @apply text-2xl md:text-4xl lg:text-5xl font-display font-bold leading-snug;
+  letter-spacing: -0.01em;
+}
+
+h3 {
+  @apply text-xl md:text-2xl lg:text-3xl font-display font-semibold;
+  letter-spacing: -0.005em;
+}
+
 h4 {
-  @apply text-lg md:text-xl font-semibold tracking-tight;
+  @apply text-lg md:text-xl font-serif font-semibold;
 }
 
 h5 {
-  @apply text-base md:text-lg font-semibold;
+  @apply text-base md:text-lg font-serif font-semibold;
 }
 
 h6 {
-  @apply text-sm md:text-base font-semibold uppercase tracking-wide;
+  @apply text-[10px] md:text-xs font-body font-bold uppercase tracking-[0.2em] text-secondary;
 }
 
 p {
@@ -69,7 +87,10 @@ a {
 }
 
 /* Form elements */
-input, button, select, textarea {
+input,
+button,
+select,
+textarea {
   @apply text-base font-body;
 }
 
@@ -111,7 +132,9 @@ button:disabled {
 }
 
 /* Media responsive */
-img, video, iframe {
+img,
+video,
+iframe {
   @apply max-w-full h-auto block;
 }
 
@@ -178,6 +201,7 @@ a:focus-visible {
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -188,6 +212,7 @@ a:focus-visible {
     transform: translateY(10px);
     opacity: 0;
   }
+
   to {
     transform: translateY(0);
     opacity: 1;

@@ -7,6 +7,7 @@ const AnimatedImage = ({
   className = '',
   containerClassName = '',
   zoomIntensity = 1.08,
+  loading = 'lazy',
   onClick,
   ...props
 }) => {
@@ -19,6 +20,7 @@ const AnimatedImage = ({
       <motion.img
         src={src}
         alt={alt}
+        loading={loading}
         className={`w-full h-full object-cover ${className}`}
         initial={{ scale: 1 }}
         whileHover={{ scale: zoomIntensity }}

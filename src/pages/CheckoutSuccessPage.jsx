@@ -1,8 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCheckout } from '../context/CheckoutContext';
 import CheckoutStepIndicator from '../components/CheckoutStepIndicator';
 import api from '../utils/api';
+import AnimatedPage from '../components/AnimatedPage';
+import AnimatedButton from '../components/AnimatedButton';
+import ScrollReveal from '../components/ScrollReveal';
+import { CheckCircle, Package, Calendar, Home, Phone, ShoppingBag, List, Check, Truck } from 'lucide-react';
 
 export default function CheckoutSuccessPage() {
     const navigate = useNavigate();
@@ -18,7 +22,7 @@ export default function CheckoutSuccessPage() {
         fetchOrderDetails();
     }, [checkoutData.orderId, navigate, fetchOrderDetails]);
 
-    const fetchOrderDetails = React.useCallback(async () => {
+    const fetchOrderDetails = useCallback(async () => {
         try {
             setLoading(true);
             const response = await api.get(`/checkout/order/${checkoutData.orderId}`);
@@ -186,10 +190,6 @@ export default function CheckoutSuccessPage() {
                                             <div className="flex justify-between text-gray-600">
                                                 <span>Subtotal</span>
                                                 <span>₹{orderDetails.itemsPrice.toLocaleString()}</span>
-                                            </div>
-                                            <div className="flex justify-between text-gray-600">
-                                                <span>Tax (5%)</span>
-                                                <span>₹{orderDetails.taxPrice.toLocaleString()}</span>
                                             </div>
                                             <div className="flex justify-between text-gray-600">
                                                 <span>Shipping</span>

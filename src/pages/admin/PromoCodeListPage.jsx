@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Edit, Trash2, Plus, ArrowLeft, Check, X, Tag } from 'lucide-react';
+import { Edit2, Trash2, Plus, ArrowLeft, Check, X, Tag } from 'lucide-react';
 import api from '../../utils/api';
 
 const PromoCodeListPage = () => {
@@ -104,8 +104,8 @@ const PromoCodeListPage = () => {
                                         <button
                                             onClick={() => toggleStatusHandler(coupon)}
                                             className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold transition-all ${coupon.isActive
-                                                    ? 'bg-green-100 text-green-700 hover:bg-green-200'
-                                                    : 'bg-red-100 text-red-700 hover:bg-red-200'
+                                                ? 'bg-green-100 text-green-700 hover:bg-green-200'
+                                                : 'bg-red-100 text-red-700 hover:bg-red-200'
                                                 }`}
                                         >
                                             {coupon.isActive ? <Check size={12} className="mr-1" /> : <X size={12} className="mr-1" />}
@@ -119,7 +119,7 @@ const PromoCodeListPage = () => {
                                                 className="text-blue-500 hover:text-blue-700 transition"
                                                 title="Edit"
                                             >
-                                                <Edit size={18} />
+                                                <Edit2 size={18} />
                                             </Link>
                                             <button
                                                 onClick={() => deleteHandler(coupon._id)}

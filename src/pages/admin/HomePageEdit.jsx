@@ -6,9 +6,10 @@ import { Save, ArrowLeft } from 'lucide-react';
 
 const HomePageEdit = () => {
     const [loading, setLoading] = useState(true);
-    const [hero, setHero] = useState({ title: '', subtitle: '', ctaText: '', ctaLink: '' });
+    const [hero, setHero] = useState({ title: '', subtitle: '', ctaText: '', ctaLink: '', image: '' });
     const [tradition, setTradition] = useState({ title: '', subtitle: '', image: '' });
     const [testimonials, setTestimonials] = useState({ items: [] });
+    const [uploading, setUploading] = useState(false);
 
     useEffect(() => {
         const fetchContent = async () => {
@@ -25,6 +26,40 @@ const HomePageEdit = () => {
         };
         fetchContent();
     }, []);
+
+    const uploadHeroImageHandler = async (e) => {
+        const file = e.target.files[0];
+        const formData = new FormData();
+        formData.append('image', file);
+        setUploading(true);
+        try {
+            const { data } = await api.post('/upload', formData);
+            const normalizedPath = data.replace(/\\/g, '/');
+            setHero({ ...hero, image: normalizedPath });
+            setUploading(false);
+        } catch (error) {
+            console.error(error);
+            setUploading(false);
+            alert('Upload failed');
+        }
+    };
+
+    const uploadTraditionImageHandler = async (e) => {
+        const file = e.target.files[0];
+        const formData = new FormData();
+        formData.append('image', file);
+        setUploading(true);
+        try {
+            const { data } = await api.post('/upload', formData);
+            const normalizedPath = data.replace(/\\/g, '/');
+            setTradition({ ...tradition, image: normalizedPath });
+            setUploading(false);
+        } catch (error) {
+            console.error(error);
+            setUploading(false);
+            alert('Upload failed');
+        }
+    };
 
     const saveHero = async (e) => {
         e.preventDefault();
@@ -127,6 +162,25 @@ const HomePageEdit = () => {
                                 />
                             </div>
                         </div>
+                        <div>
+                            <label className="block text-sm font-bold mb-1">Hero Image</label>
+                            <input
+                                type="text"
+                                value={hero.image}
+                                onChange={(e) => setHero({ ...hero, image: e.target.value })}
+                                className="w-full border p-2 rounded mb-2"
+                                placeholder="Image URL or Upload"
+                            />
+                            <input
+                                type="file"
+                                id="hero-image-file"
+                                className="hidden"
+                                onChange={uploadHeroImageHandler}
+                            />
+                            <label htmlFor="hero-image-file" className="cursor-pointer bg-gray-100 py-2 px-4 rounded border hover:bg-gray-200 inline-block text-sm font-bold">
+                                {uploading ? 'Uploading...' : 'Upload Image'}
+                            </label>
+                        </div>
                         <button type="submit" className="bg-primary text-white px-4 py-2 rounded flex items-center gap-2 hover:bg-opacity-90">
                             <Save size={16} /> Save Hero
                         </button>
@@ -161,8 +215,17 @@ const HomePageEdit = () => {
                                 type="text"
                                 value={tradition.image}
                                 onChange={(e) => setTradition({ ...tradition, image: e.target.value })}
-                                className="w-full border p-2 rounded"
+                                className="w-full border p-2 rounded mb-2"
                             />
+                            <input
+                                type="file"
+                                id="tradition-image-file"
+                                className="hidden"
+                                onChange={uploadTraditionImageHandler}
+                            />
+                            <label htmlFor="tradition-image-file" className="cursor-pointer bg-gray-100 py-2 px-4 rounded border hover:bg-gray-200 inline-block text-sm font-bold">
+                                {uploading ? 'Uploading...' : 'Upload Image'}
+                            </label>
                         </div>
                         <button type="submit" className="bg-primary text-white px-4 py-2 rounded flex items-center gap-2 hover:bg-opacity-90">
                             <Save size={16} /> Save Tradition
