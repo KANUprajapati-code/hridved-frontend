@@ -17,6 +17,8 @@ const ProductEditPage = () => {
     const [description, setDescription] = useState('');
     const [isBestseller, setIsBestseller] = useState(false);
     const [images, setImages] = useState([]);
+    const [benefits, setBenefits] = useState('');
+    const [howToUse, setHowToUse] = useState('');
     const [uploading, setUploading] = useState(false);
     const [loading, setLoading] = useState(true);
 
@@ -30,6 +32,9 @@ const ProductEditPage = () => {
                 setBrand(data.brand);
                 setCategory(data.category);
                 setCountInStock(data.countInStock);
+                setDescription(data.description || '');
+                setBenefits(data.benefits || '');
+                setHowToUse(data.howToUse || '');
                 setIsBestseller(data.isBestseller || false);
                 setImages(data.images || []);
                 setLoading(false);
@@ -92,6 +97,8 @@ const ProductEditPage = () => {
                 countInStock,
                 isBestseller,
                 images,
+                benefits,
+                howToUse,
             });
             navigate('/admin/productlist');
         } catch (error) {
@@ -226,6 +233,24 @@ const ProductEditPage = () => {
                             className="w-full border p-2 rounded focus:outline-none focus:border-secondary"
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
+                        ></textarea>
+                    </div>
+                    <div>
+                        <label className="block text-gray-700 font-bold mb-2">Benefits</label>
+                        <textarea
+                            rows="4"
+                            className="w-full border p-2 rounded focus:outline-none focus:border-secondary"
+                            value={benefits}
+                            onChange={(e) => setBenefits(e.target.value)}
+                        ></textarea>
+                    </div>
+                    <div>
+                        <label className="block text-gray-700 font-bold mb-2">How To Use</label>
+                        <textarea
+                            rows="4"
+                            className="w-full border p-2 rounded focus:outline-none focus:border-secondary"
+                            value={howToUse}
+                            onChange={(e) => setHowToUse(e.target.value)}
                         ></textarea>
                     </div>
 

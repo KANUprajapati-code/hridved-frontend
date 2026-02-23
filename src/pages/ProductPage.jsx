@@ -243,19 +243,25 @@ const ProductPage = () => {
                                     </div>
                                 )}
                                 {activeTab === 'benefits' && (
-                                    <ul className="list-disc pl-5 space-y-2">
-                                        <li>Promotes overall wellness and balance.</li>
-                                        <li>Formulated with time-tested Ayurvedic herbs.</li>
-                                        <li>Supports natural body functions.</li>
-                                        <li>Free from harmful chemicals.</li>
-                                    </ul>
+                                    <div className="whitespace-pre-line">
+                                        {product.benefits || (
+                                            <ul className="list-disc pl-5 space-y-2">
+                                                <li>Promotes overall wellness and balance.</li>
+                                                <li>Formulated with time-tested Ayurvedic herbs.</li>
+                                                <li>Supports natural body functions.</li>
+                                                <li>Free from harmful chemicals.</li>
+                                            </ul>
+                                        )}
+                                    </div>
                                 )}
                                 {activeTab === 'usage' && (
                                     <div className="flex gap-4 items-start bg-yellow-50 p-4 rounded-lg">
                                         <Clock className="text-secondary shrink-0" />
                                         <div>
-                                            <h4 className="font-bold text-gray-800">Recommended Dosage</h4>
-                                            <p>Take 1-2 tablets twice daily with warm water, or as directed by your physician.</p>
+                                            <h4 className="font-bold text-gray-800">How to Use</h4>
+                                            <div className="whitespace-pre-line">
+                                                {product.howToUse || "Take 1-2 tablets twice daily with warm water, or as directed by your physician."}
+                                            </div>
                                         </div>
                                     </div>
                                 )}
