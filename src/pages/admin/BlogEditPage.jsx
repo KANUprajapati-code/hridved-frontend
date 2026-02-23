@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { Save, ArrowLeft, Upload, X, Eye, EyeOff } from 'lucide-react';
+import { compressImage } from '../../utils/imageCompression';
 import api from '../../utils/api';
 import { ToastContext } from '../../context/ToastContext';
 
@@ -106,16 +107,17 @@ const BlogEditPage = () => {
         const file = e.target.files[0];
         if (!file) return;
 
-        const formData = new FormData();
-        formData.append('image', file);
         setUploading(true);
-
         try {
+            const compressedFile = await compressImage(file, { quality: 0.7, maxWidth: 1600 });
+            const formData = new FormData();
+            formData.append('image', compressedFile);
+
             const { data } = await api.post('/upload', formData);
             setFunction(data);
-            if (addToast) addToast('Image uploaded successfully', 'success');
+            if (addToast) addToast('Image uploaded and compressed successfully', 'success');
         } catch (error) {
-            if (addToast) addToast('Failed to upload image', 'error');
+            if (addToast) addToast('Failed to upload image. It might be too large.', 'error');
             console.error(error);
         } finally {
             setUploading(false);

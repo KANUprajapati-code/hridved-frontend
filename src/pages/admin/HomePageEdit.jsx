@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../../utils/api';
+import { compressImage } from '../../utils/imageCompression';
 import { Save, ArrowLeft } from 'lucide-react';
 
 const HomePageEdit = () => {
@@ -29,35 +30,43 @@ const HomePageEdit = () => {
 
     const uploadHeroImageHandler = async (e) => {
         const file = e.target.files[0];
-        const formData = new FormData();
-        formData.append('image', file);
+        if (!file) return;
+
         setUploading(true);
         try {
+            const compressedFile = await compressImage(file, { quality: 0.7, maxWidth: 1920 });
+            const formData = new FormData();
+            formData.append('image', compressedFile);
+
             const { data } = await api.post('/upload', formData);
             const normalizedPath = data.replace(/\\/g, '/');
             setHero({ ...hero, image: normalizedPath });
             setUploading(false);
         } catch (error) {
-            console.error(error);
+            console.error('Hero image upload failed:', error);
             setUploading(false);
-            alert('Upload failed');
+            alert('Upload failed. Try a smaller image.');
         }
     };
 
     const uploadTraditionImageHandler = async (e) => {
         const file = e.target.files[0];
-        const formData = new FormData();
-        formData.append('image', file);
+        if (!file) return;
+
         setUploading(true);
         try {
+            const compressedFile = await compressImage(file, { quality: 0.7, maxWidth: 1200 });
+            const formData = new FormData();
+            formData.append('image', compressedFile);
+
             const { data } = await api.post('/upload', formData);
             const normalizedPath = data.replace(/\\/g, '/');
             setTradition({ ...tradition, image: normalizedPath });
             setUploading(false);
         } catch (error) {
-            console.error(error);
+            console.error('Tradition image upload failed:', error);
             setUploading(false);
-            alert('Upload failed');
+            alert('Upload failed. Try a smaller image.');
         }
     };
 

@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import api from '../../utils/api';
+import { compressImage } from '../../utils/imageCompression';
 import { Upload, ArrowLeft } from 'lucide-react';
 
 const ProductEditPage = () => {
@@ -47,39 +48,50 @@ const ProductEditPage = () => {
 
     const uploadFileHandler = async (e) => {
         const file = e.target.files[0];
-        const formData = new FormData();
-        formData.append('image', file);
-        setUploading(true);
+        if (!file) return;
 
+        setUploading(true);
         try {
+            // Compress image before upload (max 1.5MB approx)
+            const compressedFile = await compressImage(file, { quality: 0.7, maxWidth: 1600 });
+
+            const formData = new FormData();
+            formData.append('image', compressedFile);
+
             const { data } = await api.post('/upload', formData);
             setImage(data);
             setUploading(false);
         } catch (error) {
-            console.error(error);
+            console.error('Upload failed:', error);
+            alert('Image upload failed. If the image is very large, try a smaller one.');
             setUploading(false);
         }
     };
 
     const uploadMultipleHandler = async (e) => {
         const files = Array.from(e.target.files);
+        if (files.length === 0) return;
         if (files.length > 5) {
             alert('You can only upload up to 5 images');
             return;
         }
 
-        const formData = new FormData();
-        files.forEach(file => {
-            formData.append('images', file);
-        });
         setUploading(true);
-
         try {
+            const formData = new FormData();
+
+            // Compress each image before adding to formData
+            for (const file of files) {
+                const compressedFile = await compressImage(file, { quality: 0.7, maxWidth: 1200 });
+                formData.append('images', compressedFile);
+            }
+
             const { data } = await api.post('/upload/multiple', formData);
             setImages(data);
             setUploading(false);
         } catch (error) {
-            console.error(error);
+            console.error('Multiple upload failed:', error);
+            alert('Multiple images upload failed. Try uploading fewer or smaller images.');
             setUploading(false);
         }
     };

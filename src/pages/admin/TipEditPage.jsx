@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import api from '../../utils/api';
+import { compressImage } from '../../utils/imageCompression';
 import { Upload, ArrowLeft } from 'lucide-react';
 
 const TipEditPage = () => {
@@ -33,18 +34,22 @@ const TipEditPage = () => {
 
     const uploadFileHandler = async (e) => {
         const file = e.target.files[0];
-        const formData = new FormData();
-        formData.append('image', file);
-        setUploading(true);
+        if (!file) return;
 
+        setUploading(true);
         try {
+            const compressedFile = await compressImage(file, { quality: 0.7, maxWidth: 1200 });
+            const formData = new FormData();
+            formData.append('image', compressedFile);
+
             const { data } = await api.post('/upload', formData);
             // Fix path to use forward slashes
             const normalizedPath = data.replace(/\\/g, '/');
             setImage(normalizedPath);
             setUploading(false);
         } catch (error) {
-            console.error(error);
+            console.error('Tip image upload failed:', error);
+            alert('Image upload failed. Try a smaller image.');
             setUploading(false);
         }
     };
