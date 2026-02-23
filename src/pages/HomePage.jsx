@@ -57,7 +57,7 @@ const HomePage = () => {
         return (
             <div className="relative group/carousel">
                 <div className="overflow-hidden">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+                    <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6 lg:gap-8">
                         {visibleProducts.map((product) => (
                             <div key={product._id} className="bg-white rounded-2xl overflow-hidden hover:shadow-2xl transition-all duration-500 border border-gray-100 group/card h-full flex flex-col">
                                 <div className="aspect-[4/5] bg-gray-50 relative overflow-hidden">
@@ -112,72 +112,47 @@ const HomePage = () => {
     return (
         <AnimatedPage>
             <div className="min-h-screen bg-background">
-                {/* Hero Section */}
-                <section className="relative bg-primary overflow-hidden">
-                    <div className="container mx-auto px-4 lg:px-8 py-12 md:py-20 lg:py-24">
-                        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-                            {/* Hero Text */}
-                            <div className="lg:col-span-7 z-10">
-                                <ScrollReveal>
-                                    <div className="text-white">
-                                        <span className="bg-secondary text-primary font-bold px-4 py-1 rounded-full text-xs md:text-sm uppercase tracking-widest mb-6 inline-block shadow-sm">
-                                            Natural Care
-                                        </span>
-                                        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-display font-bold mb-6 md:mb-8 leading-[1.1]">
-                                            {content?.hero?.title || <>Ancient Ayurveda.<br />Modern Wellness.</>}
-                                        </h1>
-                                        <p className="text-base sm:text-lg md:text-xl mb-8 md:mb-12 text-gray-200 font-light max-w-xl leading-relaxed">
-                                            {content?.hero?.subtitle || "Pure formulations for your modern lifestyle. Handcrafted with wisdom from ancient texts, delivered with modern purity standards."}
-                                        </p>
-                                        <div className="flex flex-wrap gap-4">
-                                            <Link to="/shop">
-                                                <AnimatedButton className="bg-secondary text-primary px-8 md:px-10 py-3 md:py-4 rounded-full text-sm md:text-base font-bold hover:bg-white transition-all duration-300 border-none shadow-xl hover:shadow-secondary/20">
-                                                    {content?.hero?.ctaText || "Shop Now"}
-                                                </AnimatedButton>
-                                            </Link>
-                                            <Link to="/consultation">
-                                                <AnimatedButton variant="outline" className="bg-transparent border-2 border-white/30 text-white px-8 md:px-10 py-3 md:py-4 rounded-full text-sm md:text-base font-bold hover:bg-white hover:text-primary hover:border-white transition-all duration-300">
-                                                    Consult
-                                                </AnimatedButton>
-                                            </Link>
-                                        </div>
-                                    </div>
-                                </ScrollReveal>
-                            </div>
-
-                            {/* Hero Image */}
-                            <div className="lg:col-span-5 relative lg:h-[600px] flex items-center justify-center">
-                                <ScrollReveal direction="right" delay={0.2}>
-                                    <div className="relative z-10 w-full max-w-lg lg:max-w-none">
-                                        {/* Decorative background circle */}
-                                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-white/5 rounded-full -z-10 blur-3xl"></div>
-
-                                        <AnimatedImage
-                                            src={content?.hero?.image || "/hero-bg.png"}
-                                            alt="Ayurveda Wellness"
-                                            containerClassName="w-full h-full aspect-[4/5] rounded-[2rem] shadow-2xl border-4 border-white/10"
-                                            className="w-full h-full object-cover"
-                                            zoomIntensity={1.05}
-                                            loading="eager"
-                                        />
-
-                                        {/* Floaters for premium feel */}
-                                        <div className="absolute -top-6 -right-6 bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/20 shadow-xl hidden md:block">
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 bg-secondary rounded-full flex items-center justify-center text-primary">
-                                                    <Leaf size={20} />
-                                                </div>
-                                                <div className="text-white pr-2 text-sm font-bold">100% Organic</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </ScrollReveal>
-                            </div>
-                        </div>
+                {/* Hero Section - Optimized for mobile aspect ratio */}
+                <section className="relative min-h-[350px] xs:min-h-[450px] sm:min-h-[600px] md:min-h-[700px] lg:min-h-[85vh] flex items-center overflow-hidden bg-primary py-12 sm:py-20">
+                    <div className="absolute inset-0 w-full h-full">
+                        <AnimatedImage
+                            src={content?.hero?.image || "/hero-bg.png"}
+                            alt="Ayurveda Wellness"
+                            containerClassName="w-full h-full !rounded-none"
+                            className="w-full h-full object-cover object-[center_25%] sm:object-center"
+                            zoomIntensity={1.03}
+                            loading="eager"
+                        />
+                        <div className="absolute inset-0 bg-black/40 pointer-events-none"></div>
                     </div>
 
-                    {/* Background abstract element */}
-                    <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-black/20 to-transparent pointer-events-none"></div>
+                    <div className="container mx-auto px-4 relative z-10 py-12 sm:py-0">
+                        <ScrollReveal>
+                            <div className="max-w-2xl text-white">
+                                <span className="bg-secondary text-primary font-bold px-4 py-1.5 rounded-full text-xs md:text-sm uppercase tracking-[0.2em] mb-4 md:mb-6 inline-block shadow-lg">
+                                    Natural Care
+                                </span>
+                                <h1 className="text-2xl sm:text-4xl md:text-6xl lg:text-7xl font-display font-bold mb-3 md:mb-6 leading-[1.2] sm:leading-[1.1] tracking-tight">
+                                    {content?.hero?.title || <>Ancient Ayurveda.<br className="hidden sm:block" /> Modern Wellness.</>}
+                                </h1>
+                                <p className="text-[13px] sm:text-base md:text-lg mb-6 md:mb-10 text-gray-100 font-light max-w-lg leading-relaxed">
+                                    {content?.hero?.subtitle || "Pure formulations for your modern lifestyle. Handcrafted with wisdom from ancient texts, delivered with modern purity standards."}
+                                </p>
+                                <div className="flex flex-wrap gap-4">
+                                    <Link to="/shop">
+                                        <AnimatedButton className="bg-secondary text-primary px-8 md:px-10 py-3 md:py-4 rounded-full text-sm md:text-base font-bold hover:bg-white transition-all duration-300 border-none shadow-xl">
+                                            {content?.hero?.ctaText || "Shop Now"}
+                                        </AnimatedButton>
+                                    </Link>
+                                    <Link to="/consultation">
+                                        <AnimatedButton variant="outline" className="bg-transparent border-2 border-white text-white px-8 md:px-10 py-3 md:py-4 rounded-full text-sm md:text-base font-bold hover:bg-white hover:text-primary transition-all duration-300">
+                                            Consult
+                                        </AnimatedButton>
+                                    </Link>
+                                </div>
+                            </div>
+                        </ScrollReveal>
+                    </div>
                 </section>
 
                 {/* Shop by Category Section - Circular Icons */}

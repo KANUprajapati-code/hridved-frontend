@@ -17,26 +17,26 @@ const ProductCard = ({ product, onQuickView }) => {
             viewport={{ once: true }}
             className="card-premium group bg-white flex flex-col h-full relative"
         >
-            {/* Badge container */}
-            <div className="absolute top-4 left-4 z-20 flex flex-col gap-2">
+            {/* Badge container - Refined for mobile */}
+            <div className="absolute top-2 left-2 sm:top-4 sm:left-4 z-20 flex flex-col gap-1 sm:gap-2">
                 {product.isBestseller && (
                     <motion.span
                         initial={{ x: -20, opacity: 0 }}
                         animate={{ x: 0, opacity: 1 }}
-                        className="glass text-primary text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest shadow-lg"
+                        className="glass text-primary text-[8px] sm:text-[10px] font-black px-2 sm:px-3 py-0.5 sm:py-1 rounded-full uppercase tracking-widest shadow-lg"
                     >
                         Bestseller
                     </motion.span>
                 )}
                 {product.countInStock > 0 && product.countInStock <= 5 && (
-                    <span className="bg-red-500 text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest shadow-lg">
+                    <span className="bg-red-500 text-white text-[8px] sm:text-[10px] font-black px-2 sm:px-3 py-0.5 sm:py-1 rounded-full uppercase tracking-widest shadow-lg">
                         Only {product.countInStock} Left
                     </span>
                 )}
             </div>
 
-            {/* Image Section */}
-            <div className="relative h-72 overflow-hidden bg-gray-50 flex items-center justify-center">
+            {/* Image Section - Scaled for mobile */}
+            <div className="relative h-48 sm:h-72 overflow-hidden bg-gray-50 flex items-center justify-center">
                 <Link to={`/product/${product._id}`} className="w-full h-full block">
                     <ProductImage
                         src={product.image}
@@ -78,36 +78,36 @@ const ProductCard = ({ product, onQuickView }) => {
                 )}
             </div>
 
-            {/* Info Section */}
-            <div className="p-6 flex flex-col flex-grow">
-                <div className="mb-2">
-                    <Link to={`/shop?category=${product.category}`} className="text-[10px] font-black text-secondary uppercase tracking-[0.1em] hover:text-primary transition-colors">
+            {/* Info Section - Tighter for mobile */}
+            <div className="p-3 sm:p-6 flex flex-col flex-grow">
+                <div className="mb-1 sm:mb-2">
+                    <Link to={`/shop?category=${product.category}`} className="text-[8px] sm:text-[10px] font-black text-secondary uppercase tracking-[0.1em] hover:text-primary transition-colors">
                         {product.category}
                     </Link>
                 </div>
 
                 <Link to={`/product/${product._id}`} className="group-hover:text-primary transition-colors">
-                    <h3 className="text-lg font-bold text-gray-800 line-clamp-2 mb-3 leading-snug">{product.name}</h3>
+                    <h3 className="text-sm sm:text-lg font-bold text-gray-800 line-clamp-2 mb-2 sm:mb-3 leading-tight sm:leading-snug">{product.name}</h3>
                 </Link>
 
-                <div className="mt-auto flex items-center justify-between pt-4 border-t border-gray-50">
+                <div className="mt-auto flex items-center justify-between pt-2 sm:pt-4 border-t border-gray-50">
                     <div className="flex flex-col">
-                        <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">Investment</span>
-                        <span className="text-2xl font-black text-primary font-display">₹{product.price}</span>
+                        <span className="text-[8px] sm:text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">Investment</span>
+                        <span className="text-lg sm:text-2xl font-black text-primary font-display">₹{product.price}</span>
                     </div>
                     <div className="flex flex-col items-end">
                         <button
                             onClick={() => addToCart(product)}
-                            className="bg-primary text-white p-3 rounded-xl hover:bg-secondary hover:text-primary transition-all duration-300 shadow-md hover:shadow-xl transform active:scale-95 mb-1"
+                            className="bg-primary text-white p-2 sm:p-3 rounded-lg sm:rounded-xl hover:bg-secondary hover:text-primary transition-all duration-300 shadow-md hover:shadow-xl transform active:scale-95 mb-1"
                             title="Add to Cart"
                         >
-                            <ShoppingCart size={18} />
+                            <ShoppingCart size={14} className="sm:w-[18px] sm:h-[18px]" />
                         </button>
                         <div className="flex text-secondary gap-0.5">
                             {[...Array(5)].map((_, i) => (
                                 <Star
                                     key={i}
-                                    size={10}
+                                    size={8}
                                     className={i < (product.rating || 0) ? "text-secondary" : "text-gray-200"}
                                     fill={i < (product.rating || 0) ? "currentColor" : "none"}
                                 />
