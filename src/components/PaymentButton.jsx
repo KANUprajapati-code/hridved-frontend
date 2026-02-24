@@ -18,13 +18,66 @@ const PaymentButton = ({ amount, orderId, onSuccess, onError, onBeforePayment })
                 currentOrderId = result._id;
             }
 
-            const { data: redirectUrl } = await api.post('/payment/create', {
+            // 1. Get Razorpay Key
+            const { data: key } = await api.get('/razorpay/key');
+
+            // 2. Create Razorpay Order
+            const { data: orderData } = await api.post('/razorpay/order', {
                 amount,
-                orderId: currentOrderId
+                currency: 'INR',
+                receipt: `receipt_${currentOrderId}`
             });
 
-            // Redirect to PhonePe
-            window.location.href = redirectUrl;
+            // 3. Initialize Razorpay Modal
+            const options = {
+                key,
+                amount: orderData.amount,
+                currency: orderData.currency,
+                name: "HRIDVED",
+                description: "Ayurvedic Health & Wellness",
+                image: "/logo-asset4.png",
+                order_id: orderData.id,
+                handler: async function (response) {
+                    try {
+                        // 4. Verify Payment on Backend
+                        const { data: verifyData } = await api.post('/razorpay/verify', {
+                            razorpay_order_id: response.razorpay_order_id,
+                            razorpay_payment_id: response.razorpay_payment_id,
+                            razorpay_signature: response.razorpay_signature,
+                            orderId: currentOrderId
+                        });
+
+                        if (verifyData.status === 'success') {
+                            if (onSuccess) onSuccess(verifyData);
+                            window.location.href = `/checkout/success?id=${currentOrderId}`;
+                        } else {
+                            throw new Error(verifyData.message || "Verification failed");
+                        }
+                    } catch (err) {
+                        console.error("Verification Error:", err);
+                        if (onError) onError(err.response?.data?.message || err.message);
+                        window.location.href = '/checkout/failed';
+                    }
+                },
+                prefill: {
+                    name: "User Name", // Ideally pass from props
+                    email: "user@example.com",
+                    contact: "9999999999"
+                },
+                theme: {
+                    color: "#2D5A27" // Brand primary color
+                }
+            };
+
+            const rzp = new window.Razorpay(options);
+            rzp.on('payment.failed', function (response) {
+                console.error("Payment Failed:", response.error);
+                if (onError) onError(response.error.description);
+                window.location.href = '/checkout/failed';
+            });
+
+            rzp.open();
+
         } catch (error) {
             console.error("Payment Initiation Failed:", error);
             if (onError) onError(error.response?.data?.message || "Something went wrong");
