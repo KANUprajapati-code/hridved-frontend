@@ -16,6 +16,7 @@ const AdminSidebar = ({ isMobileOpen, setIsMobileOpen }) => {
         { name: 'Orders', path: '/admin/orderlist', icon: <ShoppingCart size={20} /> },
         { name: 'Users', path: '/admin/userlist', icon: <Users size={20} /> },
         { name: 'Doctors', path: '/admin/doctorlist', icon: <Users size={20} /> },
+        { name: 'Categories', path: '/admin/categorylist', icon: <Tag size={20} /> },
         { name: 'Promo Codes', path: '/admin/promocodelist', icon: <Tag size={20} /> },
         { name: 'Content', path: '/admin/homepage', icon: <Layout size={20} /> },
         { name: 'Messages', path: '/admin/contactlist', icon: <MessageSquare size={20} /> },

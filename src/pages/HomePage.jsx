@@ -12,6 +12,7 @@ const HomePage = () => {
     const [content, setContent] = useState(null);
     const [bestsellers, setBestsellers] = useState([]);
     const [tips, setTips] = useState([]);
+    const [categories, setCategories] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -24,6 +25,9 @@ const HomePage = () => {
 
                 const tipsResponse = await api.get('/tips');
                 setTips(tipsResponse.data || []);
+
+                const categoriesResponse = await api.get('/categories');
+                setCategories(categoriesResponse.data || []);
             } catch (error) {
                 console.error("Failed to load data", error);
             }
@@ -171,23 +175,24 @@ const HomePage = () => {
                             </div>
 
                             <div className="flex overflow-x-auto pb-6 gap-6 md:gap-12 no-scrollbar justify-start md:justify-center scroll-smooth">
-                                {[
-                                    { name: 'Hair Care', img: 'https://images.unsplash.com/photo-1522337660859-02fbefca4702?w=800&auto=format&fit=crop&q=80' },
-                                    { name: 'Skin Care', img: 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=800&auto=format&fit=crop&q=80' },
-                                    { name: 'Digestion', img: 'https://images.unsplash.com/photo-1590779033100-9f60a05a013d?w=800&auto=format&fit=crop&q=80' },
-                                    { name: 'Immunity', img: 'https://images.unsplash.com/photo-1546868214-e95b36449173?w=800&auto=format&fit=crop&q=80' },
-                                    { name: 'Wellness', img: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=800&auto=format&fit=crop&q=80' },
-                                    { name: 'Oils', img: 'https://images.unsplash.com/photo-1601058268499-e52642a18350?w=800&auto=format&fit=crop&q=80' },
-                                    { name: 'Raw Herbs', img: 'https://images.unsplash.com/photo-1544070078-a212eda27b49?w=800&auto=format&fit=crop&q=80' },
-                                    { name: 'Kombucha', img: 'https://images.unsplash.com/photo-1558160074-4d7d8bdf4256?w=800&auto=format&fit=crop&q=80' },
-                                ].map((cat, idx) => (
-                                    <Link to={`/shop?category=${cat.name}`} key={idx} className="flex flex-col items-center group flex-shrink-0">
-                                        <div className="w-20 h-20 md:w-32 md:h-32 rounded-full overflow-hidden border-2 md:border-4 border-transparent group-hover:border-secondary transition-all duration-300 mb-3 md:mb-4 shadow-md md:shadow-lg">
-                                            <AnimatedImage src={cat.img} alt={cat.name} className="w-full h-full object-cover" />
-                                        </div>
-                                        <h3 className="text-xs md:text-base font-bold text-gray-800 group-hover:text-primary transition-colors whitespace-nowrap">{cat.name}</h3>
-                                    </Link>
-                                ))}
+                                {(categories.length > 0 ? categories : [
+                                    { name: 'Skin care', image: 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=800&auto=format&fit=crop&q=80' },
+                                    { name: 'Hair care', image: 'https://images.unsplash.com/photo-1522337660859-02fbefca4702?w=800&auto=format&fit=crop&q=80' },
+                                    { name: 'Personal care', image: 'https://images.unsplash.com/photo-1556229010-6c3f2c9ca418?w=800&auto=format&fit=crop&q=80' },
+                                    { name: 'Immunity', image: 'https://images.unsplash.com/photo-1546868214-e95b36449173?w=800&auto=format&fit=crop&q=80' },
+                                    { name: 'Ayurved medicine', image: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=800&auto=format&fit=crop&q=80' },
+                                    { name: 'Consultation', image: 'https://images.unsplash.com/photo-1584820927498-cfe5211fd8bf?w=800&auto=format&fit=crop&q=80' },
+                                ]).map((cat, idx) => {
+                                    const link = cat.name.toLowerCase() === 'consultation' ? '/consultation' : `/shop?category=${cat.name}`;
+                                    return (
+                                        <Link to={link} key={idx} className="flex flex-col items-center group flex-shrink-0">
+                                            <div className="w-20 h-20 md:w-32 md:h-32 rounded-full overflow-hidden border-2 md:border-4 border-transparent group-hover:border-secondary transition-all duration-300 mb-3 md:mb-4 shadow-md md:shadow-lg">
+                                                <AnimatedImage src={cat.image || cat.img} alt={cat.name} className="w-full h-full object-cover" />
+                                            </div>
+                                            <h3 className="text-xs md:text-base font-bold text-gray-800 group-hover:text-primary transition-colors whitespace-nowrap">{cat.name}</h3>
+                                        </Link>
+                                    );
+                                })}
                             </div>
                         </ScrollReveal>
                     </div>

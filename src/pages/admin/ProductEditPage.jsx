@@ -22,8 +22,18 @@ const ProductEditPage = () => {
     const [howToUse, setHowToUse] = useState('');
     const [uploading, setUploading] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [categories, setCategories] = useState([]);
 
     useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const { data } = await api.get('/categories');
+                setCategories(data);
+            } catch (error) {
+                console.error('Error fetching categories:', error);
+            }
+        };
+
         const fetchProduct = async () => {
             try {
                 const { data } = await api.get(`/products/${id}`);
@@ -41,8 +51,11 @@ const ProductEditPage = () => {
                 setLoading(false);
             } catch (error) {
                 console.error(error);
+                setLoading(false);
             }
         };
+
+        fetchCategories();
         fetchProduct();
     }, [id]);
 
@@ -197,13 +210,20 @@ const ProductEditPage = () => {
                     </div>
                     <div>
                         <label className="block text-gray-700 font-bold mb-2">Category</label>
-                        <input
-                            type="text"
+                        <select
                             required
-                            className="w-full border p-2 rounded focus:outline-none focus:border-secondary"
+                            className="w-full border p-2 rounded focus:outline-none focus:border-secondary transition-all bg-white"
                             value={category}
                             onChange={(e) => setCategory(e.target.value)}
-                        />
+                        >
+                            <option value="">Select Category</option>
+                            {categories.map((cat) => (
+                                <option key={cat._id} value={cat.name}>
+                                    {cat.name}
+                                </option>
+                            ))}
+                        </select>
+                        <p className="text-[10px] text-gray-400 mt-1 italic">Manage categories in the Admin Sidebar if the one you need is missing.</p>
                     </div>
                     <div>
                         <label className="block text-gray-700 font-bold mb-2">Brand</label>
