@@ -53,13 +53,13 @@ export default function CheckoutShippingPage() {
                 {
                     type: 'Standard',
                     days: '3-5',
-                    charge: 40,
+                    charge: 0,
                     description: 'Standard Delivery (3-5 days)',
                 },
                 {
                     type: 'Express',
                     days: '1-2',
-                    charge: 100,
+                    charge: 0,
                     description: 'Express Delivery (1-2 days)',
                 }
             ];
