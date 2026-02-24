@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useCheckout } from '../context/CheckoutContext';
 import CheckoutStepIndicator from '../components/CheckoutStepIndicator';
 import api from '../utils/api';
@@ -10,34 +10,38 @@ import { CheckCircle, Package, Calendar, Home, Phone, ShoppingBag, List, Check, 
 
 export default function CheckoutSuccessPage() {
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
     const { checkoutData, resetCheckout } = useCheckout();
     const [orderDetails, setOrderDetails] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        if (!checkoutData.orderId) {
-            navigate('/');
-            return;
-        }
-        fetchOrderDetails();
-    }, [checkoutData.orderId, navigate, fetchOrderDetails]);
+    const orderId = searchParams.get('id') || checkoutData.orderId;
 
     const fetchOrderDetails = useCallback(async () => {
+        if (!orderId) return;
         try {
             setLoading(true);
-            const response = await api.get(`/checkout/order/${checkoutData.orderId}`);
+            const response = await api.get(`/checkout/order/${orderId}`);
             setOrderDetails(response.data);
         } catch (error) {
             console.error('Error fetching order details:', error);
         } finally {
             setLoading(false);
         }
-    }, [checkoutData.orderId]);
+    }, [orderId]);
+
+    useEffect(() => {
+        if (!orderId) {
+            navigate('/');
+            return;
+        }
+        fetchOrderDetails();
+    }, [orderId, navigate, fetchOrderDetails]);
 
     const calculateEstimatedDelivery = () => {
         if (!orderDetails) return null;
 
-        const days = parseInt(orderDetails.estimatedDeliveryDays.split('-')[1]) || 5;
+        const days = parseInt(orderDetails.estimatedDeliveryDays?.split('-')[1]) || 5;
         const deliveryDate = new Date();
         deliveryDate.setDate(deliveryDate.getDate() + days);
 
@@ -55,7 +59,7 @@ export default function CheckoutSuccessPage() {
     };
 
     const handleViewOrder = () => {
-        navigate(`/order/${checkoutData.orderId}`);
+        navigate(`/order/${orderId}`);
     };
 
     if (loading) {
