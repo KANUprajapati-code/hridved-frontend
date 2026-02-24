@@ -67,7 +67,7 @@ export default function CheckoutPaymentPage() {
                 totalPrice,
             });
 
-            setLocalOrderId(data._id);
+            setOrderId(data._id, data);
             return data;
         } catch (error) {
             console.error('Error creating order:', error);
