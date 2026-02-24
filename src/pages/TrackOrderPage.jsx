@@ -52,34 +52,51 @@ const TrackOrderPage = () => {
 
                 {trackingData && (
                     <div className="bg-white p-6 rounded-lg shadow-md animate-fade-in">
-                        <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-                            <Truck className="text-primary" /> Tracking Details
-                        </h2>
-
-                        {/* Mock UI if API data structure is unknown, assuming standard list */}
-                        <div className="space-y-6 relative border-l-2 border-gray-200 ml-4 pl-8">
-                            {/* This is a generic timeline visualization */}
-                            <div className="relative">
-                                <span className="absolute -left-10 bg-green-500 text-white rounded-full p-1"><CheckCircle size={14} /></span>
-                                <h4 className="font-bold text-gray-800">Current Status</h4>
-                                <p className="text-green-600 font-medium">{trackingData.current_status || "Processing"}</p>
-                                <p className="text-xs text-gray-500">{new Date().toLocaleString()}</p>
-                            </div>
-
-                            {/* If Fship returns a timeline array, map it here. For now, just showing raw data or simple info */}
-                            {trackingData.scans && trackingData.scans.map((scan, idx) => (
-                                <div key={idx} className="relative">
-                                    <span className="absolute -left-10 bg-gray-200 text-gray-600 rounded-full p-1"><Circle size={14} /></span>
-                                    <h4 className="font-bold text-gray-700">{scan.status}</h4>
-                                    <p className="text-sm text-gray-600">{scan.location}</p>
-                                    <p className="text-xs text-gray-500">{scan.date}</p>
-                                </div>
-                            ))}
+                        <div className="flex justify-between items-start mb-6">
+                            <h2 className="text-xl font-bold flex items-center gap-2">
+                                <Truck className="text-primary" /> Tracking Details
+                            </h2>
+                            <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase ${trackingData.status === 'success' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'
+                                }`}>
+                                {trackingData.current_status || trackingData.status || "In Transit"}
+                            </span>
                         </div>
 
-                        <div className="mt-6 p-4 bg-gray-50 rounded border">
-                            <p><strong>Courier:</strong> {trackingData.courier_name || "Fship Partner"}</p>
-                            <p><strong>AWB:</strong> {trackingData.awb_number || "N/A"}</p>
+                        {/* Timeline */}
+                        <div className="space-y-8 relative before:absolute before:inset-0 before:left-4 before:w-0.5 before:bg-gray-100 mb-8">
+                            {trackingData.scans && trackingData.scans.length > 0 ? (
+                                trackingData.scans.map((scan, idx) => (
+                                    <div key={idx} className="relative pl-12">
+                                        <div className={`absolute left-2.5 -translate-x-1/2 w-3 h-3 rounded-full border-2 border-white z-10 ${idx === 0 ? 'bg-primary' : 'bg-gray-300'
+                                            }`} />
+                                        <div>
+                                            <h4 className={`font-bold ${idx === 0 ? 'text-primary' : 'text-gray-700'}`}>{scan.status}</h4>
+                                            <p className="text-sm text-gray-600">{scan.location}</p>
+                                            <p className="text-xs text-gray-400 mt-1">{scan.date}</p>
+                                        </div>
+                                    </div>
+                                ))
+                            ) : (
+                                <div className="relative pl-12">
+                                    <div className="absolute left-2.5 -translate-x-1/2 w-3 h-3 rounded-full border-2 border-white z-10 bg-primary" />
+                                    <div>
+                                        <h4 className="font-bold text-primary">Order Processed</h4>
+                                        <p className="text-sm text-gray-600">Your order is being prepared for shipment.</p>
+                                        <p className="text-xs text-gray-400 mt-1">Updates will appear once the courier scans the package.</p>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-6 border-t border-gray-100">
+                            <div className="p-4 bg-gray-50 rounded-xl border border-gray-100">
+                                <p className="text-xs text-gray-400 uppercase font-bold mb-1">Courier Partner</p>
+                                <p className="font-bold text-gray-800">{trackingData.courier_name || "Fship Logistics"}</p>
+                            </div>
+                            <div className="p-4 bg-gray-50 rounded-xl border border-gray-100">
+                                <p className="text-xs text-gray-400 uppercase font-bold mb-1">AWB Number</p>
+                                <p className="font-mono font-bold text-primary">{trackingData.awb_number || "N/A"}</p>
+                            </div>
                         </div>
                     </div>
                 )}
