@@ -114,15 +114,21 @@ const HomePage = () => {
             <div className="min-h-screen bg-background">
                 {/* Hero Section - Optimized for mobile aspect ratio */}
                 <section className="relative min-h-[350px] xs:min-h-[450px] sm:min-h-[600px] md:min-h-[700px] lg:min-h-[85vh] flex items-center overflow-hidden bg-primary py-12 sm:py-20">
-                    <div className="absolute inset-0 w-full h-full">
-                        <AnimatedImage
-                            src={content?.hero?.image || "/hero-bg.png"}
-                            alt="Ayurveda Wellness"
-                            containerClassName="w-full h-full !rounded-none"
-                            className="w-full h-full object-cover object-[center_25%] sm:object-center"
-                            zoomIntensity={1.03}
-                            loading="eager"
-                        />
+                    <div className="absolute inset-0 w-full h-full bg-primary">
+                        {content ? (
+                            <AnimatedImage
+                                src={content.hero?.image || "/hero-bg.png"}
+                                alt="Ayurveda Wellness"
+                                containerClassName="w-full h-full !rounded-none"
+                                className="w-full h-full object-cover object-[center_25%] sm:object-center"
+                                zoomIntensity={1.03}
+                                loading="eager"
+                            />
+                        ) : (
+                            <div className="w-full h-full bg-primary animate-pulse flex items-center justify-center">
+                                {/* Optional: Add a small logo or loading indicator here if desired */}
+                            </div>
+                        )}
                         <div className="absolute inset-0 bg-black/40 pointer-events-none"></div>
                     </div>
 

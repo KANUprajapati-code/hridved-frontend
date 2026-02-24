@@ -58,8 +58,11 @@ const Footer = () => {
                     </div>
                 </div>
             </div>
-            <div className="border-t border-gray-700 mt-8 pt-4 text-center text-sm text-gray-400">
-                &copy; {new Date().getFullYear()} HRIDVED. All rights reserved.
+            <div className="border-t border-gray-700 mt-8 pt-4 text-sm text-gray-400">
+                <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-4">
+                    <p>&copy; {new Date().getFullYear()} HRIDVED. All rights reserved.</p>
+                    <p>Developed By <a href="https://final-portfolio-0zy2.onrender.com/" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-secondary transition-colors font-medium">Kanu Prajapati</a></p>
+                </div>
             </div>
         </footer>
     );
