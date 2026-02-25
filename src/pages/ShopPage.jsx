@@ -59,13 +59,13 @@ const ShopPage = () => {
         if (cat) setSelectedCategories(cat.split(','));
         else setSelectedCategories([]);
 
-        if (minP) setMinPrice(Number(minP));
+        if (minP && !isNaN(minP)) setMinPrice(Number(minP));
         else setMinPrice(0);
 
-        if (maxP) setMaxPrice(Number(maxP));
+        if (maxP && !isNaN(maxP)) setMaxPrice(Number(maxP));
         else setMaxPrice(10000);
 
-        if (rat) setMinRating(Number(rat));
+        if (rat && !isNaN(rat)) setMinRating(Number(rat));
         else setMinRating(0);
 
         if (sort) setSortOption(sort);
@@ -74,7 +74,7 @@ const ShopPage = () => {
         if (stock === 'true') setInStockOnly(true);
         else setInStockOnly(false);
 
-        if (p) setPage(Number(p));
+        if (p && !isNaN(p)) setPage(Number(p));
         else setPage(1);
 
         // Consultation check
