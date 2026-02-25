@@ -121,18 +121,20 @@ const ProfilePage = () => {
         navigate('/');
     };
 
-    const handleTrackOrder = async (orderId) => {
+    const handleTrackOrder = async (orderId, waybill = '') => {
         setActiveTab('tracking');
-        setTrackingOrderId(orderId);
+        setTrackingOrderId(waybill || orderId);
         setLoadingTracking(true);
         setTrackingError('');
         setTrackingData(null);
 
         try {
-            const { data } = await api.get(`/shipping/track/${orderId}`);
+            // If waybill is provided, use it. Otherwise, use orderId (logic in controller handles it)
+            const identifier = waybill || orderId;
+            const { data } = await api.get(`/shipping/track/${identifier}`);
             setTrackingData(data);
         } catch (err) {
-            setTrackingError(err.response?.data?.message || 'Tracking information not found for this Order ID.');
+            setTrackingError(err.response?.data?.message || 'Tracking information not found. Make sure your order is shipped.');
         } finally {
             setLoadingTracking(false);
         }
@@ -141,7 +143,8 @@ const ProfilePage = () => {
     const handleManualTrack = (e) => {
         e.preventDefault();
         if (trackingOrderId) {
-            handleTrackOrder(trackingOrderId);
+            // Assuming the input could be orderId or waybill
+            handleTrackOrder('', trackingOrderId);
         }
     };
 
@@ -418,7 +421,7 @@ const ProfilePage = () => {
                                                                     View
                                                                 </Link>
                                                                 <button
-                                                                    onClick={() => handleTrackOrder(order._id)}
+                                                                    onClick={() => handleTrackOrder(order._id, order.waybill)}
                                                                     className="text-secondary hover:text-primary font-bold bg-secondary/5 hover:bg-secondary/10 px-3 py-1.5 rounded-lg transition-colors"
                                                                 >
                                                                     Track
@@ -463,39 +466,35 @@ const ProfilePage = () => {
 
                                 {trackingData ? (
                                     <div className="space-y-8">
-                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                            <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
-                                                <p className="text-xs text-gray-400 uppercase font-bold tracking-wider mb-1">Status</p>
-                                                <p className="text-primary font-bold">{trackingData.current_status || 'Processing'}</p>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div className="bg-gray-50 p-5 rounded-2xl border border-gray-100">
+                                                <p className="text-[10px] text-gray-400 uppercase font-bold tracking-wider mb-1">Status</p>
+                                                <p className="text-primary font-bold">{trackingData.status || 'In Transit'}</p>
                                             </div>
-                                            <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
-                                                <p className="text-xs text-gray-400 uppercase font-bold tracking-wider mb-1">Courier</p>
-                                                <p className="text-primary font-bold">{trackingData.courier_name || 'Fship Logistics'}</p>
+                                            <div className="bg-gray-50 p-5 rounded-2xl border border-gray-100">
+                                                <p className="text-[10px] text-gray-400 uppercase font-bold tracking-wider mb-1">Last Location</p>
+                                                <p className="text-gray-800 font-bold">{trackingData.location || 'N/A'}</p>
                                             </div>
-                                            <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
-                                                <p className="text-xs text-gray-400 uppercase font-bold tracking-wider mb-1">AWB Number</p>
-                                                <p className="text-primary font-bold">{trackingData.awb_number || 'N/A'}</p>
+                                            <div className="bg-gray-50 p-5 rounded-2xl border border-gray-100">
+                                                <p className="text-[10px] text-gray-400 uppercase font-bold tracking-wider mb-1">Courier</p>
+                                                <p className="text-gray-800 font-bold">{trackingData.courier_name || trackingData.fulfilledby || 'Fship'}</p>
+                                            </div>
+                                            <div className="bg-gray-50 p-5 rounded-2xl border border-gray-100">
+                                                <p className="text-[10px] text-gray-400 uppercase font-bold tracking-wider mb-1">Waybill</p>
+                                                <p className="text-primary font-mono font-bold">{trackingData.waybill || 'N/A'}</p>
                                             </div>
                                         </div>
 
-                                        <div className="relative pl-8 border-l-2 border-gray-100 space-y-8 ml-4">
-                                            <div className="relative">
-                                                <div className="absolute -left-[41px] top-0 w-4 h-4 rounded-full bg-primary border-4 border-white shadow-sm"></div>
-                                                <h4 className="font-bold text-gray-800">Order Dispatched</h4>
-                                                <p className="text-sm text-gray-500">Your package is on its way to the delivery hub.</p>
+                                        {trackingData.remark && (
+                                            <div className="p-5 bg-primary/5 rounded-2xl border border-primary/10">
+                                                <h4 className="text-[10px] font-black text-primary uppercase mb-2">Latest Remark</h4>
+                                                <p className="text-sm text-gray-800 italic">"{trackingData.remark}"</p>
                                             </div>
-                                            {trackingData.scans?.map((scan, i) => (
-                                                <div key={i} className="relative">
-                                                    <div className="absolute -left-[41px] top-0 w-4 h-4 rounded-full bg-gray-300 border-4 border-white shadow-sm"></div>
-                                                    <h4 className="font-bold text-gray-700">{scan.status}</h4>
-                                                    <p className="text-sm text-gray-500">{scan.location} | {new Date(scan.date).toLocaleString()}</p>
-                                                </div>
-                                            ))}
-                                            <div className="relative">
-                                                <div className="absolute -left-[41px] top-0 w-4 h-4 rounded-full bg-gray-200 border-4 border-white shadow-sm"></div>
-                                                <h4 className="font-bold text-gray-400">Out for Delivery</h4>
-                                                <p className="text-sm text-gray-400">Waiting for update from courier partner.</p>
-                                            </div>
+                                        )}
+
+                                        <div className="pt-4 border-t border-gray-50">
+                                            <p className="text-[10px] text-gray-400 uppercase font-bold mb-2">Last Scan Date</p>
+                                            <p className="text-sm font-medium text-gray-600">{trackingData.lastscanned || 'Updating...'}</p>
                                         </div>
                                     </div>
                                 ) : !loadingTracking && !trackingError && (

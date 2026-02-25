@@ -148,6 +148,13 @@ const OrderPage = () => {
                             {order.shippingAddress.address}, {order.shippingAddress.city}{' '}
                             {order.shippingAddress.postalCode}, {order.shippingAddress.country}
                         </p>
+                        <p className="mb-2"><strong>Provider: </strong> {order.shippingProvider || 'Fship'}</p>
+                        {order.waybill && (
+                            <p className="mb-4 text-primary"><strong>Waybill: </strong> <span className="font-mono font-bold">{order.waybill}</span></p>
+                        )}
+                        {order.shippingStatus && (
+                            <p className="mb-4"><strong>Status: </strong> <span className="px-2 py-0.5 bg-blue-50 text-blue-700 rounded text-xs font-bold uppercase">{order.shippingStatus}</span></p>
+                        )}
                         {order.isDelivered ? (
                             <div className="bg-green-100 text-green-700 p-2 rounded">Delivered on {order.deliveredAt.substring(0, 10)}</div>
                         ) : (
@@ -232,15 +239,102 @@ const OrderPage = () => {
                         )}
                     </div>
 
-                    {user && user.isAdmin && !order.isDelivered && (
-                        <div className="bg-white p-6 rounded shadow-md border mt-4">
-                            <button
-                                onClick={deliverHandler}
-                            >
-                                Mark As Delivered
-                            </button>
+                    {user && user.isAdmin && (
+                        <div className="bg-white p-6 rounded shadow-md border mt-8">
+                            <h2 className="text-xl font-bold mb-6 border-b pb-4 flex items-center gap-2 text-primary">
+                                <Truck size={24} /> Fship Shipping Control
+                            </h2>
+
+                            <div className="space-y-4">
+                                {/* Row 1: Create & Pickup */}
+                                <div className="grid grid-cols-2 gap-4">
+                                    <button
+                                        onClick={async () => {
+                                            if (window.confirm('Create Fship Shipment?')) {
+                                                try {
+                                                    const { data } = await api.post('/shipping/create-shipment', { orderId: order._id });
+                                                    alert('Shipment Created: ' + data.waybill);
+                                                    window.location.reload();
+                                                } catch (err) {
+                                                    alert('Error: ' + (err.response?.data?.message || err.message));
+                                                }
+                                            }
+                                        }}
+                                        disabled={order.waybill}
+                                        className={`px-4 py-3 rounded-lg font-bold transition-all ${order.waybill ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-primary text-white hover:bg-opacity-90 shadow-md'}`}
+                                    >
+                                        Create Shipment
+                                    </button>
+
+                                    <button
+                                        onClick={async () => {
+                                            if (window.confirm('Register Pickup for this Waybill?')) {
+                                                try {
+                                                    const { data } = await api.post('/shipping/register-pickup', { waybills: [order.waybill] });
+                                                    alert('Pickup Registered!');
+                                                    window.location.reload();
+                                                } catch (err) {
+                                                    alert('Error: ' + (err.response?.data?.message || err.message));
+                                                }
+                                            }
+                                        }}
+                                        disabled={!order.waybill || order.pickupOrderId}
+                                        className={`px-4 py-3 rounded-lg font-bold transition-all ${(!order.waybill || order.pickupOrderId) ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-secondary text-primary hover:bg-opacity-90 shadow-md'}`}
+                                    >
+                                        Register Pickup
+                                    </button>
+                                </div>
+
+                                {/* Row 2: Labels & Reverse */}
+                                <div className="grid grid-cols-2 gap-4">
+                                    <button
+                                        onClick={async () => {
+                                            try {
+                                                const { data } = await api.post('/shipping/labels', { pickupOrderId: [order.pickupOrderId] });
+                                                if (data.labelfile) window.open(data.labelfile, '_blank');
+                                                else alert('Label file not found');
+                                            } catch (err) {
+                                                alert('Error: ' + (err.response?.data?.message || err.message));
+                                            }
+                                        }}
+                                        disabled={!order.pickupOrderId}
+                                        className={`px-4 py-3 rounded-lg font-bold transition-all ${!order.pickupOrderId ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700 shadow-md'}`}
+                                    >
+                                        Download Labels
+                                    </button>
+
+                                    <button
+                                        onClick={async () => {
+                                            if (window.confirm('Create Reverse Order?')) {
+                                                try {
+                                                    const { data } = await api.post('/shipping/reverse-order', { waybill: order.waybill });
+                                                    alert('Reverse Order Created!');
+                                                } catch (err) {
+                                                    alert('Error: ' + (err.response?.data?.message || err.message));
+                                                }
+                                            }
+                                        }}
+                                        disabled={!order.waybill}
+                                        className={`px-4 py-3 rounded-lg font-bold transition-all ${!order.waybill ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-red-600 text-white hover:bg-red-700 shadow-md'}`}
+                                    >
+                                        Reverse Order
+                                    </button>
+                                </div>
+
+                                {/* Status Mark */}
+                                <div className="pt-4 border-t border-gray-100">
+                                    <button
+                                        onClick={deliverHandler}
+                                        className={`w-full px-4 py-3 rounded-lg font-bold transition-all ${order.isDelivered ? 'bg-green-100 text-green-700' : 'bg-gray-800 text-white hover:bg-black'}`}
+                                        disabled={order.isDelivered}
+                                    >
+                                        {order.isDelivered ? 'Order Delivered' : 'Manual Mark as Delivered'}
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     )}
+
                 </div>
             </div>
         </div>

@@ -142,6 +142,22 @@ export default function CheckoutSuccessPage() {
                                                 {orderDetails.isPaid ? 'PAID' : 'PENDING'}
                                             </span>
                                         </div>
+                                        <div className="flex justify-between items-center text-sm">
+                                            <span className="text-gray-500">Shipping Mode</span>
+                                            <span className="font-medium text-gray-900">{orderDetails.shippingProvider}</span>
+                                        </div>
+                                        {orderDetails.waybill && (
+                                            <div className="flex justify-between items-center text-sm">
+                                                <span className="text-gray-500">Waybill</span>
+                                                <span className="font-mono font-bold text-primary">{orderDetails.waybill}</span>
+                                            </div>
+                                        )}
+                                        <div className="flex justify-between items-center">
+                                            <span className="text-gray-500 text-sm">Shipping Status</span>
+                                            <span className={`font-bold px-2 py-0.5 rounded text-xs bg-blue-100 text-blue-700`}>
+                                                {orderDetails.shippingStatus || 'Processing'}
+                                            </span>
+                                        </div>
                                         <div className="flex justify-between items-center">
                                             <span className="text-gray-500 text-sm">Estimated Delivery</span>
                                             <span className="font-bold text-primary flex items-center gap-1">
