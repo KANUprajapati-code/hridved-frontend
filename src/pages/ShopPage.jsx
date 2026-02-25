@@ -14,7 +14,8 @@ const ShopPage = () => {
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selectedCategories, setSelectedCategories] = useState([]);
-    const [priceRange, setPriceRange] = useState(10000);
+    const [minPrice, setMinPrice] = useState(0);
+    const [maxPrice, setMaxPrice] = useState(10000);
     const [minRating, setMinRating] = useState(0);
     const [sortOption, setSortOption] = useState('newest');
     const [page, setPage] = useState(1);
@@ -36,8 +37,7 @@ const ShopPage = () => {
         setOpenSections(prev => ({ ...prev, [section]: !prev[section] }));
     };
 
-    const [minPrice, setMinPrice] = useState(0);
-    const [maxPrice, setMaxPrice] = useState(10000);
+
     const [inStockOnly, setInStockOnly] = useState(false);
 
     // Category counts logic removed as requested for dynamic sync
@@ -151,6 +151,16 @@ const ShopPage = () => {
 
     const handlePageChange = (p) => {
         updateFilters({ pageNumber: p });
+    };
+
+    const clearAllFilters = () => {
+        setSelectedCategories([]);
+        setMinPrice(0);
+        setMaxPrice(10000);
+        setMinRating(0);
+        setInStockOnly(false);
+        setPage(1);
+        navigate('/shop');
     };
 
     const handleQuickView = (product) => {
@@ -381,7 +391,7 @@ const ShopPage = () => {
 
                                     <div className="pt-4">
                                         <button
-                                            onClick={() => navigate('/shop')}
+                                            onClick={clearAllFilters}
                                             className="w-full py-2.5 bg-green-50 text-primary text-xs font-bold rounded-lg hover:bg-green-100 transition-colors border border-green-100 text-center uppercase tracking-wider"
                                         >
                                             Clear All Filters
@@ -457,7 +467,7 @@ const ShopPage = () => {
                             ) : products.length === 0 ? (
                                 <div className="text-center py-20 bg-white rounded-xl shadow-sm border border-dashed border-gray-300">
                                     <p className="text-xl text-gray-500 mb-2">No products found matching your criteria.</p>
-                                    <button onClick={() => navigate('/shop')} className="text-primary hover:underline">Clear Filters</button>
+                                    <button onClick={clearAllFilters} className="text-primary hover:underline">Clear Filters</button>
                                 </div>
                             ) : (
                                 <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
