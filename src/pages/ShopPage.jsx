@@ -1,14 +1,15 @@
 import { useState, useEffect } from 'react';
-import { useLocation, Link } from 'react-router-dom';
+import { useLocation, Link, useNavigate } from 'react-router-dom';
 import api from '../utils/api';
 import ProductCard from '../components/ProductCard';
 import QuickViewModal from '../components/QuickViewModal';
-import { Filter, ChevronDown, ArrowRight, Star } from 'lucide-react';
+import { Filter, ChevronDown, ArrowRight, Star, X } from 'lucide-react';
 import AnimatedPage from '../components/AnimatedPage';
 import ScrollReveal from '../components/ScrollReveal';
 import AnimatedButton from '../components/AnimatedButton';
 
 const ShopPage = () => {
+    const navigate = useNavigate();
     const [products, setProducts] = useState([]);
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -18,6 +19,7 @@ const ShopPage = () => {
     const [sortOption, setSortOption] = useState('newest');
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
+    const [totalCount, setTotalCount] = useState(0);
     const [quickViewProduct, setQuickViewProduct] = useState(null);
     const [isQuickViewOpen, setIsQuickViewOpen] = useState(false);
     const [showMobileFilters, setShowMobileFilters] = useState(false);
@@ -38,57 +40,81 @@ const ShopPage = () => {
     const [maxPrice, setMaxPrice] = useState(10000);
     const [inStockOnly, setInStockOnly] = useState(false);
 
-    // Mock category counts (in a real app, these would come from the API or be calculated)
-    const categoryCounts = {
-        'Hair Care': 24,
-        'Skin Care': 32,
-        'Immunity': 18,
-        'Pain Relief': 15,
-        'Digestion': 21,
-        'Wellness': 40
-    };
+    // Category counts logic removed as requested for dynamic sync
 
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
     const keyword = searchParams.get('keyword') || '';
 
+    // Initialize state from URL
     useEffect(() => {
-        const catFromUrl = searchParams.get('category');
-        if (catFromUrl) {
-            setSelectedCategories([catFromUrl]);
+        const cat = searchParams.get('category');
+        const minP = searchParams.get('minPrice');
+        const maxP = searchParams.get('maxPrice');
+        const rat = searchParams.get('rating');
+        const sort = searchParams.get('sort');
+        const stock = searchParams.get('inStock');
+        const p = searchParams.get('pageNumber');
+
+        if (cat) setSelectedCategories(cat.split(','));
+        else setSelectedCategories([]);
+
+        if (minP) setMinPrice(Number(minP));
+        else setMinPrice(0);
+
+        if (maxP) setMaxPrice(Number(maxP));
+        else setMaxPrice(10000);
+
+        if (rat) setMinRating(Number(rat));
+        else setMinRating(0);
+
+        if (sort) setSortOption(sort);
+        else setSortOption('newest');
+
+        if (stock === 'true') setInStockOnly(true);
+        else setInStockOnly(false);
+
+        if (p) setPage(Number(p));
+        else setPage(1);
+
+        // Consultation check
+        if (cat === 'Consultation') {
+            navigate('/consultation');
         }
     }, [location.search]);
+
+    const updateFilters = (newFilters) => {
+        const params = new URLSearchParams(location.search);
+
+        Object.keys(newFilters).forEach(key => {
+            if (newFilters[key] === null || newFilters[key] === undefined || newFilters[key] === '' || newFilters[key] === 0 || (Array.isArray(newFilters[key]) && newFilters[key].length === 0)) {
+                params.delete(key);
+            } else if (Array.isArray(newFilters[key])) {
+                params.set(key, newFilters[key].join(','));
+            } else {
+                params.set(key, newFilters[key]);
+            }
+        });
+
+        // Reset page on filter change unless it's a page change
+        if (!newFilters.pageNumber) {
+            params.delete('pageNumber');
+        }
+
+        navigate({ search: params.toString() });
+    };
 
     useEffect(() => {
         const fetchProducts = async () => {
             setLoading(true);
             try {
-                let url = `/products?keyword=${keyword}&pageNumber=${page}&sort=${sortOption}`;
-
-                if (selectedCategories.length > 0) {
-                    url += `&category=${selectedCategories.join(',')}`;
-                }
-
-                if (minPrice > 0) {
-                    url += `&minPrice=${minPrice}`;
-                }
-
-                if (maxPrice < 10000) {
-                    url += `&maxPrice=${maxPrice}`;
-                }
-
-                if (minRating > 0) {
-                    url += `&rating=${minRating}`;
-                }
-
-                if (inStockOnly) {
-                    url += `&inStock=true`;
-                }
-
-                const { data } = await api.get(url);
+                // Fetch directly from URL params to ensure sync
+                const { data } = await api.get(`/products${location.search || '?'}`);
                 setProducts(data.products);
-                setPage(data.page);
                 setTotalPages(data.pages);
+                setTotalCount(data.count);
+                // Sync page state in case it changed server-side or via URL
+                setPage(data.page);
             } catch (error) {
                 console.error("Error fetching products", error);
             } finally {
@@ -98,15 +124,33 @@ const ShopPage = () => {
         };
 
         fetchProducts();
-    }, [keyword, selectedCategories, minPrice, maxPrice, minRating, sortOption, page, inStockOnly]);
+    }, [location.search]);
 
     const handleCategoryToggle = (categoryName) => {
-        setSelectedCategories(prev =>
-            prev.includes(categoryName)
-                ? prev.filter(c => c !== categoryName)
-                : [...prev, categoryName]
-        );
-        setPage(1);
+        if (categoryName.toLowerCase() === 'consultation') {
+            navigate('/consultation');
+            return;
+        }
+        const newCategories = selectedCategories.includes(categoryName)
+            ? selectedCategories.filter(c => c !== categoryName)
+            : [...selectedCategories, categoryName];
+        updateFilters({ category: newCategories });
+    };
+
+    const handlePriceChange = () => {
+        updateFilters({ minPrice, maxPrice });
+    };
+
+    const handleRatingChange = (rating) => {
+        updateFilters({ rating });
+    };
+
+    const handleStockToggle = () => {
+        updateFilters({ inStock: !inStockOnly });
+    };
+
+    const handlePageChange = (p) => {
+        updateFilters({ pageNumber: p });
     };
 
     const handleQuickView = (product) => {
@@ -127,8 +171,7 @@ const ShopPage = () => {
     }, []);
 
     const handleSortChange = (e) => {
-        setSortOption(e.target.value);
-        setPage(1);
+        updateFilters({ sort: e.target.value });
     };
 
     return (
@@ -187,6 +230,20 @@ const ShopPage = () => {
                                             <ChevronDown size={16} className={`text-gray-400 transition-transform duration-300 ${openSections.categories ? 'rotate-180' : ''}`} />
                                         </button>
                                         <div className={`space-y-2 mt-2 transition-all duration-300 overflow-hidden ${openSections.categories ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
+                                            <label className="flex items-center justify-between cursor-pointer group">
+                                                <div className="flex items-center space-x-3">
+                                                    <div className={`w-4 h-4 border-2 rounded-sm flex items-center justify-center transition-colors ${selectedCategories.length === 0 ? 'bg-primary border-primary' : 'border-gray-300 group-hover:border-primary'}`}>
+                                                        {selectedCategories.length === 0 && <div className="w-1.5 h-1.5 bg-white rounded-sm"></div>}
+                                                    </div>
+                                                    <input
+                                                        type="checkbox"
+                                                        className="hidden"
+                                                        checked={selectedCategories.length === 0}
+                                                        onChange={() => updateFilters({ category: [] })}
+                                                    />
+                                                    <span className={`text-xs md:text-sm ${selectedCategories.length === 0 ? 'text-primary font-bold' : 'text-gray-600'}`}>All Products</span>
+                                                </div>
+                                            </label>
                                             {categories.map((cat) => (
                                                 <label key={cat._id} className="flex items-center justify-between cursor-pointer group">
                                                     <div className="flex items-center space-x-3">
@@ -201,7 +258,6 @@ const ShopPage = () => {
                                                         />
                                                         <span className={`text-xs md:text-sm ${selectedCategories.includes(cat.name) ? 'text-primary font-bold' : 'text-gray-600'}`}>{cat.name}</span>
                                                     </div>
-                                                    <span className="text-[10px] text-gray-400">({categoryCounts[cat.name] || 0})</span>
                                                 </label>
                                             ))}
                                         </div>
@@ -246,7 +302,9 @@ const ShopPage = () => {
                                                 max="10000"
                                                 step="100"
                                                 value={maxPrice}
-                                                onChange={(e) => { setMaxPrice(Number(e.target.value)); setPage(1); }}
+                                                onChange={(e) => setMaxPrice(Number(e.target.value))}
+                                                onMouseUp={handlePriceChange}
+                                                onTouchEnd={handlePriceChange}
                                                 className="w-full h-1 bg-gray-100 rounded-lg appearance-none cursor-pointer accent-primary"
                                             />
                                         </div>
@@ -273,7 +331,7 @@ const ShopPage = () => {
                                                             name="rating"
                                                             className="hidden"
                                                             checked={minRating === rating}
-                                                            onChange={() => { setMinRating(rating); setPage(1); }}
+                                                            onChange={() => handleRatingChange(rating)}
                                                         />
                                                         <div className="flex items-center gap-0.5">
                                                             {[...Array(5)].map((_, i) => (
@@ -305,7 +363,7 @@ const ShopPage = () => {
                                                     type="checkbox"
                                                     className="hidden"
                                                     checked={inStockOnly}
-                                                    onChange={() => { setInStockOnly(!inStockOnly); setPage(1); }}
+                                                    onChange={handleStockToggle}
                                                 />
                                                 <span className="text-xs md:text-sm text-gray-600">In Stock Only</span>
                                             </label>
@@ -323,15 +381,7 @@ const ShopPage = () => {
 
                                     <div className="pt-4">
                                         <button
-                                            onClick={() => {
-                                                setSelectedCategories([]);
-                                                setMinPrice(0);
-                                                setMaxPrice(10000);
-                                                setMinRating(0);
-                                                setSortOption('newest');
-                                                setInStockOnly(false);
-                                                setPage(1);
-                                            }}
+                                            onClick={() => navigate('/shop')}
                                             className="w-full py-2.5 bg-green-50 text-primary text-xs font-bold rounded-lg hover:bg-green-100 transition-colors border border-green-100 text-center uppercase tracking-wider"
                                         >
                                             Clear All Filters
@@ -344,20 +394,9 @@ const ShopPage = () => {
                         {/* Product Grid */}
                         <div className="md:w-3/4">
                             <div className="flex flex-wrap justify-between items-center mb-6 bg-white p-3 md:p-4 rounded-xl border border-gray-100 shadow-sm gap-4">
-                                <p className="text-gray-500 text-[10px] sm:text-xs">Showing <span className="font-bold text-gray-800">1-12</span> of <span className="font-bold text-gray-800">145</span> results</p>
+                                <p className="text-gray-500 text-[10px] sm:text-xs">Showing <span className="font-bold text-gray-800">{products.length > 0 ? `${(page - 1) * 12 + 1}-${Math.min(page * 12, totalCount)}` : '0'}</span> of <span className="font-bold text-gray-800">{totalCount}</span> results</p>
 
                                 <div className="flex items-center gap-4 md:gap-8">
-                                    <div className="hidden sm:flex items-center gap-2 border-r border-gray-100 pr-4">
-                                        <button className="p-1 px-2 bg-green-50 text-primary border border-green-100 rounded text-[10px] flex items-center gap-1">
-                                            <div className="w-3 h-3 border border-current"></div>
-                                            <div className="w-3 h-3 border border-current"></div>
-                                        </button>
-                                        <button className="p-1 px-2 text-gray-300 hover:text-gray-500 transition-colors">
-                                            <div className="w-4 h-0.5 bg-current mb-0.5"></div>
-                                            <div className="w-4 h-0.5 bg-current mb-0.5"></div>
-                                            <div className="w-4 h-0.5 bg-current"></div>
-                                        </button>
-                                    </div>
                                     <div className="flex items-center gap-2">
                                         <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">SORT BY:</span>
                                         <div className="relative group">
@@ -377,30 +416,38 @@ const ShopPage = () => {
                                 </div>
                             </div>
 
-                            {/* Category Filter Bar */}
-                            <div className="flex overflow-x-auto pb-4 mb-6 gap-4 no-scrollbar scroll-smooth items-center border-b border-gray-100">
-                                <button
-                                    onClick={() => { setSelectedCategories([]); setPage(1); }}
-                                    className={`flex flex-col items-center gap-2 group flex-shrink-0 min-w-[70px] ${selectedCategories.length === 0 ? 'opacity-100' : 'opacity-60 hover:opacity-100 transition-opacity'}`}
-                                >
-                                    <div className={`w-12 h-12 md:w-16 md:h-16 rounded-full flex items-center justify-center border-2 ${selectedCategories.length === 0 ? 'border-secondary bg-secondary/10 shadow-md' : 'border-gray-100 bg-white hover:border-gray-300'}`}>
-                                        <div className="text-[10px] font-black text-primary">ALL</div>
-                                    </div>
-                                    <span className={`text-[10px] md:text-xs font-bold uppercase ${selectedCategories.length === 0 ? 'text-primary' : 'text-gray-500'}`}>All</span>
-                                </button>
-                                {categories.map((cat) => (
-                                    <button
-                                        key={cat._id}
-                                        onClick={() => handleCategoryToggle(cat.name)}
-                                        className={`flex flex-col items-center gap-2 group flex-shrink-0 min-w-[70px] ${selectedCategories.includes(cat.name) ? 'opacity-100' : 'opacity-60 hover:opacity-100 transition-opacity'}`}
-                                    >
-                                        <div className={`w-12 h-12 md:w-16 md:h-16 rounded-full overflow-hidden border-2 transition-all duration-300 ${selectedCategories.includes(cat.name) ? 'border-secondary shadow-md scale-105' : 'border-gray-100 hover:border-gray-200'}`}>
-                                            <img src={cat.image || cat.img} alt={cat.name} className="w-full h-full object-cover" />
-                                        </div>
-                                        <span className={`text-[10px] md:text-xs font-bold uppercase whitespace-nowrap ${selectedCategories.includes(cat.name) ? 'text-primary' : 'text-gray-500'}`}>{cat.name}</span>
-                                    </button>
-                                ))}
-                            </div>
+                            {/* Active Filters */}
+                            {(selectedCategories.length > 0 || minPrice > 0 || maxPrice < 10000 || minRating > 0 || inStockOnly) && (
+                                <div className="flex flex-wrap gap-2 mb-6">
+                                    {selectedCategories.map(cat => (
+                                        <span key={cat} className="inline-flex items-center gap-1 px-3 py-1 bg-primary/5 text-primary text-xs font-bold rounded-full border border-primary/10">
+                                            {cat}
+                                            <button onClick={() => handleCategoryToggle(cat)} className="hover:text-red-500"><X size={14} /></button>
+                                        </span>
+                                    ))}
+                                    {(minPrice > 0 || maxPrice < 10000) && (
+                                        <span className="inline-flex items-center gap-1 px-3 py-1 bg-primary/5 text-primary text-xs font-bold rounded-full border border-primary/10">
+                                            ₹{minPrice} - ₹{maxPrice}
+                                            <button onClick={() => { setMinPrice(0); setMaxPrice(10000); updateFilters({ minPrice: 0, maxPrice: 10000 }); }} className="hover:text-red-500"><X size={14} /></button>
+                                        </span>
+                                    )}
+                                    {minRating > 0 && (
+                                        <span className="inline-flex items-center gap-1 px-3 py-1 bg-primary/5 text-primary text-xs font-bold rounded-full border border-primary/10">
+                                            {minRating}★ & Up
+                                            <button onClick={() => handleRatingChange(0)} className="hover:text-red-500"><X size={14} /></button>
+                                        </span>
+                                    )}
+                                    {inStockOnly && (
+                                        <span className="inline-flex items-center gap-1 px-3 py-1 bg-primary/5 text-primary text-xs font-bold rounded-full border border-primary/10">
+                                            In Stock Only
+                                            <button onClick={handleStockToggle} className="hover:text-red-500"><X size={14} /></button>
+                                        </span>
+                                    )}
+
+                                </div>
+                            )}
+
+
 
                             {loading ? (
                                 <div className="text-center py-20 flex flex-col items-center">
@@ -410,7 +457,7 @@ const ShopPage = () => {
                             ) : products.length === 0 ? (
                                 <div className="text-center py-20 bg-white rounded-xl shadow-sm border border-dashed border-gray-300">
                                     <p className="text-xl text-gray-500 mb-2">No products found matching your criteria.</p>
-                                    <button onClick={() => { setSelectedCategory(''); setPage(1); }} className="text-primary hover:underline">Clear Filters</button>
+                                    <button onClick={() => navigate('/shop')} className="text-primary hover:underline">Clear Filters</button>
                                 </div>
                             ) : (
                                 <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
@@ -427,7 +474,7 @@ const ShopPage = () => {
                                 <div className="flex justify-center mt-12 gap-2">
                                     <AnimatedButton
                                         disabled={page === 1}
-                                        onClick={() => setPage(p => Math.max(1, p - 1))}
+                                        onClick={() => handlePageChange(Math.max(1, page - 1))}
                                         className={`w-8 h-8 flex items-center justify-center rounded border border-gray-200 ${page === 1 ? 'text-gray-300 cursor-not-allowed' : 'text-gray-600 hover:bg-gray-50'} !p-0`}
                                     >
                                         &lt;
@@ -435,7 +482,7 @@ const ShopPage = () => {
                                     {[...Array(totalPages).keys()].map(x => (
                                         <AnimatedButton
                                             key={x + 1}
-                                            onClick={() => setPage(x + 1)}
+                                            onClick={() => handlePageChange(x + 1)}
                                             className={`w-8 h-8 flex items-center justify-center rounded border ${page === x + 1 ? 'bg-primary text-white border-primary' : 'border-gray-200 text-gray-600 hover:bg-gray-50'} !p-0`}
                                         >
                                             {x + 1}
@@ -443,7 +490,7 @@ const ShopPage = () => {
                                     ))}
                                     <AnimatedButton
                                         disabled={page === totalPages}
-                                        onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                                        onClick={() => handlePageChange(Math.min(totalPages, page + 1))}
                                         className={`w-8 h-8 flex items-center justify-center rounded border border-gray-200 ${page === totalPages ? 'text-gray-300 cursor-not-allowed' : 'text-gray-600 hover:bg-gray-50'} !p-0`}
                                     >
                                         &gt;
