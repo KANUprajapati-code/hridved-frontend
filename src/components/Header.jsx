@@ -62,7 +62,7 @@ const Header = () => {
                 <Link to="/" className="flex-shrink-0">
                     <img
                         src="/logo-asset4.png"
-                        alt="HRIDVED"
+                        alt="HRIDVED AYURVEDA"
                         className="h-14 md:h-10 w-auto object-contain transition-transform hover:scale-105"
                     />
                 </Link>

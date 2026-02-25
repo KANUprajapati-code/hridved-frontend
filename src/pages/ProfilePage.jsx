@@ -271,7 +271,7 @@ const ProfilePage = () => {
                                                     <label className="block text-sm font-bold text-gray-700 mb-2">Phone Number</label>
                                                     <input
                                                         type="text"
-                                                        placeholder="+91 98765 43210"
+                                                        placeholder="+91 79904 11390"
                                                         className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-secondary/50 focus:border-secondary transition-all"
                                                         value={phone}
                                                         onChange={(e) => setPhone(e.target.value)}

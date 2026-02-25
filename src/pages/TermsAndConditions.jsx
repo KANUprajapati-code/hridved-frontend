@@ -19,7 +19,7 @@ const TermsAndConditions = () => {
                     <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-sm border border-gray-100 p-8 md:p-12">
                         <div className="prose prose-lg text-gray-600 max-w-none">
                             <p className="lead text-xl text-gray-700 font-medium mb-8">
-                                Welcome to HRIDVED. These terms and conditions outline the rules and regulations for the use of HRIDVED's Website, located at hridved.in.
+                                Welcome to HRIDVED AYURVEDA. These terms and conditions outline the rules and regulations for the use of HRIDVED AYURVEDA's Website, located at hridved.in.
                             </p>
 
                             <div className="mb-8 border-b border-gray-100 pb-8">
@@ -28,7 +28,7 @@ const TermsAndConditions = () => {
                                     <h2 className="text-2xl font-serif font-bold m-0 text-primary">1. Acceptable Use</h2>
                                 </div>
                                 <p>
-                                    By accessing this website, we assume you accept these terms and conditions. Do not continue to use HRIDVED if you do not agree to take all of the terms and conditions stated on this page.
+                                    By accessing this website, we assume you accept these terms and conditions. Do not continue to use HRIDVED AYURVEDA if you do not agree to take all of the terms and conditions stated on this page.
                                 </p>
                             </div>
 
@@ -68,7 +68,7 @@ const TermsAndConditions = () => {
                                     <h2 className="text-2xl font-serif font-bold m-0 text-primary">4. Governing Law</h2>
                                 </div>
                                 <p>
-                                    These terms and conditions are governed by and construed in accordance with the laws of India, and you irrevocably submit to the exclusive jurisdiction of the courts in Kerala.
+                                    These terms and conditions are governed by and construed in accordance with the laws of India, and you irrevocably submit to the exclusive jurisdiction of the courts in Gujarat.
                                 </p>
                             </div>
 

@@ -37,14 +37,14 @@ const ContactPage = () => {
                             <MapPin className="mt-1 flex-shrink-0" />
                             <div>
                                 <h3 className="font-bold">Our Location</h3>
-                                <p className="text-gray-300">123 Ayurveda Lane, Kerala, India</p>
+                                <p className="text-gray-300 text-sm">23 VRAJ GARDEN SOCIETY, BAYAD, DIST: ARAVALLI Gujarat 383325</p>
                             </div>
                         </li>
                         <li className="flex items-start space-x-4">
                             <Phone className="mt-1 flex-shrink-0" />
                             <div>
                                 <h3 className="font-bold">Phone</h3>
-                                <p className="text-gray-300">+91 98765 43210</p>
+                                <p className="text-gray-300">+91 79904 11390</p>
                             </div>
                         </li>
                         <li className="flex items-start space-x-4">

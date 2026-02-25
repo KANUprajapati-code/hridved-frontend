@@ -8,7 +8,7 @@ const PrivacyPolicy = () => {
             <div className="bg-primary text-white py-16">
                 <div className="container mx-auto px-4 text-center">
                     <h1 className="text-4xl md:text-5xl font-serif font-bold mb-4">Privacy Policy</h1>
-                    <p className="text-xl opacity-90">Effective Date: October 26, 2023</p>
+                    <p className="text-xl opacity-90">Effective Date: {new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
                 </div>
             </div>
 
@@ -17,7 +17,7 @@ const PrivacyPolicy = () => {
 
                     <div className="prose prose-lg text-gray-600 max-w-none">
                         <p className="lead text-xl text-gray-700 font-medium mb-8">
-                            At HRIDVED, we are committed to protecting your privacy and ensuring the security of your personal information. This Privacy Policy outlines how we collect, use, and safeguard your data when you visit our website or purchase our Ayurvedic products.
+                            At HRIDVED AYURVEDA, we are committed to protecting your privacy and ensuring the security of your personal information. This Privacy Policy outlines how we collect, use, and safeguard your data when you visit our website or purchase our Ayurvedic products.
                         </p>
 
                         <div className="mb-8">

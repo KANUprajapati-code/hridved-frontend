@@ -8,7 +8,7 @@ const Footer = () => {
             <div className="container mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
                 {/* About */}
                 <div>
-                    <img src="/logo-asset4.png" alt="HRIDVED" className="h-12 w-auto mb-4" />
+                    <img src="/logo-asset4.png" alt="HRIDVED AYURVEDA" className="h-12 w-auto mb-4" />
                     <p className="text-gray-300 text-sm">
                         Authentic Ayurvedic medicines and treatments since 1921.
                         Bringing the wisdom of Ayurveda to the modern world.
@@ -46,11 +46,11 @@ const Footer = () => {
                     <ul className="space-y-4 text-sm text-gray-300">
                         <li className="flex items-center space-x-2">
                             <MapPin size={18} />
-                            <span>123 Ayurveda Lane, Kerala, India</span>
+                            <span>23 VRAJ GARDEN SOCIETY, BAYAD, DIST: ARAVALLI Gujarat 383325</span>
                         </li>
                         <li className="flex items-center space-x-2">
                             <Phone size={18} />
-                            <span>+91 98765 43210</span>
+                            <span>+91 79904 11390</span>
                         </li>
                         <li className="flex items-center space-x-2">
                             <Mail size={18} />
@@ -66,7 +66,7 @@ const Footer = () => {
             </div>
             <div className="border-t border-gray-700 mt-8 pt-4 text-sm text-gray-400">
                 <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-4">
-                    <p>&copy; {new Date().getFullYear()} HRIDVED. All rights reserved.</p>
+                    <p>&copy; {new Date().getFullYear()} HRIDVED AYURVEDA. All rights reserved.</p>
                     <p>Developed By <a href="https://final-portfolio-0zy2.onrender.com/" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-secondary transition-colors font-medium">Kanu Prajapati</a></p>
                 </div>
             </div>

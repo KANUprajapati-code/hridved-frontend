@@ -11,9 +11,9 @@ const ShippingPage = () => {
     const [state, setState] = useState('');
 
     // Split name for form matching the design
-    const [firstName, setFirstName] = useState('Sitaram');
-    const [lastName, setLastName] = useState('Ayurveda');
-    const [phone, setPhone] = useState('+91 98765 43210');
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [phone, setPhone] = useState('+91 79904 11390');
 
     const navigate = useNavigate();
     const { cart } = useCart();
