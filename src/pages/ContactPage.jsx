@@ -51,7 +51,7 @@ const ContactPage = () => {
                             <Mail className="mt-1 flex-shrink-0" />
                             <div>
                                 <h3 className="font-bold">Email</h3>
-                                <p className="text-gray-300">support@hridved.com</p>
+                                <p className="text-gray-300">hridvedpharama@gmail.com</p>
                             </div>
                         </li>
                     </ul>

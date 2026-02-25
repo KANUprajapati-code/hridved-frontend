@@ -73,7 +73,7 @@ const PrivacyPolicy = () => {
                             <p>
                                 If there are any questions regarding this privacy policy, you may contact us using the information below:
                             </p>
-                            <p className="mt-2 text-primary font-bold">support@hridved.com</p>
+                            <p className="mt-2 text-primary font-bold">hridvedpharama@gmail.com</p>
                         </div>
                     </div>
                 </div>

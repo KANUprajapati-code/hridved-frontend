@@ -37,6 +37,8 @@ const DoctorConsultation = lazy(() => import('./pages/DoctorConsultation'));
 const DoctorBookingPage = lazy(() => import('./pages/DoctorBookingPage'));
 const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'));
 const ReturnPolicy = lazy(() => import('./pages/ReturnPolicy'));
+const TermsAndConditions = lazy(() => import('./pages/TermsAndConditions'));
+const ShippingPolicy = lazy(() => import('./pages/ShippingPolicy'));
 const AboutUsPage = lazy(() => import('./pages/AboutUsPage'));
 const FshipTestPage = lazy(() => import('./pages/FshipTestPage'));
 
@@ -111,6 +113,8 @@ function App() {
                                                 <Route path="/doctor/:doctorId/book" element={<DoctorBookingPage />} />
                                                 <Route path="/privacy" element={<PrivacyPolicy />} />
                                                 <Route path="/return-policy" element={<ReturnPolicy />} />
+                                                <Route path="/terms" element={<TermsAndConditions />} />
+                                                <Route path="/shipping-policy" element={<ShippingPolicy />} />
                                                 <Route path="/about" element={<AboutUsPage />} />
                                                 <Route path="/test/fship" element={<FshipTestPage />} />
                                             </Route>

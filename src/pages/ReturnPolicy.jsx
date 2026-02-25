@@ -53,7 +53,7 @@ const ReturnPolicy = () => {
                             <section>
                                 <h2 className="text-xl font-bold text-primary mb-3">4. Damaged or Defective Items</h2>
                                 <p>
-                                    If you received a damaged or defective product, please contact us immediately at <strong>support@hridved.com</strong>
+                                    If you received a damaged or defective product, please contact us immediately at <strong>hridvedpharama@gmail.com</strong>
                                     with details of the product and the defect. We will arrange for a replacement or a full refund.
                                 </p>
                             </section>

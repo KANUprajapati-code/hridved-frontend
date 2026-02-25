@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useCheckout } from '../context/CheckoutContext';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
@@ -206,7 +206,7 @@ export default function CheckoutPaymentPage() {
                                                 className="w-4 h-4 accent-primary cursor-pointer"
                                             />
                                             <label htmlFor="terms" className="text-sm text-gray-600 cursor-pointer">
-                                                I agree to the <span className="text-primary hover:underline">Terms and Conditions</span>
+                                                I agree to the <Link to="/terms" target="_blank" className="text-primary hover:underline">Terms and Conditions</Link>
                                             </label>
                                         </div>
 

@@ -172,9 +172,10 @@ const HomePage = () => {
                             <div className="text-center mb-10 md:mb-16">
                                 <h2 className="text-2xl md:text-4xl font-display font-bold text-primary mb-2 md:mb-3">Shop by Category</h2>
                                 <p className="text-sm md:text-base text-gray-500">Explore our curated collections for your specific needs.</p>
+
                             </div>
 
-                            <div className="flex overflow-x-auto pb-6 gap-6 md:gap-12 no-scrollbar justify-start md:justify-center scroll-smooth">
+                            <div className="flex overflow-x-auto pb-6 gap-6 md:gap-12 no-scrollbar justify-start md:justify-center scroll-smooth items-center">
                                 {(categories.length > 0 ? categories : [
                                     { name: 'Skin care', image: 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=800&auto=format&fit=crop&q=80' },
                                     { name: 'Hair care', image: 'https://images.unsplash.com/photo-1522337660859-02fbefca4702?w=800&auto=format&fit=crop&q=80' },
@@ -183,13 +184,19 @@ const HomePage = () => {
                                     { name: 'Ayurved medicine', image: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=800&auto=format&fit=crop&q=80' },
                                     { name: 'Consultation', image: 'https://images.unsplash.com/photo-1584820927498-cfe5211fd8bf?w=800&auto=format&fit=crop&q=80' },
                                 ]).map((cat, idx) => {
-                                    const link = cat.name.toLowerCase() === 'consultation' ? '/consultation' : `/shop?category=${cat.name}`;
+                                    const link = cat.name.toLowerCase() === 'consultation' ? '/consultation' : `/shop?category=${encodeURIComponent(cat.name)}`;
                                     return (
                                         <Link to={link} key={idx} className="flex flex-col items-center group flex-shrink-0">
-                                            <div className="w-20 h-20 md:w-32 md:h-32 rounded-full overflow-hidden border-2 md:border-4 border-transparent group-hover:border-secondary transition-all duration-300 mb-3 md:mb-4 shadow-md md:shadow-lg">
-                                                <AnimatedImage src={cat.image || cat.img} alt={cat.name} className="w-full h-full object-cover" />
+                                            <div className="w-20 h-20 md:w-32 md:h-32 rounded-full overflow-hidden border-2 md:border-4 border-gray-100 group-hover:border-secondary transition-all duration-500 mb-3 md:mb-4 shadow-md md:shadow-xl relative bg-white">
+                                                <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/10 transition-colors duration-300 z-10"></div>
+                                                <AnimatedImage
+                                                    src={cat.image || cat.img}
+                                                    alt={cat.name}
+                                                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                                    containerClassName="w-full h-full"
+                                                />
                                             </div>
-                                            <h3 className="text-xs md:text-base font-bold text-gray-800 group-hover:text-primary transition-colors whitespace-nowrap">{cat.name}</h3>
+                                            <h3 className="text-[10px] md:text-sm font-bold text-gray-700 group-hover:text-primary transition-colors tracking-tight uppercase">{cat.name}</h3>
                                         </Link>
                                     );
                                 })}

@@ -24,12 +24,23 @@ const Footer = () => {
                         <li><Link to="/consultation" className="text-gray-300">Consultation</Link></li>
                         <li><Link to="/blogs" className="text-gray-300">Blog</Link></li>
                         <li><Link to="/about" className="text-gray-300">About us</Link></li>
-                        <li><Link to="/return-policy" className="text-gray-300">Return refund vadu</Link></li>
-                        <li><Link to="/privacy" className="text-gray-300">Privacy policy</Link></li>
                     </ul>
                 </div>
 
-                {/* Contact */}
+                {/* Legal Links */}
+                <div>
+                    <h3 className="text-lg font-bold mb-4">Support & Legal</h3>
+                    <ul className="space-y-2 text-sm text-gray-300">
+                        <li><Link to="/contact" className="text-gray-300">Contact Us</Link></li>
+                        <li><Link to="/privacy" className="text-gray-300">Privacy Policy</Link></li>
+                        <li><Link to="/terms" className="text-gray-300">Terms & Conditions</Link></li>
+                        <li><Link to="/return-policy" className="text-gray-300">Returns & Refunds</Link></li>
+                        <li><Link to="/shipping-policy" className="text-gray-300">Shipping Policy</Link></li>
+                        <li><Link to="/track-order" className="text-gray-300">Track Order</Link></li>
+                    </ul>
+                </div>
+
+                {/* Contact (shifted to 4th column, merged with socials or moved) */}
                 <div>
                     <h3 className="text-lg font-bold mb-4">Contact</h3>
                     <ul className="space-y-4 text-sm text-gray-300">
@@ -43,18 +54,13 @@ const Footer = () => {
                         </li>
                         <li className="flex items-center space-x-2">
                             <Mail size={18} />
-                            <span>support@hridved.com</span>
+                            <span>hridvedpharama@gmail.com</span>
                         </li>
                     </ul>
-                </div>
-
-                {/* Socials */}
-                <div>
-                    <h3 className="text-lg font-bold mb-4">Follow Us</h3>
-                    <div className="flex space-x-4">
-                        <a href="#" className="text-gray-300 hover:text-secondary"><Facebook /></a>
-                        <a href="#" className="text-gray-300 hover:text-secondary"><Instagram /></a>
-                        <a href="#" className="text-gray-300 hover:text-secondary"><Twitter /></a>
+                    <div className="mt-6 flex space-x-4">
+                        <a href="#" className="text-gray-300 hover:text-secondary"><Facebook size={20} /></a>
+                        <a href="#" className="text-gray-300 hover:text-secondary"><Instagram size={20} /></a>
+                        <a href="#" className="text-gray-300 hover:text-secondary"><Twitter size={20} /></a>
                     </div>
                 </div>
             </div>
