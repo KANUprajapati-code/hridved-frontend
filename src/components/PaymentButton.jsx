@@ -28,7 +28,18 @@ const PaymentButton = ({ amount, orderId, onSuccess, onError, onBeforePayment })
                 receipt: `receipt_${currentOrderId}`
             });
 
-            // 3. Initialize Razorpay Modal
+            // 3. Pre-save Razorpay Order ID to DB so webhook can find the order
+            //    This is CRITICAL for QR payments where browser may close before handler fires
+            try {
+                await api.patch(`/razorpay/pre-save/${currentOrderId}`, {
+                    razorpayOrderId: orderData.id
+                });
+            } catch (preSaveError) {
+                console.error('Failed to pre-save razorpayOrderId:', preSaveError);
+                // Non-fatal - continue with payment
+            }
+
+            // 4. Initialize Razorpay Modal
             const options = {
                 key,
                 amount: orderData.amount,
