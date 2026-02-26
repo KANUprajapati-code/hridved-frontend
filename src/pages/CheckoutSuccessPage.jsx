@@ -21,8 +21,10 @@ export default function CheckoutSuccessPage() {
         if (!orderId) return;
         try {
             setLoading(true);
-            const response = await api.get(`/checkout/order/${orderId}`);
-            setOrderDetails(response.data);
+            const { data: res } = await api.get(`/checkout/order/${orderId}`);
+            if (res.success) {
+                setOrderDetails(res.data);
+            }
         } catch (error) {
             console.error('Error fetching order details:', error);
         } finally {
@@ -35,8 +37,30 @@ export default function CheckoutSuccessPage() {
             navigate('/');
             return;
         }
+
         fetchOrderDetails();
-    }, [orderId, navigate, fetchOrderDetails]);
+
+        // If order exists but not paid yet, poll for status (waiting for webhook)
+        let pollInterval;
+        if (orderDetails && !orderDetails.isPaid) {
+            pollInterval = setInterval(async () => {
+                try {
+                    const { data: res } = await api.get(`/checkout/order/${orderId}`);
+                    if (res.success && res.data.isPaid) {
+                        console.log("Success Page Polling: Payment confirmed");
+                        setOrderDetails(res.data);
+                        clearInterval(pollInterval);
+                    }
+                } catch (error) {
+                    console.error('Polling error on success page:', error);
+                }
+            }, 4000); // Consistent 4s interval
+        }
+
+        return () => {
+            if (pollInterval) clearInterval(pollInterval);
+        };
+    }, [orderId, navigate, fetchOrderDetails, orderDetails?._id, orderDetails?.isPaid]);
 
     const calculateEstimatedDelivery = () => {
         if (!orderDetails) return null;
@@ -107,11 +131,26 @@ export default function CheckoutSuccessPage() {
 
                     <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8 md:p-12">
                         <div className="text-center mb-10">
-                            <div className="inline-flex items-center justify-center w-24 h-24 bg-green-100 text-green-600 rounded-full mb-6">
-                                <CheckCircle size={48} strokeWidth={3} />
+                            <div className="inline-flex items-center justify-center w-24 h-24 mb-6">
+                                {orderDetails.isPaid ? (
+                                    <div className="bg-green-100 text-green-600 rounded-full w-full h-full flex items-center justify-center">
+                                        <CheckCircle size={48} strokeWidth={3} />
+                                    </div>
+                                ) : (
+                                    <div className="bg-blue-100 text-blue-600 rounded-full w-full h-full flex items-center justify-center relative">
+                                        <div className="absolute inset-0 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
+                                        <Package size={40} />
+                                    </div>
+                                )}
                             </div>
-                            <h1 className="text-3xl font-serif font-bold text-gray-900 mb-2">Order Confirmed!</h1>
-                            <p className="text-gray-600 text-lg">Thank you for your purchase. We&apos;ve received your order.</p>
+                            <h1 className="text-3xl font-serif font-bold text-gray-900 mb-2">
+                                {orderDetails.isPaid ? 'Order Confirmed!' : 'Verifying Payment...'}
+                            </h1>
+                            <p className="text-gray-600 text-lg">
+                                {orderDetails.isPaid
+                                    ? "Thank you for your purchase. We've received your order."
+                                    : "We're waiting for payment confirmation from the bank. This usually takes a few seconds."}
+                            </p>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -138,8 +177,9 @@ export default function CheckoutSuccessPage() {
                                         </div>
                                         <div className="flex justify-between items-center">
                                             <span className="text-gray-500 text-sm">Payment Status</span>
-                                            <span className={`font-bold px-2 py-0.5 rounded text-xs ${orderDetails.isPaid ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
-                                                {orderDetails.isPaid ? 'PAID' : 'PENDING'}
+                                            <span className={`font-bold px-3 py-1 rounded text-xs flex items-center gap-1.5 ${orderDetails.isPaid ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'}`}>
+                                                {!orderDetails.isPaid && <div className="w-2 h-2 bg-blue-600 rounded-full animate-pulse"></div>}
+                                                {orderDetails.isPaid ? 'PAID' : 'AWAITING CONFIRMATION'}
                                             </span>
                                         </div>
                                         <div className="flex justify-between items-center text-sm">

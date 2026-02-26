@@ -19,14 +19,16 @@ const PaymentButton = ({ amount, orderId, onSuccess, onError, onBeforePayment })
             }
 
             // 1. Get Razorpay Key
-            const { data: key } = await api.get('/razorpay/key');
+            const { data: keyRes } = await api.get('/razorpay/key');
+            const key = keyRes.key;
 
             // 2. Create Razorpay Order
-            const { data: orderData } = await api.post('/razorpay/order', {
+            const { data: orderRes } = await api.post('/razorpay/order', {
                 amount,
                 currency: 'INR',
                 receipt: `receipt_${currentOrderId}`
             });
+            const orderData = orderRes.data;
 
             // 3. Pre-save Razorpay Order ID to DB so webhook can find the order
             //    This is CRITICAL for QR payments where browser may close before handler fires
@@ -35,7 +37,7 @@ const PaymentButton = ({ amount, orderId, onSuccess, onError, onBeforePayment })
                     razorpayOrderId: orderData.id
                 });
             } catch (preSaveError) {
-                console.error('Failed to pre-save razorpayOrderId:', preSaveError);
+                console.error('Pre-save Error:', preSaveError);
                 // Non-fatal - continue with payment
             }
 
@@ -58,7 +60,7 @@ const PaymentButton = ({ amount, orderId, onSuccess, onError, onBeforePayment })
                             orderId: currentOrderId
                         });
 
-                        if (verifyData.status === 'success') {
+                        if (verifyData.success) {
                             if (onSuccess) onSuccess(verifyData);
                             window.location.href = `/checkout/success?id=${currentOrderId}`;
                         } else {

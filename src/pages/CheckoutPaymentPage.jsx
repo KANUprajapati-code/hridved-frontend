@@ -20,6 +20,8 @@ export default function CheckoutPaymentPage() {
     const [loading] = useState(false);
     const [creatingOrder, setCreatingOrder] = useState(false);
 
+    const orderId = checkoutData.orderId;
+
     useEffect(() => {
         if (!checkoutData.address || !checkoutData.shippingMethod) {
             navigate('/checkout/address');
@@ -31,7 +33,38 @@ export default function CheckoutPaymentPage() {
             navigate('/cart');
             return;
         }
-    }, [checkoutData, navigate, cart]);
+
+        // 4. Polling for payment status (Optimized for QR payments)
+        let pollInterval;
+        if (orderId) {
+            const startTime = Date.now();
+            const maxDuration = 120000; // 2 minutes
+
+            pollInterval = setInterval(async () => {
+                const elapsed = Date.now() - startTime;
+                if (elapsed > maxDuration) {
+                    console.log("Polling timed out after 2 minutes");
+                    clearInterval(pollInterval);
+                    return;
+                }
+
+                try {
+                    const { data: res } = await api.get(`/checkout/order/${orderId}`);
+                    if (res.success && res.data.isPaid) {
+                        console.log("Payment detected via polling - redirecting to success");
+                        clearInterval(pollInterval);
+                        navigate(`/checkout/success?id=${orderId}`);
+                    }
+                } catch (err) {
+                    console.error("Polling error:", err);
+                }
+            }, 4000); // 4 second interval
+        }
+
+        return () => {
+            if (pollInterval) clearInterval(pollInterval);
+        };
+    }, [checkoutData, navigate, cart, orderId]);
 
     const calculateTotals = () => {
         const cartItems = cart?.cartItems || [];
@@ -51,7 +84,7 @@ export default function CheckoutPaymentPage() {
             const { itemsPrice, taxPrice, shippingPrice, totalPrice } = calculateTotals();
             const cartItems = cart?.cartItems || [];
 
-            const { data } = await api.post('/checkout/create-order', {
+            const { data: res } = await api.post('/checkout/create-order', {
                 addressId: checkoutData.address._id,
                 deliveryOption: checkoutData.shippingMethod,
                 orderItems: cartItems.map(item => ({
@@ -67,11 +100,15 @@ export default function CheckoutPaymentPage() {
                 totalPrice,
             });
 
-            setOrderId(data._id, data);
-            return data;
+            if (res.success) {
+                setOrderId(res.data._id, res.data);
+                return res.data;
+            } else {
+                throw new Error(res.message || 'Failed to create order');
+            }
         } catch (error) {
             console.error('Error creating order:', error);
-            setErrorMessage(error.response?.data?.message || 'Failed to create order');
+            setErrorMessage(error.response?.data?.message || error.message || 'Failed to create order');
             throw error;
         } finally {
             setCreatingOrder(false);
@@ -195,7 +232,7 @@ export default function CheckoutPaymentPage() {
 
                                         <div className="bg-gray-50 rounded-lg p-4 mb-6 text-sm text-gray-600 flex gap-3 items-start">
                                             <Lock size={16} className="text-gray-400 mt-0.5 flex-shrink-0" />
-                                            <p>Secure payment via Razorpay. All major credit/debit cards, UPI (Google Pay, PhonePe, Paytm), and Net Banking are supported.</p>
+                                            <p>Secure payment via Razorpay. All major credit/debit cards, UPI (Google Pay, Paytm), and Net Banking are supported.</p>
                                         </div>
 
                                         <div className="mb-6 flex items-center gap-2">
