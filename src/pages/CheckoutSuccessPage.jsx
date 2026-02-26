@@ -41,8 +41,9 @@ export default function CheckoutSuccessPage() {
         fetchOrderDetails();
 
         // If order exists but not paid yet, poll for status (waiting for webhook)
+        // ONLY poll for Razorpay orders. COD orders are confirmed on creation.
         let pollInterval;
-        if (orderDetails && !orderDetails.isPaid) {
+        if (orderDetails && !orderDetails.isPaid && orderDetails.paymentMethod === 'Razorpay') {
             console.log("[SUCCESS PAGE] Starting fallback poll for payment...");
             pollInterval = setInterval(async () => {
                 try {
@@ -133,7 +134,7 @@ export default function CheckoutSuccessPage() {
                     <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8 md:p-12">
                         <div className="text-center mb-10">
                             <div className="inline-flex items-center justify-center w-24 h-24 mb-6">
-                                {orderDetails.isPaid ? (
+                                {orderDetails.isPaid || orderDetails.paymentMethod === 'COD' ? (
                                     <div className="bg-green-100 text-green-600 rounded-full w-full h-full flex items-center justify-center">
                                         <CheckCircle size={48} strokeWidth={3} />
                                     </div>
@@ -145,11 +146,13 @@ export default function CheckoutSuccessPage() {
                                 )}
                             </div>
                             <h1 className="text-3xl font-serif font-bold text-gray-900 mb-2">
-                                {orderDetails.isPaid ? 'Order Confirmed!' : 'Verifying Payment...'}
+                                {orderDetails.isPaid || orderDetails.paymentMethod === 'COD' ? 'Order Confirmed!' : 'Verifying Payment...'}
                             </h1>
                             <p className="text-gray-600 text-lg">
-                                {orderDetails.isPaid
-                                    ? "Thank you for your purchase. We've received your order."
+                                {orderDetails.isPaid || orderDetails.paymentMethod === 'COD'
+                                    ? orderDetails.paymentMethod === 'COD'
+                                        ? "Your order has been placed successfully via Cash on Delivery."
+                                        : "Thank you for your purchase. We've received your order."
                                     : "We're waiting for payment confirmation from the bank. This usually takes a few seconds."}
                             </p>
                         </div>
@@ -179,8 +182,8 @@ export default function CheckoutSuccessPage() {
                                         <div className="flex justify-between items-center">
                                             <span className="text-gray-500 text-sm">Payment Status</span>
                                             <span className={`font-bold px-3 py-1 rounded text-xs flex items-center gap-1.5 ${orderDetails.isPaid ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'}`}>
-                                                {!orderDetails.isPaid && <div className="w-2 h-2 bg-blue-600 rounded-full animate-pulse"></div>}
-                                                {orderDetails.isPaid ? 'PAID' : 'AWAITING CONFIRMATION'}
+                                                {!orderDetails.isPaid && orderDetails.paymentMethod === 'Razorpay' && <div className="w-2 h-2 bg-blue-600 rounded-full animate-pulse"></div>}
+                                                {orderDetails.isPaid ? 'PAID' : orderDetails.paymentMethod === 'COD' ? 'COD - PENDING' : 'AWAITING CONFIRMATION'}
                                             </span>
                                         </div>
                                         <div className="flex justify-between items-center text-sm">
