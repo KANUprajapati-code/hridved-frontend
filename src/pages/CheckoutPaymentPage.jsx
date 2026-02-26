@@ -35,8 +35,9 @@ export default function CheckoutPaymentPage() {
         }
 
         // 4. Polling for payment status (Optimized for QR payments)
+        // ONLY poll if it's a Razorpay order and not yet confirmed
         let pollInterval;
-        if (orderId && !checkoutData.isPaymentConfirmed) {
+        if (orderId && !checkoutData.isPaymentConfirmed && paymentMethod === 'razorpay') {
             const startTime = Date.now();
             const maxDuration = 120000; // 2 minutes
 
@@ -67,7 +68,7 @@ export default function CheckoutPaymentPage() {
         return () => {
             if (pollInterval) clearInterval(pollInterval);
         };
-    }, [checkoutData, navigate, cart, orderId]);
+    }, [checkoutData, navigate, cart, orderId, paymentMethod]);
 
     const calculateTotals = () => {
         const cartItems = cart?.cartItems || [];
