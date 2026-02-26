@@ -133,10 +133,53 @@ export default function CheckoutPaymentPage() {
         }
     };
 
+    const [paymentMethod, setPaymentMethod] = useState('razorpay');
+
+    const handleCODOrder = async () => {
+        try {
+            setCreatingOrder(true);
+            clearError();
+
+            const { itemsPrice, taxPrice, shippingPrice, totalPrice } = calculateTotals();
+            const cartItems = cart?.cartItems || [];
+
+            const { data: res } = await api.post('/checkout/create-order', {
+                addressId: checkoutData.address._id,
+                deliveryOption: checkoutData.shippingMethod,
+                orderItems: cartItems.map(item => ({
+                    name: item.name,
+                    qty: item.qty,
+                    image: item.image,
+                    price: item.price,
+                    product: item.product || item._id,
+                })),
+                itemsPrice,
+                taxPrice,
+                shippingPrice,
+                totalPrice,
+                paymentMethod: 'COD',
+            });
+
+            if (res.success) {
+                setOrderId(res.data._id, res.data);
+                navigate(`/checkout/success?id=${res.data._id}`);
+                return res.data;
+            } else {
+                throw new Error(res.message || 'Failed to create order');
+            }
+        } catch (error) {
+            console.error('Error creating COD order:', error);
+            setErrorMessage(error.response?.data?.message || error.message || 'Failed to create order');
+        } finally {
+            setCreatingOrder(false);
+        }
+    };
+
     const handlePayment = async (e) => {
         if (e) e.preventDefault();
-        // The PaymentButton component now handles the redirection and internal logic
-        // We just need to make sure the order is created first.
+        if (paymentMethod === 'COD') {
+            await handleCODOrder();
+        }
     };
 
     const { itemsPrice, taxPrice, shippingPrice, totalPrice } = calculateTotals();
@@ -148,7 +191,7 @@ export default function CheckoutPaymentPage() {
                     <CheckoutStepIndicator />
 
                     <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 md:p-8">
-                        <h1 className="text-2xl font-serif font-bold text-gray-900 mb-6">Payment</h1>
+                        <h1 className="text-2xl font-serif font-bold text-gray-900 mb-6 font-sans">Payment</h1>
 
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
                             {/* Order Summary */}
@@ -163,7 +206,7 @@ export default function CheckoutPaymentPage() {
                                             {cart?.cartItems && cart.cartItems.map((item) => (
                                                 <div key={item.product || item._id} className="flex justify-between items-start pb-4 border-b border-gray-200 last:border-0 last:pb-0">
                                                     <div>
-                                                        <div className="font-bold text-gray-900 text-sm">{item.name}</div>
+                                                        <div className="font-bold text-gray-900 text-sm whitespace-nowrap overflow-hidden text-ellipsis max-w-[150px]">{item.name}</div>
                                                         <div className="text-xs text-gray-500 mt-1">Qty: {item.qty}</div>
                                                     </div>
                                                     <div className="font-bold text-gray-900 text-sm">₹{(item.price * item.qty).toLocaleString()}</div>
@@ -206,59 +249,78 @@ export default function CheckoutPaymentPage() {
                             {/* Payment Section */}
                             <div>
                                 <ScrollReveal delay={0.2}>
-                                    <form onSubmit={handlePayment} className="bg-white rounded-xl border-2 border-primary/10 p-6 md:p-8 shadow-sm h-full flex flex-col">
+                                    <div className="bg-white rounded-xl border-2 border-primary/10 p-6 md:p-8 shadow-sm h-full flex flex-col">
                                         <h3 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
                                             <CreditCard size={20} className="text-primary" /> Select Payment Method
                                         </h3>
 
-                                        <div className="mb-6">
-                                            <label className="flex items-center p-4 border-2 border-primary bg-primary/5 rounded-xl cursor-pointer transition-all relative">
-                                                <div className="absolute top-3 right-3 text-primary">
-                                                    <div className="bg-primary text-white rounded-full p-1">
-                                                        <ShieldCheck size={14} strokeWidth={3} />
-                                                    </div>
-                                                </div>
-
+                                        <div className="space-y-4 mb-8">
+                                            {/* Razorpay Option */}
+                                            <label className={`flex items-center p-4 border-2 rounded-xl cursor-pointer transition-all ${paymentMethod === 'razorpay' ? 'border-primary bg-primary/5' : 'border-gray-200 hover:border-primary/50'}`}>
                                                 <input
                                                     type="radio"
                                                     name="paymentMethod"
                                                     value="razorpay"
-                                                    defaultChecked
+                                                    checked={paymentMethod === 'razorpay'}
+                                                    onChange={() => setPaymentMethod('razorpay')}
                                                     className="w-5 h-5 accent-primary mr-4"
                                                 />
-                                                <div>
-                                                    <div className="font-bold text-gray-900">Credit / Debit Card / UPI</div>
-                                                    <div className="text-xs text-primary font-bold bg-white border border-primary px-2 py-0.5 rounded inline-block mt-1">Razorpay Secured</div>
+                                                <div className="flex-1">
+                                                    <div className="font-bold text-gray-900">Online Payment</div>
+                                                    <div className="text-xs text-gray-500">Cards, UPI, Netbanking, Wallets</div>
+                                                    {paymentMethod === 'razorpay' && (
+                                                        <div className="text-[10px] text-primary font-bold bg-white border border-primary px-2 py-0.5 rounded inline-block mt-1 uppercase tracking-wider">Razorpay Secured</div>
+                                                    )}
                                                 </div>
+                                                {paymentMethod === 'razorpay' && <ShieldCheck size={20} className="text-primary" />}
+                                            </label>
+
+                                            {/* COD Option */}
+                                            <label className={`flex items-center p-4 border-2 rounded-xl cursor-pointer transition-all ${paymentMethod === 'COD' ? 'border-primary bg-primary/5' : 'border-gray-200 hover:border-primary/50'}`}>
+                                                <input
+                                                    type="radio"
+                                                    name="paymentMethod"
+                                                    value="COD"
+                                                    checked={paymentMethod === 'COD'}
+                                                    onChange={() => setPaymentMethod('COD')}
+                                                    className="w-5 h-5 accent-primary mr-4"
+                                                />
+                                                <div className="flex-1">
+                                                    <div className="font-bold text-gray-900">Cash on Delivery (COD)</div>
+                                                    <div className="text-xs text-gray-500">Pay when you receive your order</div>
+                                                </div>
+                                                {paymentMethod === 'COD' && <Package size={20} className="text-primary" />}
                                             </label>
                                         </div>
 
-                                        <div className="bg-gray-50 rounded-lg p-4 mb-6 text-sm text-gray-600 flex gap-3 items-start">
+                                        <div className="bg-gray-50 rounded-lg p-4 mb-8 text-sm text-gray-600 flex gap-3 items-start">
                                             <Lock size={16} className="text-gray-400 mt-0.5 flex-shrink-0" />
-                                            <p>Secure payment via Razorpay. All major credit/debit cards, UPI (Google Pay, Paytm), and Net Banking are supported.</p>
-                                        </div>
-
-                                        <div className="mb-6 flex items-center gap-2">
-                                            <input
-                                                type="checkbox"
-                                                id="terms"
-                                                defaultChecked
-                                                className="w-4 h-4 accent-primary cursor-pointer"
-                                            />
-                                            <label htmlFor="terms" className="text-sm text-gray-600 cursor-pointer">
-                                                I agree to the <Link to="/terms" target="_blank" className="text-primary hover:underline">Terms and Conditions</Link>
-                                            </label>
+                                            <p>
+                                                {paymentMethod === 'razorpay'
+                                                    ? "Secure your order with instant online payment. All transactions are SSL encrypted."
+                                                    : "A small verification call might be made for COD orders to confirm your details."}
+                                            </p>
                                         </div>
 
                                         <div className="mt-auto">
-                                            <PaymentButton
-                                                amount={totalPrice}
-                                                onBeforePayment={createOrderBackend}
-                                                onError={(err) => setErrorMessage(err)}
-                                            />
+                                            {paymentMethod === 'razorpay' ? (
+                                                <PaymentButton
+                                                    amount={totalPrice}
+                                                    onBeforePayment={createOrderBackend}
+                                                    onError={(err) => setErrorMessage(err)}
+                                                />
+                                            ) : (
+                                                <AnimatedButton
+                                                    onClick={handleCODOrder}
+                                                    disabled={creatingOrder}
+                                                    className="w-full bg-primary text-white py-4 rounded-xl font-bold text-lg shadow-lg hover:bg-opacity-90 hover:shadow-xl transition-all flex items-center justify-center gap-2 border-none"
+                                                >
+                                                    {creatingOrder ? "Processing..." : <>Complete Order <ArrowRight size={20} /></>}
+                                                </AnimatedButton>
+                                            )}
 
                                             <div className="mt-4 flex flex-col items-center justify-center gap-2 text-xs text-gray-500">
-                                                {orderId && !checkoutData.isPaymentConfirmed && (
+                                                {orderId && !checkoutData.isPaymentConfirmed && paymentMethod === 'razorpay' && (
                                                     <div className="flex items-center gap-2 text-primary font-bold animate-pulse mb-2 text-sm bg-primary/5 px-4 py-2 rounded-full border border-primary/10">
                                                         <div className="w-2 h-2 bg-primary rounded-full animate-ping"></div>
                                                         Waiting for payment confirmation...
@@ -266,11 +328,11 @@ export default function CheckoutPaymentPage() {
                                                 )}
                                                 <div className="flex items-center gap-2">
                                                     <Lock size={12} />
-                                                    <span>Your payment information is encrypted and secure</span>
+                                                    <span>Your information is safe & secure</span>
                                                 </div>
                                             </div>
                                         </div>
-                                    </form>
+                                    </div>
                                 </ScrollReveal>
                             </div>
                         </div>
