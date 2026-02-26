@@ -10,13 +10,13 @@ export const useFlyingElement = () => {
 
   const { addFlyingElement } = context;
 
-  const animateAddToCart = (fromElement, toElement, content = 'Added to cart') => {
+  const animateAddToCart = (fromElement, toElement, image) => {
     if (!fromElement || !toElement) return;
 
     const startRect = fromElement.getBoundingClientRect();
     const endRect = toElement.getBoundingClientRect();
 
-    addFlyingElement(startRect, endRect, content);
+    addFlyingElement(startRect, endRect, image);
   };
 
   return {

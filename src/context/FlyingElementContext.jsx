@@ -5,13 +5,13 @@ export const FlyingElementContext = createContext();
 export const FlyingElementProvider = ({ children }) => {
   const [elements, setElements] = useState([]);
 
-  const addFlyingElement = useCallback((startRect, endRect, content = 'Added to cart') => {
+  const addFlyingElement = useCallback((startRect, endRect, imageUrl) => {
     const id = Date.now() + Math.random();
-    setElements((prev) => [...prev, { id, startRect, endRect, content }]);
+    setElements((prev) => [...prev, { id, startRect, endRect, imageUrl }]);
 
     setTimeout(() => {
       setElements((prev) => prev.filter((el) => el.id !== id));
-    }, 800);
+    }, 1000); // Increased duration slightly for the fling effect
 
     return id;
   }, []);

@@ -15,22 +15,40 @@ const FlyingElement = () => {
             y: element.startRect.top,
             opacity: 1,
             scale: 1,
+            rotate: 0,
           }}
           animate={{
-            x: element.endRect.left + element.endRect.width / 2,
-            y: element.endRect.top + element.endRect.height / 2,
-            opacity: 0,
-            scale: 0.2,
+            x: [
+              element.startRect.left,
+              element.startRect.left + (element.endRect.left - element.startRect.left) * 0.4, // Arc peak X
+              element.endRect.left + element.endRect.width / 2 - 20 // Final X
+            ],
+            y: [
+              element.startRect.top,
+              element.startRect.top - 150, // Arc peak Y (fling up)
+              element.endRect.top + element.endRect.height / 2 - 20 // Final Y
+            ],
+            opacity: [1, 1, 0],
+            scale: [1, 0.8, 0.2],
+            rotate: [0, 45, 180],
           }}
           transition={{
-            duration: 0.8,
-            ease: 'easeInQuad',
+            duration: 1,
+            ease: 'easeInOut',
+            times: [0, 0.4, 1]
           }}
-          className="absolute w-12 h-12 flex items-center justify-center"
+          className="absolute w-12 h-12 flex items-center justify-center overflow-hidden rounded-lg shadow-2xl border-2 border-white pointer-events-none"
+          style={{ zIndex: 9999 }}
         >
-          <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg p-3 shadow-lg text-white text-2xl">
-            🛍️
-          </div>
+          {element.imageUrl ? (
+            <img
+              src={element.imageUrl}
+              alt="flying product"
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <div className="bg-primary p-3 text-white text-2xl">🛍️</div>
+          )}
         </motion.div>
       ))}
     </div>

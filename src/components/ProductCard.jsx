@@ -1,13 +1,16 @@
 import { Link } from 'react-router-dom';
 import { Star, ShoppingCart, Eye, Heart } from 'lucide-react';
 import { useCart } from '../context/CartContext';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import ProductImage from './ProductImage';
+import { useFlyingElement } from '../hooks/useFlyingElement';
 
 const ProductCard = ({ product, onQuickView }) => {
     const { addToCart } = useCart();
     const [isWishlisted, setIsWishlisted] = useState(false);
+    const { animateAddToCart } = useFlyingElement();
+    const imageRef = useRef(null);
 
     return (
         <motion.div
@@ -37,7 +40,7 @@ const ProductCard = ({ product, onQuickView }) => {
 
             {/* Image Section - Scaled for mobile */}
             <div className="relative h-48 sm:h-72 overflow-hidden bg-gray-50 flex items-center justify-center">
-                <Link to={`/product/${product._id}`} className="w-full h-full block">
+                <Link to={`/product/${product._id}`} className="w-full h-full block" ref={imageRef}>
                     <ProductImage
                         src={product.image}
                         alt={product.name}
@@ -97,7 +100,13 @@ const ProductCard = ({ product, onQuickView }) => {
                     </div>
                     <div className="flex flex-col items-end">
                         <button
-                            onClick={() => addToCart(product)}
+                            onClick={() => {
+                                addToCart(product);
+                                const cartIcon = document.getElementById('cart-icon-container');
+                                if (imageRef.current && cartIcon) {
+                                    animateAddToCart(imageRef.current, cartIcon, product.image);
+                                }
+                            }}
                             className="bg-primary text-white p-2 sm:p-3 rounded-lg sm:rounded-xl hover:bg-secondary hover:text-primary transition-all duration-300 shadow-md hover:shadow-xl transform active:scale-95 mb-1"
                             title="Add to Cart"
                         >
