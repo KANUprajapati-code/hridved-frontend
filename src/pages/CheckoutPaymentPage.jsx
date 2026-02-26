@@ -36,27 +36,30 @@ export default function CheckoutPaymentPage() {
 
         // 4. Polling for payment status (Optimized for QR payments)
         let pollInterval;
-        if (orderId) {
+        if (orderId && !checkoutData.isPaymentConfirmed) {
             const startTime = Date.now();
             const maxDuration = 120000; // 2 minutes
 
+            console.log(`[POLLING] Started for Order: ${orderId}`);
             pollInterval = setInterval(async () => {
                 const elapsed = Date.now() - startTime;
                 if (elapsed > maxDuration) {
-                    console.log("Polling timed out after 2 minutes");
+                    console.log("[POLLING] Timed out after 2 minutes");
                     clearInterval(pollInterval);
                     return;
                 }
 
                 try {
-                    const { data: res } = await api.get(`/checkout/order/${orderId}`);
+                    // Force no-cache to get latest DB status
+                    const { data: res } = await api.get(`/checkout/order/${orderId}?t=${Date.now()}`);
                     if (res.success && res.data.isPaid) {
-                        console.log("Payment detected via polling - redirecting to success");
+                        console.log("[POLLING] Payment detected! Redirecting...");
                         clearInterval(pollInterval);
                         navigate(`/checkout/success?id=${orderId}`);
                     }
                 } catch (err) {
-                    console.error("Polling error:", err);
+                    // Silent fail for polling errors to avoid interrupting user session
+                    console.warn("[POLLING] Check failed:", err.message);
                 }
             }, 4000); // 4 second interval
         }
@@ -254,9 +257,17 @@ export default function CheckoutPaymentPage() {
                                                 onError={(err) => setErrorMessage(err)}
                                             />
 
-                                            <div className="mt-4 flex items-center justify-center gap-2 text-xs text-gray-500">
-                                                <Lock size={12} />
-                                                <span>Your payment information is encrypted and secure</span>
+                                            <div className="mt-4 flex flex-col items-center justify-center gap-2 text-xs text-gray-500">
+                                                {orderId && !checkoutData.isPaymentConfirmed && (
+                                                    <div className="flex items-center gap-2 text-primary font-bold animate-pulse mb-2 text-sm bg-primary/5 px-4 py-2 rounded-full border border-primary/10">
+                                                        <div className="w-2 h-2 bg-primary rounded-full animate-ping"></div>
+                                                        Waiting for payment confirmation...
+                                                    </div>
+                                                )}
+                                                <div className="flex items-center gap-2">
+                                                    <Lock size={12} />
+                                                    <span>Your payment information is encrypted and secure</span>
+                                                </div>
                                             </div>
                                         </div>
                                     </form>

@@ -43,16 +43,17 @@ export default function CheckoutSuccessPage() {
         // If order exists but not paid yet, poll for status (waiting for webhook)
         let pollInterval;
         if (orderDetails && !orderDetails.isPaid) {
+            console.log("[SUCCESS PAGE] Starting fallback poll for payment...");
             pollInterval = setInterval(async () => {
                 try {
-                    const { data: res } = await api.get(`/checkout/order/${orderId}`);
+                    const { data: res } = await api.get(`/checkout/order/${orderId}?t=${Date.now()}`);
                     if (res.success && res.data.isPaid) {
-                        console.log("Success Page Polling: Payment confirmed");
+                        console.log("[SUCCESS PAGE] Payment confirmed via poll");
                         setOrderDetails(res.data);
                         clearInterval(pollInterval);
                     }
                 } catch (error) {
-                    console.error('Polling error on success page:', error);
+                    console.warn('[SUCCESS PAGE] Poll failed:', error.message);
                 }
             }, 4000); // Consistent 4s interval
         }
