@@ -93,7 +93,7 @@ const ProductCard = ({ product, onQuickView }) => {
                 <div className="mt-auto flex items-center justify-between pt-2 sm:pt-4 border-t border-gray-50">
                     <div className="flex flex-col">
                         <span className="text-[8px] sm:text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">Investment</span>
-                        <span className="text-lg sm:text-2xl font-black text-primary font-display">₹{product.price}</span>
+                        <span className="text-lg sm:text-2xl font-black text-primary font-sans">₹{product.price}</span>
                     </div>
                     <div className="flex flex-col items-end">
                         <button

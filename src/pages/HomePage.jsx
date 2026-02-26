@@ -81,7 +81,7 @@ const HomePage = () => {
                                 <div className="p-5 flex-grow flex flex-col justify-between">
                                     <div>
                                         <Link to={`/product/${product._id}`}>
-                                            <h3 className="font-serif font-bold text-lg text-gray-900 mb-1 group-hover/card:text-primary transition-colors line-clamp-1">{product.name}</h3>
+                                            <h3 className="font-sans font-bold text-lg text-gray-900 mb-1 group-hover/card:text-primary transition-colors line-clamp-1">{product.name}</h3>
                                         </Link>
                                         <p className="text-sm text-gray-400 mb-4 font-medium">{product.category}</p>
                                     </div>
@@ -142,7 +142,7 @@ const HomePage = () => {
                                 <span className="bg-secondary text-primary font-bold px-4 py-1.5 rounded-full text-xs md:text-sm uppercase tracking-[0.2em] mb-4 md:mb-6 inline-block shadow-lg">
                                     Natural Care
                                 </span>
-                                <h1 className="text-2xl sm:text-4xl md:text-6xl lg:text-7xl font-display font-bold mb-3 md:mb-6 leading-[1.2] sm:leading-[1.1] tracking-tight">
+                                <h1 className="text-2xl sm:text-4xl md:text-6xl lg:text-7xl font-sans font-bold mb-3 md:mb-6 leading-[1.2] sm:leading-[1.1] tracking-tight">
                                     {content?.hero?.title || <>Ancient Ayurveda.<br className="hidden sm:block" /> Modern Wellness.</>}
                                 </h1>
                                 <p className="text-[13px] sm:text-base md:text-lg mb-6 md:mb-10 text-gray-100 font-light max-w-lg leading-relaxed">
@@ -170,7 +170,7 @@ const HomePage = () => {
                     <div className="container mx-auto px-4">
                         <ScrollReveal>
                             <div className="text-center mb-10 md:mb-16">
-                                <h2 className="text-2xl md:text-4xl font-display font-bold text-primary mb-2 md:mb-3">Shop by Category</h2>
+                                <h2 className="text-2xl md:text-4xl font-sans font-bold text-primary mb-2 md:mb-3">Shop by Category</h2>
                                 <p className="text-sm md:text-base text-gray-500">Explore our curated collections for your specific needs.</p>
 
                             </div>
@@ -211,7 +211,7 @@ const HomePage = () => {
                         <ScrollReveal>
                             <div className="flex flex-col sm:flex-row justify-between items-center sm:items-end mb-8 md:mb-10 gap-4">
                                 <div className="text-center sm:text-left">
-                                    <h2 className="text-2xl md:text-4xl font-display font-bold text-primary">Our Bestsellers</h2>
+                                    <h2 className="text-2xl md:text-4xl font-sans font-bold text-primary">Our Bestsellers</h2>
                                     <p className="text-sm md:text-base text-gray-500 mt-1 md:mt-2">Customer favorites that deliver results.</p>
                                 </div>
                                 <Link to="/shop" className="text-primary font-bold text-xs tracking-wider uppercase hover:text-secondary hover:underline underline-offset-4">
@@ -247,14 +247,14 @@ const HomePage = () => {
                                         />
                                     )}
                                     <div className="absolute -bottom-6 -left-6 bg-white p-6 rounded-xl shadow-xl max-w-xs border border-gray-100 z-10">
-                                        <p className="font-serif text-primary text-lg italic">&quot;The perfect balance of ancient wisdom and modern standards.&quot;</p>
+                                        <p className="font-sans text-primary text-lg italic">&quot;The perfect balance of ancient wisdom and modern standards.&quot;</p>
                                     </div>
                                 </ScrollReveal>
                             </div>
                             <div className="md:w-1/2">
                                 <ScrollReveal direction="right">
                                     <span className="text-secondary font-bold uppercase tracking-widest text-sm mb-2 block">Our Philosophy</span>
-                                    <h2 className="text-4xl md:text-5xl font-serif font-bold text-primary mb-6">
+                                    <h2 className="text-4xl md:text-5xl font-sans font-bold text-primary mb-6">
                                         {content?.tradition?.title || <>Where Tradition<br />Meets Science</>}
                                     </h2>
                                     <p className="text-gray-600 mb-6 leading-relaxed whitespace-pre-line">
@@ -278,13 +278,13 @@ const HomePage = () => {
                         <div className="container mx-auto px-4">
                             <ScrollReveal>
                                 <div className="text-center mb-16">
-                                    <h2 className="text-3xl md:text-4xl font-serif font-bold text-primary mb-3">What Our Customers Say</h2>
+                                    <h2 className="text-3xl md:text-4xl font-sans font-bold text-primary mb-3">What Our Customers Say</h2>
                                     <p className="text-gray-500">Real stories from our community.</p>
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                                     {content.testimonials.items.map((item, idx) => (
                                         <div key={idx} className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 relative hover:shadow-lg transition-shadow duration-300">
-                                            <div className="text-secondary text-5xl font-serif absolute top-4 left-6 opacity-30">&quot;</div>
+                                            <div className="text-secondary text-5xl font-sans absolute top-4 left-6 opacity-30">&quot;</div>
                                             <p className="text-gray-600 mb-6 italic relative z-10 pt-4">
                                                 {item.description}
                                             </p>
@@ -311,7 +311,7 @@ const HomePage = () => {
                         <ScrollReveal>
                             <div className="text-center mb-20">
                                 <span className="text-secondary font-bold uppercase tracking-[0.2em] text-xs mb-4 block">The Hridved Way</span>
-                                <h2 className="text-4xl md:text-5xl font-display font-bold text-primary mb-6">Why Hundreds of Thousands<br className="hidden md:block" /> Trust HRIDVED</h2>
+                                <h2 className="text-4xl md:text-5xl font-sans font-bold text-primary mb-6">Why Hundreds of Thousands<br className="hidden md:block" /> Trust HRIDVED</h2>
                                 <div className="w-24 h-1 bg-secondary mx-auto rounded-full"></div>
                             </div>
 
@@ -352,7 +352,7 @@ const HomePage = () => {
                             <div className="flex flex-col md:flex-row justify-between items-center md:items-end mb-10 md:mb-16 gap-4">
                                 <div className="text-center md:text-left">
                                     <span className="text-secondary font-bold uppercase tracking-[0.2em] text-[10px] md:text-xs mb-2 md:mb-3 block">Knowledge Base</span>
-                                    <h2 className="text-3xl md:text-5xl font-display font-bold text-primary mb-1 md:mb-2">Ayurvedic Wisdom</h2>
+                                    <h2 className="text-3xl md:text-5xl font-sans font-bold text-primary mb-1 md:mb-2">Ayurvedic Wisdom</h2>
                                     <p className="text-sm md:text-base text-gray-500">Expert insights for a harmonious lifestyle.</p>
                                 </div>
                                 <Link to="/blogs" className="text-primary font-bold hover:text-secondary group flex items-center bg-primary/5 px-6 py-3 rounded-full transition-all hover:bg-primary/10 text-sm md:text-base">
@@ -371,7 +371,7 @@ const HomePage = () => {
                                                 </div>
                                             </div>
                                             <div className="px-1 md:px-2">
-                                                <h3 className="text-xl md:text-2xl font-serif font-bold text-primary mb-2 md:mb-3 group-hover:text-secondary transition-colors leading-tight">
+                                                <h3 className="text-xl md:text-2xl font-sans font-bold text-primary mb-2 md:mb-3 group-hover:text-secondary transition-colors leading-tight">
                                                     {tip.title}
                                                 </h3>
                                                 <p className="text-xs md:text-base text-gray-500 line-clamp-2 mb-4 leading-relaxed">
@@ -397,7 +397,7 @@ const HomePage = () => {
                 <section className="py-20 bg-primary text-white">
                     <div className="container mx-auto px-4 text-center">
                         <ScrollReveal>
-                            <h2 className="text-3xl md:text-4xl font-serif font-bold mb-4">Join the Ayurveda Journey</h2>
+                            <h2 className="text-3xl md:text-4xl font-sans font-bold mb-4">Join the Ayurveda Journey</h2>
                             <p className="text-gray-300 mb-8 max-w-2xl mx-auto">
                                 Subscribe to our newsletter for holistic wellness tips, exclusive offers, and early access to new Ayurvedic formulations.
                             </p>

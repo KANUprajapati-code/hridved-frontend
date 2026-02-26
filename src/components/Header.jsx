@@ -57,7 +57,7 @@ const Header = () => {
             animate={isVisible ? 'visible' : 'hidden'}
             className={`sticky top-0 z-50 transition-all duration-300 bg-primary text-white ${scrolled ? 'shadow-md py-1' : 'py-2'}`}
         >
-            <div className="container mx-auto px-4 flex justify-between items-center relative">
+            <div className="container mx-auto flex justify-between items-center relative">
                 {/* Logo */}
                 <Link to="/" className="flex-shrink-0">
                     <img

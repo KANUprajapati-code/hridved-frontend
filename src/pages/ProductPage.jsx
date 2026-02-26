@@ -122,7 +122,7 @@ const ProductPage = () => {
 
                             {/* Details Section */}
                             <div className="p-8 lg:p-12">
-                                <h1 className="text-3xl md:text-5xl font-display font-bold text-primary mb-2 leading-tight">{product.name}</h1>
+                                <h1 className="text-3xl md:text-5xl font-sans font-bold text-primary mb-2 leading-tight">{product.name}</h1>
                                 <div className="text-sm text-secondary font-bold uppercase tracking-wider mb-4">{product.category}</div>
 
                                 <div className="flex items-center mb-6">
@@ -288,7 +288,7 @@ const ProductPage = () => {
 
                                         {/* Write a review form */}
                                         <div className="mt-12 pt-8 border-t border-gray-100">
-                                            <h3 className="text-xl md:text-2xl font-display font-bold text-gray-900 mb-6 text-center">Write a Customer Review</h3>
+                                            <h3 className="text-xl md:text-2xl font-sans font-bold text-gray-900 mb-6 text-center">Write a Customer Review</h3>
                                             {user ? (
                                                 <form onSubmit={submitReviewHandler} className="max-w-lg mx-auto space-y-6">
                                                     <div>
@@ -351,7 +351,7 @@ const ProductPage = () => {
                             <ScrollReveal>
                                 <div className="flex justify-between items-end mb-10">
                                     <div>
-                                        <h2 className="text-3xl font-display font-bold text-primary">Related Products</h2>
+                                        <h2 className="text-3xl font-sans font-bold text-primary">Related Products</h2>
                                         <p className="text-gray-500 mt-2">More items you might find helpful from {product.category}.</p>
                                     </div>
                                     <Link to="/shop" className="text-primary font-bold text-sm tracking-wider uppercase hover:text-secondary hover:underline underline-offset-4">
