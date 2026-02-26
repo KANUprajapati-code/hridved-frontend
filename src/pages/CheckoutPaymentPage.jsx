@@ -19,6 +19,7 @@ export default function CheckoutPaymentPage() {
 
     const [loading] = useState(false);
     const [creatingOrder, setCreatingOrder] = useState(false);
+    const [paymentMethod, setPaymentMethod] = useState('razorpay');
 
     const orderId = checkoutData.orderId;
 
@@ -134,7 +135,6 @@ export default function CheckoutPaymentPage() {
         }
     };
 
-    const [paymentMethod, setPaymentMethod] = useState('razorpay');
 
     const handleCODOrder = async () => {
         try {
