@@ -42,6 +42,9 @@ export default function CheckoutAddressPage() {
                 clearError();
                 const { data } = await api.get('/addresses');
                 setAddresses(data);
+                if (data.length === 0) {
+                    setShowForm(true);
+                }
                 if (checkoutData.address) {
                     setSelectedAddressId(checkoutData.address._id);
                 } else if (data.length > 0) {

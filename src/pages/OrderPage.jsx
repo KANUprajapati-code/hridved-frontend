@@ -145,8 +145,8 @@ const OrderPage = () => {
                         <p className="mb-2"><strong>Email: </strong> <a href={`mailto:${order.user.email}`} className="text-secondary">{order.user.email}</a></p>
                         <p className="mb-4">
                             <strong>Address: </strong>
-                            {order.shippingAddress.address}, {order.shippingAddress.city}{' '}
-                            {order.shippingAddress.postalCode}, {order.shippingAddress.country}
+                            {order.shippingAddress.houseNumber}, {order.shippingAddress.landmark ? `${order.shippingAddress.landmark}, ` : ''}
+                            {order.shippingAddress.city}, {order.shippingAddress.state} - {order.shippingAddress.pincode}
                         </p>
                         <p className="mb-2"><strong>Provider: </strong> {order.shippingProvider || 'Fship'}</p>
                         {order.waybill && (

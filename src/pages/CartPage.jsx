@@ -9,6 +9,7 @@ import AnimatedButton from '../components/AnimatedButton';
 import ProductCard from '../components/ProductCard';
 import api from '../utils/api';
 import { ToastContext } from '../context/ToastContext';
+import PincodeShippingCheck from '../components/PincodeShippingCheck';
 
 const CartPage = () => {
     const { cart, removeFromCart, updateCartItemQuantity } = useCart();
@@ -181,9 +182,14 @@ const CartPage = () => {
 
                             {/* Gift/Offer Banner */}
                             <ScrollReveal delay={0.2}>
-                                <div className="bg-white border border-dashed border-secondary/50 rounded-xl p-4 flex items-center gap-4">
-                                    <Truck className="text-primary" size={24} />
-                                    <p className="text-sm text-gray-700 font-medium">Congratulations! You&apos;ve unlocked free standard shipping.</p>
+                                <div className="space-y-4">
+                                    <div className="bg-white border border-dashed border-secondary/50 rounded-xl p-4 flex items-center gap-4">
+                                        <Truck className="text-primary" size={24} />
+                                        <p className="text-sm text-gray-700 font-medium">Congratulations! You&apos;ve unlocked free standard shipping.</p>
+                                    </div>
+                                    <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-4">
+                                        <PincodeShippingCheck />
+                                    </div>
                                 </div>
                             </ScrollReveal>
                         </div>
