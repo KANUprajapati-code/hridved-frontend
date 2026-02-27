@@ -113,16 +113,6 @@ const DoctorBookingPage = () => {
                     theme: {
                         color: '#22c55e',
                     },
-                    config: {
-                        display: {
-                            hide: [{ method: 'upi', flow: 'qr' }]
-                        },
-                        methods: {
-                            upi: {
-                                flow: ['intent', 'collect']
-                            }
-                        }
-                    }
                 };
 
                 const razorpay = new window.Razorpay(options);

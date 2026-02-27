@@ -79,16 +79,6 @@ const PaymentButton = ({ amount, orderId, onSuccess, onError, onBeforePayment })
                 },
                 theme: {
                     color: "#2D5A27" // Brand primary color
-                },
-                config: {
-                    display: {
-                        hide: [{ method: 'upi', flow: 'qr' }]
-                    },
-                    methods: {
-                        upi: {
-                            flow: ['intent', 'collect']
-                        }
-                    }
                 }
             };
 
