@@ -103,6 +103,7 @@ export default function CheckoutPaymentPage() {
                 taxPrice,
                 shippingPrice,
                 totalPrice,
+                shippingProvider: checkoutData.shippingProvider || 'Fship',
             });
 
             if (res.success) {
@@ -159,6 +160,7 @@ export default function CheckoutPaymentPage() {
                 shippingPrice,
                 totalPrice,
                 paymentMethod: 'COD',
+                shippingProvider: checkoutData.shippingProvider || 'Fship',
             });
 
             if (res.success) {

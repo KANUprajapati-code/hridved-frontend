@@ -85,7 +85,7 @@ export default function CheckoutShippingPage() {
 
             const selectedShipping = shippingOptions.find(s => s.type === selectedMethod);
             if (selectedShipping) {
-                updateShippingMethod(selectedMethod, selectedShipping.charge);
+                updateShippingMethod(selectedMethod, selectedShipping.charge, selectedShipping.provider || 'Fship');
                 updateStep(3);
                 navigate('/checkout/payment');
             }

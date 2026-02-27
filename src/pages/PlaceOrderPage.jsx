@@ -10,7 +10,8 @@ const PlaceOrderPage = () => {
     const { user } = useAuth();
     const navigate = useNavigate();
     const [shippingAddress, setShippingAddress] = useState({});
-    const [paymentMethod, setPaymentMethod] = useState('Stripe');
+    const [paymentMethod, setPaymentMethod] = useState('razorpay');
+    const [shippingProvider, setShippingProvider] = useState('Fship');
 
     useEffect(() => {
         if (!user) navigate('/login');
@@ -55,6 +56,7 @@ const PlaceOrderPage = () => {
                 shippingPrice,
                 taxPrice,
                 totalPrice,
+                shippingProvider,
             });
             clearCart();
             navigate(`/order/${data._id}`);

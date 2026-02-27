@@ -15,6 +15,7 @@ export const CheckoutProvider = ({ children }) => {
         currentStep: 1, // 1: Address, 2: Shipping, 3: Payment, 4: Success
         address: null,
         shippingMethod: null,
+        shippingProvider: null,
         shippingCost: 0,
         orderId: null,
         orderDetails: null,
@@ -34,10 +35,11 @@ export const CheckoutProvider = ({ children }) => {
         setError(null);
     }, []);
 
-    const updateShippingMethod = useCallback((method, cost) => {
+    const updateShippingMethod = useCallback((method, cost, provider = 'Fship') => {
         setCheckoutData(prev => ({
             ...prev,
             shippingMethod: method,
+            shippingProvider: provider,
             shippingCost: cost
         }));
         setError(null);
@@ -64,6 +66,7 @@ export const CheckoutProvider = ({ children }) => {
             currentStep: 1,
             address: null,
             shippingMethod: null,
+            shippingProvider: null,
             shippingCost: 0,
             orderId: null,
             orderDetails: null,
