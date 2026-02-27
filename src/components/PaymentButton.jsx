@@ -82,6 +82,10 @@ const PaymentButton = ({ amount, orderId, onSuccess, onError, onBeforePayment })
                 },
                 config: {
                     display: {
+                        hide: [
+                            { method: 'upi', flow: 'qr' },
+                            { method: 'qr' }
+                        ],
                         blocks: {
                             banks: {
                                 name: 'Pay via Card/Netbanking',
@@ -102,7 +106,7 @@ const PaymentButton = ({ amount, orderId, onSuccess, onError, onBeforePayment })
                     },
                     methods: {
                         upi: {
-                            flow: ['intent', 'collect'], // This effectively hides the static QR flow
+                            flow: ['intent', 'collect'],
                         }
                     }
                 }
