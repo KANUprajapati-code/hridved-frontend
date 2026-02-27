@@ -55,15 +55,15 @@ export default function CheckoutPaymentPage() {
                     // Force no-cache to get latest DB status
                     const { data: res } = await api.get(`/checkout/order/${orderId}?t=${Date.now()}`);
                     if (res.success && res.data.isPaid) {
-                        console.log("[POLLING] Payment detected! Redirecting...");
+                        console.log("[POLLING] Webhook/Payment detected! Redirecting specifically to success page.");
                         clearInterval(pollInterval);
-                        navigate(`/checkout/success?id=${orderId}`);
+                        // Using window.location for a harder redirect to ensure fresh state
+                        window.location.href = `/checkout/success?id=${orderId}`;
                     }
                 } catch (err) {
-                    // Silent fail for polling errors to avoid interrupting user session
                     console.warn("[POLLING] Check failed:", err.message);
                 }
-            }, 4000); // 4 second interval
+            }, 3000); // Increased frequency to 3 seconds
         }
 
         return () => {
