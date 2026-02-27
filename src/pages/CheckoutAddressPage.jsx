@@ -8,7 +8,7 @@ import api from '../utils/api';
 import AnimatedPage from '../components/AnimatedPage';
 import AnimatedButton from '../components/AnimatedButton';
 import ScrollReveal from '../components/ScrollReveal';
-import { Plus, Check, MapPin, Phone, User } from 'lucide-react';
+import { Plus, Check, MapPin, Phone, User, Home, Building2, Globe } from 'lucide-react';
 
 export default function CheckoutAddressPage() {
     const navigate = useNavigate();
@@ -275,26 +275,32 @@ export default function CheckoutAddressPage() {
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                 <div className="space-y-1">
                                                     <label className="text-xs font-bold text-gray-700 uppercase">Pincode *</label>
-                                                    <input
-                                                        type="text"
-                                                        name="pincode"
-                                                        value={formData.pincode}
-                                                        onChange={handleInputChange}
-                                                        placeholder="6-digit pincode"
-                                                        className={`w-full px-4 py-2.5 rounded-lg border focus:ring-2 focus:ring-primary/20 outline-none transition-all ${formErrors.pincode ? 'border-red-500' : 'border-gray-300 focus:border-primary'}`}
-                                                    />
+                                                    <div className="relative">
+                                                        <MapPin className="absolute left-3 top-3 text-gray-400" size={16} />
+                                                        <input
+                                                            type="text"
+                                                            name="pincode"
+                                                            value={formData.pincode}
+                                                            onChange={handleInputChange}
+                                                            placeholder="6-digit pincode"
+                                                            className={`w-full pl-10 pr-4 py-2.5 rounded-lg border focus:ring-2 focus:ring-primary/20 outline-none transition-all ${formErrors.pincode ? 'border-red-500' : 'border-gray-300 focus:border-primary'}`}
+                                                        />
+                                                    </div>
                                                     {formErrors.pincode && <span className="text-xs text-red-500">{formErrors.pincode}</span>}
                                                 </div>
                                                 <div className="space-y-1">
                                                     <label className="text-xs font-bold text-gray-700 uppercase">State *</label>
-                                                    <input
-                                                        type="text"
-                                                        name="state"
-                                                        value={formData.state}
-                                                        onChange={handleInputChange}
-                                                        placeholder="Enter state"
-                                                        className={`w-full px-4 py-2.5 rounded-lg border focus:ring-2 focus:ring-primary/20 outline-none transition-all ${formErrors.state ? 'border-red-500' : 'border-gray-300 focus:border-primary'}`}
-                                                    />
+                                                    <div className="relative">
+                                                        <Globe className="absolute left-3 top-3 text-gray-400" size={16} />
+                                                        <input
+                                                            type="text"
+                                                            name="state"
+                                                            value={formData.state}
+                                                            onChange={handleInputChange}
+                                                            placeholder="Enter state"
+                                                            className={`w-full pl-10 pr-4 py-2.5 rounded-lg border focus:ring-2 focus:ring-primary/20 outline-none transition-all ${formErrors.state ? 'border-red-500' : 'border-gray-300 focus:border-primary'}`}
+                                                        />
+                                                    </div>
                                                     {formErrors.state && <span className="text-xs text-red-500">{formErrors.state}</span>}
                                                 </div>
                                             </div>
@@ -302,26 +308,32 @@ export default function CheckoutAddressPage() {
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                 <div className="space-y-1">
                                                     <label className="text-xs font-bold text-gray-700 uppercase">City *</label>
-                                                    <input
-                                                        type="text"
-                                                        name="city"
-                                                        value={formData.city}
-                                                        onChange={handleInputChange}
-                                                        placeholder="Enter city"
-                                                        className={`w-full px-4 py-2.5 rounded-lg border focus:ring-2 focus:ring-primary/20 outline-none transition-all ${formErrors.city ? 'border-red-500' : 'border-gray-300 focus:border-primary'}`}
-                                                    />
+                                                    <div className="relative">
+                                                        <Building2 className="absolute left-3 top-3 text-gray-400" size={16} />
+                                                        <input
+                                                            type="text"
+                                                            name="city"
+                                                            value={formData.city}
+                                                            onChange={handleInputChange}
+                                                            placeholder="Enter city"
+                                                            className={`w-full pl-10 pr-4 py-2.5 rounded-lg border focus:ring-2 focus:ring-primary/20 outline-none transition-all ${formErrors.city ? 'border-red-500' : 'border-gray-300 focus:border-primary'}`}
+                                                        />
+                                                    </div>
                                                     {formErrors.city && <span className="text-xs text-red-500">{formErrors.city}</span>}
                                                 </div>
                                                 <div className="space-y-1">
                                                     <label className="text-xs font-bold text-gray-700 uppercase">House Number / Area *</label>
-                                                    <input
-                                                        type="text"
-                                                        name="houseNumber"
-                                                        value={formData.houseNumber}
-                                                        onChange={handleInputChange}
-                                                        placeholder="House number, building name"
-                                                        className={`w-full px-4 py-2.5 rounded-lg border focus:ring-2 focus:ring-primary/20 outline-none transition-all ${formErrors.houseNumber ? 'border-red-500' : 'border-gray-300 focus:border-primary'}`}
-                                                    />
+                                                    <div className="relative">
+                                                        <Home className="absolute left-3 top-3 text-gray-400" size={16} />
+                                                        <input
+                                                            type="text"
+                                                            name="houseNumber"
+                                                            value={formData.houseNumber}
+                                                            onChange={handleInputChange}
+                                                            placeholder="House number, building name"
+                                                            className={`w-full pl-10 pr-4 py-2.5 rounded-lg border focus:ring-2 focus:ring-primary/20 outline-none transition-all ${formErrors.houseNumber ? 'border-red-500' : 'border-gray-300 focus:border-primary'}`}
+                                                        />
+                                                    </div>
                                                     {formErrors.houseNumber && <span className="text-xs text-red-500">{formErrors.houseNumber}</span>}
                                                 </div>
                                             </div>

@@ -3,8 +3,6 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import GoogleAuthButton from '../components/GoogleAuthButton';
-import FacebookAuthButton from '../components/FacebookAuthButton';
-
 const RegisterPage = () => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -91,7 +89,6 @@ const RegisterPage = () => {
                 {/* OAuth Buttons */}
                 <motion.div variants={itemVariants} className="space-y-3">
                     <GoogleAuthButton text="Sign up with Google" redirect={redirect} />
-                    <FacebookAuthButton text="Sign up with Facebook" redirect={redirect} />
                 </motion.div>
 
                 {/* Divider */}
