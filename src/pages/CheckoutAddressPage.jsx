@@ -8,7 +8,7 @@ import api from '../utils/api';
 import AnimatedPage from '../components/AnimatedPage';
 import AnimatedButton from '../components/AnimatedButton';
 import ScrollReveal from '../components/ScrollReveal';
-import { Plus, Check, MapPin, Phone, User, Home, Building2, Globe } from 'lucide-react';
+import { Plus, Check, MapPin, Phone, User, Home, Building2, Globe, Map } from 'lucide-react';
 
 export default function CheckoutAddressPage() {
     const navigate = useNavigate();
@@ -242,7 +242,7 @@ export default function CheckoutAddressPage() {
                                                 <div className="space-y-1">
                                                     <label className="text-xs font-bold text-gray-700 uppercase">Full Name *</label>
                                                     <div className="relative">
-                                                        <User className="absolute left-3 top-3 text-gray-400" size={16} />
+                                                        <User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
                                                         <input
                                                             type="text"
                                                             name="fullName"
@@ -258,7 +258,7 @@ export default function CheckoutAddressPage() {
                                                 <div className="space-y-1">
                                                     <label className="text-xs font-bold text-gray-700 uppercase">Mobile Number *</label>
                                                     <div className="relative">
-                                                        <Phone className="absolute left-3 top-3 text-gray-400" size={16} />
+                                                        <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
                                                         <input
                                                             type="text"
                                                             name="mobileNumber"
@@ -276,7 +276,7 @@ export default function CheckoutAddressPage() {
                                                 <div className="space-y-1">
                                                     <label className="text-xs font-bold text-gray-700 uppercase">Pincode *</label>
                                                     <div className="relative">
-                                                        <MapPin className="absolute left-3 top-3 text-gray-400" size={16} />
+                                                        <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
                                                         <input
                                                             type="text"
                                                             name="pincode"
@@ -291,7 +291,7 @@ export default function CheckoutAddressPage() {
                                                 <div className="space-y-1">
                                                     <label className="text-xs font-bold text-gray-700 uppercase">State *</label>
                                                     <div className="relative">
-                                                        <Globe className="absolute left-3 top-3 text-gray-400" size={16} />
+                                                        <Globe className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
                                                         <input
                                                             type="text"
                                                             name="state"
@@ -309,7 +309,7 @@ export default function CheckoutAddressPage() {
                                                 <div className="space-y-1">
                                                     <label className="text-xs font-bold text-gray-700 uppercase">City *</label>
                                                     <div className="relative">
-                                                        <Building2 className="absolute left-3 top-3 text-gray-400" size={16} />
+                                                        <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
                                                         <input
                                                             type="text"
                                                             name="city"
@@ -324,7 +324,7 @@ export default function CheckoutAddressPage() {
                                                 <div className="space-y-1">
                                                     <label className="text-xs font-bold text-gray-700 uppercase">House Number / Area *</label>
                                                     <div className="relative">
-                                                        <Home className="absolute left-3 top-3 text-gray-400" size={16} />
+                                                        <Home className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
                                                         <input
                                                             type="text"
                                                             name="houseNumber"
@@ -340,14 +340,17 @@ export default function CheckoutAddressPage() {
 
                                             <div className="space-y-1">
                                                 <label className="text-xs font-bold text-gray-700 uppercase">Landmark (Optional)</label>
-                                                <input
-                                                    type="text"
-                                                    name="landmark"
-                                                    value={formData.landmark}
-                                                    onChange={handleInputChange}
-                                                    placeholder="e.g., near XYZ store"
-                                                    className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
-                                                />
+                                                <div className="relative">
+                                                    <Map className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+                                                    <input
+                                                        type="text"
+                                                        name="landmark"
+                                                        value={formData.landmark}
+                                                        onChange={handleInputChange}
+                                                        placeholder="e.g., near XYZ store"
+                                                        className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-300 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+                                                    />
+                                                </div>
                                             </div>
 
                                             <div className="space-y-1">
