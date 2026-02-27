@@ -83,6 +83,11 @@ const PaymentButton = ({ amount, orderId, onSuccess, onError, onBeforePayment })
                 config: {
                     display: {
                         hide: [{ method: 'upi', flow: 'qr' }]
+                    },
+                    methods: {
+                        upi: {
+                            flow: ['intent', 'collect']
+                        }
                     }
                 }
             };
