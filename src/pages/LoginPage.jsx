@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
+import { User, Mail, Lock } from 'lucide-react';
 import GoogleAuthButton from '../components/GoogleAuthButton';
 const LoginPage = () => {
     const [email, setEmail] = useState('');
@@ -91,22 +92,28 @@ const LoginPage = () => {
 
                 {/* Email/Password Form */}
                 <form className="mt-8 space-y-6" onSubmit={submitHandler}>
-                    <motion.div variants={itemVariants} className="rounded-md shadow-sm space-y-4">
-                        <div>
+                    <motion.div variants={itemVariants} className="space-y-4">
+                        <div className="relative group">
+                            <div className="absolute left-3 inset-y-0 flex items-center pointer-events-none text-gray-400 group-focus-within:text-primary transition-colors">
+                                <Mail size={18} />
+                            </div>
                             <input
                                 type="email"
                                 required
-                                className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-secondary focus:border-secondary focus:z-10 sm:text-sm"
+                                className="w-full pl-11 pr-4 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all sm:text-sm"
                                 placeholder="Email address"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                             />
                         </div>
-                        <div>
+                        <div className="relative group">
+                            <div className="absolute left-3 inset-y-0 flex items-center pointer-events-none text-gray-400 group-focus-within:text-primary transition-colors">
+                                <Lock size={18} />
+                            </div>
                             <input
                                 type="password"
                                 required
-                                className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-secondary focus:border-secondary focus:z-10 sm:text-sm"
+                                className="w-full pl-11 pr-4 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all sm:text-sm"
                                 placeholder="Password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
@@ -139,7 +146,7 @@ const LoginPage = () => {
                     </p>
                 </motion.div>
             </div>
-        </motion.div>
+        </motion.div >
     );
 };
 
