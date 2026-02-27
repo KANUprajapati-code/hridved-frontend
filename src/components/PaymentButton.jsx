@@ -82,32 +82,7 @@ const PaymentButton = ({ amount, orderId, onSuccess, onError, onBeforePayment })
                 },
                 config: {
                     display: {
-                        hide: [
-                            { method: 'upi', flow: 'qr' },
-                            { method: 'qr' }
-                        ],
-                        blocks: {
-                            banks: {
-                                name: 'Pay via Card/Netbanking',
-                                instruments: [
-                                    {
-                                        method: 'card'
-                                    },
-                                    {
-                                        method: 'netbanking'
-                                    }
-                                ]
-                            },
-                        },
-                        sequence: ['block.banks', 'upi'],
-                        preferences: {
-                            show_default_blocks: true,
-                        },
-                    },
-                    methods: {
-                        upi: {
-                            flow: ['intent', 'collect'],
-                        }
+                        hide: [{ method: 'upi', flow: 'qr' }]
                     }
                 }
             };

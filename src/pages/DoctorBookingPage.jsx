@@ -115,10 +115,7 @@ const DoctorBookingPage = () => {
                     },
                     config: {
                         display: {
-                            hide: [
-                                { method: 'upi', flow: 'qr' },
-                                { method: 'qr' }
-                            ]
+                            hide: [{ method: 'upi', flow: 'qr' }]
                         }
                     }
                 };
