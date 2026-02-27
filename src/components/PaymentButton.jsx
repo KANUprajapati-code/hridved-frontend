@@ -79,6 +79,32 @@ const PaymentButton = ({ amount, orderId, onSuccess, onError, onBeforePayment })
                 },
                 theme: {
                     color: "#2D5A27" // Brand primary color
+                },
+                config: {
+                    display: {
+                        blocks: {
+                            banks: {
+                                name: 'Pay via Card/Netbanking',
+                                instruments: [
+                                    {
+                                        method: 'card'
+                                    },
+                                    {
+                                        method: 'netbanking'
+                                    }
+                                ]
+                            },
+                        },
+                        sequence: ['block.banks', 'upi'],
+                        preferences: {
+                            show_default_blocks: true,
+                        },
+                    },
+                    methods: {
+                        upi: {
+                            flow: ['intent', 'collect'], // This effectively hides the static QR flow
+                        }
+                    }
                 }
             };
 
