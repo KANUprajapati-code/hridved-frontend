@@ -14,7 +14,7 @@ const ShippingSettingsPage = () => {
     useEffect(() => {
         const fetchConfig = async () => {
             try {
-                const { data } = await api.get('/api/config/shipping');
+                const { data } = await api.get('/config/shipping');
                 if (data.success) {
                     setConfig(data.data);
                 }
@@ -33,7 +33,7 @@ const ShippingSettingsPage = () => {
         setSaving(true);
         setMessage(null);
         try {
-            const { data } = await api.put('/api/config/shipping', config);
+            const { data } = await api.put('/config/shipping', config);
             if (data.success) {
                 setMessage({ type: 'success', text: 'Shipping settings updated successfully!' });
             }
