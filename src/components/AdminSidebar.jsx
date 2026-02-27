@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, ShoppingBag, ShoppingCart, Users, FileText, LogOut, MessageSquare, Layout, ListOrdered, Tag, ArrowLeft, X } from 'lucide-react';
+import { LayoutDashboard, ShoppingBag, ShoppingCart, Users, FileText, LogOut, MessageSquare, Layout, ListOrdered, Tag, ArrowLeft, X, Truck } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 const AdminSidebar = ({ isMobileOpen, setIsMobileOpen }) => {
@@ -21,6 +21,7 @@ const AdminSidebar = ({ isMobileOpen, setIsMobileOpen }) => {
         { name: 'Content', path: '/admin/homepage', icon: <Layout size={20} /> },
         { name: 'Messages', path: '/admin/contactlist', icon: <MessageSquare size={20} /> },
         { name: 'Blog', path: '/admin/bloglist', icon: <FileText size={20} /> },
+        { name: 'Shipping', path: '/admin/shipping', icon: <Truck size={20} /> },
         { name: 'Wisdom Tips', path: '/admin/tiplist', icon: <MessageSquare size={20} /> },
         { name: 'About Us', path: '/admin/about', icon: <ListOrdered size={20} /> },
     ];

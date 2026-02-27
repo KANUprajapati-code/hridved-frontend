@@ -61,6 +61,7 @@ const PromoCodeListPage = lazy(() => import('./pages/admin/PromoCodeListPage'));
 const PromoCodeEditPage = lazy(() => import('./pages/admin/PromoCodeEditPage'));
 const CategoryListPage = lazy(() => import('./pages/admin/CategoryListPage'));
 const CategoryEditPage = lazy(() => import('./pages/admin/CategoryEditPage'));
+const ShippingSettingsPage = lazy(() => import('./pages/admin/ShippingSettingsPage'));
 
 // Loading Fallback
 const LoadingFallback = () => (
@@ -144,6 +145,7 @@ function App() {
                                                 <Route path="categorylist" element={<CategoryListPage />} />
                                                 <Route path="category/add" element={<CategoryEditPage />} />
                                                 <Route path="category/:id/edit" element={<CategoryEditPage />} />
+                                                <Route path="shipping" element={<ShippingSettingsPage />} />
                                             </Route>
                                         </Routes>
                                     </Suspense>
