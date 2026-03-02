@@ -27,13 +27,22 @@ export const CartProvider = ({ children }) => {
                 // If user is logged in, sync with server
                 if (user) {
                     try {
-                        const { data } = await api.get('/cart');
-                        setCart(data);
-                        // Update localStorage with server data
-                        localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(data));
+                        const guestCart = JSON.parse(localStorage.getItem(CART_STORAGE_KEY) || '{"cartItems":[]}');
+
+                        if (guestCart.cartItems && guestCart.cartItems.length > 0) {
+                            // Merge guest items to server
+                            const { data } = await api.post('/cart/merge', { cartItems: guestCart.cartItems });
+                            setCart(data);
+                            localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(data));
+                        } else {
+                            // Normal sync
+                            const { data } = await api.get('/cart');
+                            setCart(data);
+                            localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(data));
+                        }
                     } catch (error) {
-                        console.error('Error fetching cart from server', error);
-                        // Keep the localStorage cart if API fails
+                        console.error('Error fetching/merging cart from server', error);
+                        // Fallback to local
                     }
                 }
             } catch (error) {

@@ -252,46 +252,31 @@ const ProfilePage = () => {
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                                 <div className="space-y-1">
                                                     <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Full Name</label>
-                                                    <div className="relative group">
-                                                        <div className="absolute left-3 inset-y-0 flex items-center pointer-events-none text-gray-400 group-focus-within:text-primary transition-colors">
-                                                            <User size={18} />
-                                                        </div>
-                                                        <input
-                                                            type="text"
-                                                            className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 bg-white focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all shadow-sm"
-                                                            value={name}
-                                                            onChange={(e) => setName(e.target.value)}
-                                                        />
-                                                    </div>
+                                                    <input
+                                                        type="text"
+                                                        className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all shadow-sm"
+                                                        value={name}
+                                                        onChange={(e) => setName(e.target.value)}
+                                                    />
                                                 </div>
                                                 <div className="space-y-1">
                                                     <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Email Address</label>
-                                                    <div className="relative group">
-                                                        <div className="absolute left-3 inset-y-0 flex items-center pointer-events-none text-gray-400 group-focus-within:text-primary transition-colors">
-                                                            <Mail size={18} />
-                                                        </div>
-                                                        <input
-                                                            type="email"
-                                                            className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 bg-white focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all shadow-sm"
-                                                            value={email}
-                                                            onChange={(e) => setEmail(e.target.value)}
-                                                        />
-                                                    </div>
+                                                    <input
+                                                        type="email"
+                                                        className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all shadow-sm"
+                                                        value={email}
+                                                        onChange={(e) => setEmail(e.target.value)}
+                                                    />
                                                 </div>
                                                 <div className="space-y-1">
                                                     <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Phone Number</label>
-                                                    <div className="relative group">
-                                                        <div className="absolute left-3 inset-y-0 flex items-center pointer-events-none text-gray-400 group-focus-within:text-primary transition-colors">
-                                                            <Phone size={18} />
-                                                        </div>
-                                                        <input
-                                                            type="text"
-                                                            placeholder="+91 XXXXX XXXXX"
-                                                            className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 bg-white focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all shadow-sm"
-                                                            value={phone}
-                                                            onChange={(e) => setPhone(e.target.value)}
-                                                        />
-                                                    </div>
+                                                    <input
+                                                        type="text"
+                                                        placeholder="+91 XXXXX XXXXX"
+                                                        className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all shadow-sm"
+                                                        value={phone}
+                                                        onChange={(e) => setPhone(e.target.value)}
+                                                    />
                                                 </div>
                                             </div>
                                         </div>
@@ -302,63 +287,43 @@ const ProfilePage = () => {
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                                 <div className="space-y-1">
                                                     <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Pincode</label>
-                                                    <div className="relative group">
-                                                        <div className="absolute left-3 inset-y-0 flex items-center pointer-events-none text-gray-400 group-focus-within:text-primary transition-colors">
-                                                            <MapPin size={18} />
-                                                        </div>
-                                                        <input
-                                                            type="text"
-                                                            placeholder="6-digit pincode"
-                                                            className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 bg-white focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all shadow-sm"
-                                                            value={postalCode}
-                                                            onChange={(e) => setPostalCode(e.target.value)}
-                                                        />
-                                                    </div>
+                                                    <input
+                                                        type="text"
+                                                        placeholder="6-digit pincode"
+                                                        className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all shadow-sm"
+                                                        value={postalCode}
+                                                        onChange={(e) => setPostalCode(e.target.value)}
+                                                    />
                                                 </div>
                                                 <div className="space-y-1">
                                                     <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">State</label>
-                                                    <div className="relative group">
-                                                        <div className="absolute left-3 inset-y-0 flex items-center pointer-events-none text-gray-400 group-focus-within:text-primary transition-colors">
-                                                            <Globe size={18} />
-                                                        </div>
-                                                        <input
-                                                            type="text"
-                                                            placeholder="State"
-                                                            className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 bg-white focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all shadow-sm"
-                                                            value={country} // Assuming country is used for state in this context or kept as is
-                                                            onChange={(e) => setCountry(e.target.value)}
-                                                        />
-                                                    </div>
+                                                    <input
+                                                        type="text"
+                                                        placeholder="State"
+                                                        className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all shadow-sm"
+                                                        value={country} // Assuming country is used for state in this context or kept as is
+                                                        onChange={(e) => setCountry(e.target.value)}
+                                                    />
                                                 </div>
                                                 <div className="space-y-1">
                                                     <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">City</label>
-                                                    <div className="relative group">
-                                                        <div className="absolute left-3 inset-y-0 flex items-center pointer-events-none text-gray-400 group-focus-within:text-primary transition-colors">
-                                                            <Building2 size={18} />
-                                                        </div>
-                                                        <input
-                                                            type="text"
-                                                            placeholder="City"
-                                                            className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 bg-white focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all shadow-sm"
-                                                            value={city}
-                                                            onChange={(e) => setCity(e.target.value)}
-                                                        />
-                                                    </div>
+                                                    <input
+                                                        type="text"
+                                                        placeholder="City"
+                                                        className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all shadow-sm"
+                                                        value={city}
+                                                        onChange={(e) => setCity(e.target.value)}
+                                                    />
                                                 </div>
                                                 <div className="space-y-1">
                                                     <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">House No / Area / Street</label>
-                                                    <div className="relative group">
-                                                        <div className="absolute left-3 inset-y-0 flex items-center pointer-events-none text-gray-400 group-focus-within:text-primary transition-colors">
-                                                            <Home size={18} />
-                                                        </div>
-                                                        <input
-                                                            type="text"
-                                                            placeholder="House no, Area name"
-                                                            className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 bg-white focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all shadow-sm"
-                                                            value={address}
-                                                            onChange={(e) => setAddress(e.target.value)}
-                                                        />
-                                                    </div>
+                                                    <input
+                                                        type="text"
+                                                        placeholder="House no, Area name"
+                                                        className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all shadow-sm"
+                                                        value={address}
+                                                        onChange={(e) => setAddress(e.target.value)}
+                                                    />
                                                 </div>
                                             </div>
                                         </div>
