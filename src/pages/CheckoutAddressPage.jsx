@@ -240,162 +240,174 @@ export default function CheckoutAddressPage() {
                                             </button>
                                         </div>
 
-                                        <form onSubmit={handleSubmitForm} className="space-y-4">
-                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                <div className="space-y-1">
-                                                    <label className="text-xs font-bold text-gray-700 uppercase">Full Name *</label>
-                                                    <div className="relative group">
-                                                        <div className="absolute left-3 inset-y-0 flex items-center pointer-events-none text-gray-400 group-focus-within:text-primary transition-colors">
-                                                            <User size={18} />
-                                                        </div>
-                                                        <input
-                                                            type="text"
-                                                            name="fullName"
-                                                            value={formData.fullName}
-                                                            onChange={handleInputChange}
-                                                            placeholder="Enter your full name"
-                                                            className={`w-full pl-11 pr-4 py-3 rounded-lg border focus:ring-2 focus:ring-primary/20 outline-none transition-all ${formErrors.fullName ? 'border-red-500' : 'border-gray-300 focus:border-primary'}`}
-                                                        />
-                                                    </div>
-                                                    {formErrors.fullName && <span className="text-xs text-red-500">{formErrors.fullName}</span>}
-                                                </div>
-
-                                                <div className="space-y-1">
-                                                    <label className="text-xs font-bold text-gray-700 uppercase">Mobile Number *</label>
-                                                    <div className="relative group">
-                                                        <div className="absolute left-3 inset-y-0 flex items-center pointer-events-none text-gray-400 group-focus-within:text-primary transition-colors">
-                                                            <Phone size={18} />
-                                                        </div>
-                                                        <input
-                                                            type="text"
-                                                            name="mobileNumber"
-                                                            value={formData.mobileNumber}
-                                                            onChange={handleInputChange}
-                                                            placeholder="10-digit mobile number"
-                                                            className={`w-full pl-11 pr-4 py-3 rounded-lg border focus:ring-2 focus:ring-primary/20 outline-none transition-all ${formErrors.mobileNumber ? 'border-red-500' : 'border-gray-300 focus:border-primary'}`}
-                                                        />
-                                                    </div>
-                                                    {formErrors.mobileNumber && <span className="text-xs text-red-500">{formErrors.mobileNumber}</span>}
-                                                </div>
-                                            </div>
-
-                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                <div className="space-y-1">
-                                                    <label className="text-xs font-bold text-gray-700 uppercase">Pincode *</label>
-                                                    <div className="relative group">
-                                                        <div className="absolute left-3 inset-y-0 flex items-center pointer-events-none text-gray-400 group-focus-within:text-primary transition-colors">
-                                                            <MapPin size={18} />
-                                                        </div>
-                                                        <input
-                                                            type="text"
-                                                            name="pincode"
-                                                            value={formData.pincode}
-                                                            onChange={handleInputChange}
-                                                            placeholder="6-digit pincode"
-                                                            className={`w-full pl-11 pr-4 py-3 rounded-lg border focus:ring-2 focus:ring-primary/20 outline-none transition-all ${formErrors.pincode ? 'border-red-500' : 'border-gray-300 focus:border-primary'}`}
-                                                        />
-                                                    </div>
-                                                    {formErrors.pincode && <span className="text-xs text-red-500">{formErrors.pincode}</span>}
-                                                </div>
-                                                <div className="space-y-1">
-                                                    <label className="text-xs font-bold text-gray-700 uppercase">State *</label>
-                                                    <div className="relative group">
-                                                        <div className="absolute left-3 inset-y-0 flex items-center pointer-events-none text-gray-400 group-focus-within:text-primary transition-colors">
-                                                            <Globe size={18} />
-                                                        </div>
-                                                        <input
-                                                            type="text"
-                                                            name="state"
-                                                            value={formData.state}
-                                                            onChange={handleInputChange}
-                                                            placeholder="Enter state"
-                                                            className={`w-full pl-11 pr-4 py-3 rounded-lg border focus:ring-2 focus:ring-primary/20 outline-none transition-all ${formErrors.state ? 'border-red-500' : 'border-gray-300 focus:border-primary'}`}
-                                                        />
-                                                    </div>
-                                                    {formErrors.state && <span className="text-xs text-red-500">{formErrors.state}</span>}
-                                                </div>
-                                            </div>
-
-                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                <div className="space-y-1">
-                                                    <label className="text-xs font-bold text-gray-700 uppercase">City *</label>
-                                                    <div className="relative group">
-                                                        <div className="absolute left-3 inset-y-0 flex items-center pointer-events-none text-gray-400 group-focus-within:text-primary transition-colors">
-                                                            <Building2 size={18} />
-                                                        </div>
-                                                        <input
-                                                            type="text"
-                                                            name="city"
-                                                            value={formData.city}
-                                                            onChange={handleInputChange}
-                                                            placeholder="Enter city"
-                                                            className={`w-full pl-11 pr-4 py-3 rounded-lg border focus:ring-2 focus:ring-primary/20 outline-none transition-all ${formErrors.city ? 'border-red-500' : 'border-gray-300 focus:border-primary'}`}
-                                                        />
-                                                    </div>
-                                                    {formErrors.city && <span className="text-xs text-red-500">{formErrors.city}</span>}
-                                                </div>
-                                                <div className="space-y-1">
-                                                    <label className="text-xs font-bold text-gray-700 uppercase">House Number / Area *</label>
-                                                    <div className="relative group">
-                                                        <div className="absolute left-3 inset-y-0 flex items-center pointer-events-none text-gray-400 group-focus-within:text-primary transition-colors">
-                                                            <Home size={18} />
-                                                        </div>
-                                                        <input
-                                                            type="text"
-                                                            name="houseNumber"
-                                                            value={formData.houseNumber}
-                                                            onChange={handleInputChange}
-                                                            placeholder="House number, building name"
-                                                            className={`w-full pl-11 pr-4 py-3 rounded-lg border focus:ring-2 focus:ring-primary/20 outline-none transition-all ${formErrors.houseNumber ? 'border-red-500' : 'border-gray-300 focus:border-primary'}`}
-                                                        />
-                                                    </div>
-                                                    {formErrors.houseNumber && <span className="text-xs text-red-500">{formErrors.houseNumber}</span>}
-                                                </div>
-                                            </div>
-
-                                            <div className="space-y-1">
-                                                <label className="text-xs font-bold text-gray-700 uppercase">Landmark (Optional)</label>
-                                                <div className="relative group">
-                                                    <div className="absolute left-3 inset-y-0 flex items-center pointer-events-none text-gray-400 group-focus-within:text-primary transition-colors">
-                                                        <Map size={18} />
-                                                    </div>
-                                                    <input
-                                                        type="text"
-                                                        name="landmark"
-                                                        value={formData.landmark}
-                                                        onChange={handleInputChange}
-                                                        placeholder="e.g., near XYZ store"
-                                                        className="w-full pl-11 pr-4 py-3 rounded-lg border border-gray-300 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
-                                                    />
-                                                </div>
-                                            </div>
-
-                                            <div className="space-y-1">
-                                                <label className="text-xs font-bold text-gray-700 uppercase">Address Type *</label>
-                                                <div className="flex gap-4 mt-1">
-                                                    {['Home', 'Office'].map((type) => (
-                                                        <label key={type} className="flex items-center cursor-pointer">
+                                        <form onSubmit={handleSubmitForm} className="space-y-6">
+                                            {/* Person Information Group */}
+                                            <div className="space-y-4">
+                                                <h4 className="text-xs font-black text-primary uppercase tracking-widest border-l-2 border-primary pl-2">Contact Details</h4>
+                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                    <div className="space-y-1">
+                                                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Full Name *</label>
+                                                        <div className="relative group">
+                                                            <div className="absolute left-3 inset-y-0 flex items-center pointer-events-none text-gray-400 group-focus-within:text-primary transition-colors">
+                                                                <User size={18} />
+                                                            </div>
                                                             <input
-                                                                type="radio"
-                                                                name="addressType"
-                                                                value={type}
-                                                                checked={formData.addressType === type}
+                                                                type="text"
+                                                                name="fullName"
+                                                                value={formData.fullName}
                                                                 onChange={handleInputChange}
-                                                                className="mr-2 accent-primary w-4 h-4"
+                                                                placeholder="e.g. Rahul Sharma"
+                                                                className={`w-full pl-11 pr-4 py-3 rounded-xl border bg-white focus:ring-4 focus:ring-primary/10 outline-none transition-all ${formErrors.fullName ? 'border-red-500 bg-red-50/30' : 'border-gray-200 focus:border-primary shadow-sm'}`}
                                                             />
-                                                            <span className="text-sm text-gray-700">{type}</span>
-                                                        </label>
+                                                        </div>
+                                                        {formErrors.fullName && <span className="text-[10px] text-red-500 font-bold">{formErrors.fullName}</span>}
+                                                    </div>
+
+                                                    <div className="space-y-1">
+                                                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Mobile Number *</label>
+                                                        <div className="relative group">
+                                                            <div className="absolute left-3 inset-y-0 flex items-center pointer-events-none text-gray-400 group-focus-within:text-primary transition-colors">
+                                                                <Phone size={18} />
+                                                            </div>
+                                                            <input
+                                                                type="text"
+                                                                name="mobileNumber"
+                                                                value={formData.mobileNumber}
+                                                                onChange={handleInputChange}
+                                                                placeholder="10-digit number"
+                                                                className={`w-full pl-11 pr-4 py-3 rounded-xl border bg-white focus:ring-4 focus:ring-primary/10 outline-none transition-all ${formErrors.mobileNumber ? 'border-red-500 bg-red-50/30' : 'border-gray-200 focus:border-primary shadow-sm'}`}
+                                                            />
+                                                        </div>
+                                                        {formErrors.mobileNumber && <span className="text-[10px] text-red-500 font-bold">{formErrors.mobileNumber}</span>}
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {/* Address Information Group */}
+                                            <div className="space-y-4">
+                                                <h4 className="text-xs font-black text-primary uppercase tracking-widest border-l-2 border-primary pl-2">Address Details</h4>
+                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                    <div className="space-y-1">
+                                                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Pincode *</label>
+                                                        <div className="relative group">
+                                                            <div className="absolute left-3 inset-y-0 flex items-center pointer-events-none text-gray-400 group-focus-within:text-primary transition-colors">
+                                                                <MapPin size={18} />
+                                                            </div>
+                                                            <input
+                                                                type="text"
+                                                                name="pincode"
+                                                                value={formData.pincode}
+                                                                onChange={handleInputChange}
+                                                                placeholder="6-digit pincode"
+                                                                className={`w-full pl-11 pr-4 py-3 rounded-xl border bg-white focus:ring-4 focus:ring-primary/10 outline-none transition-all ${formErrors.pincode ? 'border-red-500 bg-red-50/30' : 'border-gray-200 focus:border-primary shadow-sm'}`}
+                                                            />
+                                                        </div>
+                                                        {formErrors.pincode && <span className="text-[10px] text-red-500 font-bold">{formErrors.pincode}</span>}
+                                                    </div>
+                                                    <div className="space-y-1">
+                                                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">State *</label>
+                                                        <div className="relative group">
+                                                            <div className="absolute left-3 inset-y-0 flex items-center pointer-events-none text-gray-400 group-focus-within:text-primary transition-colors">
+                                                                <Globe size={18} />
+                                                            </div>
+                                                            <input
+                                                                type="text"
+                                                                name="state"
+                                                                value={formData.state}
+                                                                onChange={handleInputChange}
+                                                                placeholder="e.g. Gujarat"
+                                                                className={`w-full pl-11 pr-4 py-3 rounded-xl border bg-white focus:ring-4 focus:ring-primary/10 outline-none transition-all ${formErrors.state ? 'border-red-500 bg-red-50/30' : 'border-gray-300 focus:border-primary shadow-sm'}`}
+                                                            />
+                                                        </div>
+                                                        {formErrors.state && <span className="text-[10px] text-red-500 font-bold">{formErrors.state}</span>}
+                                                    </div>
+                                                </div>
+
+                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                    <div className="space-y-1">
+                                                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">City *</label>
+                                                        <div className="relative group">
+                                                            <div className="absolute left-3 inset-y-0 flex items-center pointer-events-none text-gray-400 group-focus-within:text-primary transition-colors">
+                                                                <Building2 size={18} />
+                                                            </div>
+                                                            <input
+                                                                type="text"
+                                                                name="city"
+                                                                value={formData.city}
+                                                                onChange={handleInputChange}
+                                                                placeholder="e.g. Ahmedabad"
+                                                                className={`w-full pl-11 pr-4 py-3 rounded-xl border bg-white focus:ring-4 focus:ring-primary/10 outline-none transition-all ${formErrors.city ? 'border-red-500 bg-red-50/30' : 'border-gray-200 focus:border-primary shadow-sm'}`}
+                                                            />
+                                                        </div>
+                                                        {formErrors.city && <span className="text-[10px] text-red-500 font-bold">{formErrors.city}</span>}
+                                                    </div>
+                                                    <div className="space-y-1">
+                                                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">House No / Area / Street *</label>
+                                                        <div className="relative group">
+                                                            <div className="absolute left-3 inset-y-0 flex items-center pointer-events-none text-gray-400 group-focus-within:text-primary transition-colors">
+                                                                <Home size={18} />
+                                                            </div>
+                                                            <input
+                                                                type="text"
+                                                                name="houseNumber"
+                                                                value={formData.houseNumber}
+                                                                onChange={handleInputChange}
+                                                                placeholder="House no, Building name, Area"
+                                                                className={`w-full pl-11 pr-4 py-3 rounded-xl border bg-white focus:ring-4 focus:ring-primary/10 outline-none transition-all ${formErrors.houseNumber ? 'border-red-500 bg-red-50/30' : 'border-gray-200 focus:border-primary shadow-sm'}`}
+                                                            />
+                                                        </div>
+                                                        {formErrors.houseNumber && <span className="text-[10px] text-red-500 font-bold">{formErrors.houseNumber}</span>}
+                                                    </div>
+                                                </div>
+
+                                                <div className="space-y-1">
+                                                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Landmark (Optional)</label>
+                                                    <div className="relative group">
+                                                        <div className="absolute left-3 inset-y-0 flex items-center pointer-events-none text-gray-400 group-focus-within:text-primary transition-colors">
+                                                            <Map size={18} />
+                                                        </div>
+                                                        <input
+                                                            type="text"
+                                                            name="landmark"
+                                                            value={formData.landmark}
+                                                            onChange={handleInputChange}
+                                                            placeholder="e.g. Near Shiv Temple"
+                                                            className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 bg-white focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all shadow-sm"
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {/* Address Type Group */}
+                                            <div className="space-y-4">
+                                                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Address Type *</label>
+                                                <div className="flex gap-4">
+                                                    {['Home', 'Office'].map((type) => (
+                                                        <button
+                                                            key={type}
+                                                            type="button"
+                                                            onClick={() => setFormData({ ...formData, addressType: type })}
+                                                            className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-bold transition-all border-2 ${formData.addressType === type
+                                                                ? 'bg-primary text-white border-primary shadow-lg shadow-primary/20'
+                                                                : 'bg-white text-gray-500 border-gray-100 hover:border-gray-200 hover:bg-gray-50'
+                                                                }`}
+                                                        >
+                                                            {type === 'Home' ? <Home size={16} /> : <Building2 size={16} />}
+                                                            {type}
+                                                        </button>
                                                     ))}
                                                 </div>
                                             </div>
 
-                                            <AnimatedButton
-                                                type="submit"
-                                                disabled={submitting}
-                                                className="w-full bg-primary text-white py-3 rounded-xl font-bold hover:bg-opacity-90 transition-all shadow-md hover:shadow-lg disabled:bg-gray-300 disabled:cursor-not-allowed mt-4 border-none"
-                                            >
-                                                {submitting ? 'Adding Address...' : 'Save Address'}
-                                            </AnimatedButton>
+                                            <div className="pt-4">
+                                                <AnimatedButton
+                                                    type="submit"
+                                                    disabled={submitting}
+                                                    className="w-full bg-primary text-white py-4 rounded-xl font-black text-lg hover:bg-opacity-95 transition-all shadow-xl hover:shadow-primary/30 disabled:bg-gray-200 disabled:cursor-not-allowed border-none uppercase tracking-[0.1em]"
+                                                >
+                                                    {submitting ? 'Processing...' : 'Save & Deliver Here'}
+                                                </AnimatedButton>
+                                            </div>
                                         </form>
                                     </div>
                                 </ScrollReveal>
