@@ -11,6 +11,7 @@ const ProductEditPage = () => {
 
     const [name, setName] = useState('');
     const [price, setPrice] = useState(0);
+    const [mrp, setMrp] = useState(0);
     const [image, setImage] = useState('');
     const [brand, setBrand] = useState('');
     const [category, setCategory] = useState('');
@@ -39,6 +40,7 @@ const ProductEditPage = () => {
                 const { data } = await api.get(`/products/${id}`);
                 setName(data.name);
                 setPrice(data.price);
+                setMrp(data.mrp || 0);
                 setImage(data.image);
                 setBrand(data.brand);
                 setCategory(data.category);
@@ -115,6 +117,7 @@ const ProductEditPage = () => {
             await api.put(`/products/${id}`, {
                 name,
                 price,
+                mrp,
                 image,
                 brand,
                 category,
@@ -154,13 +157,23 @@ const ProductEditPage = () => {
                         />
                     </div>
                     <div>
-                        <label className="block text-gray-700 font-bold mb-2">Price</label>
+                        <label className="block text-gray-700 font-bold mb-2">Selling Price</label>
                         <input
                             type="number"
                             required
                             className="w-full border p-2 rounded focus:outline-none focus:border-secondary"
                             value={price}
                             onChange={(e) => setPrice(e.target.value)}
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-gray-700 font-bold mb-2">MRP (Original Price with Strikethrough)</label>
+                        <input
+                            type="number"
+                            required
+                            className="w-full border p-2 rounded focus:outline-none focus:border-secondary"
+                            value={mrp}
+                            onChange={(e) => setMrp(e.target.value)}
                         />
                     </div>
                     {/* Image Upload */}

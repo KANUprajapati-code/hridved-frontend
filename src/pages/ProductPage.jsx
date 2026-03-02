@@ -136,9 +136,21 @@ const ProductPage = () => {
 
 
 
-                                <div className="flex items-baseline gap-4 mb-8">
-                                    <span className="text-3xl font-bold text-gray-900">₹{product.price}</span>
-                                    <span className="text-green-600 text-sm font-medium bg-green-50 px-2 py-1 rounded">In Stock</span>
+                                <div className="flex items-center gap-4 mb-8">
+                                    <div className="flex flex-col">
+                                        <div className="flex items-baseline gap-3">
+                                            <span className="text-4xl font-black text-gray-900">₹{product.price}</span>
+                                            {product.mrp > product.price && (
+                                                <span className="text-xl text-gray-400 line-through">₹{product.mrp}</span>
+                                            )}
+                                        </div>
+                                        {product.mrp > product.price && (
+                                            <span className="text-green-600 font-bold text-sm">
+                                                Save ₹{product.mrp - product.price} ({Math.round(((product.mrp - product.price) / product.mrp) * 100)}% OFF)
+                                            </span>
+                                        )}
+                                    </div>
+                                    <span className="text-green-600 text-sm font-medium bg-green-50 px-3 py-1 rounded-full border border-green-100 ml-auto sm:ml-0">In Stock</span>
                                 </div>
 
                                 <p className="text-gray-600 mb-8 leading-relaxed text-lg">
