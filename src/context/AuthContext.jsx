@@ -55,6 +55,7 @@ export const AuthProvider = ({ children }) => {
     const logout = async () => {
         await api.post('/users/logout', {}, { withCredentials: true });
         setUser(null);
+        window.location.reload(); // 🔥 Force reload to clear all state
     };
 
     // ================= UPDATE PROFILE =================
