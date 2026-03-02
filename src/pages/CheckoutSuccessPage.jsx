@@ -12,8 +12,9 @@ export default function CheckoutSuccessPage() {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
     const { checkoutData, resetCheckout } = useCheckout();
-    const [orderDetails, setOrderDetails] = useState(null);
-    const [loading, setLoading] = useState(true);
+    // Initialize with orderDetails from context to avoid initial loading flicker
+    const [orderDetails, setOrderDetails] = useState(checkoutData.orderDetails || null);
+    const [loading, setLoading] = useState(!checkoutData.orderDetails);
 
     const orderId = searchParams.get('id') || checkoutData.orderId;
 
