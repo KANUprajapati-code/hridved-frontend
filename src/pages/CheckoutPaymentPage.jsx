@@ -74,7 +74,7 @@ export default function CheckoutPaymentPage() {
     const calculateTotals = () => {
         const cartItems = cart?.cartItems || [];
         const itemsPrice = cartItems.reduce((total, item) => total + (item.price * item.qty), 0);
-        const taxPrice = 0;
+        const taxPrice = cartItems.reduce((total, item) => total + (item.price * item.qty * (item.gst || 0) / 100), 0);
         const shippingPrice = checkoutData.shippingCost || 0;
         const totalPrice = itemsPrice + taxPrice + shippingPrice;
 
@@ -225,6 +225,10 @@ export default function CheckoutPaymentPage() {
                                             <div className="flex justify-between text-gray-600">
                                                 <span>Shipping</span>
                                                 <span>₹{shippingPrice.toLocaleString()}</span>
+                                            </div>
+                                            <div className="flex justify-between text-gray-600">
+                                                <span>GST</span>
+                                                <span>₹{taxPrice.toLocaleString()}</span>
                                             </div>
                                             <div className="border-t border-gray-200 my-2 pt-2 flex justify-between font-bold text-gray-900 text-lg">
                                                 <span>Total Amount</span>

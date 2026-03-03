@@ -21,6 +21,7 @@ const ProductEditPage = () => {
     const [images, setImages] = useState([]);
     const [benefits, setBenefits] = useState('');
     const [howToUse, setHowToUse] = useState('');
+    const [gst, setGst] = useState(0);
     const [uploading, setUploading] = useState(false);
     const [loading, setLoading] = useState(true);
     const [categories, setCategories] = useState([]);
@@ -50,6 +51,7 @@ const ProductEditPage = () => {
                 setHowToUse(data.howToUse || '');
                 setIsBestseller(data.isBestseller || false);
                 setImages(data.images || []);
+                setGst(data.gst || 0);
                 setLoading(false);
             } catch (error) {
                 console.error(error);
@@ -127,6 +129,7 @@ const ProductEditPage = () => {
                 images,
                 benefits,
                 howToUse,
+                gst,
             });
             navigate('/admin/productlist');
         } catch (error) {
@@ -297,6 +300,16 @@ const ProductEditPage = () => {
                             value={howToUse}
                             onChange={(e) => setHowToUse(e.target.value)}
                         ></textarea>
+                    </div>
+                    <div>
+                        <label className="block text-gray-700 font-bold mb-2">GST (%)</label>
+                        <input
+                            type="number"
+                            required
+                            className="w-full border p-2 rounded focus:outline-none focus:border-secondary"
+                            value={gst}
+                            onChange={(e) => setGst(e.target.value)}
+                        />
                     </div>
 
                     <button

@@ -83,7 +83,13 @@ const CartPage = () => {
 
     const discountedSubtotal = subtotal - discount;
     const shipping = discountedSubtotal > 499 ? 0 : 50;
-    const tax = 0;
+
+    // Calculate tax based on per-item GST
+    const tax = cartItems.reduce((acc, item) => {
+        const itemGst = item.gst || 0;
+        return acc + (item.price * item.qty * itemGst / 100);
+    }, 0);
+
     const total = discountedSubtotal + shipping + tax;
 
     if (cartItems.length === 0) {
@@ -218,6 +224,11 @@ const CartPage = () => {
                                         <div className="flex justify-between text-gray-600">
                                             <span>Shipping Estimate</span>
                                             <span className="font-bold text-green-600">{shipping === 0 ? "FREE" : `₹${shipping}`}</span>
+                                        </div>
+
+                                        <div className="flex justify-between text-gray-600">
+                                            <span>GST</span>
+                                            <span className="font-bold text-gray-900">₹{tax.toLocaleString()}</span>
                                         </div>
 
 
