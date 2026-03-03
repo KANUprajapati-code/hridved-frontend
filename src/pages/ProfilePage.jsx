@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../utils/api';
-import { User, Package, LogOut, MapPin, AlertCircle, Mail, Phone, Home, Building2, Globe, Lock } from 'lucide-react';
+import { User, Package, LogOut, MapPin, AlertCircle, Mail, Phone, Home, Building2, Globe, Lock, Stethoscope, Video, Calendar, Clock } from 'lucide-react';
 
 const ProfilePage = () => {
     const { user, logout, updateProfile } = useAuth();
@@ -37,6 +37,10 @@ const ProfilePage = () => {
     const [loadingTracking, setLoadingTracking] = useState(false);
     const [trackingError, setTrackingError] = useState('');
 
+    // Consultations State
+    const [consultations, setConsultations] = useState([]);
+    const [loadingConsultations, setLoadingConsultations] = useState(true);
+
     useEffect(() => {
         if (!user) {
             navigate('/login');
@@ -50,6 +54,7 @@ const ProfilePage = () => {
             setCountry(user.country || '');
             setAvatar(user.avatar || '');
             fetchOrders();
+            fetchConsultations();
         }
     }, [navigate, user]);
 
@@ -61,6 +66,17 @@ const ProfilePage = () => {
         } catch (error) {
             console.error(error);
             setLoadingOrders(false);
+        }
+    };
+
+    const fetchConsultations = async () => {
+        try {
+            const { data } = await api.get('/doctor-bookings');
+            setConsultations(data);
+            setLoadingConsultations(false);
+        } catch (error) {
+            console.error(error);
+            setLoadingConsultations(false);
         }
     };
 
@@ -151,6 +167,7 @@ const ProfilePage = () => {
     const tabs = [
         { id: 'profile', label: 'My Profile', icon: <User size={20} /> },
         { id: 'orders', label: 'My Orders', icon: <Package size={20} /> },
+        { id: 'consultations', label: 'My Consultations', icon: <Stethoscope size={20} /> },
         { id: 'tracking', label: 'Track Order', icon: <MapPin size={20} /> },
     ];
 
@@ -443,6 +460,76 @@ const ProfilePage = () => {
                                                 ))}
                                             </tbody>
                                         </table>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+
+                        {activeTab === 'consultations' && (
+                            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8 animate-fadeIn">
+                                <h2 className="text-2xl font-serif font-bold text-primary mb-6">My Consultations</h2>
+                                {loadingConsultations ? (
+                                    <p className="text-center text-gray-500 py-10">Loading consultations...</p>
+                                ) : consultations.length === 0 ? (
+                                    <div className="text-center py-12 bg-gray-50 rounded-xl border border-dashed border-gray-200">
+                                        <Stethoscope size={48} className="mx-auto text-gray-300 mb-4" />
+                                        <p className="text-gray-500 mb-4">You haven&apos;t booked any consultations yet.</p>
+                                        <Link to="/consultation" className="text-primary font-bold hover:underline">Find a Doctor</Link>
+                                    </div>
+                                ) : (
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        {consultations.map((booking) => (
+                                            <div key={booking._id} className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm hover:shadow-md transition-all duration-200">
+                                                <div className="flex justify-between items-start mb-4">
+                                                    <div>
+                                                        <h3 className="font-bold text-gray-800 text-lg">{booking.doctorName}</h3>
+                                                        <p className="text-primary text-xs font-bold uppercase tracking-wider">{booking.doctorId?.specialization || 'Consultation'}</p>
+                                                    </div>
+                                                    <span className={`text-[10px] px-2 py-1 rounded-full font-bold uppercase tracking-wider ${booking.status === 'confirmed' ? 'bg-green-100 text-green-700' :
+                                                        booking.status === 'pending' ? 'bg-yellow-100 text-yellow-700' :
+                                                            booking.status === 'cancelled' ? 'bg-red-100 text-red-700' : 'bg-gray-100 text-gray-700'
+                                                        }`}>
+                                                        {booking.status}
+                                                    </span>
+                                                </div>
+
+                                                <div className="space-y-3 mb-5">
+                                                    <div className="flex items-center gap-3 text-sm text-gray-600">
+                                                        <Calendar size={16} className="text-gray-400" />
+                                                        <span>{new Date(booking.appointmentDate).toLocaleDateString()}</span>
+                                                    </div>
+                                                    <div className="flex items-center gap-3 text-sm text-gray-600">
+                                                        <Clock size={16} className="text-gray-400" />
+                                                        <span>{booking.appointmentTime}</span>
+                                                    </div>
+                                                    <div className="flex items-center gap-3 text-sm text-gray-600">
+                                                        <MapPin size={16} className="text-gray-400" />
+                                                        <span className="capitalize">{booking.consultationType} Consultation</span>
+                                                    </div>
+                                                </div>
+
+                                                {booking.status === 'confirmed' && booking.googleMeetLink && (
+                                                    <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 flex flex-col gap-3">
+                                                        <div className="flex items-center gap-2 text-blue-800 font-bold text-sm">
+                                                            <Video size={18} />
+                                                            Google Meet Link
+                                                        </div>
+                                                        <a
+                                                            href={booking.googleMeetLink}
+                                                            target="_blank"
+                                                            rel="noreferrer"
+                                                            className="bg-blue-600 text-white text-center py-2 rounded-lg font-bold text-sm hover:bg-blue-700 transition"
+                                                        >
+                                                            Join Meeting
+                                                        </a>
+                                                    </div>
+                                                )}
+
+                                                {booking.status === 'pending' && (
+                                                    <p className="text-[10px] text-gray-400 italic text-center">Meet link will be available once appointment is confirmed.</p>
+                                                )}
+                                            </div>
+                                        ))}
                                     </div>
                                 )}
                             </div>

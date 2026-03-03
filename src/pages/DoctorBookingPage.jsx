@@ -19,6 +19,7 @@ const DoctorBookingPage = () => {
     const [patientEmail, setPatientEmail] = useState('');
     const [issue, setIssue] = useState('');
     const [bookingInProgress, setBookingInProgress] = useState(false);
+    const [bookedSlots, setBookedSlots] = useState([]);
 
     const timeSlots = ['09:00 AM', '09:30 AM', '10:00 AM', '10:30 AM', '11:00 AM', '11:30 AM', '02:00 PM', '02:30 PM', '03:00 PM', '03:30 PM', '04:00 PM', '04:30 PM'];
 
@@ -36,6 +37,19 @@ const DoctorBookingPage = () => {
         };
         fetchDoctor();
     }, [doctorId, addToast]);
+
+    useEffect(() => {
+        const fetchBookedSlots = async () => {
+            if (!selectedDate) return;
+            try {
+                const { data } = await api.get(`/doctor-bookings/booked-slots/${doctorId}/${selectedDate}`);
+                setBookedSlots(data);
+            } catch (error) {
+                console.error('Error fetching booked slots:', error);
+            }
+        };
+        fetchBookedSlots();
+    }, [doctorId, selectedDate]);
 
     const getMinDate = () => {
         const today = new Date();
@@ -276,18 +290,24 @@ const DoctorBookingPage = () => {
                                             <Clock size={16} className="text-green-600" /> Select Time *
                                         </label>
                                         <div className="grid grid-cols-3 gap-2">
-                                            {timeSlots.map((time) => (
-                                                <button
-                                                    key={time}
-                                                    onClick={() => setSelectedTime(time)}
-                                                    className={`p-3 rounded-lg border-2 transition-all font-bold text-sm ${selectedTime === time
-                                                        ? 'border-green-500 bg-green-50 text-green-700'
-                                                        : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'
-                                                        }`}
-                                                >
-                                                    {time}
-                                                </button>
-                                            ))}
+                                            {timeSlots.map((time) => {
+                                                const isBooked = bookedSlots.includes(time);
+                                                return (
+                                                    <button
+                                                        key={time}
+                                                        onClick={() => !isBooked && setSelectedTime(time)}
+                                                        disabled={isBooked}
+                                                        className={`p-3 rounded-lg border-2 transition-all font-bold text-sm ${selectedTime === time
+                                                            ? 'border-green-500 bg-green-50 text-green-700'
+                                                            : isBooked
+                                                                ? 'border-gray-100 bg-gray-50 text-gray-300 cursor-not-allowed'
+                                                                : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'
+                                                            }`}
+                                                    >
+                                                        {time}
+                                                    </button>
+                                                );
+                                            })}
                                         </div>
                                     </div>
                                 )}
