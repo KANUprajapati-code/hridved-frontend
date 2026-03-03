@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Calendar, Clock, MapPin, Users, Zap, CheckCircle, ArrowLeft, Video } from 'lucide-react';
+import { Calendar, Clock, MapPin, Users, Zap, CheckCircle, ArrowLeft, Video, Ticket } from 'lucide-react';
 import api from '../utils/api';
 import { ToastContext } from '../context/ToastContext';
 
@@ -20,6 +20,9 @@ const DoctorBookingPage = () => {
     const [issue, setIssue] = useState('');
     const [bookingInProgress, setBookingInProgress] = useState(false);
     const [bookedSlots, setBookedSlots] = useState([]);
+    const [couponCode, setCouponCode] = useState('');
+    const [applyingCoupon, setApplyingCoupon] = useState(false);
+    const [appliedCoupon, setAppliedCoupon] = useState(null);
 
     const timeSlots = ['09:00 AM', '09:30 AM', '10:00 AM', '10:30 AM', '11:00 AM', '11:30 AM', '02:00 PM', '02:30 PM', '03:00 PM', '03:30 PM', '04:00 PM', '04:30 PM'];
 
@@ -63,6 +66,25 @@ const DoctorBookingPage = () => {
         return date.toISOString().split('T')[0];
     };
 
+    const handleApplyCoupon = async () => {
+        if (!couponCode) return;
+        setApplyingCoupon(true);
+        try {
+            const { data } = await api.post('/coupons/validate', {
+                code: couponCode,
+                cartTotal: doctor.fee
+            });
+            setAppliedCoupon(data);
+            if (addToast) addToast(`Coupon '${data.code}' applied!`, 'success');
+        } catch (error) {
+            console.error('Coupon error:', error);
+            if (addToast) addToast(error.response?.data?.message || 'Invalid coupon', 'error');
+            setAppliedCoupon(null);
+        } finally {
+            setApplyingCoupon(false);
+        }
+    };
+
     const initiatePayment = async () => {
         if (!selectedDate || !selectedTime || !patientName || !patientPhone || !patientEmail) {
             if (addToast) addToast('Please fill all required fields', 'error');
@@ -84,6 +106,7 @@ const DoctorBookingPage = () => {
                 patientEmail,
                 issue,
                 amount: doctor.fee,
+                couponCode: appliedCoupon ? appliedCoupon.code : undefined,
                 status: 'pending',
             };
 
@@ -366,6 +389,39 @@ const DoctorBookingPage = () => {
                                     </div>
                                 </div>
 
+                                {/* Promo Code */}
+                                <div className="border-t border-gray-100 pt-6">
+                                    <label className="block text-sm font-bold text-gray-900 mb-2 flex items-center gap-2">
+                                        <Ticket size={16} className="text-green-600" /> Have a Promo Code?
+                                    </label>
+                                    <div className="flex gap-2">
+                                        <input
+                                            type="text"
+                                            value={couponCode}
+                                            onChange={(e) => setCouponCode(e.target.value)}
+                                            placeholder="Enter code"
+                                            className="flex-1 px-4 py-2 border-2 border-gray-200 rounded-lg focus:border-green-500 focus:outline-none uppercase font-bold"
+                                            disabled={appliedCoupon}
+                                        />
+                                        {appliedCoupon ? (
+                                            <button
+                                                onClick={() => { setAppliedCoupon(null); setCouponCode(''); }}
+                                                className="px-4 py-2 bg-gray-100 text-gray-600 rounded-lg font-bold hover:bg-gray-200"
+                                            >
+                                                Remove
+                                            </button>
+                                        ) : (
+                                            <button
+                                                onClick={handleApplyCoupon}
+                                                disabled={applyingCoupon || !couponCode}
+                                                className="px-6 py-2 bg-green-600 text-white rounded-lg font-bold hover:bg-green-700 disabled:opacity-50"
+                                            >
+                                                {applyingCoupon ? '...' : 'Apply'}
+                                            </button>
+                                        )}
+                                    </div>
+                                </div>
+
                                 {/* Summary */}
                                 {selectedDate && selectedTime && (
                                     <div className="bg-green-50 rounded-xl p-6 border-2 border-green-200">
@@ -383,9 +439,23 @@ const DoctorBookingPage = () => {
                                                 <span className="text-gray-600">Date & Time:</span>
                                                 <span className="font-bold text-gray-900">{new Date(selectedDate).toLocaleDateString()} at {selectedTime}</span>
                                             </div>
+                                            <div className="border-t border-green-200 pt-2 mt-2 flex justify-between">
+                                                <span className="text-gray-600">Consultation Fee:</span>
+                                                <span className="font-bold text-gray-900">₹{doctor.fee}</span>
+                                            </div>
+                                            {appliedCoupon && (
+                                                <div className="flex justify-between text-green-700 font-bold">
+                                                    <span>Discount ({appliedCoupon.code}):</span>
+                                                    <span>-₹{appliedCoupon.type === 'percentage' ? (doctor.fee * appliedCoupon.discount / 100) : appliedCoupon.discount}</span>
+                                                </div>
+                                            )}
                                             <div className="border-t border-green-300 pt-2 mt-2 flex justify-between">
                                                 <span className="text-gray-600 font-bold">Total Amount:</span>
-                                                <span className="text-xl font-bold text-green-700">₹{doctor.fee}</span>
+                                                <span className="text-xl font-bold text-green-700">
+                                                    ₹{appliedCoupon
+                                                        ? (doctor.fee - (appliedCoupon.type === 'percentage' ? (doctor.fee * appliedCoupon.discount / 100) : appliedCoupon.discount))
+                                                        : doctor.fee}
+                                                </span>
                                             </div>
                                         </div>
                                     </div>
