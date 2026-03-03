@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, ShoppingBag, ShoppingCart, Users, FileText, LogOut, MessageSquare, Layout, ListOrdered, Tag, ArrowLeft, X, Truck } from 'lucide-react';
+import { LayoutDashboard, ShoppingBag, ShoppingCart, Users, FileText, LogOut, MessageSquare, Layout, ListOrdered, Tag, ArrowLeft, X, Truck, Calendar } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 const AdminSidebar = ({ isMobileOpen, setIsMobileOpen }) => {
