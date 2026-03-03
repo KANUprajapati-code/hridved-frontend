@@ -88,6 +88,7 @@ const DoctorBookingPage = () => {
             };
 
             // Call backend to initiate payment
+            console.log('[DOCTOR-BOOKING] Initiating booking with data:', bookingData);
             const { data } = await api.post('/doctor-bookings/doctor-booking', bookingData);
 
             if (data.razorpayOrderId) {
