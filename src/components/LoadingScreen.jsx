@@ -11,11 +11,54 @@ const LoadingScreen = () => {
         delay: Math.random() * 8
     }));
 
+    const brandName = "Hridved";
+    const brandLetters = brandName.split("");
+
     const containerVariants = {
         exit: {
             opacity: 0,
             transition: { duration: 1.5, ease: [0.22, 1, 0.36, 1] }
         }
+    };
+
+    const logoVariants = {
+        initial: { scale: 0.8, opacity: 0, rotateY: -180, y: 50 },
+        animate: { 
+            scale: 1, 
+            opacity: 1, 
+            rotateY: 0,
+            y: [0, -15, 0],
+            rotateZ: [0, 2, 0, -2, 0],
+            transition: { 
+                opacity: { duration: 2.5, ease: "easeOut" },
+                scale: { duration: 2.5, ease: [0.16, 1, 0.3, 1] },
+                rotateY: { duration: 3, ease: [0.16, 1, 0.3, 1] },
+                y: { duration: 6, repeat: Infinity, ease: "easeInOut" },
+                rotateZ: { duration: 8, repeat: Infinity, ease: "easeInOut" }
+            }
+        }
+    };
+
+    const letterVariants = {
+        initial: (i) => ({ 
+            opacity: 0, 
+            y: i % 2 === 0 ? 60 : -60,
+            x: i % 2 === 0 ? -40 : 40,
+            scale: 0.4,
+            rotate: 15
+        }),
+        animate: (i) => ({ 
+            opacity: 1, 
+            y: 0, 
+            x: 0, 
+            scale: 1,
+            rotate: 0,
+            transition: { 
+                duration: 2, 
+                delay: 1 + (i * 0.12),
+                ease: [0.16, 1, 0.3, 1]
+            }
+        })
     };
 
     return (
@@ -43,10 +86,10 @@ const LoadingScreen = () => {
                         height: p.size,
                     }}
                     animate={{
-                        y: [0, -60, 0],
-                        x: [0, 30, 0],
+                        y: [0, -70, 0],
+                        x: [0, 40, 0],
                         opacity: [0.1, 0.5, 0.1],
-                        scale: [1, 1.5, 1]
+                        scale: [1, 1.4, 1]
                     }}
                     transition={{
                         duration: p.duration,
@@ -57,39 +100,27 @@ const LoadingScreen = () => {
                 />
             ))}
 
-            <div className="relative flex flex-col items-center justify-center">
-                {/* Metallic Golden Logo with Anti-Gravity Motion */}
+            <div className="relative flex flex-col md:flex-row items-center gap-10 md:gap-6">
+                {/* Logo Icon with Anti-Gravity Motion */}
                 <motion.div
-                    initial={{ scale: 0.85, opacity: 0, rotateY: -90, y: 30 }}
-                    animate={{ 
-                        scale: 1, 
-                        opacity: 1, 
-                        rotateY: 0,
-                        y: [0, -20, 0],
-                        rotateZ: [0, 1, 0, -1, 0]
-                    }}
-                    transition={{ 
-                        opacity: { duration: 2.5, ease: "easeOut" },
-                        scale: { duration: 2.5, ease: [0.22, 1, 0.36, 1] },
-                        rotateY: { duration: 3, ease: [0.22, 1, 0.36, 1] },
-                        y: { duration: 5, repeat: Infinity, ease: "easeInOut" },
-                        rotateZ: { duration: 8, repeat: Infinity, ease: "easeInOut" }
-                    }}
+                    variants={logoVariants}
+                    initial="initial"
+                    animate="animate"
                     className="relative"
                 >
                     {/* Golden Glow Behind Logo */}
                     <motion.div 
-                        className="absolute inset-[-40%] bg-[#D4AF37]/10 blur-[60px] rounded-full"
-                        animate={{ opacity: [0.3, 0.6, 0.3], scale: [1, 1.1, 1] }}
-                        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                        className="absolute inset-[-40%] bg-[#D4AF37]/15 blur-[50px] rounded-full"
+                        animate={{ opacity: [0.3, 0.7, 0.3], scale: [1, 1.2, 1] }}
+                        transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
                     />
                     
                     <img 
-                        src="/logo-asset4.png" 
-                        alt="Hridved Logo" 
-                        className="h-32 md:h-48 w-auto relative z-10"
+                        src="/logo-modified.png" 
+                        alt="Hridved Icon" 
+                        className="h-24 md:h-32 w-auto relative z-10"
                         style={{ 
-                            filter: "brightness(0) invert(1) sepia(100%) saturate(800%) hue-rotate(10deg) brightness(1.1) drop-shadow(0 0 20px rgba(212,175,55,0.6))" 
+                            filter: "brightness(0) invert(1) sepia(100%) saturate(600%) hue-rotate(15deg) brightness(1.1) drop-shadow(0 0 15px rgba(212,175,55,0.5))" 
                         }} 
                     />
                     
@@ -97,26 +128,61 @@ const LoadingScreen = () => {
                     <motion.div 
                         className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent w-full skew-x-[-25deg] z-20"
                         animate={{ x: ["-150%", "250%"] }}
-                        transition={{ duration: 3.5, repeat: Infinity, ease: [0.4, 0, 0.2, 1], repeatDelay: 1.5 }}
+                        transition={{ duration: 4, repeat: Infinity, ease: [0.4, 0, 0.2, 1], repeatDelay: 2 }}
                     />
                 </motion.div>
+
+                {/* Animated Brand Name */}
+                <div className="flex select-none">
+                    {brandLetters.map((letter, i) => (
+                        <motion.span
+                            key={i}
+                            custom={i}
+                            variants={letterVariants}
+                            initial="initial"
+                            animate="animate"
+                            className="text-5xl md:text-8xl font-serif font-extrabold tracking-tighter inline-block relative"
+                            style={{
+                                color: "#D4AF37",
+                                textShadow: "0 4px 8px rgba(0,0,0,0.5), 0 0 20px rgba(212,175,55,0.3)",
+                                background: "linear-gradient(to bottom, #FFD700 0%, #D4AF37 50%, #B8860B 100%)",
+                                WebkitBackgroundClip: "text",
+                                WebkitTextFillColor: "transparent"
+                            }}
+                        >
+                            {/* Subtle individual float per letter */}
+                            <motion.span
+                                className="inline-block"
+                                animate={{ y: [0, -8, 0] }}
+                                transition={{ 
+                                    duration: 4, 
+                                    repeat: Infinity, 
+                                    ease: "easeInOut", 
+                                    delay: 1.5 + (i * 0.2) 
+                                }}
+                            >
+                                {letter}
+                            </motion.span>
+                        </motion.span>
+                    ))}
+                </div>
             </div>
 
             {/* Cinematic Sparkles */}
-            {[...Array(15)].map((_, i) => (
+            {[...Array(20)].map((_, i) => (
                 <motion.div
                     key={`sparkle-${i}`}
-                    className="absolute w-1 h-1 bg-[#FFD700] rounded-full shadow-[0_0_5px_#fff]"
+                    className="absolute w-1 h-1 bg-[#FFD700] rounded-full shadow-[0_0_8px_#fff]"
                     style={{
                         left: `${Math.random() * 100}%`,
                         top: `${Math.random() * 100}%`,
                     }}
                     animate={{
-                        opacity: [0, 0.8, 0],
-                        scale: [0, 1.2, 0],
+                        opacity: [0, 0.9, 0],
+                        scale: [0, 1.4, 0],
                     }}
                     transition={{
-                        duration: 3 + Math.random() * 3,
+                        duration: 4 + Math.random() * 3,
                         repeat: Infinity,
                         delay: Math.random() * 5
                     }}
