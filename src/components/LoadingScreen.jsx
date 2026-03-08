@@ -12,32 +12,31 @@ const LoadingScreen = () => {
                     clearInterval(interval);
                     return 100;
                 }
-                const increment = Math.floor(Math.random() * 5) + 1;
+                // Slower, more deliberate luxury counting
+                const increment = Math.floor(Math.random() * 3) + 1;
                 return Math.min(prev + increment, 100);
             });
-        }, 100);
+        }, 120);
         return () => clearInterval(interval);
     }, []);
 
-    // Staggered panels for the exit animation
+    // Staggered panels for the "Curtain" exit animation
     const panelVariants = {
-        initial: { y: 0 },
+        initial: { height: "100%" },
         exit: (i) => ({
-            y: "-100%",
+            height: "0%",
             transition: {
-                duration: 1,
-                ease: [0.645, 0.045, 0.355, 1], // easeInOutQuint
+                duration: 1.2,
+                ease: [0.76, 0, 0.24, 1], // Cinematic easeInOutExpo
                 delay: i * 0.1,
             }
         })
     };
 
     return (
-        <motion.div
-            className="fixed inset-0 z-[9999] pointer-events-none overflow-hidden"
-        >
-            <AnimatePresence>
-                {/* Background Panels */}
+        <div className="fixed inset-0 z-[9999] pointer-events-none overflow-hidden">
+            {/* Background Panels (The Curtain) */}
+            <div className="absolute inset-0 flex">
                 {[...Array(5)].map((_, i) => (
                     <motion.div
                         key={i}
@@ -45,104 +44,130 @@ const LoadingScreen = () => {
                         variants={panelVariants}
                         initial="initial"
                         exit="exit"
-                        className="absolute top-0 bottom-0 bg-primary"
-                        style={{
-                            left: `${i * 20}%`,
-                            width: "20.5%", // Slight overlap to prevent gaps
-                            zIndex: 10
-                        }}
-                    />
+                        className="bg-primary relative"
+                        style={{ width: "20%" }}
+                    >
+                        {/* Subtle line between panels for texture */}
+                        <div className="absolute right-0 top-0 bottom-0 w-[1px] bg-white/5 h-full" />
+                    </motion.div>
                 ))}
-            </AnimatePresence>
+            </div>
 
             {/* Content Layer */}
-            <motion.div
-                initial={{ opacity: 1 }}
-                exit={{ 
-                    opacity: 0,
-                    transition: { duration: 0.5 } 
-                }}
-                className="relative z-20 flex h-full w-full flex-col items-center justify-center bg-transparent"
-            >
-                <div className="container mx-auto px-10 flex flex-col justify-between h-full py-20">
-                    {/* Top Section */}
-                    <div className="flex justify-between items-start">
-                        <motion.div
-                            initial={{ opacity: 0, x: -20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ duration: 1, delay: 0.5 }}
-                        >
-                            <span className="text-secondary font-bold tracking-[0.3em] uppercase text-xs">
-                                Hridved Ayurveda
-                            </span>
-                        </motion.div>
-                        <motion.div
-                            initial={{ opacity: 0, x: 20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ duration: 1, delay: 0.5 }}
-                            className="text-right"
-                        >
-                            <span className="text-white/40 text-[10px] tracking-[0.2em] uppercase">
-                                Est. 2020
-                            </span>
-                        </motion.div>
-                    </div>
+            <AnimatePresence>
+                {counter < 100 && (
+                    <motion.div
+                        initial={{ opacity: 1 }}
+                        exit={{ 
+                            opacity: 0,
+                            y: -50,
+                            transition: { duration: 0.8, ease: "easeInOut" } 
+                        }}
+                        className="relative z-20 flex h-full w-full flex-col items-center justify-center"
+                    >
+                        <div className="container mx-auto px-12 flex flex-col justify-between h-full py-16 md:py-24">
+                            {/* Top Info */}
+                            <div className="flex justify-between items-start w-full overflow-hidden">
+                                <motion.div
+                                    initial={{ y: "100%" }}
+                                    animate={{ y: 0 }}
+                                    transition={{ duration: 0.8, ease: "easeOut" }}
+                                    className="flex flex-col"
+                                >
+                                    <span className="text-secondary font-bold tracking-[0.4em] uppercase text-[10px] md:text-xs">
+                                        Pure Ayurveda
+                                    </span>
+                                    <span className="text-white/40 text-[9px] tracking-[0.2em] mt-1 font-medium italic">
+                                        Crafting Wellness
+                                    </span>
+                                </motion.div>
+                                <motion.div
+                                    initial={{ y: "100%" }}
+                                    animate={{ y: 0 }}
+                                    transition={{ duration: 0.8, ease: "easeOut", delay: 0.1 }}
+                                    className="text-right"
+                                >
+                                    <span className="text-white/60 text-[10px] md:text-xs tracking-[0.3em] uppercase font-bold">
+                                        Hridved • 2020
+                                    </span>
+                                </motion.div>
+                            </div>
 
-                    {/* Middle Section: Logo and Counter */}
-                    <div className="flex flex-col items-center justify-center flex-grow">
-                        <div className="overflow-hidden mb-6">
-                            <motion.img
-                                initial={{ y: "110%" }}
-                                animate={{ y: 0 }}
-                                transition={{ 
-                                    duration: 1.5, 
-                                    ease: [0.16, 1, 0.3, 1] 
-                                }}
-                                src="/logo-asset4.png"
-                                alt="HRIDVED"
-                                className="h-20 md:h-32 w-auto brightness-0 invert"
-                            />
-                        </div>
-                        
-                        <div className="flex items-baseline gap-2">
-                            <motion.span 
-                                className="text-white text-6xl md:text-9xl font-sans font-black tracking-tighter"
-                            >
-                                {counter}
-                            </motion.span>
-                            <span className="text-secondary text-2xl font-bold">%</span>
-                        </div>
-                    </div>
+                            {/* Center Section: The Bold Counter */}
+                            <div className="flex flex-col items-center justify-center flex-grow">
+                                <motion.div
+                                    initial={{ opacity: 0, scale: 0.9 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    transition={{ duration: 1 }}
+                                    className="relative"
+                                >
+                                    <div className="flex items-baseline justify-center">
+                                        <motion.h1 
+                                            className="text-white text-[25vw] sm:text-[20vw] lg:text-[18vw] font-serif font-black leading-none tracking-tighter"
+                                        >
+                                            {counter}
+                                        </motion.h1>
+                                        <span className="text-secondary text-2xl md:text-5xl font-bold ml-2">%</span>
+                                    </div>
+                                    
+                                    {/* Logo floating subtly below counter */}
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ delay: 0.5, duration: 1 }}
+                                        className="mt-4 md:mt-0 flex justify-center"
+                                    >
+                                        <img src="/logo-asset4.png" alt="Logo" className="h-10 md:h-16 w-auto brightness-0 invert opacity-40" />
+                                    </motion.div>
+                                </motion.div>
+                            </div>
 
-                    {/* Bottom Section */}
-                    <div className="flex justify-between items-end">
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 1, delay: 1 }}
-                            className="max-w-[200px]"
-                        >
-                            <p className="text-white/60 text-[10px] uppercase leading-loose tracking-widest">
-                                Crafting authentic products with ancient wisdom.
-                            </p>
-                        </motion.div>
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 1, delay: 1.2 }}
-                        >
-                             <div className="h-12 w-12 border border-white/10 rounded-full flex items-center justify-center group">
-                                <motion.div 
-                                    animate={{ rotate: 360 }}
-                                    transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
-                                    className="w-1.5 h-1.5 bg-secondary rounded-full"
-                                />
-                             </div>
-                        </motion.div>
-                    </div>
-                </div>
-            </motion.div>
-        </motion.div>
+                            {/* Bottom Info */}
+                            <div className="flex justify-between items-end w-full">
+                                <motion.div
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    transition={{ duration: 1, delay: 0.8 }}
+                                    className="flex flex-col"
+                                >
+                                    <span className="text-white/20 text-[8px] md:text-[10px] tracking-[0.6em] uppercase mb-4">
+                                        Interface Loading
+                                    </span>
+                                    <div className="flex gap-2">
+                                        {[...Array(3)].map((_, i) => (
+                                            <motion.div
+                                                key={i}
+                                                animate={{ 
+                                                    scale: [1, 1.5, 1],
+                                                    opacity: [0.3, 1, 0.3]
+                                                }}
+                                                transition={{ 
+                                                    duration: 1.5, 
+                                                    repeat: Infinity, 
+                                                    delay: i * 0.2 
+                                                }}
+                                                className="w-1.5 h-1.5 bg-secondary rounded-full"
+                                            />
+                                        ))}
+                                    </div>
+                                </motion.div>
+                                
+                                <motion.div
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ duration: 1, delay: 1 }}
+                                    className="text-right max-w-[200px] md:max-w-xs"
+                                >
+                                    <p className="text-white/60 text-[9px] md:text-[11px] uppercase leading-loose tracking-[0.2em] font-light">
+                                        "Ancient wisdom for the modern soul."
+                                    </p>
+                                </motion.div>
+                            </div>
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        </div>
     );
 };
 
