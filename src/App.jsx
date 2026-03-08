@@ -77,10 +77,25 @@ function App() {
     const [siteLoading, setSiteLoading] = useState(true);
 
     useEffect(() => {
-        const timer = setTimeout(() => {
-            setSiteLoading(false);
-        }, 5000); // 5 seconds for a cinematic feel
-        return () => clearTimeout(timer);
+        const minTime = 5000; // Minimum 5 seconds for the cinematic effect
+        const startTime = Date.now();
+
+        const finishLoading = () => {
+            const timeElapsed = Date.now() - startTime;
+            const remainingTime = Math.max(0, minTime - timeElapsed);
+            
+            setTimeout(() => {
+                setSiteLoading(false);
+            }, remainingTime);
+        };
+
+        // Wait for window load event (ensures images and assets are ready)
+        if (document.readyState === 'complete') {
+            finishLoading();
+        } else {
+            window.addEventListener('load', finishLoading);
+            return () => window.removeEventListener('load', finishLoading);
+        }
     }, []);
 
     return (
