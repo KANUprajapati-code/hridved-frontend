@@ -143,9 +143,14 @@ const LoadingScreen = () => {
                             animate="animate"
                             className="text-5xl md:text-8xl font-serif font-extrabold tracking-tighter inline-block relative"
                             style={{
-                                color: "#D4AF37",
-                                textShadow: "0 4px 8px rgba(0,0,0,0.5), 0 0 20px rgba(212,175,55,0.3)",
-                                background: "linear-gradient(to bottom, #FFD700 0%, #D4AF37 50%, #B8860B 100%)",
+                                color: "#FFD700",
+                                textShadow: `
+                                    0 2px 2px rgba(0,0,0,0.5),
+                                    0 0 10px rgba(255, 215, 0, 0.4),
+                                    0 0 20px rgba(212, 175, 55, 0.3),
+                                    0 0 40px rgba(212, 175, 55, 0.2)
+                                `,
+                                background: "linear-gradient(135deg, #FFF9E3 0%, #FFD700 25%, #D4AF37 50%, #B8860B 75%, #8B6508 100%)",
                                 WebkitBackgroundClip: "text",
                                 WebkitTextFillColor: "transparent"
                             }}

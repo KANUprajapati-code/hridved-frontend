@@ -81,7 +81,7 @@ function App() {
 
         const finishLoading = () => {
             const timeElapsed = Date.now() - startTime;
-            const remainingTime = Math.max(0, minTime - timeElapsed);
+            const remainingTime = Math.max(0, 6000 - timeElapsed);
             
             setTimeout(() => {
                 setSiteLoading(false);
@@ -111,7 +111,7 @@ function App() {
                                     <CartProvider>
                                         <CheckoutProvider>
                                             <AnimatePresence mode="wait">
-                                                <Suspense fallback={<LoadingFallback />}>
+                                                <Suspense fallback={<LoadingScreen />}>
                                                     <Routes>
                                                         {/* Public Routes with Header & Footer */}
                                                         <Route element={<MainLayout />}>
