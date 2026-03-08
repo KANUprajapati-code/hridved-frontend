@@ -16,6 +16,7 @@ const DoctorEditPage = () => {
     const [languages, setLanguages] = useState('');
     const [fee, setFee] = useState(0);
     const [tags, setTags] = useState('');
+    const [quote, setQuote] = useState('');
     const [available, setAvailable] = useState(true);
     const [isVerified, setIsVerified] = useState(true);
     const [timeSlots, setTimeSlots] = useState([]);
