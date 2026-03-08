@@ -577,7 +577,7 @@ const ProfilePage = () => {
                                             </div>
                                             <div className="bg-gray-50 p-5 rounded-2xl border border-gray-100">
                                                 <p className="text-[10px] text-gray-400 uppercase font-bold tracking-wider mb-1">Courier</p>
-                                                <p className="text-gray-800 font-bold">{trackingData.courier_name || trackingData.fulfilledby || 'Fship'}</p>
+                                                <p className="text-gray-800 font-bold">{trackingData.courier_name || trackingData.fulfilledby || 'Vamaship'}</p>
                                             </div>
                                             <div className="bg-gray-50 p-5 rounded-2xl border border-gray-100">
                                                 <p className="text-[10px] text-gray-400 uppercase font-bold tracking-wider mb-1">Waybill</p>

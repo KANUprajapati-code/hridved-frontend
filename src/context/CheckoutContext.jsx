@@ -35,7 +35,7 @@ export const CheckoutProvider = ({ children }) => {
         setError(null);
     }, []);
 
-    const updateShippingMethod = useCallback((method, cost, provider = 'Fship') => {
+    const updateShippingMethod = useCallback((method, cost, provider = 'Vamaship') => {
         setCheckoutData(prev => ({
             ...prev,
             shippingMethod: method,

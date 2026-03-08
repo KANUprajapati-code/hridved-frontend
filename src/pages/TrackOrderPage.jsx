@@ -93,7 +93,7 @@ const TrackOrderPage = () => {
                             <div className="flex justify-between items-center">
                                 <div>
                                     <p className="text-[10px] text-gray-400 uppercase font-bold mb-1">Courier Partner</p>
-                                    <p className="font-bold">{trackingData.fulfilledby || "Fship Logistics"}</p>
+                                    <p className="font-bold">{trackingData.fulfilledby || "Vamaship Logistics"}</p>
                                 </div>
                                 <div className="text-right">
                                     <p className="text-[10px] text-gray-400 uppercase font-bold mb-1">Order Ref</p>

@@ -12,7 +12,7 @@ import { Truck, MapPin, Check, ChevronLeft, ArrowRight } from 'lucide-react';
 export default function CheckoutShippingPage() {
     const navigate = useNavigate();
     const { cart } = useCart();
-    const { checkoutData, updateShippingMethod, updateStep, setErrorMessage, clearError, setShippingOptions } = useCheckout();
+    const { checkoutData, updateShippingMethod, updateStep, setErrorMessage, clearError, setShippingOptions, shippingOptions } = useCheckout();
 
     const [selectedMethod, setSelectedMethod] = useState(checkoutData.shippingMethod || null);
     const [shippingProvider, setShippingProvider] = useState('Vamaship');
@@ -36,7 +36,6 @@ export default function CheckoutShippingPage() {
                 pincode: checkoutData.address.pincode,
                 weight: 0.5,
             });
-            setLocalShippingOptions(data.shippingOptions || []);
             setShippingOptions(data.shippingOptions || []);
 
             // Auto-select first option
@@ -63,7 +62,6 @@ export default function CheckoutShippingPage() {
                     description: 'Express Delivery (1-2 days)',
                 }
             ];
-            setLocalShippingOptions(defaultOptions);
             setShippingOptions(defaultOptions);
             if (!checkoutData.shippingMethod) {
                 setSelectedMethod('Standard');
