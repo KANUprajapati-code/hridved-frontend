@@ -65,12 +65,17 @@ export const CartProvider = ({ children }) => {
     };
 
     const addToCart = async (product, qty = 1) => {
+        if (!product || !product._id) {
+            console.error('addToCart called with invalid product:', product);
+            return;
+        }
+
         try {
             const cartItemData = {
-                product: product._id,
-                _id: product._id,
+                product: product._id, // Ensure this is a string
+                _id: product._id,      // Keep for backward compatibility
                 name: product.name,
-                qty: parseInt(qty),
+                qty: Math.max(1, parseInt(qty)),
                 image: product.image,
                 price: parseFloat(product.price),
                 gst: product.gst || 0,
@@ -85,15 +90,19 @@ export const CartProvider = ({ children }) => {
                 } catch (error) {
                     console.error('Error adding to cart on server', error);
                     // Fallback to local storage
-                    const updatedCart = updateLocalCart(cart, cartItemData);
-                    setCart(updatedCart);
-                    saveToLocalStorage(updatedCart);
+                    setCart(prevCart => {
+                        const updatedCart = updateLocalCart(prevCart, cartItemData);
+                        saveToLocalStorage(updatedCart);
+                        return updatedCart;
+                    });
                 }
             } else {
                 // For guests, use localStorage only
-                const updatedCart = updateLocalCart(cart, cartItemData);
-                setCart(updatedCart);
-                saveToLocalStorage(updatedCart);
+                setCart(prevCart => {
+                    const updatedCart = updateLocalCart(prevCart, cartItemData);
+                    saveToLocalStorage(updatedCart);
+                    return updatedCart;
+                });
             }
         } catch (error) {
             console.error('Error adding to cart', error);
@@ -101,14 +110,20 @@ export const CartProvider = ({ children }) => {
     };
 
     const updateLocalCart = (currentCart, newItem) => {
-        const existingItems = currentCart.cartItems || [];
-        const itemIndex = existingItems.findIndex(item => item.product === newItem.product || item._id === newItem._id);
+        const existingItems = Array.isArray(currentCart?.cartItems) ? currentCart.cartItems : [];
+        const itemIndex = existingItems.findIndex(item => 
+            String(item.product) === String(newItem.product) || 
+            String(item._id) === String(newItem._id)
+        );
 
         let updatedItems;
         if (itemIndex > -1) {
-            // Update quantity if item exists
+            // Update quantity if item exists - create new object for immutability
             updatedItems = [...existingItems];
-            updatedItems[itemIndex].qty = newItem.qty;
+            updatedItems[itemIndex] = { 
+                ...updatedItems[itemIndex], 
+                qty: newItem.qty 
+            };
         } else {
             // Add new item
             updatedItems = [...existingItems, newItem];
@@ -118,29 +133,31 @@ export const CartProvider = ({ children }) => {
     };
 
     const removeFromCart = async (id) => {
-        console.log('removeFromCart called with id:', id);
+        if (!id) return;
+        
         try {
             if (user) {
                 // Sync with server for logged-in users
                 try {
                     const { data } = await api.delete(`/cart/${id}`);
-                    console.log('Server removal success, new data:', data);
                     setCart(data);
                     saveToLocalStorage(data);
                 } catch (error) {
                     console.error('Error removing from cart on server', error);
                     // Fallback to local storage
-                    const updatedCart = removeLocalItem(cart, id);
-                    console.log('Error fallback, local updatedCart:', updatedCart);
-                    setCart(updatedCart);
-                    saveToLocalStorage(updatedCart);
+                    setCart(prevCart => {
+                        const updatedCart = removeLocalItem(prevCart, id);
+                        saveToLocalStorage(updatedCart);
+                        return updatedCart;
+                    });
                 }
             } else {
                 // For guests, use localStorage only
-                const updatedCart = removeLocalItem(cart, id);
-                console.log('Guest removal, local updatedCart:', updatedCart);
-                setCart(updatedCart);
-                saveToLocalStorage(updatedCart);
+                setCart(prevCart => {
+                    const updatedCart = removeLocalItem(prevCart, id);
+                    saveToLocalStorage(updatedCart);
+                    return updatedCart;
+                });
             }
         } catch (error) {
             console.error('Error removing from cart', error);
@@ -148,16 +165,11 @@ export const CartProvider = ({ children }) => {
     };
 
     const removeLocalItem = (currentCart, itemId) => {
-        console.log('removeLocalItem called with:', { currentCart, itemId });
-        const updatedItems = (currentCart.cartItems || []).filter(
-            item => {
-                const match1 = item.product !== itemId;
-                const match2 = item._id !== itemId;
-                console.log(`Checking item ${item.product}: match1=${match1}, match2=${match2}`);
-                return match1 && match2;
-            }
+        const sid = String(itemId);
+        const existingItems = Array.isArray(currentCart?.cartItems) ? currentCart.cartItems : [];
+        const updatedItems = existingItems.filter(
+            item => String(item.product) !== sid && String(item._id) !== sid
         );
-        console.log('updatedItems:', updatedItems);
         return { cartItems: updatedItems };
     };
 
