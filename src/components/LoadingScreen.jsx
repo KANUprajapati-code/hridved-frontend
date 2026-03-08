@@ -1,173 +1,163 @@
 
-import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const LoadingScreen = () => {
-    const [counter, setCounter] = useState(0);
+    // Generate particles for the anti-gravity effect
+    const particles = [...Array(30)].map((_, i) => ({
+        id: i,
+        x: Math.random() * 100,
+        y: Math.random() * 100,
+        size: Math.random() * 3 + 1,
+        duration: Math.random() * 10 + 10,
+        delay: Math.random() * 5
+    }));
 
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setCounter((prev) => {
-                if (prev >= 100) {
-                    clearInterval(interval);
-                    return 100;
-                }
-                // Slower, more deliberate luxury counting
-                const increment = Math.floor(Math.random() * 3) + 1;
-                return Math.min(prev + increment, 100);
-            });
-        }, 120);
-        return () => clearInterval(interval);
-    }, []);
+    const brandLetters = "Hridved".split("");
 
-    // Staggered panels for the "Curtain" exit animation
-    const panelVariants = {
-        initial: { height: "100%" },
-        exit: (i) => ({
-            height: "0%",
-            transition: {
-                duration: 1.2,
-                ease: [0.76, 0, 0.24, 1], // Cinematic easeInOutExpo
-                delay: i * 0.1,
-            }
-        })
+    const containerVariants = {
+        exit: {
+            opacity: 0,
+            transition: { duration: 1, ease: "easeInOut" }
+        }
     };
 
     return (
-        <div className="fixed inset-0 z-[9999] pointer-events-none overflow-hidden">
-            {/* Background Panels (The Curtain) */}
-            <div className="absolute inset-0 flex">
-                {[...Array(5)].map((_, i) => (
-                    <motion.div
-                        key={i}
-                        custom={i}
-                        variants={panelVariants}
-                        initial="initial"
-                        exit="exit"
-                        className="bg-primary relative"
-                        style={{ width: "20%" }}
-                    >
-                        {/* Subtle line between panels for texture */}
-                        <div className="absolute right-0 top-0 bottom-0 w-[1px] bg-white/5 h-full" />
-                    </motion.div>
-                ))}
+        <motion.div
+            variants={containerVariants}
+            initial="initial"
+            exit="exit"
+            className="fixed inset-0 z-[9999] flex items-center justify-center overflow-hidden"
+            style={{ 
+                background: "radial-gradient(circle at center, #0a4a0b 0%, #063807 70%, #031c03 100%)" // Deep herbal green CMYK calculated
+            }}
+        >
+            {/* Subtle Light Rays / Atmosphere */}
+            <div className="absolute inset-0 bg-[radial-gradient(60%_60%_at_50%_50%,rgba(212,175,55,0.05)_0%,rgba(6,56,7,0)_100%)]"></div>
+            
+            {/* Anti-Gravity Floating Particles */}
+            {particles.map((p) => (
+                <motion.div
+                    key={p.id}
+                    className="absolute rounded-full bg-gradient-to-br from-secondary to-yellow-600 opacity-40 shadow-[0_0_8px_rgba(212,175,55,0.5)]"
+                    style={{
+                        left: `${p.x}%`,
+                        top: `${p.y}%`,
+                        width: p.size,
+                        height: p.size,
+                    }}
+                    animate={{
+                        y: [0, -40, 0],
+                        x: [0, 20, 0],
+                        opacity: [0.2, 0.6, 0.2],
+                        scale: [1, 1.2, 1]
+                    }}
+                    transition={{
+                        duration: p.duration,
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                        delay: p.delay
+                    }}
+                />
+            ))}
+
+            <div className="relative flex flex-col md:flex-row items-center gap-8">
+                {/* Metallic Golden Logo with Anti-Gravity Motion */}
+                <motion.div
+                    initial={{ scale: 0.8, opacity: 0, rotateY: -180 }}
+                    animate={{ 
+                        scale: 1, 
+                        opacity: 1, 
+                        rotateY: 0,
+                        y: [0, -15, 0],
+                        rotateZ: [0, 2, 0, -2, 0]
+                    }}
+                    transition={{ 
+                        opacity: { duration: 2 },
+                        scale: { duration: 1.5 },
+                        rotateY: { duration: 2, ease: "easeOut" },
+                        y: { duration: 4, repeat: Infinity, ease: "easeInOut" },
+                        rotateZ: { duration: 6, repeat: Infinity, ease: "easeInOut" }
+                    }}
+                    className="relative group"
+                >
+                    {/* Golden Glow Behind Logo */}
+                    <div className="absolute inset-[-20%] bg-secondary/20 blur-[40px] rounded-full animate-pulse"></div>
+                    
+                    <img 
+                        src="/logo-asset4.png" 
+                        alt="Hridved Logo" 
+                        className="h-24 md:h-32 w-auto brightness-0 invert sepia(100%) saturate(500%) hue-rotate(10deg) drop-shadow-[0_0_15px_rgba(212,175,55,0.8)]"
+                        style={{ filter: "brightness(0) invert(1) sepia(100%) saturate(1000%) hue-rotate(10deg) brightness(1.2)" }} 
+                    />
+                    
+                    {/* Metallic Reflection Sweep */}
+                    <motion.div 
+                        className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent w-full skew-x-[-20deg]"
+                        animate={{ x: ["-100%", "200%"] }}
+                        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", repeatDelay: 1 }}
+                    />
+                </motion.div>
+
+                {/* Staggered Floating Brand Name */}
+                <div className="flex">
+                    {brandLetters.map((letter, i) => (
+                        <motion.span
+                            key={i}
+                            initial={{ 
+                                opacity: 0, 
+                                y: i % 2 === 0 ? 50 : -50,
+                                x: i % 2 === 0 ? -30 : 30,
+                                scale: 0.5,
+                                rotate: 20
+                            }}
+                            animate={{ 
+                                opacity: 1, 
+                                y: 0, 
+                                x: 0, 
+                                scale: 1,
+                                rotate: 0
+                            }}
+                            transition={{ 
+                                duration: 1.5, 
+                                delay: 0.5 + (i * 0.1),
+                                ease: [0.16, 1, 0.3, 1]
+                            }}
+                            className="text-4xl md:text-7xl font-serif font-bold tracking-tight inline-block"
+                            style={{
+                                color: "#D4AF37", // Base gold
+                                textShadow: "0 2px 4px rgba(0,0,0,0.5), 0 0 10px rgba(212,175,55,0.4)",
+                                background: "linear-gradient(to bottom, #FFD700 0%, #D4AF37 50%, #B8860B 100%)",
+                                WebkitBackgroundClip: "text",
+                                WebkitTextFillColor: "transparent"
+                            }}
+                        >
+                            {letter}
+                        </motion.span>
+                    ))}
+                </div>
             </div>
 
-            {/* Content Layer */}
-            <AnimatePresence>
-                {counter < 100 && (
-                    <motion.div
-                        initial={{ opacity: 1 }}
-                        exit={{ 
-                            opacity: 0,
-                            y: -50,
-                            transition: { duration: 0.8, ease: "easeInOut" } 
-                        }}
-                        className="relative z-20 flex h-full w-full flex-col items-center justify-center"
-                    >
-                        <div className="container mx-auto px-12 flex flex-col justify-between h-full py-16 md:py-24">
-                            {/* Top Info */}
-                            <div className="flex justify-between items-start w-full overflow-hidden">
-                                <motion.div
-                                    initial={{ y: "100%" }}
-                                    animate={{ y: 0 }}
-                                    transition={{ duration: 0.8, ease: "easeOut" }}
-                                    className="flex flex-col"
-                                >
-                                    <span className="text-secondary font-bold tracking-[0.4em] uppercase text-[10px] md:text-xs">
-                                        Pure Ayurveda
-                                    </span>
-                                    <span className="text-white/40 text-[9px] tracking-[0.2em] mt-1 font-medium italic">
-                                        Crafting Wellness
-                                    </span>
-                                </motion.div>
-                                <motion.div
-                                    initial={{ y: "100%" }}
-                                    animate={{ y: 0 }}
-                                    transition={{ duration: 0.8, ease: "easeOut", delay: 0.1 }}
-                                    className="text-right"
-                                >
-                                    <span className="text-white/60 text-[10px] md:text-xs tracking-[0.3em] uppercase font-bold">
-                                        Hridved • 2020
-                                    </span>
-                                </motion.div>
-                            </div>
-
-                            {/* Center Section: The Bold Counter */}
-                            <div className="flex flex-col items-center justify-center flex-grow">
-                                <motion.div
-                                    initial={{ opacity: 0, scale: 0.9 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    transition={{ duration: 1 }}
-                                    className="relative"
-                                >
-                                    <div className="flex items-baseline justify-center">
-                                        <motion.h1 
-                                            className="text-white text-[25vw] sm:text-[20vw] lg:text-[18vw] font-serif font-black leading-none tracking-tighter"
-                                        >
-                                            {counter}
-                                        </motion.h1>
-                                        <span className="text-secondary text-2xl md:text-5xl font-bold ml-2">%</span>
-                                    </div>
-                                    
-                                    {/* Logo floating subtly below counter */}
-                                    <motion.div
-                                        initial={{ opacity: 0, y: 10 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        transition={{ delay: 0.5, duration: 1 }}
-                                        className="mt-4 md:mt-0 flex justify-center"
-                                    >
-                                        <img src="/logo-asset4.png" alt="Logo" className="h-10 md:h-16 w-auto brightness-0 invert opacity-40" />
-                                    </motion.div>
-                                </motion.div>
-                            </div>
-
-                            {/* Bottom Info */}
-                            <div className="flex justify-between items-end w-full">
-                                <motion.div
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    transition={{ duration: 1, delay: 0.8 }}
-                                    className="flex flex-col"
-                                >
-                                    <span className="text-white/20 text-[8px] md:text-[10px] tracking-[0.6em] uppercase mb-4">
-                                        Interface Loading
-                                    </span>
-                                    <div className="flex gap-2">
-                                        {[...Array(3)].map((_, i) => (
-                                            <motion.div
-                                                key={i}
-                                                animate={{ 
-                                                    scale: [1, 1.5, 1],
-                                                    opacity: [0.3, 1, 0.3]
-                                                }}
-                                                transition={{ 
-                                                    duration: 1.5, 
-                                                    repeat: Infinity, 
-                                                    delay: i * 0.2 
-                                                }}
-                                                className="w-1.5 h-1.5 bg-secondary rounded-full"
-                                            />
-                                        ))}
-                                    </div>
-                                </motion.div>
-                                
-                                <motion.div
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ duration: 1, delay: 1 }}
-                                    className="text-right max-w-[200px] md:max-w-xs"
-                                >
-                                    <p className="text-white/60 text-[9px] md:text-[11px] uppercase leading-loose tracking-[0.2em] font-light">
-                                        "Ancient wisdom for the modern soul."
-                                    </p>
-                                </motion.div>
-                            </div>
-                        </div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
-        </div>
+            {/* Cinematic Sparkles */}
+            {[...Array(10)].map((_, i) => (
+                <motion.div
+                    key={`sparkle-${i}`}
+                    className="absolute w-1 h-1 bg-white rounded-full"
+                    style={{
+                        left: `${Math.random() * 100}%`,
+                        top: `${Math.random() * 100}%`,
+                    }}
+                    animate={{
+                        opacity: [0, 1, 0],
+                        scale: [0, 1.5, 0],
+                    }}
+                    transition={{
+                        duration: 2 + Math.random() * 2,
+                        repeat: Infinity,
+                        delay: Math.random() * 5
+                    }}
+                />
+            ))}
+        </motion.div>
     );
 };
 
