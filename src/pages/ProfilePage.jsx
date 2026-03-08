@@ -441,13 +441,15 @@ const ProfilePage = () => {
                                                             </div>
                                                         </td>
                                                         <td className="py-4 px-6 text-sm">
-                                                            <div className="flex items-center gap-2">
-                                                                <Link
-                                                                    to={`/order/${order._id}`}
-                                                                    className="text-primary hover:text-secondary font-bold bg-primary/5 hover:bg-primary/10 px-3 py-1.5 rounded-lg transition-colors"
-                                                                >
-                                                                    View
-                                                                </Link>
+                                                            <div className="flex items-center gap-2">                                                                 {user && user.isAdmin && (
+                                                                    <Link
+                                                                        to={`/order/${order._id}`}
+                                                                        className="text-primary hover:text-secondary font-bold bg-primary/5 hover:bg-primary/10 px-3 py-1.5 rounded-lg transition-colors"
+                                                                    >
+                                                                        View
+                                                                    </Link>
+                                                                )}
+
                                                                 <button
                                                                     onClick={() => handleTrackOrder(order._id, order.waybill)}
                                                                     className="text-secondary hover:text-primary font-bold bg-secondary/5 hover:bg-secondary/10 px-3 py-1.5 rounded-lg transition-colors"

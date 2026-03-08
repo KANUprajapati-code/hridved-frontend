@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useCheckout } from '../context/CheckoutContext';
+import { useAuth } from '../context/AuthContext';
 import CheckoutStepIndicator from '../components/CheckoutStepIndicator';
 import api from '../utils/api';
 import AnimatedPage from '../components/AnimatedPage';
@@ -12,6 +13,7 @@ export default function CheckoutSuccessPage() {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
     const { checkoutData, resetCheckout } = useCheckout();
+    const { user } = useAuth();
     // Initialize with orderDetails from context to avoid initial loading flicker
     const [orderDetails, setOrderDetails] = useState(checkoutData.orderDetails || null);
     const [loading, setLoading] = useState(!checkoutData.orderDetails);
@@ -301,12 +303,14 @@ export default function CheckoutSuccessPage() {
                             >
                                 Continue Shopping
                             </AnimatedButton>
-                            <AnimatedButton
-                                onClick={handleViewOrder}
-                                className="px-8 py-3 rounded-xl font-bold text-white bg-primary shadow-lg hover:shadow-xl hover:bg-opacity-90 transition-all text-center flex items-center justify-center gap-2"
-                            >
-                                <List size={20} /> View Order Details
-                            </AnimatedButton>
+                            {user && user.isAdmin && (
+                                <AnimatedButton
+                                    onClick={handleViewOrder}
+                                    className="px-8 py-3 rounded-xl font-bold text-white bg-primary shadow-lg hover:shadow-xl hover:bg-opacity-90 transition-all text-center flex items-center justify-center gap-2"
+                                >
+                                    <List size={20} /> View Order Details
+                                </AnimatedButton>
+                            )}
                         </div>
                     </div>
                 </div>

@@ -26,7 +26,7 @@ const CheckoutForm = ({ orderId, amount, onSuccess }) => {
         const { error } = await stripe.confirmPayment({
             elements,
             confirmParams: {
-                return_url: `${window.location.origin}/order/${orderId}`,
+                return_url: `${window.location.origin}/checkout/success?id=${orderId}`,
             },
             redirect: 'if_required',
         });
@@ -70,6 +70,11 @@ const OrderPage = () => {
     const [clientSecret, setClientSecret] = useState('');
 
     useEffect(() => {
+        if (!user || !user.isAdmin) {
+            navigate('/profile');
+            return;
+        }
+
         const fetchOrder = async () => {
             try {
                 const { data } = await api.get(`/orders/${id}`);
@@ -142,6 +147,7 @@ const OrderPage = () => {
                     <div className="bg-white p-6 rounded shadow-sm border">
                         <h2 className="text-xl font-bold mb-4">Shipping</h2>
                         <p className="mb-2"><strong>Name: </strong> {order.user.name}</p>
+                        <p className="mb-2"><strong>Mobile: </strong> {order.shippingAddress.mobileNumber}</p>
                         <p className="mb-2"><strong>Email: </strong> <a href={`mailto:${order.user.email}`} className="text-secondary">{order.user.email}</a></p>
                         <p className="mb-4">
                             <strong>Address: </strong>
