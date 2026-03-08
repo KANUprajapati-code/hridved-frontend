@@ -259,7 +259,7 @@ const HomePage = () => {
                                     </h2>
                                     <p className="text-gray-600 mb-6 leading-relaxed whitespace-pre-line">
                                         {content?.tradition?.subtitle ||
-                                            `Founded in 1921, HRIDVED has been at the forefront of the Ayurvedic revolution for over a century. We combine the deep spiritual knowledge of ancient texts with cutting-edge manufacturing technology.
+                                            `Founded in 2020, HRIDVED has been at the forefront of the Ayurvedic revolution for years. We combine the deep spiritual knowledge of ancient texts with cutting-edge manufacturing technology.
                                         
                                         Today, we produce over 500+ classical and proprietary medicines in our GMP-certified facilities, ensuring that every product you receive is safe, effective, and authentic.`}
                                     </p>

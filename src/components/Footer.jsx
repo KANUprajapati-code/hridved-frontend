@@ -1,4 +1,4 @@
-﻿
+
 import { Facebook, Instagram, Twitter, Mail, Phone, MapPin } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -10,7 +10,7 @@ const Footer = () => {
                 <div>
                     <img src="/logo-asset4.png" alt="HRIDVED AYURVEDA" className="h-12 w-auto mb-4" />
                     <p className="text-gray-300 text-sm">
-                        Authentic Ayurvedic medicines and treatments since 1921.
+                        Authentic Ayurvedic medicines and treatments since 2020.
                         Bringing the wisdom of Ayurveda to the modern world.
                     </p>
                 </div>
