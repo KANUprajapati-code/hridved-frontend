@@ -51,7 +51,7 @@ const PlaceOrderPage = () => {
                 orderItems: cartItems,
                 shippingAddress: {
                     ...shippingAddress,
-                    addressId: shippingAddress._id
+                    addressId: shippingAddress._id || undefined
                 },
                 paymentMethod,
                 itemsPrice,
@@ -80,6 +80,8 @@ const PlaceOrderPage = () => {
                             {shippingAddress.houseNumber}, {shippingAddress.landmark ? `${shippingAddress.landmark}, ` : ''}
                             {shippingAddress.city}, {shippingAddress.state} - {shippingAddress.pincode}
                         </p>
+                        <p><strong>Mobile: </strong>{shippingAddress.mobileNumber}</p>
+                        <p><strong>Name: </strong>{shippingAddress.fullName}</p>
                     </div>
 
                     {/* Payment Method */}

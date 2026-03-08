@@ -5,15 +5,15 @@ import { MapPin, Truck, CreditCard, ArrowLeft, ShieldCheck, Lock } from 'lucide-
 import { useCart } from '../context/CartContext';
 
 const ShippingPage = () => {
-    const [address, setAddress] = useState('Flat, House no., Building, Company, Apartment');
+    const [address, setAddress] = useState('');
     const [city, setCity] = useState('');
-    const [postalCode, setPostalCode] = useState('');
+    const [pincode, setPincode] = useState('');
     const [state, setState] = useState('');
 
     // Split name for form matching the design
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
-    const [phone, setPhone] = useState('+91 79904 11390');
+    const [mobileNumber, setMobileNumber] = useState('');
 
     const navigate = useNavigate();
     const { cart } = useCart();
@@ -26,8 +26,13 @@ const ShippingPage = () => {
     const submitHandler = (e) => {
         e.preventDefault();
         localStorage.setItem('shippingAddress', JSON.stringify({
-            address, city, postalCode, country: 'India',
-            firstName, lastName, phone, state
+            houseNumber: address,
+            city,
+            pincode,
+            country: 'India',
+            fullName: `${firstName} ${lastName}`.trim(),
+            mobileNumber,
+            state
         }));
         navigate('/placeorder');
     };
@@ -112,8 +117,8 @@ const ShippingPage = () => {
                                         type="text"
                                         required
                                         className="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition"
-                                        value={phone}
-                                        onChange={(e) => setPhone(e.target.value)}
+                                        value={mobileNumber}
+                                        onChange={(e) => setMobileNumber(e.target.value)}
                                     />
                                 </div>
 
@@ -156,8 +161,8 @@ const ShippingPage = () => {
                                             type="text"
                                             required
                                             className="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition"
-                                            value={postalCode}
-                                            onChange={(e) => setPostalCode(e.target.value)}
+                                            value={pincode}
+                                            onChange={(e) => setPincode(e.target.value)}
                                         />
                                     </div>
                                 </div>
