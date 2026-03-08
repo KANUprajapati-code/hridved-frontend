@@ -1,23 +1,20 @@
-
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 
 const LoadingScreen = () => {
-    // Generate particles for the anti-gravity effect
-    const particles = [...Array(30)].map((_, i) => ({
+    // Generate particles for a more luxurious anti-gravity effect
+    const particles = [...Array(40)].map((_, i) => ({
         id: i,
         x: Math.random() * 100,
         y: Math.random() * 100,
-        size: Math.random() * 3 + 1,
-        duration: Math.random() * 10 + 10,
-        delay: Math.random() * 5
+        size: Math.random() * 2 + 1,
+        duration: Math.random() * 12 + 15,
+        delay: Math.random() * 8
     }));
-
-    const brandLetters = "Hridved".split("");
 
     const containerVariants = {
         exit: {
             opacity: 0,
-            transition: { duration: 1, ease: "easeInOut" }
+            transition: { duration: 1.5, ease: [0.22, 1, 0.36, 1] }
         }
     };
 
@@ -28,17 +25,17 @@ const LoadingScreen = () => {
             exit="exit"
             className="fixed inset-0 z-[9999] flex items-center justify-center overflow-hidden"
             style={{ 
-                background: "radial-gradient(circle at center, #0a4a0b 0%, #063807 70%, #031c03 100%)" // Deep herbal green CMYK calculated
+                background: "radial-gradient(circle at center, #0a4a0b 0%, #063807 70%, #031c03 100%)"
             }}
         >
             {/* Subtle Light Rays / Atmosphere */}
-            <div className="absolute inset-0 bg-[radial-gradient(60%_60%_at_50%_50%,rgba(212,175,55,0.05)_0%,rgba(6,56,7,0)_100%)]"></div>
+            <div className="absolute inset-0 bg-[radial-gradient(80%_80%_at_50%_50%,rgba(212,175,55,0.08)_0%,rgba(6,56,7,0)_100%)]"></div>
             
             {/* Anti-Gravity Floating Particles */}
             {particles.map((p) => (
                 <motion.div
                     key={p.id}
-                    className="absolute rounded-full bg-gradient-to-br from-secondary to-yellow-600 opacity-40 shadow-[0_0_8px_rgba(212,175,55,0.5)]"
+                    className="absolute rounded-full bg-gradient-to-br from-[#D4AF37] to-[#B8860B] opacity-30 shadow-[0_0_10px_rgba(212,175,55,0.4)]"
                     style={{
                         left: `${p.x}%`,
                         top: `${p.y}%`,
@@ -46,10 +43,10 @@ const LoadingScreen = () => {
                         height: p.size,
                     }}
                     animate={{
-                        y: [0, -40, 0],
-                        x: [0, 20, 0],
-                        opacity: [0.2, 0.6, 0.2],
-                        scale: [1, 1.2, 1]
+                        y: [0, -60, 0],
+                        x: [0, 30, 0],
+                        opacity: [0.1, 0.5, 0.1],
+                        scale: [1, 1.5, 1]
                     }}
                     transition={{
                         duration: p.duration,
@@ -60,98 +57,66 @@ const LoadingScreen = () => {
                 />
             ))}
 
-            <div className="relative flex flex-col md:flex-row items-center gap-8">
+            <div className="relative flex flex-col items-center justify-center">
                 {/* Metallic Golden Logo with Anti-Gravity Motion */}
                 <motion.div
-                    initial={{ scale: 0.8, opacity: 0, rotateY: -180 }}
+                    initial={{ scale: 0.85, opacity: 0, rotateY: -90, y: 30 }}
                     animate={{ 
                         scale: 1, 
                         opacity: 1, 
                         rotateY: 0,
-                        y: [0, -15, 0],
-                        rotateZ: [0, 2, 0, -2, 0]
+                        y: [0, -20, 0],
+                        rotateZ: [0, 1, 0, -1, 0]
                     }}
                     transition={{ 
-                        opacity: { duration: 2 },
-                        scale: { duration: 1.5 },
-                        rotateY: { duration: 2, ease: "easeOut" },
-                        y: { duration: 4, repeat: Infinity, ease: "easeInOut" },
-                        rotateZ: { duration: 6, repeat: Infinity, ease: "easeInOut" }
+                        opacity: { duration: 2.5, ease: "easeOut" },
+                        scale: { duration: 2.5, ease: [0.22, 1, 0.36, 1] },
+                        rotateY: { duration: 3, ease: [0.22, 1, 0.36, 1] },
+                        y: { duration: 5, repeat: Infinity, ease: "easeInOut" },
+                        rotateZ: { duration: 8, repeat: Infinity, ease: "easeInOut" }
                     }}
-                    className="relative group"
+                    className="relative"
                 >
                     {/* Golden Glow Behind Logo */}
-                    <div className="absolute inset-[-20%] bg-secondary/20 blur-[40px] rounded-full animate-pulse"></div>
+                    <motion.div 
+                        className="absolute inset-[-40%] bg-[#D4AF37]/10 blur-[60px] rounded-full"
+                        animate={{ opacity: [0.3, 0.6, 0.3], scale: [1, 1.1, 1] }}
+                        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                    />
                     
                     <img 
                         src="/logo-asset4.png" 
                         alt="Hridved Logo" 
-                        className="h-24 md:h-32 w-auto brightness-0 invert sepia(100%) saturate(500%) hue-rotate(10deg) drop-shadow-[0_0_15px_rgba(212,175,55,0.8)]"
-                        style={{ filter: "brightness(0) invert(1) sepia(100%) saturate(1000%) hue-rotate(10deg) brightness(1.2)" }} 
+                        className="h-32 md:h-48 w-auto relative z-10"
+                        style={{ 
+                            filter: "brightness(0) invert(1) sepia(100%) saturate(800%) hue-rotate(10deg) brightness(1.1) drop-shadow(0 0 20px rgba(212,175,55,0.6))" 
+                        }} 
                     />
                     
                     {/* Metallic Reflection Sweep */}
                     <motion.div 
-                        className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent w-full skew-x-[-20deg]"
-                        animate={{ x: ["-100%", "200%"] }}
-                        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", repeatDelay: 1 }}
+                        className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent w-full skew-x-[-25deg] z-20"
+                        animate={{ x: ["-150%", "250%"] }}
+                        transition={{ duration: 3.5, repeat: Infinity, ease: [0.4, 0, 0.2, 1], repeatDelay: 1.5 }}
                     />
                 </motion.div>
-
-                {/* Staggered Floating Brand Name */}
-                <div className="flex">
-                    {brandLetters.map((letter, i) => (
-                        <motion.span
-                            key={i}
-                            initial={{ 
-                                opacity: 0, 
-                                y: i % 2 === 0 ? 50 : -50,
-                                x: i % 2 === 0 ? -30 : 30,
-                                scale: 0.5,
-                                rotate: 20
-                            }}
-                            animate={{ 
-                                opacity: 1, 
-                                y: 0, 
-                                x: 0, 
-                                scale: 1,
-                                rotate: 0
-                            }}
-                            transition={{ 
-                                duration: 1.5, 
-                                delay: 0.5 + (i * 0.1),
-                                ease: [0.16, 1, 0.3, 1]
-                            }}
-                            className="text-4xl md:text-7xl font-serif font-bold tracking-tight inline-block"
-                            style={{
-                                color: "#D4AF37", // Base gold
-                                textShadow: "0 2px 4px rgba(0,0,0,0.5), 0 0 10px rgba(212,175,55,0.4)",
-                                background: "linear-gradient(to bottom, #FFD700 0%, #D4AF37 50%, #B8860B 100%)",
-                                WebkitBackgroundClip: "text",
-                                WebkitTextFillColor: "transparent"
-                            }}
-                        >
-                            {letter}
-                        </motion.span>
-                    ))}
-                </div>
             </div>
 
             {/* Cinematic Sparkles */}
-            {[...Array(10)].map((_, i) => (
+            {[...Array(15)].map((_, i) => (
                 <motion.div
                     key={`sparkle-${i}`}
-                    className="absolute w-1 h-1 bg-white rounded-full"
+                    className="absolute w-1 h-1 bg-[#FFD700] rounded-full shadow-[0_0_5px_#fff]"
                     style={{
                         left: `${Math.random() * 100}%`,
                         top: `${Math.random() * 100}%`,
                     }}
                     animate={{
-                        opacity: [0, 1, 0],
-                        scale: [0, 1.5, 0],
+                        opacity: [0, 0.8, 0],
+                        scale: [0, 1.2, 0],
                     }}
                     transition={{
-                        duration: 2 + Math.random() * 2,
+                        duration: 3 + Math.random() * 3,
                         repeat: Infinity,
                         delay: Math.random() * 5
                     }}

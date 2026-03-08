@@ -248,7 +248,7 @@ const OrderPage = () => {
                     {user && user.isAdmin && (
                         <div className="bg-white p-6 rounded shadow-md border mt-8">
                             <h2 className="text-xl font-bold mb-6 border-b pb-4 flex items-center gap-2 text-primary">
-                                <Truck size={24} /> Fship Shipping Control
+                                <Truck size={24} /> Vamaship Shipping Control
                             </h2>
 
                             <div className="space-y-4">
@@ -256,7 +256,7 @@ const OrderPage = () => {
                                 <div className="grid grid-cols-2 gap-4">
                                     <button
                                         onClick={async () => {
-                                            if (window.confirm('Create Fship Shipment?')) {
+                                            if (window.confirm('Create Vamaship Shipment?')) {
                                                 try {
                                                     const { data } = await api.post('/shipping/create-shipment', { orderId: order._id });
                                                     alert('Shipment Created: ' + data.waybill);
@@ -270,43 +270,6 @@ const OrderPage = () => {
                                         className={`px-4 py-3 rounded-lg font-bold transition-all ${order.waybill ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-primary text-white hover:bg-opacity-90 shadow-md'}`}
                                     >
                                         Create Shipment
-                                    </button>
-
-                                    <button
-                                        onClick={async () => {
-                                            if (window.confirm('Register Pickup for this Waybill?')) {
-                                                try {
-                                                    const { data } = await api.post('/shipping/register-pickup', { waybills: [order.waybill] });
-                                                    alert('Pickup Registered!');
-                                                    window.location.reload();
-                                                } catch (err) {
-                                                    alert('Error: ' + (err.response?.data?.message || err.message));
-                                                }
-                                            }
-                                        }}
-                                        disabled={!order.waybill || order.pickupOrderId}
-                                        className={`px-4 py-3 rounded-lg font-bold transition-all ${(!order.waybill || order.pickupOrderId) ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-secondary text-primary hover:bg-opacity-90 shadow-md'}`}
-                                    >
-                                        Register Pickup
-                                    </button>
-                                </div>
-
-                                {/* Row 2: Labels & Reverse */}
-                                <div className="grid grid-cols-2 gap-4">
-                                    <button
-                                        onClick={async () => {
-                                            try {
-                                                const { data } = await api.post('/shipping/labels', { pickupOrderId: [order.pickupOrderId] });
-                                                if (data.labelfile) window.open(data.labelfile, '_blank');
-                                                else alert('Label file not found');
-                                            } catch (err) {
-                                                alert('Error: ' + (err.response?.data?.message || err.message));
-                                            }
-                                        }}
-                                        disabled={!order.pickupOrderId}
-                                        className={`px-4 py-3 rounded-lg font-bold transition-all ${!order.pickupOrderId ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700 shadow-md'}`}
-                                    >
-                                        Download Labels
                                     </button>
 
                                     <button

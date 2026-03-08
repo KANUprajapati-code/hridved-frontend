@@ -11,7 +11,7 @@ const PlaceOrderPage = () => {
     const navigate = useNavigate();
     const [shippingAddress, setShippingAddress] = useState({});
     const [paymentMethod, setPaymentMethod] = useState('razorpay');
-    const [shippingProvider, setShippingProvider] = useState('Fship');
+    const [shippingProvider, setShippingProvider] = useState('Vamaship');
 
     useEffect(() => {
         if (!user) navigate('/login');

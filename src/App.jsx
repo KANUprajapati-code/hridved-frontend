@@ -41,7 +41,6 @@ const ReturnPolicy = lazy(() => import('./pages/ReturnPolicy'));
 const TermsAndConditions = lazy(() => import('./pages/TermsAndConditions'));
 const ShippingPolicy = lazy(() => import('./pages/ShippingPolicy'));
 const AboutUsPage = lazy(() => import('./pages/AboutUsPage'));
-const FshipTestPage = lazy(() => import('./pages/FshipTestPage'));
 
 const AdminRoute = lazy(() => import('./components/AdminRoute'));
 const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard'));
@@ -149,7 +148,6 @@ function App() {
                                                             <Route path="/terms" element={<TermsAndConditions />} />
                                                             <Route path="/shipping-policy" element={<ShippingPolicy />} />
                                                             <Route path="/about" element={<AboutUsPage />} />
-                                                            <Route path="/test/fship" element={<FshipTestPage />} />
                                                         </Route>
 
                                                         {/* Admin Routes - Separate Layout */}

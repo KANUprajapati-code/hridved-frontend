@@ -74,32 +74,10 @@ const ShippingSettingsPage = () => {
                 <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
                     <div className="p-6 border-b border-gray-50">
                         <h2 className="text-lg font-bold text-gray-800">Logistics Providers</h2>
-                        <p className="text-sm text-gray-500">Toggle which shipping partners are available during checkout</p>
+                        <p className="text-sm text-gray-500">Enable or disable Vamaship shipping services</p>
                     </div>
 
                     <div className="p-6 space-y-8">
-                        {/* Fship Toggle */}
-                        <div className="flex items-center justify-between group">
-                            <div className="flex items-center gap-4">
-                                <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center font-bold text-lg">F</div>
-                                <div>
-                                    <h3 className="font-bold text-gray-800">Fship Logistics</h3>
-                                    <p className="text-sm text-gray-500">Enable Fship for domestic shipping services</p>
-                                </div>
-                            </div>
-                            <label className="relative inline-flex items-center cursor-pointer">
-                                <input
-                                    type="checkbox"
-                                    className="sr-only peer"
-                                    checked={config.fshipEnabled}
-                                    onChange={(e) => setConfig({ ...config, fshipEnabled: e.target.checked })}
-                                />
-                                <div className="w-14 h-7 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-primary"></div>
-                            </label>
-                        </div>
-
-                        <div className="h-px bg-gray-50 w-full"></div>
-
                         {/* Vamaship Toggle */}
                         <div className="flex items-center justify-between group">
                             <div className="flex items-center gap-4">

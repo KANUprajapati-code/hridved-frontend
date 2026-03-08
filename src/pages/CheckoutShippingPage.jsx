@@ -15,7 +15,7 @@ export default function CheckoutShippingPage() {
     const { checkoutData, updateShippingMethod, updateStep, setErrorMessage, clearError, setShippingOptions } = useCheckout();
 
     const [selectedMethod, setSelectedMethod] = useState(checkoutData.shippingMethod || null);
-    const [shippingOptions, setLocalShippingOptions] = useState([]);
+    const [shippingProvider, setShippingProvider] = useState('Vamaship');
     const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
 
@@ -85,7 +85,7 @@ export default function CheckoutShippingPage() {
 
             const selectedShipping = shippingOptions.find(s => s.type === selectedMethod);
             if (selectedShipping) {
-                updateShippingMethod(selectedMethod, selectedShipping.charge, selectedShipping.provider || 'Fship');
+                updateShippingMethod(selectedMethod, selectedShipping.charge, selectedShipping.provider || 'Vamaship');
                 updateStep(3);
                 navigate('/checkout/payment');
             }
