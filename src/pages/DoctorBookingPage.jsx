@@ -28,6 +28,7 @@ const DoctorBookingPage = () => {
     useEffect(() => {
         const fetchDoctor = async () => {
             try {
+                const { data } = await api.get(`/doctors/${doctorId}`);
                 setDoctor(data);
                 if (data.timeSlots && data.timeSlots.length > 0) {
                     setTimeSlots(data.timeSlots);
