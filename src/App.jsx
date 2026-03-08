@@ -10,6 +10,7 @@ import Toast from './components/Toast';
 import FlyingElement from './components/FlyingElement';
 import ScrollToTop from './components/ScrollToTop';
 import MainLayout from './components/MainLayout';
+import LoadingScreen from './components/LoadingScreen';
 
 // Lazy loaded components
 const HomePage = lazy(() => import('./pages/HomePage'));
@@ -73,92 +74,109 @@ const LoadingFallback = () => (
 );
 
 function App() {
+    const [siteLoading, setSiteLoading] = useState(true);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setSiteLoading(false);
+        }, 3000); // 3 seconds for a premium feel
+        return () => clearTimeout(timer);
+    }, []);
+
     return (
         <Router>
             <ToastProvider>
                 <FlyingElementProvider>
-                    <ScrollToTop />
-                    <AuthProvider>
-                        <CartProvider>
-                            <CheckoutProvider>
-                                <AnimatePresence mode="wait">
-                                    <Suspense fallback={<LoadingFallback />}>
-                                        <Routes>
-                                            {/* Public Routes with Header & Footer */}
-                                            <Route element={<MainLayout />}>
-                                                <Route path="/" element={<HomePage />} />
-                                                <Route path="/shop" element={<ShopPage />} />
-                                                <Route path="/product/:id" element={<ProductPage />} />
+                    <AnimatePresence mode="wait">
+                        {siteLoading ? (
+                            <LoadingScreen key="loading" />
+                        ) : (
+                            <div key="main-app">
+                                <ScrollToTop />
+                                <AuthProvider>
+                                    <CartProvider>
+                                        <CheckoutProvider>
+                                            <AnimatePresence mode="wait">
+                                                <Suspense fallback={<LoadingFallback />}>
+                                                    <Routes>
+                                                        {/* Public Routes with Header & Footer */}
+                                                        <Route element={<MainLayout />}>
+                                                            <Route path="/" element={<HomePage />} />
+                                                            <Route path="/shop" element={<ShopPage />} />
+                                                            <Route path="/product/:id" element={<ProductPage />} />
 
-                                                <Route path="/cart" element={<CartPage />} />
+                                                            <Route path="/cart" element={<CartPage />} />
 
-                                                <Route path="/login" element={<LoginPage />} />
-                                                <Route path="/register" element={<RegisterPage />} />
-                                                <Route path="/profile" element={<ProfilePage />} />
-                                                <Route path="/shipping" element={<ShippingPage />} />
-                                                <Route path="/placeorder" element={<PlaceOrderPage />} />
-                                                <Route path="/checkout" element={<CheckoutPage />} />
-                                                <Route path="/checkout/address" element={<CheckoutAddressPage />} />
-                                                <Route path="/checkout/shipping" element={<CheckoutShippingPage />} />
-                                                <Route path="/checkout/payment" element={<CheckoutPaymentPage />} />
-                                                <Route path="/checkout/success" element={<CheckoutSuccessPage />} />
-                                                <Route path="/payment-success" element={<PaymentSuccess />} />
-                                                <Route path="/payment-failed" element={<PaymentFailed />} />
+                                                            <Route path="/login" element={<LoginPage />} />
+                                                            <Route path="/register" element={<RegisterPage />} />
+                                                            <Route path="/profile" element={<ProfilePage />} />
+                                                            <Route path="/shipping" element={<ShippingPage />} />
+                                                            <Route path="/placeorder" element={<PlaceOrderPage />} />
+                                                            <Route path="/checkout" element={<CheckoutPage />} />
+                                                            <Route path="/checkout/address" element={<CheckoutAddressPage />} />
+                                                            <Route path="/checkout/shipping" element={<CheckoutShippingPage />} />
+                                                            <Route path="/checkout/payment" element={<CheckoutPaymentPage />} />
+                                                            <Route path="/checkout/success" element={<CheckoutSuccessPage />} />
+                                                            <Route path="/payment-success" element={<PaymentSuccess />} />
+                                                            <Route path="/payment-failed" element={<PaymentFailed />} />
 
-                                                <Route path="/order/:id" element={<OrderPage />} />
-                                                <Route path="/track-order" element={<TrackOrderPage />} />
+                                                            <Route path="/order/:id" element={<OrderPage />} />
+                                                            <Route path="/track-order" element={<TrackOrderPage />} />
 
-                                                <Route path="/blogs" element={<BlogPage />} />
-                                                <Route path="/blog/:slug" element={<BlogDetailPage />} />
+                                                            <Route path="/blogs" element={<BlogPage />} />
+                                                            <Route path="/blog/:slug" element={<BlogDetailPage />} />
 
-                                                <Route path="/contact" element={<ContactPage />} />
-                                                <Route path="/consultation" element={<DoctorConsultation />} />
-                                                <Route path="/doctor/:doctorId/book" element={<DoctorBookingPage />} />
-                                                <Route path="/privacy" element={<PrivacyPolicy />} />
-                                                <Route path="/return-policy" element={<ReturnPolicy />} />
-                                                <Route path="/terms" element={<TermsAndConditions />} />
-                                                <Route path="/shipping-policy" element={<ShippingPolicy />} />
-                                                <Route path="/about" element={<AboutUsPage />} />
-                                                <Route path="/test/fship" element={<FshipTestPage />} />
-                                            </Route>
+                                                            <Route path="/contact" element={<ContactPage />} />
+                                                            <Route path="/consultation" element={<DoctorConsultation />} />
+                                                            <Route path="/doctor/:doctorId/book" element={<DoctorBookingPage />} />
+                                                            <Route path="/privacy" element={<PrivacyPolicy />} />
+                                                            <Route path="/return-policy" element={<ReturnPolicy />} />
+                                                            <Route path="/terms" element={<TermsAndConditions />} />
+                                                            <Route path="/shipping-policy" element={<ShippingPolicy />} />
+                                                            <Route path="/about" element={<AboutUsPage />} />
+                                                            <Route path="/test/fship" element={<FshipTestPage />} />
+                                                        </Route>
 
-                                            {/* Admin Routes - Separate Layout */}
-                                            <Route path="/admin" element={<AdminRoute />}>
-                                                <Route index element={<AdminDashboard />} />
+                                                        {/* Admin Routes - Separate Layout */}
+                                                        <Route path="/admin" element={<AdminRoute />}>
+                                                            <Route index element={<AdminDashboard />} />
 
-                                                <Route path="productlist" element={<ProductListPage />} />
-                                                <Route path="product/:id/edit" element={<ProductEditPage />} />
+                                                            <Route path="productlist" element={<ProductListPage />} />
+                                                            <Route path="product/:id/edit" element={<ProductEditPage />} />
 
-                                                <Route path="orderlist" element={<OrderListPage />} />
-                                                <Route path="userlist" element={<UserListPage />} />
-                                                <Route path="bloglist" element={<BlogListPage />} />
-                                                <Route path="blog/:id/edit" element={<BlogEditPage />} />
-                                                <Route path="contactlist" element={<ContactListPage />} />
-                                                <Route path="homepage" element={<HomePageEdit />} />
-                                                <Route path="doctorlist" element={<DoctorListPage />} />
-                                                <Route path="doctor/:id/edit" element={<DoctorEditPage />} />
-                                                <Route path="tiplist" element={<TipListPage />} />
-                                                <Route path="tip/:id/edit" element={<TipEditPage />} />
-                                                <Route path="about" element={<AboutEditPage />} />
-                                                <Route path="promocodelist" element={<PromoCodeListPage />} />
-                                                <Route path="promocode/add" element={<PromoCodeEditPage />} />
-                                                <Route path="promocode/:id/edit" element={<PromoCodeEditPage />} />
+                                                            <Route path="orderlist" element={<OrderListPage />} />
+                                                            <Route path="userlist" element={<UserListPage />} />
+                                                            <Route path="bloglist" element={<BlogListPage />} />
+                                                            <Route path="blog/:id/edit" element={<BlogEditPage />} />
+                                                            <Route path="contactlist" element={<ContactListPage />} />
+                                                            <Route path="homepage" element={<HomePageEdit />} />
+                                                            <Route path="doctorlist" element={<DoctorListPage />} />
+                                                            <Route path="doctor/:id/edit" element={<DoctorEditPage />} />
+                                                            <Route path="tiplist" element={<TipListPage />} />
+                                                            <Route path="tip/:id/edit" element={<TipEditPage />} />
+                                                            <Route path="about" element={<AboutEditPage />} />
+                                                            <Route path="promocodelist" element={<PromoCodeListPage />} />
+                                                            <Route path="promocode/add" element={<PromoCodeEditPage />} />
+                                                            <Route path="promocode/:id/edit" element={<PromoCodeEditPage />} />
 
-                                                <Route path="categorylist" element={<CategoryListPage />} />
-                                                <Route path="category/add" element={<CategoryEditPage />} />
-                                                <Route path="category/:id/edit" element={<CategoryEditPage />} />
-                                                <Route path="shipping" element={<ShippingSettingsPage />} />
-                                                <Route path="doctor-bookings" element={<DoctorBookingListPage />} />
-                                                <Route path="doctor-categorylist" element={<DoctorCategoryListPage />} />
-                                            </Route>
-                                        </Routes>
-                                    </Suspense>
-                                </AnimatePresence>
-                            </CheckoutProvider>
-                        </CartProvider>
-                    </AuthProvider>
-                    <Toast />
-                    <FlyingElement />
+                                                            <Route path="categorylist" element={<CategoryListPage />} />
+                                                            <Route path="category/add" element={<CategoryEditPage />} />
+                                                            <Route path="category/:id/edit" element={<CategoryEditPage />} />
+                                                            <Route path="shipping" element={<ShippingSettingsPage />} />
+                                                            <Route path="doctor-bookings" element={<DoctorBookingListPage />} />
+                                                            <Route path="doctor-categorylist" element={<DoctorCategoryListPage />} />
+                                                        </Route>
+                                                    </Routes>
+                                                </Suspense>
+                                            </AnimatePresence>
+                                        </CheckoutProvider>
+                                    </CartProvider>
+                                </AuthProvider>
+                                <Toast />
+                                <FlyingElement />
+                            </div>
+                        )}
+                    </AnimatePresence>
                 </FlyingElementProvider>
             </ToastProvider>
         </Router>
