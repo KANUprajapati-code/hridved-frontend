@@ -23,14 +23,15 @@ const DoctorBookingPage = () => {
     const [couponCode, setCouponCode] = useState('');
     const [applyingCoupon, setApplyingCoupon] = useState(false);
     const [appliedCoupon, setAppliedCoupon] = useState(null);
-
-    const timeSlots = ['09:00 AM', '09:30 AM', '10:00 AM', '10:30 AM', '11:00 AM', '11:30 AM', '02:00 PM', '02:30 PM', '03:00 PM', '03:30 PM', '04:00 PM', '04:30 PM'];
+    const [timeSlots, setTimeSlots] = useState(['09:00 AM', '09:30 AM', '10:00 AM', '10:30 AM', '11:00 AM', '11:30 AM', '02:00 PM', '02:30 PM', '03:00 PM', '03:30 PM', '04:00 PM', '04:30 PM']);
 
     useEffect(() => {
         const fetchDoctor = async () => {
             try {
-                const { data } = await api.get(`/doctors/${doctorId}`);
                 setDoctor(data);
+                if (data.timeSlots && data.timeSlots.length > 0) {
+                    setTimeSlots(data.timeSlots);
+                }
                 setLoading(false);
             } catch (error) {
                 console.error('Error fetching doctor:', error);

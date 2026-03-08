@@ -18,6 +18,7 @@ const AdminSidebar = ({ isMobileOpen, setIsMobileOpen }) => {
         { name: 'Doctors', path: '/admin/doctorlist', icon: <Users size={20} /> },
         { name: 'Doctor Bookings', path: '/admin/doctor-bookings', icon: <Calendar size={20} /> },
         { name: 'Categories', path: '/admin/categorylist', icon: <Tag size={20} /> },
+        { name: 'Consultation Categories', path: '/admin/doctor-categorylist', icon: <Tag size={20} /> },
         { name: 'Promo Codes', path: '/admin/promocodelist', icon: <Tag size={20} /> },
         { name: 'Content', path: '/admin/homepage', icon: <Layout size={20} /> },
         { name: 'Messages', path: '/admin/contactlist', icon: <MessageSquare size={20} /> },

@@ -39,7 +39,21 @@ const DoctorConsultation = () => {
         fetchDoctors();
     }, []);
 
-    const categories = ['All', 'Panchakarma', 'Kayachikitsa', 'Pediatrics', 'Yoga', 'Lifestyle'];
+    const [categories, setCategories] = useState(['All', 'Panchakarma', 'Kayachikitsa', 'Pediatrics', 'Yoga', 'Lifestyle']);
+
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const { data } = await api.get('/doctor-categories');
+                if (data && data.length > 0) {
+                    setCategories(['All', ...data.map(c => c.name)]);
+                }
+            } catch (error) {
+                console.error("Failed to fetch doctor categories", error);
+            }
+        };
+        fetchCategories();
+    }, []);
 
     const filteredDoctors = filter === 'All'
         ? doctors

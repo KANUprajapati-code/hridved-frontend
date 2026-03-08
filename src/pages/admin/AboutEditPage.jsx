@@ -53,13 +53,7 @@ const AboutEditPage = () => {
         e.preventDefault();
         setSaving(true);
         try {
-            const config = {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                withCredentials: true // Important for admin protection
-            };
-            await axios.put('/api/about', formData, config);
+            await api.put('/about', formData);
             addToast('About Us updated successfully', 'success');
         } catch (error) {
             console.error('Error updating about data:', error);

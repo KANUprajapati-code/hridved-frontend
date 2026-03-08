@@ -1,4 +1,4 @@
-﻿
+
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Star, Truck, ShieldCheck, Leaf } from 'lucide-react';
@@ -363,26 +363,28 @@ const HomePage = () => {
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
                                 {tips.length > 0 ? (
                                     tips.slice(0, 3).map((tip) => (
-                                        <article key={tip._id} className="group cursor-pointer">
-                                            <div className="rounded-3xl md:rounded-[2rem] overflow-hidden mb-6 h-48 md:h-64 relative shadow-md group-hover:shadow-2xl transition-all duration-500">
-                                                <AnimatedImage src={tip.image} alt={tip.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                                                <div className="absolute top-4 md:top-6 left-4 md:left-6 bg-white/90 backdrop-blur-md px-3 md:px-4 py-1.5 rounded-full text-[9px] md:text-[10px] font-black uppercase tracking-widest text-primary z-10 shadow-sm">
-                                                    {tip.category}
+                                        <Link to="/blogs" key={tip._id} className="group cursor-pointer block">
+                                            <article>
+                                                <div className="rounded-3xl md:rounded-[2rem] overflow-hidden mb-6 h-48 md:h-64 relative shadow-md group-hover:shadow-2xl transition-all duration-500">
+                                                    <AnimatedImage src={tip.image} alt={tip.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                                                    <div className="absolute top-4 md:top-6 left-4 md:left-6 bg-white/90 backdrop-blur-md px-3 md:px-4 py-1.5 rounded-full text-[9px] md:text-[10px] font-black uppercase tracking-widest text-primary z-10 shadow-sm">
+                                                        {tip.category}
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div className="px-1 md:px-2">
-                                                <h3 className="text-xl md:text-2xl font-sans font-bold text-primary mb-2 md:mb-3 group-hover:text-secondary transition-colors leading-tight">
-                                                    {tip.title}
-                                                </h3>
-                                                <p className="text-xs md:text-base text-gray-500 line-clamp-2 mb-4 leading-relaxed">
-                                                    {tip.description}
-                                                </p>
-                                                <div className="flex items-center text-primary font-bold text-xs md:text-sm group/link">
-                                                    <span className="border-b-2 border-secondary/30 group-hover/link:border-secondary transition-colors pb-0.5">Explore Insight</span>
-                                                    <ArrowRight size={16} className="ml-1 opacity-0 -translate-x-2 group-hover/link:opacity-100 group-hover/link:translate-x-0 transition-all" />
+                                                <div className="px-1 md:px-2">
+                                                    <h3 className="text-xl md:text-2xl font-sans font-bold text-primary mb-2 md:mb-3 group-hover:text-secondary transition-colors leading-tight">
+                                                        {tip.title}
+                                                    </h3>
+                                                    <p className="text-xs md:text-base text-gray-500 line-clamp-2 mb-4 leading-relaxed">
+                                                        {tip.description}
+                                                    </p>
+                                                    <div className="flex items-center text-primary font-bold text-xs md:text-sm group/link">
+                                                        <span className="border-b-2 border-secondary/30 group-hover/link:border-secondary transition-colors pb-0.5">Explore Insight</span>
+                                                        <ArrowRight size={16} className="ml-1 opacity-0 -translate-x-2 group-hover/link:opacity-100 group-hover/link:translate-x-0 transition-all" />
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </article>
+                                            </article>
+                                        </Link>
                                     ))
                                 ) : (
                                     <div className="col-span-3 text-center py-20 bg-background rounded-3xl border-2 border-dashed border-gray-100 italic text-gray-400">

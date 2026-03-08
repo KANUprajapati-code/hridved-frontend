@@ -16,35 +16,44 @@ const DoctorEditPage = () => {
     const [languages, setLanguages] = useState('');
     const [fee, setFee] = useState(0);
     const [tags, setTags] = useState('');
-    const [quote, setQuote] = useState('');
     const [available, setAvailable] = useState(true);
     const [isVerified, setIsVerified] = useState(true);
+    const [timeSlots, setTimeSlots] = useState([]);
+    const [newTimeSlot, setNewTimeSlot] = useState('');
+    const [consultationCategories, setConsultationCategories] = useState([]);
 
     const [uploading, setUploading] = useState(false);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const fetchDoctor = async () => {
+        const fetchData = async () => {
             try {
-                const { data } = await api.get(`/doctors/${id}`);
-                setName(data.name);
-                setSpecialization(data.specialization);
-                setImage(data.image);
-                setExperience(data.experience);
-                setPatients(data.patients);
-                setLanguages(data.languages.join(', '));
-                setFee(data.fee);
-                setTags(data.tags.join(', '));
-                setQuote(data.quote);
-                setAvailable(data.available);
-                setIsVerified(data.isVerified);
+                // Fetch Doctor details
+                const { data: doctorData } = await api.get(`/doctors/${id}`);
+                setName(doctorData.name);
+                setSpecialization(doctorData.specialization);
+                setImage(doctorData.image);
+                setExperience(doctorData.experience);
+                setPatients(doctorData.patients);
+                setLanguages(doctorData.languages.join(', '));
+                setFee(doctorData.fee);
+                setTags(doctorData.tags.join(', '));
+                setQuote(doctorData.quote);
+                setAvailable(doctorData.available);
+                setIsVerified(doctorData.isVerified);
+                setTimeSlots(doctorData.timeSlots || []);
+
+                // Fetch Categories
+                const { data: categoriesData } = await api.get('/doctor-categories');
+                setConsultationCategories(categoriesData);
+
                 setLoading(false);
             } catch (error) {
-                console.error('Error fetching doctor details:', error);
+                console.error('Error fetching data:', error);
                 setLoading(false);
             }
         };
-        fetchDoctor();
+        fetchData();
     }, [id]);
 
     const uploadFileHandler = async (e) => {
@@ -81,7 +90,8 @@ const DoctorEditPage = () => {
                 tags: tags.split(',').map((x) => x.trim()),
                 quote,
                 available,
-                isVerified
+                isVerified,
+                timeSlots
             });
             navigate('/admin/doctorlist');
         } catch (error) {
@@ -121,14 +131,17 @@ const DoctorEditPage = () => {
 
                             {/* Specialization */}
                             <div>
-                                <label className="block text-sm font-bold text-gray-700 mb-2">Specialization</label>
-                                <input
-                                    type="text"
-                                    placeholder="Enter specialization"
+                                <label className="block text-sm font-bold text-gray-700 mb-2">Specialization (Category)</label>
+                                <select
                                     value={specialization}
                                     onChange={(e) => setSpecialization(e.target.value)}
                                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
-                                />
+                                >
+                                    <option value="">Select a category</option>
+                                    {consultationCategories.map((c) => (
+                                        <option key={c._id} value={c.name}>{c.name}</option>
+                                    ))}
+                                </select>
                             </div>
                         </div>
 
@@ -237,6 +250,46 @@ const DoctorEditPage = () => {
                                 onChange={(e) => setQuote(e.target.value)}
                                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
                             ></textarea>
+                        </div>
+
+                        {/* Time Slots */}
+                        <div className="border-t border-gray-100 pt-6">
+                            <label className="block text-sm font-bold text-gray-700 mb-2">Available Time Slots</label>
+                            <div className="flex gap-2 mb-4">
+                                <input
+                                    type="text"
+                                    placeholder="e.g. 09:00 AM"
+                                    value={newTimeSlot}
+                                    onChange={(e) => setNewTimeSlot(e.target.value)}
+                                    className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        if (newTimeSlot && !timeSlots.includes(newTimeSlot)) {
+                                            setTimeSlots([...timeSlots, newTimeSlot]);
+                                            setNewTimeSlot('');
+                                        }
+                                    }}
+                                    className="bg-primary text-white px-4 py-2 rounded-lg font-bold"
+                                >
+                                    Add Slot
+                                </button>
+                            </div>
+                            <div className="flex flex-wrap gap-2 mb-6">
+                                {timeSlots.map((slot, index) => (
+                                    <div key={index} className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm font-bold flex items-center gap-2">
+                                        {slot}
+                                        <button
+                                            type="button"
+                                            onClick={() => setTimeSlots(timeSlots.filter((_, i) => i !== index))}
+                                            className="text-red-500 hover:text-red-700"
+                                        >
+                                            ×
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
 
                         {/* Checkboxes */}
