@@ -118,23 +118,27 @@ export const CartProvider = ({ children }) => {
     };
 
     const removeFromCart = async (id) => {
+        console.log('removeFromCart called with id:', id);
         try {
             if (user) {
                 // Sync with server for logged-in users
                 try {
                     const { data } = await api.delete(`/cart/${id}`);
+                    console.log('Server removal success, new data:', data);
                     setCart(data);
                     saveToLocalStorage(data);
                 } catch (error) {
                     console.error('Error removing from cart on server', error);
                     // Fallback to local storage
                     const updatedCart = removeLocalItem(cart, id);
+                    console.log('Error fallback, local updatedCart:', updatedCart);
                     setCart(updatedCart);
                     saveToLocalStorage(updatedCart);
                 }
             } else {
                 // For guests, use localStorage only
                 const updatedCart = removeLocalItem(cart, id);
+                console.log('Guest removal, local updatedCart:', updatedCart);
                 setCart(updatedCart);
                 saveToLocalStorage(updatedCart);
             }
@@ -144,9 +148,16 @@ export const CartProvider = ({ children }) => {
     };
 
     const removeLocalItem = (currentCart, itemId) => {
+        console.log('removeLocalItem called with:', { currentCart, itemId });
         const updatedItems = (currentCart.cartItems || []).filter(
-            item => item.product !== itemId && item._id !== itemId
+            item => {
+                const match1 = item.product !== itemId;
+                const match2 = item._id !== itemId;
+                console.log(`Checking item ${item.product}: match1=${match1}, match2=${match2}`);
+                return match1 && match2;
+            }
         );
+        console.log('updatedItems:', updatedItems);
         return { cartItems: updatedItems };
     };
 
