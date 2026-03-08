@@ -88,6 +88,7 @@ export const CheckoutProvider = ({ children }) => {
         updateShippingMethod,
         setOrderId,
         setShippingOptions,
+        shippingOptions,
         availableAddresses,
         setAvailableAddresses,
         resetCheckout,
