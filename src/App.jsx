@@ -79,7 +79,7 @@ function App() {
     useEffect(() => {
         const timer = setTimeout(() => {
             setSiteLoading(false);
-        }, 3000); // 3 seconds for a premium feel
+        }, 5000); // 5 seconds for a cinematic feel
         return () => clearTimeout(timer);
     }, []);
 
