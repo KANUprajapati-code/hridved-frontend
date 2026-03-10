@@ -39,9 +39,12 @@ const ShippingPage = () => {
 
     return (
         <div className="bg-background min-h-screen animate-fade-in pb-12">
-            {/* Top Bar for Checkout */}
-            <div className="bg-primary text-white text-center py-2 text-sm font-medium tracking-wide">
-                Free Shipping Above ₹499
+            {/* Dynamic Free Shipping Banner */}
+            <div className="bg-primary text-white py-1.5 text-center text-[10px] font-bold uppercase tracking-[0.2em] shadow-inner">
+                {subtotal >= 499 
+                    ? "✓ Free Shipping Applied to your Order" 
+                    : `Add ₹${(499 - subtotal).toLocaleString()} More for Free Shipping`
+                }
             </div>
 
             <div className="container mx-auto px-4 py-8 max-w-6xl">

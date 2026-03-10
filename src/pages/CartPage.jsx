@@ -116,9 +116,33 @@ const CartPage = () => {
     return (
         <AnimatedPage>
             <div className="bg-background min-h-screen">
-                {/* Free Shipping Banner */}
-                <div className="bg-primary text-white text-center py-2 text-sm font-medium tracking-wide">
-                    Free Shipping Above ₹499
+                {/* Dynamic Free Shipping Banner */}
+                <div className="bg-primary text-white py-4 shadow-inner">
+                    <div className="container mx-auto px-4">
+                        <div className="max-w-xl mx-auto">
+                            <div className="flex justify-between items-end mb-2">
+                                <span className="text-xs font-bold uppercase tracking-widest text-secondary">Free Shipping Status</span>
+                                <span className="text-sm font-medium">
+                                    {subtotal >= 499 ? (
+                                        <span className="flex items-center gap-1.5 text-secondary">
+                                            <Truck size={16} /> FREE SHIPPING UNLOCKED!
+                                        </span>
+                                    ) : (
+                                        `₹${(499 - subtotal).toLocaleString()} more for FREE shipping`
+                                    )}
+                                </span>
+                            </div>
+                            <div className="h-2 bg-white/20 rounded-full overflow-hidden backdrop-blur-sm border border-white/10">
+                                <motion.div 
+                                    className="h-full bg-secondary shadow-[0_0_15px_rgba(251,191,36,0.5)]"
+                                    initial={{ width: 0 }}
+                                    animate={{ width: `${Math.min(100, (subtotal / 499) * 100)}%` }}
+                                    transition={{ duration: 0.8, ease: "easeOut" }}
+                                />
+                            </div>
+                            <p className="text-[10px] mt-2 text-center text-white/70 italic">Standard delivery for order value above ₹499 is free of charge.</p>
+                        </div>
+                    </div>
                 </div>
 
                 <div className="container mx-auto px-4 py-8">

@@ -35,6 +35,7 @@ export default function CheckoutShippingPage() {
             const { data } = await api.post('/shipping/serviceability', {
                 pincode: checkoutData.address.pincode,
                 weight: 0.5,
+                value: cart.cartItems.reduce((acc, item) => acc + (item.price * item.qty), 0)
             });
             setShippingOptions(data.shippingOptions || []);
 
