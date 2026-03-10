@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Star, Truck, ShieldCheck, Leaf } from 'lucide-react';
+import { ArrowRight, Star, Truck, ShieldCheck, Leaf, Users, Award, Heart, History } from 'lucide-react';
 import api from '../utils/api';
 import AnimatedPage from '../components/AnimatedPage';
 import ScrollReveal from '../components/ScrollReveal';
@@ -110,6 +110,19 @@ const HomePage = () => {
                 )}
             </div>
         );
+    };
+
+    const getIcon = (iconName) => {
+        switch (iconName) {
+            case 'Leaf': return <Leaf size={32} />;
+            case 'ShieldCheck': return <ShieldCheck size={32} />;
+            case 'Truck': return <Truck size={32} />;
+            case 'Users': return <Users size={32} />;
+            case 'Award': return <Award size={32} />;
+            case 'Heart': return <Heart size={32} />;
+            case 'History': return <History size={32} />;
+            default: return <Leaf size={32} />;
+        }
     };
 
 
@@ -310,36 +323,30 @@ const HomePage = () => {
                     <div className="container mx-auto">
                         <ScrollReveal>
                             <div className="text-center mb-20">
-                                <span className="text-secondary font-bold uppercase tracking-[0.2em] text-xs mb-4 block">The Hridved Way</span>
-                                <h2 className="text-4xl md:text-5xl font-sans font-bold text-primary mb-6">Why Hundreds of Thousands<br className="hidden md:block" /> Trust HRIDVED</h2>
+                                <span className="text-secondary font-bold uppercase tracking-[0.2em] text-xs mb-4 block">
+                                    {content?.promise?.subtitle || "The Hridved Way"}
+                                </span>
+                                <h2 className="text-4xl md:text-5xl font-sans font-bold text-primary mb-6">
+                                    {content?.promise?.title || <>Why Hundreds of Thousands<br className="hidden md:block" /> Trust HRIDVED</>}
+                                </h2>
                                 <div className="w-24 h-1 bg-secondary mx-auto rounded-full"></div>
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-16">
-                                <div className="bg-white p-6 md:p-10 rounded-3xl md:rounded-[2rem] shadow-sm border border-gray-50 hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 text-center group relative overflow-hidden">
-                                    <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-bl-[4rem] -mr-8 -mt-8 transition-transform duration-500 group-hover:scale-150"></div>
-                                    <div className="w-16 h-16 md:w-20 md:h-20 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-6 md:mb-8 text-primary group-hover:bg-primary group-hover:text-white transition-all duration-500 rotate-3 group-hover:rotate-0">
-                                        <Leaf size={32} />
+                                {(content?.promise?.items?.length > 0 ? content.promise.items : [
+                                    { title: '100% Organically Sourced', description: 'We utilize only the purest ingredients harvested directly from the Himalayan foothills.', icon: 'Leaf' },
+                                    { title: 'GMP & Ayush Certified', description: 'Our manufacturing excellence meets global pharma-grade standards, ensuring absolute potency.', icon: 'ShieldCheck' },
+                                    { title: 'Eco-Friendly Shipping', description: 'Dedicated to the Earth, we use biodegradable glass and zero-plastic packaging.', icon: 'Truck' }
+                                ]).map((item, idx) => (
+                                    <div key={idx} className="bg-white p-6 md:p-10 rounded-3xl md:rounded-[2rem] shadow-sm border border-gray-50 hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 text-center group relative overflow-hidden">
+                                        <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-bl-[4rem] -mr-8 -mt-8 transition-transform duration-500 group-hover:scale-150"></div>
+                                        <div className="w-16 h-16 md:w-20 md:h-20 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-6 md:mb-8 text-primary group-hover:bg-primary group-hover:text-white transition-all duration-500 rotate-3 group-hover:rotate-0">
+                                            {getIcon(item.icon)}
+                                        </div>
+                                        <h3 className="text-xl md:text-2xl font-bold text-primary mb-3 md:mb-4">{item.title}</h3>
+                                        <p className="text-xs md:text-base text-gray-500 leading-relaxed">{item.description}</p>
                                     </div>
-                                    <h3 className="text-xl md:text-2xl font-bold text-primary mb-3 md:mb-4">100% Organically Sourced</h3>
-                                    <p className="text-xs md:text-base text-gray-500 leading-relaxed">We utilize only the purest ingredients harvested directly from the Himalayan foothills.</p>
-                                </div>
-                                <div className="bg-white p-6 md:p-10 rounded-3xl md:rounded-[2rem] shadow-sm border border-gray-50 hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 text-center group relative overflow-hidden">
-                                    <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-bl-[4rem] -mr-8 -mt-8 transition-transform duration-500 group-hover:scale-150"></div>
-                                    <div className="w-16 h-16 md:w-20 md:h-20 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-6 md:mb-8 text-primary group-hover:bg-primary group-hover:text-white transition-all duration-500 -rotate-3 group-hover:rotate-0">
-                                        <ShieldCheck size={32} />
-                                    </div>
-                                    <h3 className="text-xl md:text-2xl font-bold text-primary mb-3 md:mb-4">GMP & Ayush Certified</h3>
-                                    <p className="text-xs md:text-base text-gray-500 leading-relaxed">Our manufacturing excellence meets global pharma-grade standards, ensuring absolute potency.</p>
-                                </div>
-                                <div className="bg-white p-6 md:p-10 rounded-3xl md:rounded-[2rem] shadow-sm border border-gray-50 hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 text-center group relative overflow-hidden">
-                                    <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-bl-[4rem] -mr-8 -mt-8 transition-transform duration-500 group-hover:scale-150"></div>
-                                    <div className="w-16 h-16 md:w-20 md:h-20 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-6 md:mb-8 text-primary group-hover:bg-primary group-hover:text-white transition-all duration-500 rotate-6 group-hover:rotate-0">
-                                        <Truck size={32} />
-                                    </div>
-                                    <h3 className="text-xl md:text-2xl font-bold text-primary mb-3 md:mb-4">Eco-Friendly Shipping</h3>
-                                    <p className="text-xs md:text-base text-gray-500 leading-relaxed">Dedicated to the Earth, we use biodegradable glass and zero-plastic packaging.</p>
-                                </div>
+                                ))}
                             </div>
                         </ScrollReveal>
                     </div>

@@ -24,6 +24,8 @@ const ShopPage = () => {
     const [quickViewProduct, setQuickViewProduct] = useState(null);
     const [isQuickViewOpen, setIsQuickViewOpen] = useState(false);
     const [showMobileFilters, setShowMobileFilters] = useState(false);
+    const [shopContent, setShopContent] = useState(null);
+
 
     // Accordion states
     const [openSections, setOpenSections] = useState({
@@ -178,7 +180,18 @@ const ShopPage = () => {
             }
         };
         fetchCategories();
+
+        const fetchShopContent = async () => {
+            try {
+                const { data } = await api.get('/content');
+                setShopContent(data);
+            } catch (error) {
+                console.error("Error fetching shop content", error);
+            }
+        };
+        fetchShopContent();
     }, []);
+
 
     const handleSortChange = (e) => {
         updateFilters({ sort: e.target.value });
@@ -514,9 +527,11 @@ const ShopPage = () => {
                     <ScrollReveal>
                         <div className="mt-20 bg-green-50 rounded-3xl p-8 md:p-12 flex flex-col md:flex-row items-center justify-between border border-green-100">
                             <div className="md:w-1/2 mb-8 md:mb-0">
-                                <h2 className="text-3xl md:text-4xl font-sans font-bold text-primary mb-4">Ayurveda for Every Body</h2>
+                                <h2 className="text-3xl md:text-4xl font-sans font-bold text-primary mb-4">
+                                    {shopContent?.shopFooter?.title || "Ayurveda for Every Body"}
+                                </h2>
                                 <p className="text-gray-600 mb-6 leading-relaxed max-w-lg">
-                                    All HRIDVED products are crafted following authentic scriptures and modern quality standards. Whether you&apos;re looking for skin radiance, digestion support, or stress relief, our holistic remedies are designed to restore balance to your Doshas.
+                                    {shopContent?.shopFooter?.subtitle || "All HRIDVED products are crafted following authentic scriptures and modern quality standards. Whether you're looking for skin radiance, digestion support, or stress relief, our holistic remedies are designed to restore balance to your Doshas."}
                                 </p>
                                 <Link to="/about" className="inline-flex items-center text-primary font-bold border border-primary px-6 py-2 rounded hover:bg-primary hover:text-white transition-colors">
                                     Learn more about our process <ArrowRight size={16} className="ml-2" />
@@ -525,7 +540,11 @@ const ShopPage = () => {
                             <div className="md:w-1/2 flex justify-center md:justify-end">
                                 <div className="relative">
                                     <div className="absolute inset-0 bg-primary/20 rounded-2xl transform rotate-3"></div>
-                                    <img src="https://images.unsplash.com/photo-1620916566398-39f1143ab7be?q=80&w=600&auto=format&fit=crop" alt="Ayurvedic Bowl" className="relative rounded-2xl shadow-lg transform -rotate-3 hover:rotate-0 transition-transform duration-500 max-w-xs md:max-w-sm" />
+                                    <img 
+                                        src={shopContent?.shopFooter?.image || "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?q=80&w=600&auto=format&fit=crop"} 
+                                        alt="Ayurvedic Bowl" 
+                                        className="relative rounded-2xl shadow-lg transform -rotate-3 hover:rotate-0 transition-transform duration-500 max-w-xs md:max-w-sm" 
+                                    />
                                 </div>
                             </div>
                         </div>

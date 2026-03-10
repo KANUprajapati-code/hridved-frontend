@@ -26,6 +26,8 @@ const AdminSidebar = ({ isMobileOpen, setIsMobileOpen }) => {
         { name: 'Shipping', path: '/admin/shipping', icon: <Truck size={20} /> },
         { name: 'Wisdom Tips', path: '/admin/tiplist', icon: <MessageSquare size={20} /> },
         { name: 'About Us', path: '/admin/about', icon: <ListOrdered size={20} /> },
+        { name: 'Shop Page', path: '/admin/shoppage', icon: <Layout size={20} /> },
+
     ];
 
     return (

@@ -66,6 +66,7 @@ const CategoryEditPage = lazy(() => import('./pages/admin/CategoryEditPage'));
 const ShippingSettingsPage = lazy(() => import('./pages/admin/ShippingSettingsPage'));
 const DoctorBookingListPage = lazy(() => import('./pages/admin/DoctorBookingListPage'));
 const DoctorCategoryListPage = lazy(() => import('./pages/admin/DoctorCategoryListPage'));
+const ShopPageEdit = lazy(() => import('./pages/admin/ShopPageEdit'));
 
 function App() {
     const [siteLoading, setSiteLoading] = useState(true);
@@ -167,8 +168,9 @@ function App() {
                                                         <Route path="category/:id/edit" element={<CategoryEditPage />} />
                                                         <Route path="shipping" element={<ShippingSettingsPage />} />
                                                         <Route path="doctor-bookings" element={<DoctorBookingListPage />} />
-                                                        <Route path="doctor-categorylist" element={<DoctorCategoryListPage />} />
+                                                        <Route path="shoppage" element={<ShopPageEdit />} />
                                                     </Route>
+
                                                 </Routes>
                                             </Suspense>
                                         </motion.div>
