@@ -168,6 +168,7 @@ function App() {
                                                         <Route path="category/:id/edit" element={<CategoryEditPage />} />
                                                         <Route path="shipping" element={<ShippingSettingsPage />} />
                                                         <Route path="doctor-bookings" element={<DoctorBookingListPage />} />
+                                                        <Route path="doctor-categorylist" element={<DoctorCategoryListPage />} />
                                                         <Route path="shoppage" element={<ShopPageEdit />} />
                                                     </Route>
 
