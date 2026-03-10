@@ -228,12 +228,12 @@ const DoctorConsultation = () => {
                 <div className="container mx-auto px-4 relative z-10">
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center divide-x divide-gray-800">
                         <div className="p-4">
-                            <h3 className="text-4xl font-serif font-bold text-green-400 mb-2">50k+</h3>
+                            <h3 className="text-4xl font-serif font-bold text-green-400 mb-2">5k+</h3>
                             <p className="text-gray-400 text-xs uppercase tracking-widest font-bold">Happy Patients</p>
                         </div>
                         <div className="p-4">
-                            <h3 className="text-4xl font-serif font-bold text-green-400 mb-2">100+</h3>
-                            <p className="text-gray-400 text-xs uppercase tracking-widest font-bold">Expert Doctors</p>
+                            <h3 className="text-4xl font-serif font-bold text-green-400 mb-2">10+</h3>
+                            <p className="text-gray-400 text-xs uppercase tracking-widest font-bold">Doctors Team</p>
                         </div>
                         <div className="p-4">
                             <h3 className="text-4xl font-serif font-bold text-green-400 mb-2">4.9/5</h3>
