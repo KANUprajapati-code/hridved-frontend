@@ -76,9 +76,10 @@ export default function CheckoutPaymentPage() {
         const itemsPrice = cartItems.reduce((total, item) => total + (item.price * item.qty), 0);
         const taxPrice = cartItems.reduce((total, item) => total + (item.price * item.qty * (item.gst || 0) / 100), 0);
         const shippingPrice = checkoutData.shippingCost || 0;
-        const totalPrice = itemsPrice + taxPrice + shippingPrice;
+        const codPrice = paymentMethod === 'COD' ? 50 : 0;
+        const totalPrice = itemsPrice + taxPrice + shippingPrice + codPrice;
 
-        return { itemsPrice, taxPrice, shippingPrice, totalPrice };
+        return { itemsPrice, taxPrice, shippingPrice, codPrice, totalPrice };
     };
 
     const createOrderBackend = async () => {
@@ -86,7 +87,7 @@ export default function CheckoutPaymentPage() {
             setCreatingOrder(true);
             clearError();
 
-            const { itemsPrice, taxPrice, shippingPrice, totalPrice } = calculateTotals();
+            const { itemsPrice, taxPrice, shippingPrice, codPrice, totalPrice } = calculateTotals();
             const cartItems = cart?.cartItems || [];
 
             const { data: res } = await api.post('/checkout/create-order', {
@@ -102,7 +103,9 @@ export default function CheckoutPaymentPage() {
                 itemsPrice,
                 taxPrice,
                 shippingPrice,
+                codPrice,
                 totalPrice,
+                paymentMethod: paymentMethod,
                 shippingProvider: checkoutData.shippingProvider || 'Vamaship',
             });
 
@@ -226,6 +229,12 @@ export default function CheckoutPaymentPage() {
                                                 <span>Shipping</span>
                                                 <span>₹{shippingPrice.toLocaleString()}</span>
                                             </div>
+                                            {paymentMethod === 'COD' && (
+                                                <div className="flex justify-between text-primary font-bold">
+                                                    <span>COD Fee</span>
+                                                    <span>₹50</span>
+                                                </div>
+                                            )}
                                             <div className="flex justify-between text-gray-600">
                                                 <span>GST</span>
                                                 <span>₹{taxPrice.toLocaleString()}</span>

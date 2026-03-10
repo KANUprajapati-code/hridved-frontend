@@ -31,12 +31,14 @@ const PlaceOrderPage = () => {
         cartItems.reduce((acc, item) => acc + item.price * item.qty, 0)
     );
     const shippingPrice = addDecimals(itemsPrice >= 499 ? 0 : 50);
+    const codPrice = addDecimals(paymentMethod === 'COD' ? 50 : 0);
     const taxPrice = addDecimals(
         cartItems.reduce((acc, item) => acc + (item.price * item.qty * (item.gst || 0) / 100), 0)
     );
     const totalPrice = (
         Number(itemsPrice) +
         Number(shippingPrice) +
+        Number(codPrice) +
         Number(taxPrice)
     ).toFixed(2);
 
@@ -56,6 +58,7 @@ const PlaceOrderPage = () => {
                 paymentMethod,
                 itemsPrice,
                 shippingPrice,
+                codPrice,
                 taxPrice,
                 totalPrice,
                 shippingProvider,
@@ -146,6 +149,12 @@ const PlaceOrderPage = () => {
                             <span>Shipping</span>
                             <span>₹{shippingPrice}</span>
                         </div>
+                        {paymentMethod === 'COD' && (
+                            <div className="flex justify-between mb-2 text-primary font-bold">
+                                <span>COD Fee</span>
+                                <span>₹{codPrice}</span>
+                            </div>
+                        )}
                         <div className="flex justify-between mt-4 pt-4 border-t font-bold text-xl text-primary">
                             <span>Total</span>
                             <span>₹{totalPrice}</span>
