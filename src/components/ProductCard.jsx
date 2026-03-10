@@ -105,19 +105,26 @@ const ProductCard = ({ product, onQuickView }) => {
                 <div className="mt-auto flex items-center justify-between pt-2 sm:pt-4 border-t border-gray-50">
                     <div className="flex flex-col">
                         <span className="text-[8px] sm:text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">Investment</span>
-                        <div className="flex items-baseline gap-1 sm:gap-2 overflow-hidden flex-wrap">
-                            <span className="text-lg sm:text-2xl font-black text-primary font-sans whitespace-nowrap">₹{product.price}</span>
+                        <div className="flex flex-col">
+                            <div className="flex items-baseline gap-2">
+                                <span className="text-lg sm:text-2xl font-black text-primary font-sans">₹{product.price}</span>
+                                {product.mrp > product.price && (
+                                    <span className="text-xs sm:text-sm text-gray-400 line-through font-medium">₹{product.mrp}</span>
+                                )}
+                            </div>
                             {product.mrp > product.price && (
-                                <div className="flex items-center gap-1">
-                                    <span className="text-[10px] sm:text-sm text-gray-400 line-through font-medium whitespace-nowrap">₹{product.mrp}</span>
-                                    <span className="text-[10px] sm:text-sm text-green-600 font-black whitespace-nowrap">
-                                        ({Math.round(((product.mrp - product.price) / product.mrp) * 100)}% OFF)
-                                    </span>
-                                </div>
+                                <span className="text-[10px] sm:text-xs text-green-600 font-black mt-0.5 whitespace-nowrap">
+                                    Save ₹{product.mrp - product.price} ({Math.round(((product.mrp - product.price) / product.mrp) * 100)}% OFF)
+                                </span>
                             )}
                         </div>
                     </div>
                     <div className="flex flex-col items-end">
+                        <div className="mb-2">
+                             <span className="text-[8px] sm:text-[10px] text-green-600 font-bold bg-green-50 px-2 py-0.5 rounded-full border border-green-100">
+                                In Stock
+                            </span>
+                        </div>
                         <button
                             onClick={() => {
                                 addToCart(product);
