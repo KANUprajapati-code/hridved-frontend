@@ -22,6 +22,7 @@ const ProductEditPage = () => {
     const [benefits, setBenefits] = useState('');
     const [howToUse, setHowToUse] = useState('');
     const [gst, setGst] = useState(0);
+    const [weight, setWeight] = useState(0.5);
     const [uploading, setUploading] = useState(false);
     const [loading, setLoading] = useState(true);
     const [categories, setCategories] = useState([]);
@@ -52,6 +53,7 @@ const ProductEditPage = () => {
                 setIsBestseller(data.isBestseller || false);
                 setImages(data.images || []);
                 setGst(data.gst || 0);
+                setWeight(data.weight || 0.5);
                 setLoading(false);
             } catch (error) {
                 console.error(error);
@@ -130,6 +132,7 @@ const ProductEditPage = () => {
                 benefits,
                 howToUse,
                 gst,
+                weight,
             });
             navigate('/admin/productlist');
         } catch (error) {
@@ -309,6 +312,17 @@ const ProductEditPage = () => {
                             className="w-full border p-2 rounded focus:outline-none focus:border-secondary"
                             value={gst}
                             onChange={(e) => setGst(e.target.value)}
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-gray-700 font-bold mb-2">Weight (kg)</label>
+                        <input
+                            type="number"
+                            step="0.01"
+                            required
+                            className="w-full border p-2 rounded focus:outline-none focus:border-secondary"
+                            value={weight}
+                            onChange={(e) => setWeight(e.target.value)}
                         />
                     </div>
 

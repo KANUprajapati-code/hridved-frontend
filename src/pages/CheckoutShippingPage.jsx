@@ -35,6 +35,8 @@ export default function CheckoutShippingPage() {
             const cartItems = cart?.cartItems || [];
             const totalWeight = cartItems.reduce((acc, item) => acc + (Number(item.weight || 0.5) * item.qty), 0);
             
+            console.log(`[SHIPPING] Calculated Total Weight: ${totalWeight}kg for ${cartItems.length} items`);
+
             const { data } = await api.post('/shipping/serviceability', {
                 pincode: checkoutData.address.pincode,
                 weight: totalWeight,
