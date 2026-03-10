@@ -79,6 +79,7 @@ export const CartProvider = ({ children }) => {
                 image: product.image,
                 price: parseFloat(product.price),
                 gst: product.gst || 0,
+                weight: product.weight || 0.5,
             };
 
             if (user) {

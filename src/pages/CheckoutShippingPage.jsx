@@ -32,10 +32,13 @@ export default function CheckoutShippingPage() {
         try {
             setLoading(true);
             clearError();
+            const cartItems = cart?.cartItems || [];
+            const totalWeight = cartItems.reduce((acc, item) => acc + (Number(item.weight || 0.5) * item.qty), 0);
+            
             const { data } = await api.post('/shipping/serviceability', {
                 pincode: checkoutData.address.pincode,
-                weight: 0.5,
-                value: cart.cartItems.reduce((acc, item) => acc + (item.price * item.qty), 0)
+                weight: totalWeight,
+                value: cartItems.reduce((acc, item) => acc + (item.price * item.qty), 0)
             });
             setShippingOptions(data.shippingOptions || []);
 
