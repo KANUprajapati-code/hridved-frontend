@@ -1,4 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { Trash2, ShoppingBag, Truck, ShieldCheck, RefreshCw, Plus, Minus, ArrowRight } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
