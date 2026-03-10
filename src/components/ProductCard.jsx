@@ -31,6 +31,15 @@ const ProductCard = ({ product, onQuickView }) => {
                         Bestseller
                     </motion.span>
                 )}
+                {product.mrp > product.price && (
+                    <motion.span
+                        initial={{ scale: 0.8, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        className="bg-green-600 text-white text-[8px] sm:text-[10px] font-black px-2 sm:px-3 py-0.5 sm:py-1 rounded-full uppercase tracking-widest shadow-lg"
+                    >
+                        {Math.round(((product.mrp - product.price) / product.mrp) * 100)}% OFF
+                    </motion.span>
+                )}
                 {product.countInStock > 0 && product.countInStock <= 5 && (
                     <span className="bg-red-500 text-white text-[8px] sm:text-[10px] font-black px-2 sm:px-3 py-0.5 sm:py-1 rounded-full uppercase tracking-widest shadow-lg">
                         Only {product.countInStock} Left
@@ -96,10 +105,15 @@ const ProductCard = ({ product, onQuickView }) => {
                 <div className="mt-auto flex items-center justify-between pt-2 sm:pt-4 border-t border-gray-50">
                     <div className="flex flex-col">
                         <span className="text-[8px] sm:text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">Investment</span>
-                        <div className="flex items-baseline gap-2">
-                            <span className="text-lg sm:text-2xl font-black text-primary font-sans">₹{product.price}</span>
+                        <div className="flex items-baseline gap-1 sm:gap-2 overflow-hidden flex-wrap">
+                            <span className="text-lg sm:text-2xl font-black text-primary font-sans whitespace-nowrap">₹{product.price}</span>
                             {product.mrp > product.price && (
-                                <span className="text-xs sm:text-sm text-gray-400 line-through font-medium">₹{product.mrp}</span>
+                                <div className="flex items-center gap-1">
+                                    <span className="text-[10px] sm:text-sm text-gray-400 line-through font-medium whitespace-nowrap">₹{product.mrp}</span>
+                                    <span className="text-[10px] sm:text-sm text-green-600 font-black whitespace-nowrap">
+                                        ({Math.round(((product.mrp - product.price) / product.mrp) * 100)}% OFF)
+                                    </span>
+                                </div>
                             )}
                         </div>
                     </div>

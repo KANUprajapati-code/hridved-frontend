@@ -67,38 +67,40 @@ const ProductListPage = () => {
 
             <div className="bg-white rounded-lg shadow overflow-x-auto">
                 <table className="min-w-full text-left">
-                    <thead className="bg-gray-50 border-b">
-                        <tr>
-                            <th className="py-3 px-4 font-bold text-gray-700">ID</th>
-                            <th className="py-3 px-4 font-bold text-gray-700">NAME</th>
-                            <th className="py-3 px-4 font-bold text-gray-700">PRICE</th>
-                            <th className="py-3 px-4 font-bold text-gray-700">CATEGORY</th>
-                            <th className="py-3 px-4 font-bold text-gray-700">BRAND</th>
-                            <th className="py-3 px-4 font-bold text-gray-700">ACTIONS</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {products.map((product) => (
-                            <tr key={product._id} className="border-b last:border-0 hover:bg-gray-50 transition">
-                                <td className="py-3 px-4 text-sm">{product._id}</td>
-                                <td className="py-3 px-4 text-sm font-medium">{product.name}</td>
-                                <td className="py-3 px-4 text-sm">₹{product.price}</td>
-                                <td className="py-3 px-4 text-sm">{product.category}</td>
-                                <td className="py-3 px-4 text-sm">HRIDVED</td>
-                                <td className="py-3 px-4 text-sm flex gap-3">
-                                    <Link to={`/admin/product/${product._id}/edit`} className="text-blue-600 hover:text-blue-800">
-                                        <Edit2 size={18} />
-                                    </Link>
-                                    <button
-                                        onClick={() => deleteHandler(product._id)}
-                                        className="text-red-500 hover:text-red-700"
-                                    >
-                                        <Trash2 size={18} />
-                                    </button>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
+                            <thead className="bg-gray-50 border-b">
+                                <tr>
+                                    <th className="py-3 px-4 font-bold text-gray-700">ID</th>
+                                    <th className="py-3 px-4 font-bold text-gray-700">NAME</th>
+                                    <th className="py-3 px-4 font-bold text-gray-700">PRICE</th>
+                                    <th className="py-3 px-4 font-bold text-gray-700">MRP</th>
+                                    <th className="py-3 px-4 font-bold text-gray-700">CATEGORY</th>
+                                    <th className="py-3 px-4 font-bold text-gray-700">BRAND</th>
+                                    <th className="py-3 px-4 font-bold text-gray-700">ACTIONS</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {products.map((product) => (
+                                    <tr key={product._id} className="border-b last:border-0 hover:bg-gray-50 transition">
+                                        <td className="py-3 px-4 text-sm">{product._id}</td>
+                                        <td className="py-3 px-4 text-sm font-medium">{product.name}</td>
+                                        <td className="py-3 px-4 text-sm font-bold text-primary">₹{product.price}</td>
+                                        <td className="py-3 px-4 text-sm text-gray-400 line-through">₹{product.mrp || 0}</td>
+                                        <td className="py-3 px-4 text-sm">{product.category}</td>
+                                        <td className="py-3 px-4 text-sm">HRIDVED</td>
+                                        <td className="py-3 px-4 text-sm flex gap-3">
+                                            <Link to={`/admin/product/${product._id}/edit`} className="text-blue-600 hover:text-blue-800">
+                                                <Edit2 size={18} />
+                                            </Link>
+                                            <button
+                                                onClick={() => deleteHandler(product._id)}
+                                                className="text-red-500 hover:text-red-700"
+                                            >
+                                                <Trash2 size={18} />
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
                 </table>
             </div>
         </div >

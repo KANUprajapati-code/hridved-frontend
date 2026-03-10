@@ -145,9 +145,14 @@ const ProductPage = () => {
                                             )}
                                         </div>
                                         {product.mrp > product.price && (
-                                            <span className="text-green-600 font-bold text-sm">
-                                                Save ₹{product.mrp - product.price} ({Math.round(((product.mrp - product.price) / product.mrp) * 100)}% OFF)
-                                            </span>
+                                            <div className="flex items-center gap-2 mt-1">
+                                                <span className="text-green-600 font-extrabold text-lg">
+                                                    {Math.round(((product.mrp - product.price) / product.mrp) * 100)}% OFF
+                                                </span>
+                                                <span className="text-green-700 font-medium text-sm bg-green-50 px-2 py-0.5 rounded border border-green-100">
+                                                    Save ₹{product.mrp - product.price}
+                                                </span>
+                                            </div>
                                         )}
                                     </div>
                                     <span className="text-green-600 text-sm font-medium bg-green-50 px-3 py-1 rounded-full border border-green-100 ml-auto sm:ml-0">In Stock</span>
