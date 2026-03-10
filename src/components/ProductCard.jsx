@@ -31,6 +31,16 @@ const ProductCard = ({ product, onQuickView }) => {
                         Bestseller
                     </motion.span>
                 )}
+                {product.mrp > product.price && (
+                    <motion.span
+                        initial={{ x: -20, opacity: 0 }}
+                        animate={{ x: 0, opacity: 1 }}
+                        transition={{ delay: 0.1 }}
+                        className="bg-green-500 text-white text-[8px] sm:text-[10px] font-black px-2 sm:px-3 py-0.5 sm:py-1 rounded-full uppercase tracking-widest shadow-lg"
+                    >
+                        {Math.round(((product.mrp - product.price) / product.mrp) * 100)}% OFF
+                    </motion.span>
+                )}
                 {product.countInStock > 0 && product.countInStock <= 5 && (
                     <span className="bg-red-500 text-white text-[8px] sm:text-[10px] font-black px-2 sm:px-3 py-0.5 sm:py-1 rounded-full uppercase tracking-widest shadow-lg">
                         Only {product.countInStock} Left
