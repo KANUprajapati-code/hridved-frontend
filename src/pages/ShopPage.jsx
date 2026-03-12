@@ -7,6 +7,7 @@ import { Filter, ChevronDown, ArrowRight, Star, X } from 'lucide-react';
 import AnimatedPage from '../components/AnimatedPage';
 import ScrollReveal from '../components/ScrollReveal';
 import AnimatedButton from '../components/AnimatedButton';
+import SEO from '../components/SEO';
 
 const ShopPage = () => {
     const navigate = useNavigate();
@@ -199,6 +200,10 @@ const ShopPage = () => {
 
     return (
         <AnimatedPage>
+            <SEO 
+                title="Shop Ayurvedic Products"
+                description="Browse our wide range of authentic Ayurvedic medicines, hair oils, skincare, and wellness supplements. Pure ingredients, GMP certified."
+            />
             <div className="bg-background min-h-screen font-sans">
                 {/* Minimal Header with Breadcrumbs */}
                 <div className="bg-white border-b border-gray-100 py-4">

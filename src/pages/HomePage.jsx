@@ -7,6 +7,7 @@ import AnimatedPage from '../components/AnimatedPage';
 import ScrollReveal from '../components/ScrollReveal';
 import AnimatedImage from '../components/AnimatedImage';
 import AnimatedButton from '../components/AnimatedButton';
+import SEO from '../components/SEO';
 
 const HomePage = () => {
     const [content, setContent] = useState(null);
@@ -128,6 +129,10 @@ const HomePage = () => {
 
     return (
         <AnimatedPage>
+            <SEO 
+                title="Ancient Ayurveda, Modern Wellness" 
+                description="Hridved brings you pure Ayurvedic formulations handcrafted with wisdom from ancient texts, delivered with modern purity standards. Explore our range of herbal medicines, oils, and wellness products."
+            />
             <div className="min-h-screen bg-background">
                 {/* Hero Section - Optimized for mobile aspect ratio */}
                 <section className="relative min-h-[350px] xs:min-h-[450px] sm:min-h-[600px] md:min-h-[700px] lg:min-h-[85vh] flex items-center overflow-hidden bg-primary py-12 sm:py-20">

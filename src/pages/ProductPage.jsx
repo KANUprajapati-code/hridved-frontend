@@ -12,6 +12,7 @@ import ScrollReveal from '../components/ScrollReveal';
 import AnimatedButton from '../components/AnimatedButton';
 import { useFlyingElement } from '../hooks/useFlyingElement';
 import ProductCard from '../components/ProductCard';
+import SEO from '../components/SEO';
 
 const ProductPage = () => {
     const { id } = useParams();
@@ -97,6 +98,13 @@ const ProductPage = () => {
 
     return (
         <AnimatedPage>
+            <SEO 
+                title={product.name}
+                description={product.description}
+                ogImage={product.image}
+                ogType="product"
+                product={product}
+            />
             <div className="bg-background min-h-screen pb-12">
                 <div className="container mx-auto px-4 py-8">
                     <nav className="text-sm mb-6 text-gray-500">
