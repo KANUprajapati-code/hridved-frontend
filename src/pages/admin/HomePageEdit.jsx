@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import api from '../../utils/api';
+import api, { getImageUrl } from '../../utils/api';
 import { compressImage } from '../../utils/imageCompression';
 import { Save, ArrowLeft, Plus, Trash2, Leaf, ShieldCheck, Truck, Award, Heart, History, Users, CheckCircle, Droplets, Sparkles, Sun } from 'lucide-react';
 
@@ -337,6 +337,16 @@ const HomePageEdit = () => {
                             <label htmlFor="hero-image-file" className="cursor-pointer bg-gray-100 py-2 px-4 rounded border hover:bg-gray-200 inline-block text-sm font-bold">
                                 {uploading ? 'Uploading...' : 'Upload Image'}
                             </label>
+                            {hero.image && (
+                                <div className="mt-4">
+                                    <p className="text-xs text-gray-400 mb-2">Image Preview:</p>
+                                    <img 
+                                        src={getImageUrl(hero.image)} 
+                                        alt="Hero Preview" 
+                                        className="h-32 w-auto rounded border shadow-sm"
+                                    />
+                                </div>
+                            )}
                         </div>
                         <button type="submit" className="bg-primary text-white px-4 py-2 rounded flex items-center gap-2 hover:bg-opacity-90 transition-all">
                             <Save size={16} /> Save Hero Section
@@ -485,6 +495,11 @@ const HomePageEdit = () => {
                                     <label htmlFor="purity-image-1" className="cursor-pointer bg-white py-1.5 px-3 rounded border hover:bg-gray-100 inline-block text-xs font-bold shadow-sm">
                                         {uploading ? 'Uploading...' : 'Upload Image 1'}
                                     </label>
+                                    {purity.image1 && (
+                                        <div className="mt-2 text-center">
+                                            <img src={getImageUrl(purity.image1)} alt="Preview 1" className="h-20 mx-auto rounded border" />
+                                        </div>
+                                    )}
                                 </div>
                                 <div>
                                     <label className="block text-sm font-bold mb-1">Purity Image 2 (Right)</label>
@@ -504,6 +519,11 @@ const HomePageEdit = () => {
                                     <label htmlFor="purity-image-2" className="cursor-pointer bg-white py-1.5 px-3 rounded border hover:bg-gray-100 inline-block text-xs font-bold shadow-sm">
                                         {uploading ? 'Uploading...' : 'Upload Image 2'}
                                     </label>
+                                    {purity.image2 && (
+                                        <div className="mt-2 text-center">
+                                            <img src={getImageUrl(purity.image2)} alt="Preview 2" className="h-20 mx-auto rounded border" />
+                                        </div>
+                                    )}
                                 </div>
                             </div>
 
