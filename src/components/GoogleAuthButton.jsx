@@ -75,8 +75,9 @@ const GoogleAuthButton = ({ text = 'Continue with Google', redirect = '/' }) => 
         }
       });
 
-      // Trigger the popup
+      // Trigger the popup IMMEDIATELY after creation
       client.requestAccessToken();
+      setLoading(false); // Hide loading since popup is now managed by Google
 
     } catch (err) {
       console.error('Google sign-in error:', err);

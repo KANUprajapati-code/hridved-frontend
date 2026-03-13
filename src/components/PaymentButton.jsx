@@ -6,6 +6,21 @@ import api from '../utils/api';
 
 const PaymentButton = ({ amount, orderId, onSuccess, onError, onBeforePayment }) => {
     const [loading, setLoading] = useState(false);
+    const [rzpKey, setRzpKey] = useState(null);
+
+    // Pre-fetch Razorpay Key so it's ready when user clicks
+    // This reduces the async delay that causes iOS to block popups
+    React.useEffect(() => {
+        const fetchKey = async () => {
+            try {
+                const { data: keyRes } = await api.get('/razorpay/key');
+                setRzpKey(keyRes.key);
+            } catch (err) {
+                console.error("Failed to fetch Razorpay key:", err);
+            }
+        };
+        fetchKey();
+    }, []);
 
     const handlePayment = async () => {
         try {
@@ -18,9 +33,12 @@ const PaymentButton = ({ amount, orderId, onSuccess, onError, onBeforePayment })
                 currentOrderId = result._id;
             }
 
-            // 1. Get Razorpay Key
-            const { data: keyRes } = await api.get('/razorpay/key');
-            const key = keyRes.key;
+            // 1. Get Razorpay Key from state (pre-fetched) or fallback fetch
+            let key = rzpKey;
+            if (!key) {
+                const { data: keyRes } = await api.get('/razorpay/key');
+                key = keyRes.key;
+            }
 
             // 2. Create Razorpay Order
             const { data: orderRes } = await api.post('/razorpay/order', {

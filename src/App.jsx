@@ -73,22 +73,38 @@ function App() {
 
     useEffect(() => {
         const startTime = Date.now();
+        let loadingCleared = false;
 
         const finishLoading = () => {
+            if (loadingCleared) return;
+            loadingCleared = true;
+            
             const timeElapsed = Date.now() - startTime;
-            // Shorter required delay to be responsive but still show the effect
-            const remainingTime = Math.max(0, 4000 - timeElapsed);
+            // Reduced to 2s for better UX, while still showing the creative effect
+            const remainingTime = Math.max(0, 2000 - timeElapsed);
             
             setTimeout(() => {
                 setSiteLoading(false);
             }, remainingTime);
         };
 
+        // Safety timeout - clear loading after 8s regardless of window load status
+        // to prevent users from getting stuck on a blank/loading screen on slow mobile Safari
+        const safetyTimeout = setTimeout(() => {
+            if (!loadingCleared) {
+                console.log("Loading cleared by safety timeout");
+                finishLoading();
+            }
+        }, 8000);
+
         if (document.readyState === 'complete') {
             finishLoading();
         } else {
             window.addEventListener('load', finishLoading);
-            return () => window.removeEventListener('load', finishLoading);
+            return () => {
+                window.removeEventListener('load', finishLoading);
+                clearTimeout(safetyTimeout);
+            };
         }
     }, []);
 
