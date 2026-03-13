@@ -1,9 +1,22 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: import.meta.env.VITE_API_URL || '/api', // Use env var or proxy path
-    withCredentials: true, // Enable sending cookies with requests
-    headers: {},
+    baseURL: import.meta.env.VITE_API_URL || '/api',
+    withCredentials: true,
 });
+
+// Add a request interceptor to attach JWT from localStorage
+api.interceptors.request.use(
+    (config) => {
+        const token = localStorage.getItem('jwtToken');
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
+    },
+    (error) => {
+        return Promise.reject(error);
+    }
+);
 
 export default api;

@@ -209,9 +209,15 @@ export default function CheckoutShippingPage() {
                                             {checkoutData.shippingCost === 0 ? 'Free' : `₹${checkoutData.shippingCost}`}
                                         </span>
                                     </div>
+                                    {checkoutData.discount > 0 && (
+                                        <div className="flex justify-between text-green-600 font-bold">
+                                            <span>Discount ({checkoutData.coupon?.code})</span>
+                                            <span>-₹{checkoutData.discount.toLocaleString()}</span>
+                                        </div>
+                                    )}
                                     <div className="border-t border-gray-200 my-2 pt-2 flex justify-between font-bold text-gray-900 text-lg">
                                         <span>Total</span>
-                                        <span>₹{(cart.cartItems.reduce((acc, item) => acc + (item.price * item.qty), 0) + (checkoutData.shippingCost || 0)).toLocaleString()}</span>
+                                        <span>₹{(cart.cartItems.reduce((acc, item) => acc + (item.price * item.qty), 0) + (checkoutData.shippingCost || 0) - (checkoutData.discount || 0)).toLocaleString()}</span>
                                     </div>
                                 </div>
                             </div>

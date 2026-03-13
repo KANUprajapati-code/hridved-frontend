@@ -35,6 +35,10 @@ export const AuthProvider = ({ children }) => {
             { withCredentials: true }
         );
 
+        if (data.token) {
+            localStorage.setItem('jwtToken', data.token);
+        }
+
         await checkUserLoggedIn(); // 🔥 important
         return data;
     };
@@ -47,6 +51,10 @@ export const AuthProvider = ({ children }) => {
             { withCredentials: true }
         );
 
+        if (data.token) {
+            localStorage.setItem('jwtToken', data.token);
+        }
+
         await checkUserLoggedIn();
         return data;
     };
@@ -54,6 +62,7 @@ export const AuthProvider = ({ children }) => {
     // ================= LOGOUT =================
     const logout = async () => {
         await api.post('/users/logout', {}, { withCredentials: true });
+        localStorage.removeItem('jwtToken');
         setUser(null);
         window.location.reload(); // 🔥 Force reload to clear all state
     };
@@ -72,11 +81,15 @@ export const AuthProvider = ({ children }) => {
 
     // ================= GOOGLE LOGIN =================
     const googleLogin = async (accessToken, idToken) => {
-        await api.post(
+        const { data } = await api.post(
             '/auth/google',
             { accessToken, idToken },
             { withCredentials: true }
         );
+
+        if (data.token) {
+            localStorage.setItem('jwtToken', data.token);
+        }
 
         // 🔥 After cookie set, fetch profile
         await checkUserLoggedIn();
@@ -84,11 +97,15 @@ export const AuthProvider = ({ children }) => {
 
     // ================= FACEBOOK LOGIN =================
     const facebookLogin = async (accessToken) => {
-        await api.post(
+        const { data } = await api.post(
             '/auth/facebook',
             { accessToken },
             { withCredentials: true }
         );
+
+        if (data.token) {
+            localStorage.setItem('jwtToken', data.token);
+        }
 
         await checkUserLoggedIn();
     };

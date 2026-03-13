@@ -159,19 +159,15 @@ const HomePage = () => {
                 {/* Hero Section - Optimized for mobile aspect ratio */}
                 <section className="relative min-h-[350px] xs:min-h-[450px] sm:min-h-[600px] md:min-h-[700px] lg:min-h-[85vh] flex items-center overflow-hidden bg-primary py-12 sm:py-20">
                     <div className="absolute inset-0 w-full h-full bg-primary">
-                        {content ? (
-                            <AnimatedImage
-                                src={content.hero?.image || "/hero-bg.png"}
-                                alt="Ayurveda Wellness"
-                                containerClassName="w-full h-full !rounded-none"
-                                className="w-full h-full object-cover object-[center_25%] sm:object-center shadow-inner"
-                                zoomIntensity={1.05}
-                                loading="eager"
-                            />
-                        ) : (
-                            <div className="w-full h-full bg-primary animate-pulse flex items-center justify-center">
-                            </div>
-                        )}
+                        <AnimatedImage
+                            src={content?.hero?.image || "/hero-bg.png"}
+                            alt="Ayurveda Wellness"
+                            containerClassName="w-full h-full !rounded-none"
+                            className="w-full h-full object-cover object-[center_25%] sm:object-center shadow-inner"
+                            zoomIntensity={1.05}
+                            loading="eager"
+                            fetchPriority="high"
+                        />
                         <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/20 to-transparent pointer-events-none"></div>
                     </div>
 
@@ -632,56 +628,7 @@ const HomePage = () => {
                     </div>
                 </section>
 
-                {/* Ayurvedic Wisdom (Blog) Section */}
-                <section className="py-12 md:py-24 bg-white">
-                    <div className="container mx-auto whitespace-normal">
-                        <ScrollReveal>
-                            <div className="flex flex-col md:flex-row justify-between items-center md:items-end mb-10 md:mb-16 gap-4">
-                                <div className="text-center md:text-left">
-                                    <span className="text-secondary font-bold uppercase tracking-[0.2em] text-[10px] md:text-xs mb-2 md:mb-3 block">Knowledge Base</span>
-                                    <h2 className="text-3xl md:text-5xl font-sans font-bold text-primary mb-1 md:mb-2">Ayurvedic Wisdom</h2>
-                                    <p className="text-sm md:text-base text-gray-500">Expert insights for a harmonious lifestyle.</p>
-                                </div>
-                                <Link to="/blogs" className="text-primary font-bold hover:text-secondary group flex items-center bg-primary/5 px-6 py-3 rounded-full transition-all hover:bg-primary/10 text-sm md:text-base">
-                                    Read All Articles <ArrowRight size={20} className="ml-2 group-hover:translate-x-1 transition-transform" />
-                                </Link>
-                            </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
-                                {tips.length > 0 ? (
-                                    tips.slice(0, 3).map((tip) => (
-                                        <Link to="/blogs" key={tip._id} className="group cursor-pointer block">
-                                            <article>
-                                                <div className="rounded-3xl md:rounded-[2rem] overflow-hidden mb-6 h-48 md:h-64 relative shadow-md group-hover:shadow-2xl transition-all duration-500">
-                                                    <AnimatedImage src={tip.image} alt={tip.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                                                    <div className="absolute top-4 md:top-6 left-4 md:left-6 bg-white/90 backdrop-blur-md px-3 md:px-4 py-1.5 rounded-full text-[9px] md:text-[10px] font-black uppercase tracking-widest text-primary z-10 shadow-sm">
-                                                        {tip.category}
-                                                    </div>
-                                                </div>
-                                                <div className="px-1 md:px-2">
-                                                    <h3 className="text-xl md:text-2xl font-sans font-bold text-primary mb-2 md:mb-3 group-hover:text-secondary transition-colors leading-tight">
-                                                        {tip.title}
-                                                    </h3>
-                                                    <p className="text-xs md:text-base text-gray-500 line-clamp-2 mb-4 leading-relaxed">
-                                                        {tip.description}
-                                                    </p>
-                                                    <div className="flex items-center text-primary font-bold text-xs md:text-sm group/link">
-                                                        <span className="border-b-2 border-secondary/30 group-hover/link:border-secondary transition-colors pb-0.5">Explore Insight</span>
-                                                        <ArrowRight size={16} className="ml-1 opacity-0 -translate-x-2 group-hover/link:opacity-100 group-hover/link:translate-x-0 transition-all" />
-                                                    </div>
-                                                </div>
-                                            </article>
-                                        </Link>
-                                    ))
-                                ) : (
-                                    <div className="col-span-3 text-center py-20 bg-background rounded-3xl border-2 border-dashed border-gray-100 italic text-gray-400">
-                                        Wisdom is gathering. Check back soon.
-                                    </div>
-                                )}
-                            </div>
-                        </ScrollReveal>
-                    </div>
-                </section>
             </div>
         </AnimatedPage>
     );

@@ -16,10 +16,10 @@ import PincodeShippingCheck from '../components/PincodeShippingCheck';
 const CartPage = () => {
     const { cart, removeFromCart, updateCartItemQuantity } = useCart();
     const { user } = useAuth();
-    const { applyCoupon } = useCheckout();
+    const { checkoutData, applyCoupon } = useCheckout();
     const navigate = useNavigate();
-    const [promoCode, setPromoCode] = useState('');
-    const [appliedCoupon, setAppliedCoupon] = useState(null);
+    const [promoCode, setPromoCode] = useState(checkoutData.coupon?.code || '');
+    const [appliedCoupon, setAppliedCoupon] = useState(checkoutData.coupon || null);
     const [couponError, setCouponError] = useState('');
     const [recommendedProducts, setRecommendedProducts] = useState([]);
     const { addToast } = useContext(ToastContext);
@@ -77,6 +77,7 @@ const CartPage = () => {
         setAppliedCoupon(null);
         setPromoCode('');
         setCouponError('');
+        applyCoupon(null, 0);
     };
 
     const subtotal = cartItems.reduce((acc, item) => acc + item.qty * item.price, 0);

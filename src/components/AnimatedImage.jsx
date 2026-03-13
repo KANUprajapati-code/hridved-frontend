@@ -8,6 +8,7 @@ const AnimatedImage = ({
   containerClassName = '',
   zoomIntensity = 1.08,
   loading = 'lazy',
+  fetchPriority,
   onClick,
   ...props
 }) => {
@@ -21,6 +22,8 @@ const AnimatedImage = ({
         src={src}
         alt={alt}
         loading={loading}
+        fetchpriority={fetchPriority}
+        decoding="async"
         className={`w-full h-full object-cover ${className}`}
         initial={{ scale: 1 }}
         whileHover={{ scale: zoomIntensity }}
