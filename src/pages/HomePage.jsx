@@ -1,7 +1,8 @@
 
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Star, Truck, ShieldCheck, Leaf, Users, Award, Heart, History } from 'lucide-react';
+import { ArrowRight, Star, Truck, ShieldCheck, Leaf, Users, Award, Heart, History, CheckCircle, Droplets, Sun, Sparkles } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import api from '../utils/api';
 import AnimatedPage from '../components/AnimatedPage';
 import ScrollReveal from '../components/ScrollReveal';
@@ -142,58 +143,114 @@ const HomePage = () => {
                                 src={content.hero?.image || "/hero-bg.png"}
                                 alt="Ayurveda Wellness"
                                 containerClassName="w-full h-full !rounded-none"
-                                className="w-full h-full object-cover object-[center_25%] sm:object-center"
-                                zoomIntensity={1.03}
+                                className="w-full h-full object-cover object-[center_25%] sm:object-center shadow-inner"
+                                zoomIntensity={1.05}
                                 loading="eager"
                             />
                         ) : (
                             <div className="w-full h-full bg-primary animate-pulse flex items-center justify-center">
-                                {/* Optional: Add a small logo or loading indicator here if desired */}
                             </div>
                         )}
-                        <div className="absolute inset-0 bg-black/40 pointer-events-none"></div>
+                        <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/20 to-transparent pointer-events-none"></div>
                     </div>
 
                     <div className="container mx-auto px-4 relative z-10 py-12 sm:py-0">
                         <ScrollReveal>
                             <div className="max-w-2xl text-white">
-                                <span className="bg-secondary text-primary font-bold px-4 py-1.5 rounded-full text-xs md:text-sm uppercase tracking-[0.2em] mb-4 md:mb-6 inline-block shadow-lg">
-                                    Natural Care
-                                </span>
-                                <h1 className="text-2xl sm:text-4xl md:text-6xl lg:text-7xl font-sans font-bold mb-3 md:mb-6 leading-[1.2] sm:leading-[1.1] tracking-tight">
-                                    {content?.hero?.title || <>Ancient Ayurveda.<br className="hidden sm:block" /> Modern Wellness.</>}
-                                </h1>
-                                <p className="text-[13px] sm:text-base md:text-lg mb-6 md:mb-10 text-gray-100 font-light max-w-lg leading-relaxed">
-                                    {content?.hero?.subtitle || "Pure formulations for your modern lifestyle. Handcrafted with wisdom from ancient texts, delivered with modern purity standards."}
-                                </p>
-                                <div className="flex flex-wrap gap-4">
+                                <motion.span 
+                                    initial={{ opacity: 0, x: -20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ duration: 0.6 }}
+                                    className="bg-secondary/90 backdrop-blur-md text-primary font-bold px-4 py-1.5 rounded-full text-xs md:text-sm uppercase tracking-[0.2em] mb-4 md:mb-6 inline-block shadow-lg"
+                                >
+                                    Authentic Wellness
+                                </motion.span>
+                                <motion.h1 
+                                    initial={{ opacity: 0, y: 30 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ duration: 0.8, delay: 0.2 }}
+                                    className="text-3xl sm:text-5xl md:text-6xl lg:text-7.5xl font-sans font-extrabold mb-4 md:mb-6 leading-tight tracking-tight drop-shadow-2xl"
+                                >
+                                    {content?.hero?.title || <>Ancient Wisdom.<br className="hidden sm:block" /> Masterfully Pure.</>}
+                                </motion.h1>
+                                <motion.p 
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ duration: 0.8, delay: 0.4 }}
+                                    className="text-[14px] sm:text-lg md:text-xl mb-8 md:mb-12 text-gray-100 font-light max-w-lg leading-relaxed opacity-90"
+                                >
+                                    {content?.hero?.subtitle || "Experience the pinnacle of Ayurvedic excellence. Pure formulations handcrafted for your modern lifestyle."}
+                                </motion.p>
+                                <motion.div 
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ duration: 0.8, delay: 0.6 }}
+                                    className="flex flex-wrap gap-5"
+                                >
                                     <Link to="/shop">
-                                        <AnimatedButton className="bg-secondary text-primary px-8 md:px-10 py-3 md:py-4 rounded-full text-sm md:text-base font-bold hover:bg-white transition-all duration-300 border-none shadow-xl">
-                                            {content?.hero?.ctaText || "Shop Now"}
+                                        <AnimatedButton className="bg-secondary text-primary px-10 md:px-12 py-3.5 md:py-5 rounded-full text-sm md:text-lg font-black hover:bg-white transition-all duration-500 border-none shadow-2xl hover:scale-105 active:scale-95">
+                                            {content?.hero?.ctaText || "Shop Collection"}
                                         </AnimatedButton>
                                     </Link>
                                     <Link to="/consultation">
-                                        <AnimatedButton variant="outline" className="bg-transparent border-2 border-white text-white px-8 md:px-10 py-3 md:py-4 rounded-full text-sm md:text-base font-bold hover:bg-white hover:text-primary transition-all duration-300">
-                                            Consult
+                                        <AnimatedButton variant="outline" className="bg-white/10 backdrop-blur-lg border-2 border-white/30 text-white px-10 md:px-12 py-3.5 md:py-5 rounded-full text-sm md:text-lg font-bold hover:bg-white hover:text-primary transition-all duration-500 shadow-xl">
+                                            Consult Doctor
                                         </AnimatedButton>
                                     </Link>
-                                </div>
+                                </motion.div>
                             </div>
                         </ScrollReveal>
                     </div>
+
+                    {/* Scroll Indicator */}
+                    <div className="absolute bottom-10 left-1/2 -translate-x-1/2 hidden md:flex flex-col items-center gap-3">
+                        <span className="text-white/40 text-[10px] uppercase tracking-[0.3em] font-bold">Scroll</span>
+                        <div className="w-6 h-10 border-2 border-white/20 rounded-full flex justify-center p-1">
+                            <div className="scroll-indicator w-1 h-2 bg-white rounded-full"></div>
+                        </div>
+                    </div>
                 </section>
 
+                {/* Brand Trust Bar - Refined Marquee */}
+                <div className="bg-white border-b border-gray-50 overflow-hidden py-6 md:py-8 shadow-sm">
+                    <div className="container mx-auto px-4">
+                        <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-24 opacity-60">
+                            <div className="flex items-center gap-4 group hover:opacity-100 transition-opacity">
+                                <Leaf className="text-primary group-hover:scale-110 transition-transform" size={24} />
+                                <span className="text-[10px] md:text-xs font-black uppercase tracking-[0.2em] text-gray-600">100% Organically Sourced</span>
+                            </div>
+                            <div className="flex items-center gap-4 group hover:opacity-100 transition-opacity">
+                                <Award className="text-primary group-hover:scale-110 transition-transform" size={24} />
+                                <span className="text-[10px] md:text-xs font-black uppercase tracking-[0.2em] text-gray-600">GMP & Ayush Certified</span>
+                            </div>
+                            <div className="flex items-center gap-4 group hover:opacity-100 transition-opacity">
+                                <ShieldCheck className="text-primary group-hover:scale-110 transition-transform" size={24} />
+                                <span className="text-[10px] md:text-xs font-black uppercase tracking-[0.2em] text-gray-600">Pure Himalayan Ingredients</span>
+                            </div>
+                            <div className="flex items-center gap-4 group hover:opacity-100 transition-opacity">
+                                <Truck className="text-primary group-hover:scale-110 transition-transform" size={24} />
+                                <span className="text-[10px] md:text-xs font-black uppercase tracking-[0.2em] text-gray-600">Eco-Friendly Shipping</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 {/* Shop by Category Section - Circular Icons */}
-                <section className="py-12 md:py-20 bg-white">
+                <section className="py-16 md:py-24 bg-white relative overflow-hidden">
+                    {/* Floating Background Element */}
+                    <div className="absolute top-20 right-[-5%] opacity-5 float-slow pointer-events-none">
+                        <Leaf size={300} strokeWidth={0.5} />
+                    </div>
+                    
                     <div className="container mx-auto px-4">
                         <ScrollReveal>
-                            <div className="text-center mb-10 md:mb-16">
-                                <h2 className="text-2xl md:text-4xl font-sans font-bold text-primary mb-2 md:mb-3">Shop by Category</h2>
-                                <p className="text-sm md:text-base text-gray-500">Explore our curated collections for your specific needs.</p>
-
+                            <div className="text-center mb-12 md:mb-20">
+                                <span className="text-secondary font-bold uppercase tracking-[0.3em] text-[10px] md:text-xs mb-3 block">Discover Wellness</span>
+                                <h2 className="text-3xl md:text-5xl font-sans font-black text-primary mb-4">Shop by Category</h2>
+                                <div className="w-20 h-1 bg-secondary mx-auto rounded-full"></div>
                             </div>
 
-                            <div className="flex overflow-x-auto pb-6 gap-6 md:gap-12 no-scrollbar justify-start md:justify-center scroll-smooth items-center">
+                            <div className="flex overflow-x-auto pb-10 gap-8 md:gap-14 no-scrollbar justify-start md:justify-center scroll-smooth items-center px-4">
                                 {(categories.length > 0 ? categories : [
                                     { name: 'Skin care', image: 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=800&auto=format&fit=crop&q=80' },
                                     { name: 'Hair care', image: 'https://images.unsplash.com/photo-1522337660859-02fbefca4702?w=800&auto=format&fit=crop&q=80' },
@@ -205,21 +262,102 @@ const HomePage = () => {
                                     const link = cat.name.toLowerCase() === 'consultation' ? '/consultation' : `/shop?category=${encodeURIComponent(cat.name)}`;
                                     return (
                                         <Link to={link} key={idx} className="flex flex-col items-center group flex-shrink-0">
-                                            <div className="w-20 h-20 md:w-32 md:h-32 rounded-full overflow-hidden border-2 md:border-4 border-gray-100 group-hover:border-secondary transition-all duration-500 mb-3 md:mb-4 shadow-md md:shadow-xl relative bg-white">
-                                                <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/10 transition-colors duration-300 z-10"></div>
+                                            <div className="w-24 h-24 md:w-36 md:h-36 rounded-full overflow-hidden border-2 md:border-8 border-gray-50 group-hover:border-secondary transition-all duration-700 mb-4 md:mb-6 shadow-xl md:shadow-2xl relative bg-white transform group-hover:scale-105 group-hover:-translate-y-2">
+                                                <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/20 transition-colors duration-500 z-10 flex items-center justify-center opacity-0 group-hover:opacity-100">
+                                                    <ArrowRight className="text-white" size={32} />
+                                                </div>
                                                 <AnimatedImage
                                                     src={cat.image || cat.img}
                                                     alt={cat.name}
-                                                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                                    className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-125 group-hover:rotate-3"
                                                     containerClassName="w-full h-full"
                                                 />
                                             </div>
-                                            <h3 className="text-[10px] md:text-sm font-bold text-gray-700 group-hover:text-primary transition-colors tracking-tight uppercase">{cat.name}</h3>
+                                            <h3 className="text-[11px] md:text-sm font-black text-gray-800 group-hover:text-primary transition-colors tracking-[0.15em] uppercase text-center w-full">{cat.name}</h3>
                                         </Link>
                                     );
                                 })}
                             </div>
                         </ScrollReveal>
+                    </div>
+                </section>
+
+                {/* The Essence of Purity Section [New] */}
+                <section className="py-24 md:py-32 bg-background relative overflow-hidden">
+                    <div className="absolute bottom-[-10%] left-[-5%] opacity-5 float-slow pointer-events-none" style={{ animationDelay: '2s' }}>
+                        <Droplets size={350} strokeWidth={0.5} />
+                    </div>
+
+                    <div className="container mx-auto px-4">
+                        <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
+                            <div className="lg:w-1/2">
+                                <ScrollReveal direction="left">
+                                    <span className="text-secondary font-bold uppercase tracking-[0.3em] text-xs mb-4 block">The Process of Perfection</span>
+                                    <h2 className="text-4xl md:text-6xl font-sans font-black text-primary mb-8 leading-tight">Handcrafted with <br/><span className="italic font-serif font-light text-secondary">Ancient Wisdom</span></h2>
+                                    
+                                    <div className="space-y-10">
+                                        {[
+                                            { icon: <CheckCircle className="text-secondary" />, title: "Precision Batch Sourcing", text: "We hand-select ingredients from peak Himalayan altitudes for maximum nutrient density." },
+                                            { icon: <Droplets className="text-secondary" />, title: "Authentic Kashaya Preparation", text: "Herbs are slow-cooked for 72 hours across traditional copper vessels to preserve essence." },
+                                            { icon: <Sparkles className="text-secondary" />, title: "Modern Purity standards", text: "Every gram is tested against 140+ safety parameters in our GMP-certified labs." }
+                                        ].map((item, i) => (
+                                            <div key={i} className="flex gap-6 group">
+                                                <div className="flex-shrink-0 w-12 h-12 rounded-2xl bg-white shadow-sm flex items-center justify-center border border-gray-100 group-hover:bg-primary group-hover:text-white transition-all duration-300 transform group-hover:rotate-12">
+                                                    {item.icon}
+                                                </div>
+                                                <div>
+                                                    <h4 className="text-lg font-bold text-primary mb-2 tracking-tight">{item.title}</h4>
+                                                    <p className="text-gray-500 leading-relaxed text-sm md:text-base">{item.text}</p>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    <div className="mt-12">
+                                        <Link to="/about">
+                                            <AnimatedButton className="bg-primary text-white px-10 py-4 rounded-full font-bold hover:shadow-2xl transition-all border-none flex items-center gap-3">
+                                                Our Full Story <ArrowRight size={18} />
+                                            </AnimatedButton>
+                                        </Link>
+                                    </div>
+                                </ScrollReveal>
+                            </div>
+                            
+                            <div className="lg:w-1/2 relative">
+                                <ScrollReveal direction="right">
+                                    <div className="relative z-10 grid grid-cols-2 gap-4">
+                                        <div className="space-y-4 pt-12">
+                                            <AnimatedImage 
+                                                src="https://images.unsplash.com/photo-1612170153139-6f881ff067e0?q=80&w=600&auto=format" 
+                                                className="rounded-[2rem] shadow-2xl h-80 object-cover w-full" 
+                                            />
+                                            <div className="bg-secondary p-8 rounded-[2rem] text-primary shadow-xl">
+                                                <p className="text-3xl font-black mb-1">100%</p>
+                                                <p className="text-xs uppercase font-bold tracking-widest opacity-80">Natural Purity</p>
+                                            </div>
+                                        </div>
+                                        <div className="space-y-4">
+                                            <div className="bg-primary p-8 rounded-[2rem] text-white shadow-xl">
+                                                <p className="text-3xl font-black mb-1">500+</p>
+                                                <p className="text-xs uppercase font-bold tracking-widest opacity-80">Classical Cures</p>
+                                            </div>
+                                            <AnimatedImage 
+                                                src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=600&auto=format" 
+                                                className="rounded-[2rem] shadow-2xl h-96 object-cover w-full" 
+                                            />
+                                        </div>
+                                    </div>
+                                    
+                                    {/* Decorative badge */}
+                                    <div className="absolute -bottom-8 -right-8 w-40 h-40 bg-white rounded-full shadow-2xl flex items-center justify-center p-4 border-8 border-background z-20 hidden md:flex animate-pulse">
+                                        <div className="text-center">
+                                            <CheckCircle className="text-primary mx-auto mb-1" size={32} />
+                                            <p className="text-[10px] font-black uppercase text-primary tracking-tighter">Ayush Certified</p>
+                                        </div>
+                                    </div>
+                                </ScrollReveal>
+                            </div>
+                        </div>
                     </div>
                 </section>
 
@@ -243,46 +381,57 @@ const HomePage = () => {
                 </section>
 
                 {/* Feature Split Section: Tradition Meets Science */}
-                <section className="py-24 bg-white overflow-hidden">
+                <section className="py-24 md:py-36 bg-white overflow-hidden relative">
+                    <div className="absolute top-1/2 left-0 w-64 h-64 bg-secondary/10 rounded-full blur-[100px] -z-10 translate-y-[-50%]"></div>
+                    
                     <div className="container mx-auto px-4">
-                        <div className="flex flex-col md:flex-row items-center gap-12 lg:gap-20">
-                            <div className="md:w-1/2 relative">
+                        <div className="flex flex-col md:flex-row items-center gap-16 lg:gap-24">
+                            <div className="md:w-1/2 relative lg:pr-12">
                                 <ScrollReveal direction="left">
-                                    <div className="absolute top-0 right-0 w-3/4 h-3/4 bg-primary/10 rounded-full -z-10 translate-x-10 -translate-y-10"></div>
-                                    {content?.tradition?.image ? (
-                                        <AnimatedImage
-                                            src={content.tradition.image}
-                                            alt="Tradition meets Science"
-                                            className="rounded-2xl shadow-2xl w-full"
-                                            containerClassName="rounded-2xl shadow-2xl w-full"
-                                        />
-                                    ) : (
-                                        <AnimatedImage
-                                            src="https://images.unsplash.com/photo-1617462432650-6a9b407ec1ea?q=80&w=1000&auto=format&fit=crop"
-                                            alt="Tradition meets Science"
-                                            className="rounded-2xl shadow-2xl w-full"
-                                            containerClassName="rounded-2xl shadow-2xl w-full"
-                                        />
-                                    )}
-                                    <div className="absolute -bottom-6 -left-6 bg-white p-6 rounded-xl shadow-xl max-w-xs border border-gray-100 z-10">
-                                        <p className="font-sans text-primary text-lg italic">&quot;The perfect balance of ancient wisdom and modern standards.&quot;</p>
+                                    <div className="relative">
+                                        <div className="absolute -top-10 -right-10 w-40 h-40 bg-secondary/20 rounded-full blur-3xl -z-10"></div>
+                                        <div className="rounded-[2.5rem] overflow-hidden shadow-[0_50px_100px_-20px_rgba(0,0,0,0.2)] border-8 border-white">
+                                            {content?.tradition?.image ? (
+                                                <AnimatedImage
+                                                    src={content.tradition.image}
+                                                    alt="Tradition meets Science"
+                                                    className="w-full h-[600px] object-cover"
+                                                />
+                                            ) : (
+                                                <AnimatedImage
+                                                    src="https://images.unsplash.com/photo-1617462432650-6a9b407ec1ea?q=80&w=1000&auto=format&fit=crop"
+                                                    alt="Tradition meets Science"
+                                                    className="w-full h-[600px] object-cover"
+                                                />
+                                            )}
+                                        </div>
+                                        <div className="absolute -bottom-10 -right-6 md:-right-12 glass-morphism p-8 md:p-10 rounded-[2rem] luxury-shadow max-w-xs border border-white/50 z-20">
+                                            <Sparkles className="text-secondary mb-4" size={32} />
+                                            <p className="font-serif text-primary text-xl italic leading-relaxed">&quot;The perfect balance of ancient wisdom and modern standards.&quot;</p>
+                                        </div>
                                     </div>
                                 </ScrollReveal>
                             </div>
-                            <div className="md:w-1/2">
+                            <div className="md:w-1/2 mt-20 md:mt-0">
                                 <ScrollReveal direction="right">
-                                    <span className="text-secondary font-bold uppercase tracking-widest text-sm mb-2 block">Our Philosophy</span>
-                                    <h2 className="text-4xl md:text-5xl font-sans font-bold text-primary mb-6">
-                                        {content?.tradition?.title || <>Where Tradition<br />Meets Science</>}
+                                    <span className="text-secondary font-bold uppercase tracking-[0.4em] text-xs mb-6 block">Our Eternal Philosophy</span>
+                                    <h2 className="text-4xl md:text-6xl font-sans font-black text-primary mb-8 leading-tight">
+                                        {content?.tradition?.title || <>Where Tradition<br /><span className="text-secondary italic font-serif font-light">meets Modern</span> Science</>}
                                     </h2>
-                                    <p className="text-gray-600 mb-6 leading-relaxed whitespace-pre-line">
-                                        {content?.tradition?.subtitle ||
-                                            `Founded in 2020, HRIDVED has been at the forefront of the Ayurvedic revolution for years. We combine the deep spiritual knowledge of ancient texts with cutting-edge manufacturing technology.
-                                        
-                                        Today, we produce over 500+ classical and proprietary medicines in our GMP-certified facilities, ensuring that every product you receive is safe, effective, and authentic.`}
-                                    </p>
-                                    <Link to="/about" className="inline-flex items-center text-primary font-bold border-b-2 border-secondary pb-1 hover:text-secondary transition-colors">
-                                        Learn More About Us <ArrowRight size={18} className="ml-2" />
+                                    <div className="space-y-6 text-gray-600 mb-10 leading-relaxed text-lg">
+                                        {content?.tradition?.subtitle?.split('\n\n').map((p, i) => (
+                                            <p key={i} className="opacity-80 font-light">{p}</p>
+                                        )) || (
+                                            <>
+                                                <p className="opacity-80 font-light">Founded in 2020, HRIDVED has been at the forefront of the Ayurvedic revolution. We bridge the gap between ancient sacred texts and the precision of modern clinical research.</p>
+                                                <p className="opacity-80 font-light">Today, we produce over 500+ classical and proprietary medicines in our state-of-the-art labs, ensuring every drop is a testament to authenticity.</p>
+                                            </>
+                                        )}
+                                    </div>
+                                    <Link to="/about">
+                                        <AnimatedButton variant="outline" className="group border-2 border-primary text-primary px-10 py-4 rounded-full font-bold hover:bg-primary hover:text-white transition-all duration-500 flex items-center gap-3 border-none ring-1 ring-primary/20">
+                                            The Hridved Story <ArrowRight size={18} className="group-hover:translate-x-2 transition-transform" />
+                                        </AnimatedButton>
                                     </Link>
                                 </ScrollReveal>
                             </div>
@@ -290,29 +439,39 @@ const HomePage = () => {
                     </div>
                 </section>
 
-                {/* Testimonials Section */}
+                {/* Testimonials Section - Luxury Magazine Style */}
                 {content?.testimonials?.items?.length > 0 && (
-                    <section className="py-20 bg-primary/5">
-                        <div className="container mx-auto px-4">
+                    <section className="py-24 md:py-36 bg-primary text-white overflow-hidden relative">
+                        <div className="absolute top-0 right-0 w-[50%] h-full bg-white opacity-[0.02] pointer-events-none"></div>
+                        
+                        <div className="container mx-auto px-4 relative z-10">
                             <ScrollReveal>
-                                <div className="text-center mb-16">
-                                    <h2 className="text-3xl md:text-4xl font-sans font-bold text-primary mb-3">What Our Customers Say</h2>
-                                    <p className="text-gray-500">Real stories from our community.</p>
+                                <div className="text-center mb-16 md:mb-24">
+                                    <span className="text-secondary font-bold uppercase tracking-[0.4em] text-xs mb-4 block">Shared Journeys</span>
+                                    <h2 className="text-4xl md:text-6xl font-serif font-light italic mb-2">Voices of Wellness</h2>
+                                    <div className="w-16 h-0.5 bg-secondary/50 mx-auto mt-6"></div>
                                 </div>
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                                
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-16">
                                     {content.testimonials.items.map((item, idx) => (
-                                        <div key={idx} className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 relative hover:shadow-lg transition-shadow duration-300">
-                                            <div className="text-secondary text-5xl font-sans absolute top-4 left-6 opacity-30">&quot;</div>
-                                            <p className="text-gray-600 mb-6 italic relative z-10 pt-4">
-                                                {item.description}
-                                            </p>
-                                            <div className="flex items-center gap-4">
-                                                <div className="w-10 h-10 bg-primary/20 rounded-full flex items-center justify-center text-primary font-bold">
+                                        <div key={idx} className="flex flex-col group">
+                                            <div className="mb-8">
+                                                <div className="flex gap-1 mb-6">
+                                                    {[...Array(5)].map((_, i) => (
+                                                        <Star key={i} size={14} className="text-secondary fill-secondary" />
+                                                    ))}
+                                                </div>
+                                                <p className="text-xl md:text-2xl font-serif italic font-light leading-relaxed mb-8 opacity-90 group-hover:opacity-100 transition-opacity">
+                                                    &ldquo;{item.description}&rdquo;
+                                                </p>
+                                            </div>
+                                            <div className="mt-auto flex items-center gap-5 pt-8 border-t border-white/10">
+                                                <div className="w-14 h-14 bg-white/10 rounded-full flex items-center justify-center text-secondary font-black text-xl border border-white/10 group-hover:bg-secondary group-hover:text-primary transition-all duration-500">
                                                     {item.title?.charAt(0) || 'U'}
                                                 </div>
                                                 <div>
-                                                    <h4 className="font-bold text-primary">{item.title}</h4>
-                                                    <p className="text-xs text-gray-500">{item.link}</p>
+                                                    <h4 className="font-bold text-lg tracking-tight">{item.title}</h4>
+                                                    <p className="text-xs text-secondary font-black uppercase tracking-[0.2em]">{item.link || 'Verified Purist'}</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -323,33 +482,38 @@ const HomePage = () => {
                     </section>
                 )}
 
-                {/* Why Choose Us */}
-                <section className="py-24 bg-background px-4 md:px-0">
+                {/* Why Choose Us - Enhanced Cards */}
+                <section className="py-24 md:py-32 bg-background relative overflow-hidden px-4 md:px-0">
+                    <div className="absolute top-[20%] left-[-10%] opacity-5 float-slow pointer-events-none">
+                        <History size={400} strokeWidth={0.5} />
+                    </div>
+
                     <div className="container mx-auto">
                         <ScrollReveal>
-                            <div className="text-center mb-20">
-                                <span className="text-secondary font-bold uppercase tracking-[0.2em] text-xs mb-4 block">
-                                    {content?.promise?.subtitle || "The Hridved Way"}
+                            <div className="text-center mb-20 md:mb-24">
+                                <span className="text-secondary font-black uppercase tracking-[0.4em] text-[10px] md:text-xs mb-4 block">
+                                    {content?.promise?.subtitle || "The Hridved Promise"}
                                 </span>
-                                <h2 className="text-4xl md:text-5xl font-sans font-bold text-primary mb-6">
-                                    {content?.promise?.title || <>Why Hundreds of Thousands<br className="hidden md:block" /> Trust HRIDVED</>}
+                                <h2 className="text-3xl md:text-6xl font-sans font-black text-primary mb-8 tracking-tighter">
+                                    {content?.promise?.title || <>The Gold Standard <br className="hidden md:block" /> of Modern Ayurveda</>}
                                 </h2>
-                                <div className="w-24 h-1 bg-secondary mx-auto rounded-full"></div>
+                                <div className="w-24 h-1.5 bg-secondary mx-auto rounded-full"></div>
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-16">
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
                                 {(content?.promise?.items?.length > 0 ? content.promise.items : [
-                                    { title: '100% Organically Sourced', description: 'We utilize only the purest ingredients harvested directly from the Himalayan foothills.', icon: 'Leaf' },
-                                    { title: 'GMP & Ayush Certified', description: 'Our manufacturing excellence meets global pharma-grade standards, ensuring absolute potency.', icon: 'ShieldCheck' },
-                                    { title: 'Eco-Friendly Shipping', description: 'Dedicated to the Earth, we use biodegradable glass and zero-plastic packaging.', icon: 'Truck' }
+                                    { title: '100% Organically Sourced', description: 'Hand-harvested at peak potency from protected Himalayan altitudes.', icon: 'Leaf' },
+                                    { title: 'GMP & Ayush Certified', description: 'Pharma-grade precision in every drop, surpassing global safety standards.', icon: 'ShieldCheck' },
+                                    { title: 'Conscious Packaging', description: 'Committed to the Earth with zero-plastic, biodegradable glass containers.', icon: 'Truck' }
                                 ]).map((item, idx) => (
-                                    <div key={idx} className="bg-white p-6 md:p-10 rounded-3xl md:rounded-[2rem] shadow-sm border border-gray-50 hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 text-center group relative overflow-hidden">
-                                        <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-bl-[4rem] -mr-8 -mt-8 transition-transform duration-500 group-hover:scale-150"></div>
-                                        <div className="w-16 h-16 md:w-20 md:h-20 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-6 md:mb-8 text-primary group-hover:bg-primary group-hover:text-white transition-all duration-500 rotate-3 group-hover:rotate-0">
+                                    <div key={idx} className="bg-white p-10 md:p-14 rounded-[2.5rem] shadow-sm border border-gray-100 hover:luxury-shadow hover:-translate-y-3 transition-all duration-700 group relative overflow-hidden flex flex-col h-full">
+                                        <div className="w-20 h-20 bg-primary/5 rounded-3xl flex items-center justify-center mb-10 text-primary group-hover:bg-primary group-hover:text-white transition-all duration-500 transform group-hover:rotate-6">
                                             {getIcon(item.icon)}
                                         </div>
-                                        <h3 className="text-xl md:text-2xl font-bold text-primary mb-3 md:mb-4">{item.title}</h3>
-                                        <p className="text-xs md:text-base text-gray-500 leading-relaxed">{item.description}</p>
+                                        <h3 className="text-2xl font-black text-primary mb-4 tracking-tight leading-tight">{item.title}</h3>
+                                        <p className="text-gray-500 leading-relaxed font-light opacity-80 mb-0">{item.description}</p>
+                                        
+                                        <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-secondary/5 rounded-full group-hover:scale-150 transition-transform duration-700"></div>
                                     </div>
                                 ))}
                             </div>
