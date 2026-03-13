@@ -88,20 +88,20 @@ export const generateStructuredData = (type, data) => {
             structuredData = {
                 '@context': 'https://schema.org',
                 '@type': 'Organization',
-                name: 'Sitaram Ayurveda',
-                url: 'https://sitaramayurveda.com',
-                logo: 'https://sitaramayurveda.com/logo.png',
+                name: 'Hridved',
+                url: 'https://hridved.in',
+                logo: 'https://hridved.in/logo.png',
                 description: 'Authentic Ayurvedic products and wellness solutions',
                 sameAs: [
-                    'https://facebook.com/sitaramayurveda',
-                    'https://instagram.com/sitaramayurveda',
-                    'https://twitter.com/sitaramayurveda',
+                    'https://facebook.com/hridved',
+                    'https://instagram.com/hridved',
+                    'https://twitter.com/hridved',
                 ],
                 contactPoint: {
                     '@type': 'ContactPoint',
                     contactType: 'Customer Support',
                     telephone: '+91-XXXXXXXXXX',
-                    email: 'support@sitaramayurveda.com',
+                    email: 'support@hridved.in',
                 },
             };
             break;
