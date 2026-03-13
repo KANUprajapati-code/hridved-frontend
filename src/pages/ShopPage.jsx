@@ -207,7 +207,7 @@ const ShopPage = () => {
             <div className="bg-background min-h-screen font-sans">
                 {/* Minimal Header with Breadcrumbs */}
                 <div className="bg-white border-b border-gray-100 py-4">
-                    <div className="container mx-auto px-4">
+                    <div className="container mx-auto px-5">
                         <div className="flex items-center text-xs text-gray-500 mb-2">
                             <Link to="/" className="hover:text-primary">Home</Link>
                             <span className="mx-2">/</span>
@@ -220,7 +220,7 @@ const ShopPage = () => {
                     </div>
                 </div>
 
-                <div className="container mx-auto px-4 py-8">
+                <div className="container mx-auto px-5 py-8">
                     <div className="flex flex-col md:flex-row gap-8">
                         {/* Mobile Filter Toggle */}
                         <div className="md:hidden mb-4">

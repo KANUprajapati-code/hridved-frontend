@@ -68,7 +68,7 @@ const AboutUsPage = () => {
                         />
                         <div className="absolute inset-0 bg-primary/40"></div>
                     </div>
-                    <div className="container mx-auto px-4 relative z-10 text-center">
+                    <div className="container mx-auto px-5 relative z-10 text-center">
                         <ScrollReveal>
                             <h1 className="text-5xl md:text-7xl font-serif font-bold text-white mb-6 uppercase tracking-wider">{aboutData.heroTitle}</h1>
                             <p className="text-xl text-gray-100 max-w-2xl mx-auto font-light leading-relaxed">
@@ -80,7 +80,7 @@ const AboutUsPage = () => {
 
                 {/* Our Story Section */}
                 <section className="py-24 bg-white">
-                    <div className="container mx-auto px-4">
+                    <div className="container mx-auto px-5">
                         <div className="flex flex-col md:flex-row items-center gap-16">
                             <div className="md:w-1/2">
                                 <ScrollReveal direction="left">
@@ -124,7 +124,7 @@ const AboutUsPage = () => {
 
                 {/* Mission & Vision */}
                 <section className="py-20 bg-background/50">
-                    <div className="container mx-auto px-4">
+                    <div className="container mx-auto px-5">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
                             <ScrollReveal className="bg-white p-12 rounded-3xl shadow-sm border border-gray-100 h-full">
                                 <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center text-primary mb-8">
@@ -150,7 +150,7 @@ const AboutUsPage = () => {
 
                 {/* Our Values Section */}
                 <section className="py-24 bg-white overflow-hidden">
-                    <div className="container mx-auto px-4">
+                    <div className="container mx-auto px-5">
                         <ScrollReveal>
                             <div className="text-center mb-20">
                                 <span className="text-secondary font-bold uppercase tracking-widest text-sm mb-2 block">What We Stand For</span>
@@ -202,7 +202,7 @@ const AboutUsPage = () => {
 
                 {/* Team Section */}
                 <section className="py-24 bg-background border-t border-gray-100">
-                    <div className="container mx-auto px-4">
+                    <div className="container mx-auto px-5">
                         <div className="flex flex-col md:flex-row items-center gap-20">
                             <div className="md:w-1/2 order-2 md:order-1">
                                 <ScrollReveal direction="left">

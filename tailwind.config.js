@@ -1,4 +1,4 @@
-﻿/** @type {import('tailwindcss').Config} */
+/** @type {import('tailwindcss').Config} */
 export default {
     content: [
         "./index.html",
@@ -8,7 +8,7 @@ export default {
         container: {
             center: true,
             padding: {
-                DEFAULT: '1rem',
+                DEFAULT: '1.25rem',
                 sm: '1.5rem',
                 md: '2rem',
                 lg: '3rem',

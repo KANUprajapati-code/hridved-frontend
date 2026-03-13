@@ -160,7 +160,7 @@ const HomePage = () => {
                         <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/20 to-transparent pointer-events-none"></div>
                     </div>
 
-                    <div className="container mx-auto px-4 relative z-10 py-12 sm:py-0">
+                    <div className="container mx-auto px-5 relative z-10 py-12 sm:py-0">
                         <ScrollReveal>
                             <div className="max-w-2xl text-white">
                                 <motion.span 
@@ -219,7 +219,7 @@ const HomePage = () => {
 
                 {/* Brand Trust Bar - Refined Marquee */}
                 <div className="bg-white border-b border-gray-50 overflow-hidden py-6 md:py-8 shadow-sm">
-                    <div className="container mx-auto px-4">
+                    <div className="container mx-auto px-5">
                         <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-24 opacity-60">
                             {(content?.trustBar?.items?.length > 0 ? content.trustBar.items : [
                                 { title: '100% Organically Sourced', icon: 'Leaf' },
@@ -245,7 +245,7 @@ const HomePage = () => {
                         <Leaf size={300} strokeWidth={0.5} />
                     </div>
                     
-                    <div className="container mx-auto px-4">
+                    <div className="container mx-auto px-5">
                         <ScrollReveal>
                             <div className="text-center mb-12 md:mb-20">
                                 <span className="text-secondary font-bold uppercase tracking-[0.3em] text-[10px] md:text-xs mb-3 block">Discover Wellness</span>
@@ -300,7 +300,7 @@ const HomePage = () => {
                         <Droplets size={350} strokeWidth={0.5} />
                     </div>
 
-                    <div className="container mx-auto px-4">
+                    <div className="container mx-auto px-5">
                         <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
                             <div className="lg:w-1/2">
                                 <ScrollReveal direction="left">
@@ -383,7 +383,7 @@ const HomePage = () => {
 
                 {/* Best Sellers Section */}
                 <section className="py-12 md:py-20 bg-background/50">
-                    <div className="container mx-auto px-4">
+                    <div className="container mx-auto px-5">
                         <ScrollReveal>
                             <div className="flex flex-col sm:flex-row justify-between items-center sm:items-end mb-8 md:mb-10 gap-4">
                                 <div className="text-center sm:text-left">
@@ -404,7 +404,7 @@ const HomePage = () => {
                 <section className="py-24 md:py-36 bg-white overflow-hidden relative">
                     <div className="absolute top-1/2 left-0 w-64 h-64 bg-secondary/10 rounded-full blur-[100px] -z-10 translate-y-[-50%]"></div>
                     
-                    <div className="container mx-auto px-4">
+                    <div className="container mx-auto px-5">
                         <div className="flex flex-col md:flex-row items-center gap-16 lg:gap-24">
                             <div className="md:w-1/2 relative lg:pr-12">
                                 <ScrollReveal direction="left">
@@ -464,7 +464,7 @@ const HomePage = () => {
                     <section className="py-24 md:py-36 bg-primary text-white overflow-hidden relative">
                         <div className="absolute top-0 right-0 w-[50%] h-full bg-white opacity-[0.02] pointer-events-none"></div>
                         
-                        <div className="container mx-auto px-4 relative z-10">
+                        <div className="container mx-auto px-5 relative z-10">
                             <ScrollReveal>
                                 <div className="text-center mb-16 md:mb-24">
                                     <span className="text-secondary font-bold uppercase tracking-[0.4em] text-xs mb-4 block">Shared Journeys</span>
@@ -503,7 +503,7 @@ const HomePage = () => {
                 )}
 
                 {/* Why Choose Us - Enhanced Cards */}
-                <section className="py-24 md:py-32 bg-background relative overflow-hidden px-4 md:px-0">
+                <section className="py-24 md:py-32 bg-background relative overflow-hidden px-5 md:px-0">
                     <div className="absolute top-[20%] left-[-10%] opacity-5 float-slow pointer-events-none">
                         <History size={400} strokeWidth={0.5} />
                     </div>
@@ -543,7 +543,7 @@ const HomePage = () => {
 
                 {/* Ayurvedic Wisdom (Blog) Section */}
                 <section className="py-12 md:py-24 bg-white">
-                    <div className="container mx-auto px-4 md:px-0">
+                    <div className="container mx-auto px-5 md:px-0">
                         <ScrollReveal>
                             <div className="flex flex-col md:flex-row justify-between items-center md:items-end mb-10 md:mb-16 gap-4">
                                 <div className="text-center md:text-left">

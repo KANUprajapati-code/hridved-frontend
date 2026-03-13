@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 const Footer = () => {
     return (
         <footer className="bg-primary text-white pt-12 pb-6">
-            <div className="container mx-auto px-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="container mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                 {/* About */}
                 <div>
                     <img src="/logo-asset4.png" alt="HRIDVED AYURVEDA" className="h-12 w-auto mb-4" />
@@ -65,7 +65,7 @@ const Footer = () => {
                 </div>
             </div>
             <div className="border-t border-gray-700 mt-8 pt-4 text-sm text-gray-400">
-                <div className="container mx-auto px-4 flex justify-center items-center">
+                <div className="container mx-auto flex justify-center items-center">
                     <p>&copy; {new Date().getFullYear()} HRIDVED AYURVEDA. All rights reserved.</p>
                 </div>
             </div>
