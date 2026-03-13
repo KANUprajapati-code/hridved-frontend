@@ -236,7 +236,7 @@ const AboutUsPage = () => {
                                         </li>
                                         <li className="flex items-center gap-3 text-gray-700">
                                             <Heart className="text-secondary" size={20} />
-                                            <span className="font-medium text-lg">Over 100+ Years of Accumulated Wisdom</span>
+                                            <span className="font-medium text-lg">Generations of Accumulated Wisdom</span>
                                         </li>
                                     </ul>
                                     <Link to="/consultation">
