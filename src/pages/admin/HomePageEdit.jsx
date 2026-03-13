@@ -10,7 +10,7 @@ const HomePageEdit = () => {
     const [tradition, setTradition] = useState({ title: '', subtitle: '', image: '' });
     const [testimonials, setTestimonials] = useState({ items: [] });
     const [promise, setPromise] = useState({ title: '', subtitle: '', items: [] });
-    const [purity, setPurity] = useState({ title: '', subtitle: '', items: [] });
+    const [purity, setPurity] = useState({ title: '', subtitle: '', image1: '', image2: '', items: [] });
     const [trustBar, setTrustBar] = useState({ items: [] });
     const [uploading, setUploading] = useState(false);
 
@@ -70,6 +70,48 @@ const HomePageEdit = () => {
             setUploading(false);
         } catch (error) {
             console.error('Tradition image upload failed:', error);
+            setUploading(false);
+            alert('Upload failed. Try a smaller image.');
+        }
+    };
+
+    const uploadPurityImage1Handler = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        setUploading(true);
+        try {
+            const compressedFile = await compressImage(file, { quality: 0.7, maxWidth: 800 });
+            const formData = new FormData();
+            formData.append('image', compressedFile);
+
+            const { data } = await api.post('/upload', formData);
+            const normalizedPath = data.replace(/\\/g, '/');
+            setPurity({ ...purity, image1: normalizedPath });
+            setUploading(false);
+        } catch (error) {
+            console.error('Purity image 1 upload failed:', error);
+            setUploading(false);
+            alert('Upload failed. Try a smaller image.');
+        }
+    };
+
+    const uploadPurityImage2Handler = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        setUploading(true);
+        try {
+            const compressedFile = await compressImage(file, { quality: 0.7, maxWidth: 800 });
+            const formData = new FormData();
+            formData.append('image', compressedFile);
+
+            const { data } = await api.post('/upload', formData);
+            const normalizedPath = data.replace(/\\/g, '/');
+            setPurity({ ...purity, image2: normalizedPath });
+            setUploading(false);
+        } catch (error) {
+            console.error('Purity image 2 upload failed:', error);
             setUploading(false);
             alert('Upload failed. Try a smaller image.');
         }
@@ -420,16 +462,50 @@ const HomePageEdit = () => {
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-bold mb-1">Italic Headline Parts</label>
-                                <input
-                                    type="text"
-                                    value={purity.subtitle}
-                                    onChange={(e) => setPurity({ ...purity, subtitle: e.target.value })}
-                                    className="w-full border p-2 rounded"
-                                    placeholder="e.g., Ancient Wisdom"
-                                />
+                                    <p className="text-xs text-gray-400 mt-1 italic">Headline: "Handcrafted with [Italic Part]"</p>
+                                </div>
                             </div>
-                        </div>
+                            
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 bg-gray-50 rounded-2xl mb-6">
+                                <div>
+                                    <label className="block text-sm font-bold mb-1">Purity Image 1 (Left)</label>
+                                    <input
+                                        type="text"
+                                        value={purity.image1 || ''}
+                                        onChange={(e) => setPurity({ ...purity, image1: e.target.value })}
+                                        className="w-full border p-2 rounded mb-2 text-sm"
+                                        placeholder="Image URL or Upload"
+                                    />
+                                    <input
+                                        type="file"
+                                        id="purity-image-1"
+                                        className="hidden"
+                                        onChange={uploadPurityImage1Handler}
+                                    />
+                                    <label htmlFor="purity-image-1" className="cursor-pointer bg-white py-1.5 px-3 rounded border hover:bg-gray-100 inline-block text-xs font-bold shadow-sm">
+                                        {uploading ? 'Uploading...' : 'Upload Image 1'}
+                                    </label>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-bold mb-1">Purity Image 2 (Right)</label>
+                                    <input
+                                        type="text"
+                                        value={purity.image2 || ''}
+                                        onChange={(e) => setPurity({ ...purity, image2: e.target.value })}
+                                        className="w-full border p-2 rounded mb-2 text-sm"
+                                        placeholder="Image URL or Upload"
+                                    />
+                                    <input
+                                        type="file"
+                                        id="purity-image-2"
+                                        className="hidden"
+                                        onChange={uploadPurityImage2Handler}
+                                    />
+                                    <label htmlFor="purity-image-2" className="cursor-pointer bg-white py-1.5 px-3 rounded border hover:bg-gray-100 inline-block text-xs font-bold shadow-sm">
+                                        {uploading ? 'Uploading...' : 'Upload Image 2'}
+                                    </label>
+                                </div>
+                            </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                             {purity.items?.map((item, index) => (

@@ -418,7 +418,7 @@ const HomePage = () => {
                                     <div className="relative z-10 grid grid-cols-2 gap-4">
                                         <div className="space-y-4 pt-12">
                                             <AnimatedImage 
-                                                src="https://images.unsplash.com/photo-1612170153139-6f881ff067e0?q=80&w=600&auto=format" 
+                                                src={content?.purity?.image1 || "https://images.unsplash.com/photo-1612170153139-6f881ff067e0?q=80&w=600&auto=format"} 
                                                 className="rounded-[2rem] shadow-2xl h-80 object-cover w-full" 
                                             />
                                             <div className="bg-secondary p-8 rounded-[2rem] text-primary shadow-xl">
@@ -432,7 +432,7 @@ const HomePage = () => {
                                                 <p className="text-xs uppercase font-bold tracking-widest opacity-80">Classical Cures</p>
                                             </div>
                                             <AnimatedImage 
-                                                src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=600&auto=format" 
+                                                src={content?.purity?.image2 || "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=600&auto=format"} 
                                                 className="rounded-[2rem] shadow-2xl h-96 object-cover w-full" 
                                             />
                                         </div>

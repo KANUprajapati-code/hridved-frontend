@@ -286,23 +286,6 @@ const BlogPage = () => {
                 )}
             </div>
 
-            {/* Newsletter Section */}
-            <div className="bg-primary/5 border-t border-primary/10 mt-16 py-16">
-                <div className="container mx-auto px-4 text-center max-w-2xl">
-                    <h3 className="text-2xl font-serif font-bold text-primary mb-4">Stay Connected with Ayurveda</h3>
-                    <p className="text-gray-600 mb-8">Subscribe for health tips, exclusive offers, and the latest from our experts.</p>
-                    <div className="flex flex-col sm:flex-row gap-3">
-                        <input
-                            type="email"
-                            placeholder="Enter your email address"
-                            className="flex-1 px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:border-secondary"
-                        />
-                        <button className="bg-primary text-white px-8 py-3 rounded-lg font-bold hover:bg-opacity-90 transition-colors whitespace-nowrap">
-                            Subscribe
-                        </button>
-                    </div>
-                </div>
-            </div>
         </div>
     );
 };
