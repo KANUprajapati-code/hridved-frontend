@@ -13,7 +13,7 @@ const AnimatedImage = ({
 }) => {
   return (
     <motion.div
-      className={`overflow-hidden rounded-lg ${containerClassName}`}
+      className={`overflow-hidden rounded-lg bg-gray-100 ${containerClassName}`}
       whileHover={{ cursor: 'pointer' }}
       onClick={onClick}
     >

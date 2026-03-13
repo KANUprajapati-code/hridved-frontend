@@ -15,21 +15,23 @@ const HomePage = () => {
     const [bestsellers, setBestsellers] = useState([]);
     const [tips, setTips] = useState([]);
     const [categories, setCategories] = useState([]);
+    const [isLoadingCategories, setIsLoadingCategories] = useState(true);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const contentResponse = await api.get('/content');
-                setContent(contentResponse.data);
+                const [contentRes, productsRes, tipsRes, categoriesRes] = await Promise.all([
+                    api.get('/content'),
+                    api.get('/products?isBestseller=true'),
+                    api.get('/tips'),
+                    api.get('/categories')
+                ]);
 
-                const productsResponse = await api.get('/products?isBestseller=true');
-                setBestsellers(productsResponse.data.products || []);
-
-                const tipsResponse = await api.get('/tips');
-                setTips(tipsResponse.data || []);
-
-                const categoriesResponse = await api.get('/categories');
-                setCategories(categoriesResponse.data || []);
+                setContent(contentRes.data);
+                setBestsellers(productsRes.data.products || []);
+                setTips(tipsRes.data || []);
+                setCategories(categoriesRes.data || []);
+                setIsLoadingCategories(false);
             } catch (error) {
                 console.error("Failed to load data", error);
             }
@@ -114,16 +116,20 @@ const HomePage = () => {
         );
     };
 
-    const getIcon = (iconName) => {
+    const getIcon = (iconName, size = 32) => {
         switch (iconName) {
-            case 'Leaf': return <Leaf size={32} />;
-            case 'ShieldCheck': return <ShieldCheck size={32} />;
-            case 'Truck': return <Truck size={32} />;
-            case 'Users': return <Users size={32} />;
-            case 'Award': return <Award size={32} />;
-            case 'Heart': return <Heart size={32} />;
-            case 'History': return <History size={32} />;
-            default: return <Leaf size={32} />;
+            case 'Leaf': return <Leaf size={size} />;
+            case 'ShieldCheck': return <ShieldCheck size={size} />;
+            case 'Truck': return <Truck size={size} />;
+            case 'Users': return <Users size={size} />;
+            case 'Award': return <Award size={size} />;
+            case 'Heart': return <Heart size={size} />;
+            case 'History': return <History size={size} />;
+            case 'CheckCircle': return <CheckCircle size={size} />;
+            case 'Droplets': return <Droplets size={size} />;
+            case 'Sparkles': return <Sparkles size={size} />;
+            case 'Sun': return <Sun size={size} />;
+            default: return <Leaf size={size} />;
         }
     };
 
@@ -215,22 +221,19 @@ const HomePage = () => {
                 <div className="bg-white border-b border-gray-50 overflow-hidden py-6 md:py-8 shadow-sm">
                     <div className="container mx-auto px-4">
                         <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-24 opacity-60">
-                            <div className="flex items-center gap-4 group hover:opacity-100 transition-opacity">
-                                <Leaf className="text-primary group-hover:scale-110 transition-transform" size={24} />
-                                <span className="text-[10px] md:text-xs font-black uppercase tracking-[0.2em] text-gray-600">100% Organically Sourced</span>
-                            </div>
-                            <div className="flex items-center gap-4 group hover:opacity-100 transition-opacity">
-                                <Award className="text-primary group-hover:scale-110 transition-transform" size={24} />
-                                <span className="text-[10px] md:text-xs font-black uppercase tracking-[0.2em] text-gray-600">GMP & Ayush Certified</span>
-                            </div>
-                            <div className="flex items-center gap-4 group hover:opacity-100 transition-opacity">
-                                <ShieldCheck className="text-primary group-hover:scale-110 transition-transform" size={24} />
-                                <span className="text-[10px] md:text-xs font-black uppercase tracking-[0.2em] text-gray-600">Pure Himalayan Ingredients</span>
-                            </div>
-                            <div className="flex items-center gap-4 group hover:opacity-100 transition-opacity">
-                                <Truck className="text-primary group-hover:scale-110 transition-transform" size={24} />
-                                <span className="text-[10px] md:text-xs font-black uppercase tracking-[0.2em] text-gray-600">Eco-Friendly Shipping</span>
-                            </div>
+                            {(content?.trustBar?.items?.length > 0 ? content.trustBar.items : [
+                                { title: '100% Organically Sourced', icon: 'Leaf' },
+                                { title: 'GMP & Ayush Certified', icon: 'Award' },
+                                { title: 'Pure Himalayan Ingredients', icon: 'ShieldCheck' },
+                                { title: 'Eco-Friendly Shipping', icon: 'Truck' }
+                            ]).map((item, i) => (
+                                <div key={i} className="flex items-center gap-4 group hover:opacity-100 transition-opacity">
+                                    <div className="group-hover:scale-110 transition-transform text-primary">
+                                        {getIcon(item.icon, 24)}
+                                    </div>
+                                    <span className="text-[10px] md:text-xs font-black uppercase tracking-[0.2em] text-gray-600">{item.title}</span>
+                                </div>
+                            ))}
                         </div>
                     </div>
                 </div>
@@ -251,7 +254,15 @@ const HomePage = () => {
                             </div>
 
                             <div className="flex overflow-x-auto pb-10 gap-8 md:gap-14 no-scrollbar justify-start md:justify-center scroll-smooth items-center px-4">
-                                {(categories.length > 0 ? categories : [
+                                {isLoadingCategories ? (
+                                    // Circular Skeletons
+                                    [...Array(6)].map((_, i) => (
+                                        <div key={i} className="flex flex-col items-center flex-shrink-0 animate-pulse">
+                                            <div className="w-24 h-24 md:w-36 md:h-36 rounded-full bg-gray-100 border-2 md:border-8 border-gray-50 mb-4 md:mb-6 shadow-xl md:shadow-2xl"></div>
+                                            <div className="h-3 w-16 bg-gray-100 rounded"></div>
+                                        </div>
+                                    ))
+                                ) : (categories.length > 0 ? categories : [
                                     { name: 'Skin care', image: 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=800&auto=format&fit=crop&q=80' },
                                     { name: 'Hair care', image: 'https://images.unsplash.com/photo-1522337660859-02fbefca4702?w=800&auto=format&fit=crop&q=80' },
                                     { name: 'Personal care', image: 'https://images.unsplash.com/photo-1556229010-6c3f2c9ca418?w=800&auto=format&fit=crop&q=80' },
@@ -271,6 +282,7 @@ const HomePage = () => {
                                                     alt={cat.name}
                                                     className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-125 group-hover:rotate-3"
                                                     containerClassName="w-full h-full"
+                                                    loading="eager"
                                                 />
                                             </div>
                                             <h3 className="text-[11px] md:text-sm font-black text-gray-800 group-hover:text-primary transition-colors tracking-[0.15em] uppercase text-center w-full">{cat.name}</h3>
@@ -292,22 +304,30 @@ const HomePage = () => {
                         <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
                             <div className="lg:w-1/2">
                                 <ScrollReveal direction="left">
-                                    <span className="text-secondary font-bold uppercase tracking-[0.3em] text-xs mb-4 block">The Process of Perfection</span>
-                                    <h2 className="text-4xl md:text-6xl font-sans font-black text-primary mb-8 leading-tight">Handcrafted with <br/><span className="italic font-serif font-light text-secondary">Ancient Wisdom</span></h2>
+                                    <span className="text-secondary font-bold uppercase tracking-[0.3em] text-xs mb-4 block">
+                                        {content?.purity?.title || "The Process of Perfection"}
+                                    </span>
+                                    <h2 className="text-4xl md:text-6xl font-sans font-black text-primary mb-8 leading-tight">
+                                        {content?.purity?.subtitle ? (
+                                            <>Handcrafted with <br/><span className="italic font-serif font-light text-secondary">{content.purity.subtitle}</span></>
+                                        ) : (
+                                            <>Handcrafted with <br/><span className="italic font-serif font-light text-secondary">Ancient Wisdom</span></>
+                                        )}
+                                    </h2>
                                     
                                     <div className="space-y-10">
-                                        {[
-                                            { icon: <CheckCircle className="text-secondary" />, title: "Precision Batch Sourcing", text: "We hand-select ingredients from peak Himalayan altitudes for maximum nutrient density." },
-                                            { icon: <Droplets className="text-secondary" />, title: "Authentic Kashaya Preparation", text: "Herbs are slow-cooked for 72 hours across traditional copper vessels to preserve essence." },
-                                            { icon: <Sparkles className="text-secondary" />, title: "Modern Purity standards", text: "Every gram is tested against 140+ safety parameters in our GMP-certified labs." }
-                                        ].map((item, i) => (
+                                        {(content?.purity?.items?.length > 0 ? content.purity.items : [
+                                            { icon: 'CheckCircle', title: "Precision Batch Sourcing", description: "We hand-select ingredients from peak Himalayan altitudes for maximum nutrient density." },
+                                            { icon: 'Droplets', title: "Authentic Kashaya Preparation", description: "Herbs are slow-cooked for 72 hours across traditional copper vessels to preserve essence." },
+                                            { icon: 'Sparkles', title: "Modern Purity standards", description: "Every gram is tested against 140+ safety parameters in our GMP-certified labs." }
+                                        ]).map((item, i) => (
                                             <div key={i} className="flex gap-6 group">
-                                                <div className="flex-shrink-0 w-12 h-12 rounded-2xl bg-white shadow-sm flex items-center justify-center border border-gray-100 group-hover:bg-primary group-hover:text-white transition-all duration-300 transform group-hover:rotate-12">
-                                                    {item.icon}
+                                                <div className="flex-shrink-0 w-12 h-12 rounded-2xl bg-white shadow-sm flex items-center justify-center border border-gray-100 group-hover:bg-primary group-hover:text-white transition-all duration-300 transform group-hover:rotate-12 text-secondary group-hover:text-white">
+                                                    {getIcon(item.icon, 24)}
                                                 </div>
                                                 <div>
                                                     <h4 className="text-lg font-bold text-primary mb-2 tracking-tight">{item.title}</h4>
-                                                    <p className="text-gray-500 leading-relaxed text-sm md:text-base">{item.text}</p>
+                                                    <p className="text-gray-500 leading-relaxed text-sm md:text-base">{item.description}</p>
                                                 </div>
                                             </div>
                                         ))}

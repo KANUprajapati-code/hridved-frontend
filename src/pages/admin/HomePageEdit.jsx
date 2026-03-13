@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../../utils/api';
 import { compressImage } from '../../utils/imageCompression';
-import { Save, ArrowLeft, Plus, Trash2, Leaf, ShieldCheck, Truck, Award, Heart, History, Users } from 'lucide-react';
+import { Save, ArrowLeft, Plus, Trash2, Leaf, ShieldCheck, Truck, Award, Heart, History, Users, CheckCircle, Droplets, Sparkles, Sun } from 'lucide-react';
 
 const HomePageEdit = () => {
     const [loading, setLoading] = useState(true);
@@ -10,6 +10,8 @@ const HomePageEdit = () => {
     const [tradition, setTradition] = useState({ title: '', subtitle: '', image: '' });
     const [testimonials, setTestimonials] = useState({ items: [] });
     const [promise, setPromise] = useState({ title: '', subtitle: '', items: [] });
+    const [purity, setPurity] = useState({ title: '', subtitle: '', items: [] });
+    const [trustBar, setTrustBar] = useState({ items: [] });
     const [uploading, setUploading] = useState(false);
 
     useEffect(() => {
@@ -20,6 +22,8 @@ const HomePageEdit = () => {
                 if (data.tradition) setTradition(data.tradition);
                 if (data.testimonials) setTestimonials(data.testimonials);
                 if (data.promise) setPromise(data.promise);
+                if (data.purity) setPurity(data.purity);
+                if (data.trustBar) setTrustBar(data.trustBar);
                 setLoading(false);
             } catch (error) {
                 console.error("Error fetching content", error);
@@ -111,6 +115,26 @@ const HomePageEdit = () => {
         }
     };
 
+    const savePurity = async (e) => {
+        e.preventDefault();
+        try {
+            await api.put('/content/purity', purity);
+            alert('Purity section updated!');
+        } catch (error) {
+            alert('Error updating purity');
+        }
+    };
+
+    const saveTrustBar = async (e) => {
+        e.preventDefault();
+        try {
+            await api.put('/content/trustBar', trustBar);
+            alert('Trust bar updated!');
+        } catch (error) {
+            alert('Error updating trust bar');
+        }
+    };
+
     const handleTestimonialChange = (index, field, value) => {
         const newItems = [...(testimonials.items || [])];
         if (!newItems[index]) newItems[index] = {};
@@ -149,6 +173,44 @@ const HomePageEdit = () => {
         setPromise({ ...promise, items: newItems });
     };
 
+    const handlePurityChange = (index, field, value) => {
+        const newItems = [...(purity.items || [])];
+        if (!newItems[index]) newItems[index] = {};
+        newItems[index][field] = value;
+        setPurity({ ...purity, items: newItems });
+    };
+
+    const addPurityItem = () => {
+        setPurity({
+            ...purity,
+            items: [...(purity.items || []), { title: '', description: '', icon: 'CheckCircle' }]
+        });
+    };
+
+    const removePurityItem = (index) => {
+        const newItems = purity.items.filter((_, i) => i !== index);
+        setPurity({ ...purity, items: newItems });
+    };
+
+    const handleTrustBarChange = (index, field, value) => {
+        const newItems = [...(trustBar.items || [])];
+        if (!newItems[index]) newItems[index] = {};
+        newItems[index][field] = value;
+        setTrustBar({ ...trustBar, items: newItems });
+    };
+
+    const addTrustBarItem = () => {
+        setTrustBar({
+            ...trustBar,
+            items: [...(trustBar.items || []), { title: 'Label', icon: 'Leaf' }]
+        });
+    };
+
+    const removeTrustBarItem = (index) => {
+        const newItems = trustBar.items.filter((_, i) => i !== index);
+        setTrustBar({ ...trustBar, items: newItems });
+    };
+
     const iconOptions = [
         { name: 'Leaf', icon: <Leaf size={16} /> },
         { name: 'ShieldCheck', icon: <ShieldCheck size={16} /> },
@@ -157,6 +219,10 @@ const HomePageEdit = () => {
         { name: 'Award', icon: <Award size={16} /> },
         { name: 'Heart', icon: <Heart size={16} /> },
         { name: 'History', icon: <History size={16} /> },
+        { name: 'CheckCircle', icon: <CheckCircle size={16} /> },
+        { name: 'Droplets', icon: <Droplets size={16} /> },
+        { name: 'Sparkles', icon: <Sparkles size={16} /> },
+        { name: 'Sun', icon: <Sun size={16} /> },
     ];
 
     if (loading) return <div className="p-8">Loading content...</div>;
@@ -278,6 +344,138 @@ const HomePageEdit = () => {
                         </div>
                         <button type="submit" className="bg-primary text-white px-4 py-2 rounded flex items-center gap-2 hover:bg-opacity-90 transition-all">
                             <Save size={16} /> Save Tradition Section
+                        </button>
+                    </form>
+                </div>
+
+                {/* Trust Bar Editor */}
+                <div className="bg-white p-6 rounded-lg shadow border md:col-span-2">
+                    <h2 className="text-xl font-bold mb-4 border-b pb-2 text-primary flex justify-between items-center">
+                        Brand Trust Bar (Marquee Features)
+                        <button type="button" onClick={addTrustBarItem} className="bg-secondary text-primary text-xs px-3 py-1 rounded-md font-bold flex items-center gap-1">
+                            <Plus size={14} /> Add Feature
+                        </button>
+                    </h2>
+                    <form onSubmit={saveTrustBar} className="space-y-6">
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                            {trustBar.items?.map((item, index) => (
+                                <div key={index} className="bg-gray-50 p-4 rounded-xl border relative shadow-sm">
+                                    <button
+                                        type="button"
+                                        onClick={() => removeTrustBarItem(index)}
+                                        className="absolute top-2 right-2 text-red-500 hover:bg-red-50 p-1 rounded"
+                                    >
+                                        <Trash2 size={16} />
+                                    </button>
+                                    <div className="mb-3">
+                                        <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1">Icon</label>
+                                        <div className="flex flex-wrap gap-2">
+                                            {iconOptions.map(opt => (
+                                                <button
+                                                    key={opt.name}
+                                                    type="button"
+                                                    onClick={() => handleTrustBarChange(index, 'icon', opt.name)}
+                                                    className={`p-1.5 rounded border ${item.icon === opt.name ? 'border-primary bg-primary/10 text-primary' : 'bg-white border-gray-200 text-gray-400'}`}
+                                                >
+                                                    {opt.icon}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                    <div className="space-y-3">
+                                        <input
+                                            type="text"
+                                            value={item.title || ''}
+                                            onChange={(e) => handleTrustBarChange(index, 'title', e.target.value)}
+                                            className="w-full border p-2 rounded text-sm font-bold"
+                                            placeholder="Feature Label"
+                                        />
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                        <button type="submit" className="bg-primary text-white px-4 py-2 rounded flex items-center gap-2 hover:bg-opacity-90 transition-all">
+                            <Save size={16} /> Save Trust Bar
+                        </button>
+                    </form>
+                </div>
+
+                {/* Purity Process Editor */}
+                <div className="bg-white p-6 rounded-lg shadow border md:col-span-2">
+                    <h2 className="text-xl font-bold mb-4 border-b pb-2 text-primary flex justify-between items-center">
+                        The Essence of Purity (Handcrafted Process)
+                        <button type="button" onClick={addPurityItem} className="bg-secondary text-primary text-xs px-3 py-1 rounded-md font-bold flex items-center gap-1">
+                            <Plus size={14} /> Add Step
+                        </button>
+                    </h2>
+                    <form onSubmit={savePurity} className="space-y-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-sm font-bold mb-1">Section Title</label>
+                                <input
+                                    type="text"
+                                    value={purity.title}
+                                    onChange={(e) => setPurity({ ...purity, title: e.target.value })}
+                                    className="w-full border p-2 rounded"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-bold mb-1">Italic Headline Parts</label>
+                                <input
+                                    type="text"
+                                    value={purity.subtitle}
+                                    onChange={(e) => setPurity({ ...purity, subtitle: e.target.value })}
+                                    className="w-full border p-2 rounded"
+                                    placeholder="e.g., Ancient Wisdom"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            {purity.items?.map((item, index) => (
+                                <div key={index} className="bg-gray-50 p-4 rounded-xl border relative shadow-sm">
+                                    <button
+                                        type="button"
+                                        onClick={() => removePurityItem(index)}
+                                        className="absolute top-2 right-2 text-red-500 hover:bg-red-50 p-1 rounded"
+                                    >
+                                        <Trash2 size={16} />
+                                    </button>
+                                    <div className="mb-3">
+                                        <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1">Icon</label>
+                                        <div className="flex flex-wrap gap-2">
+                                            {iconOptions.map(opt => (
+                                                <button
+                                                    key={opt.name}
+                                                    type="button"
+                                                    onClick={() => handlePurityChange(index, 'icon', opt.name)}
+                                                    className={`p-1.5 rounded border ${item.icon === opt.name ? 'border-primary bg-primary/10 text-primary' : 'bg-white border-gray-200 text-gray-400'}`}
+                                                >
+                                                    {opt.icon}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                    <div className="space-y-3">
+                                        <input
+                                            type="text"
+                                            value={item.title || ''}
+                                            onChange={(e) => handlePurityChange(index, 'title', e.target.value)}
+                                            className="w-full border p-2 rounded text-sm font-bold"
+                                            placeholder="Step Title"
+                                        />
+                                        <textarea
+                                            value={item.description || ''}
+                                            onChange={(e) => handlePurityChange(index, 'description', e.target.value)}
+                                            className="w-full border p-2 rounded text-sm h-20"
+                                            placeholder="Step Description"
+                                        />
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                        <button type="submit" className="bg-primary text-white px-4 py-2 rounded flex items-center gap-2 hover:bg-opacity-90 transition-all">
+                            <Save size={16} /> Save Purity Section
                         </button>
                     </form>
                 </div>
