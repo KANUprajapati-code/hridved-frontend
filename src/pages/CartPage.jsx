@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Trash2, ShoppingBag, Truck, ShieldCheck, RefreshCw, Plus, Minus, ArrowRight } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
+import { useCheckout } from '../context/CheckoutContext';
 import { useState, useEffect, useContext } from 'react';
 import AnimatedPage from '../components/AnimatedPage';
 import ScrollReveal from '../components/ScrollReveal';
@@ -15,6 +16,7 @@ import PincodeShippingCheck from '../components/PincodeShippingCheck';
 const CartPage = () => {
     const { cart, removeFromCart, updateCartItemQuantity } = useCart();
     const { user } = useAuth();
+    const { applyCoupon } = useCheckout();
     const navigate = useNavigate();
     const [promoCode, setPromoCode] = useState('');
     const [appliedCoupon, setAppliedCoupon] = useState(null);
@@ -37,6 +39,13 @@ const CartPage = () => {
     const cartItems = cart?.cartItems || [];
 
     const checkoutHandler = () => {
+        // Save coupon/discount to context if any
+        if (appliedCoupon) {
+            applyCoupon(appliedCoupon, discount);
+        } else {
+            applyCoupon(null, 0);
+        }
+
         if (!user) {
             navigate('/login?redirect=checkout/address');
         } else {

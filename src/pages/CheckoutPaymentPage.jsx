@@ -76,10 +76,11 @@ export default function CheckoutPaymentPage() {
         const itemsPrice = cartItems.reduce((total, item) => total + (item.price * item.qty), 0);
         const taxPrice = cartItems.reduce((total, item) => total + (item.price * item.qty * (item.gst || 0) / 100), 0);
         const shippingPrice = checkoutData.shippingCost || 0;
+        const discountPrice = checkoutData.discount || 0;
         const codPrice = paymentMethod === 'COD' ? 50 : 0;
-        const totalPrice = itemsPrice + taxPrice + shippingPrice + codPrice;
+        const totalPrice = Math.max(0, itemsPrice + taxPrice + shippingPrice + codPrice - discountPrice);
 
-        return { itemsPrice, taxPrice, shippingPrice, codPrice, totalPrice };
+        return { itemsPrice, taxPrice, shippingPrice, codPrice, totalPrice, discountPrice };
     };
 
     const createOrderBackend = async () => {
@@ -87,7 +88,7 @@ export default function CheckoutPaymentPage() {
             setCreatingOrder(true);
             clearError();
 
-            const { itemsPrice, taxPrice, shippingPrice, codPrice, totalPrice } = calculateTotals();
+            const { itemsPrice, taxPrice, shippingPrice, codPrice, totalPrice, discountPrice } = calculateTotals();
             const cartItems = cart?.cartItems || [];
 
             const { data: res } = await api.post('/checkout/create-order', {
@@ -105,6 +106,7 @@ export default function CheckoutPaymentPage() {
                 taxPrice,
                 shippingPrice,
                 codPrice,
+                discountAmount: discountPrice,
                 totalPrice,
                 paymentMethod: paymentMethod,
                 shippingProvider: checkoutData.shippingProvider || 'Vamaship',
@@ -146,7 +148,7 @@ export default function CheckoutPaymentPage() {
             setCreatingOrder(true);
             clearError();
 
-            const { itemsPrice, taxPrice, shippingPrice, totalPrice } = calculateTotals();
+            const { itemsPrice, taxPrice, shippingPrice, totalPrice, discountPrice } = calculateTotals();
             const cartItems = cart?.cartItems || [];
 
             const { data: res } = await api.post('/checkout/create-order', {
@@ -163,6 +165,8 @@ export default function CheckoutPaymentPage() {
                 itemsPrice,
                 taxPrice,
                 shippingPrice,
+                discountAmount: discountPrice,
+                codPrice: 50,
                 totalPrice,
                 paymentMethod: 'COD',
                 shippingProvider: checkoutData.shippingProvider || 'Vamaship',
@@ -241,6 +245,12 @@ export default function CheckoutPaymentPage() {
                                                 <span>GST</span>
                                                 <span>₹{taxPrice.toLocaleString()}</span>
                                             </div>
+                                            {checkoutData.discount > 0 && (
+                                                <div className="flex justify-between text-green-600 font-bold">
+                                                    <span>Discount ({checkoutData.coupon?.code})</span>
+                                                    <span>-₹{checkoutData.discount.toLocaleString()}</span>
+                                                </div>
+                                            )}
                                             <div className="border-t border-gray-200 my-2 pt-2 flex justify-between font-bold text-gray-900 text-lg">
                                                 <span>Total Amount</span>
                                                 <span>₹{totalPrice.toLocaleString()}</span>

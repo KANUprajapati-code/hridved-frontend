@@ -19,6 +19,8 @@ export const CheckoutProvider = ({ children }) => {
         shippingCost: 0,
         orderId: null,
         orderDetails: null,
+        coupon: null,
+        discount: 0,
     });
 
     const [loading, setLoading] = useState(false);
@@ -57,6 +59,14 @@ export const CheckoutProvider = ({ children }) => {
         setError(message);
     }, []);
 
+    const applyCoupon = useCallback((coupon, discount) => {
+        setCheckoutData(prev => ({
+            ...prev,
+            coupon,
+            discount
+        }));
+    }, []);
+
     const clearError = useCallback(() => {
         setError(null);
     }, []);
@@ -70,6 +80,8 @@ export const CheckoutProvider = ({ children }) => {
             shippingCost: 0,
             orderId: null,
             orderDetails: null,
+            coupon: null,
+            discount: 0,
         });
         setError(null);
         setAvailableAddresses([]);
@@ -92,6 +104,7 @@ export const CheckoutProvider = ({ children }) => {
         availableAddresses,
         setAvailableAddresses,
         resetCheckout,
+        applyCoupon,
     };
 
     return (
