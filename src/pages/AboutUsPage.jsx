@@ -153,57 +153,48 @@ const AboutUsPage = () => {
                     </div>
                 </section>
 
-                {/* Our Values Section */}
-                <section className="py-24 bg-white overflow-hidden">
-                    <div className="container mx-auto">
+                {/* Our Values Section - Refactored for consistency and visibility */}
+                <section className="py-24 bg-white overflow-hidden relative">
+                    <div className="container mx-auto px-4">
                         <ScrollReveal>
-                            <div className="text-center mb-20">
-                                <span className="text-secondary font-bold uppercase tracking-widest text-sm mb-2 block">What We Stand For</span>
-                                <h2 className="text-4xl md:text-5xl font-serif font-bold text-primary">The HRIDVED Promise</h2>
+                            <div className="text-center mb-16 md:mb-24">
+                                <span className="text-secondary font-black uppercase tracking-[0.4em] text-xs mb-4 block">Modern Ayurveda</span>
+                                <h2 className="text-4xl md:text-6xl font-serif font-bold text-primary mb-8 tracking-tighter">The Hridved Promise</h2>
+                                <div className="w-24 h-1.5 bg-secondary mx-auto rounded-full"></div>
                             </div>
-                        </ScrollReveal>
 
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-                            {aboutData.values && aboutData.values.length > 0 ? (
-                                aboutData.values.map((val, idx) => (
-                                    <ScrollReveal key={idx} delay={idx * 100} className="text-center group h-full">
-                                        <div className="bg-white p-8 rounded-3xl shadow-sm hover:shadow-xl transition-all duration-500 border border-gray-50 h-full flex flex-col items-center">
-                                            <div className="w-20 h-20 bg-background rounded-2xl flex items-center justify-center mb-8 text-primary group-hover:bg-primary group-hover:text-white transition-all duration-500 shadow-inner">
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
+                                {aboutData?.values && aboutData.values.length > 0 ? (
+                                    aboutData.values.map((val, idx) => (
+                                        <div key={idx} className="bg-white p-10 rounded-[2.5rem] shadow-sm hover:luxury-shadow hover:-translate-y-3 transition-all duration-700 group relative overflow-hidden flex flex-col h-full border border-gray-100">
+                                            <div className="w-20 h-20 bg-primary/5 rounded-3xl flex items-center justify-center mb-10 text-primary group-hover:bg-primary group-hover:text-white transition-all duration-500 transform group-hover:rotate-6">
                                                 {getIcon(val.icon)}
                                             </div>
-                                            <h4 className="text-xl font-bold text-primary mb-4">{val.title || "Promise Item"}</h4>
-                                            <p className="text-gray-500 leading-relaxed">{val.description || "Description coming soon."}</p>
+                                            <h3 className="text-2xl font-black text-primary mb-4 tracking-tight leading-tight">{val.title || "Promise Item"}</h3>
+                                            <p className="text-gray-500 leading-relaxed font-light opacity-80">{val.description || "Our commitment to quality and purity."}</p>
+                                            
+                                            <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-secondary/5 rounded-full group-hover:scale-150 transition-transform duration-700"></div>
                                         </div>
-                                    </ScrollReveal>
-                                ))
-                            ) : (
-                                <>
-                                    <ScrollReveal delay={100} className="text-center group">
-                                        <div className="w-20 h-20 bg-background rounded-full flex items-center justify-center mx-auto mb-8 text-primary group-hover:bg-primary group-hover:text-white transition-all duration-500 shadow-inner">
-                                            <Leaf size={36} />
-                                        </div>
-                                        <h4 className="text-xl font-bold text-primary mb-4">100% Purity</h4>
-                                        <p className="text-gray-500">We source our ingredients from their natural habitats, ensuring peak potency and zero contamination.</p>
-                                    </ScrollReveal>
-
-                                    <ScrollReveal delay={200} className="text-center group">
-                                        <div className="w-20 h-20 bg-background rounded-full flex items-center justify-center mx-auto mb-8 text-primary group-hover:bg-primary group-hover:text-white transition-all duration-500 shadow-inner">
-                                            <ShieldCheck size={36} />
-                                        </div>
-                                        <h4 className="text-xl font-bold text-primary mb-4">Science Backed</h4>
-                                        <p className="text-gray-500">Every formulation undergoes rigorous clinical testing and quality controls in our GMP facilities.</p>
-                                    </ScrollReveal>
-
-                                    <ScrollReveal delay={300} className="text-center group">
-                                        <div className="w-20 h-20 bg-background rounded-full flex items-center justify-center mx-auto mb-8 text-primary group-hover:bg-primary group-hover:text-white transition-all duration-500 shadow-inner">
-                                            <Users size={36} />
-                                        </div>
-                                        <h4 className="text-xl font-bold text-primary mb-4">Ethical Sourcing</h4>
-                                        <p className="text-gray-500">We maintain direct partnerships with local farmers and support sustainable harvesting practices.</p>
-                                    </ScrollReveal>
-                                </>
-                            )}
-                        </div>
+                                    ))
+                                ) : (
+                                    <>
+                                        {[
+                                            { title: '100% Purity', description: 'We source our ingredients from their natural habitats, ensuring peak potency and zero contamination.', icon: 'Leaf' },
+                                            { title: 'Science Backed', description: 'Every formulation undergoes rigorous clinical testing and quality controls in our GMP facilities.', icon: 'ShieldCheck' },
+                                            { title: 'Ethical Sourcing', description: 'We maintain direct partnerships with local farmers and support sustainable harvesting practices.', icon: 'Users' }
+                                        ].map((val, idx) => (
+                                            <div key={idx} className="bg-white p-10 rounded-[2.5rem] shadow-sm border border-gray-100 hover:luxury-shadow hover:-translate-y-3 transition-all duration-700 group relative overflow-hidden flex flex-col h-full">
+                                                <div className="w-20 h-20 bg-primary/5 rounded-3xl flex items-center justify-center mb-10 text-primary group-hover:bg-primary group-hover:text-white transition-all duration-500">
+                                                    {getIcon(val.icon)}
+                                                </div>
+                                                <h3 className="text-2xl font-black text-primary mb-4 tracking-tight leading-tight">{val.title}</h3>
+                                                <p className="text-gray-500 leading-relaxed font-light opacity-80">{val.description}</p>
+                                            </div>
+                                        ))}
+                                    </>
+                                )}
+                            </div>
+                        </ScrollReveal>
                     </div>
                 </section>
 
