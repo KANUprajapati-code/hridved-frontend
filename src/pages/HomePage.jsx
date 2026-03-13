@@ -9,6 +9,7 @@ import ScrollReveal from '../components/ScrollReveal';
 import AnimatedImage from '../components/AnimatedImage';
 import AnimatedButton from '../components/AnimatedButton';
 import SEO from '../components/SEO';
+import Loader from '../components/Loader';
 
 const HomePage = () => {
     const [content, setContent] = useState(null);
@@ -16,6 +17,17 @@ const HomePage = () => {
     const [tips, setTips] = useState([]);
     const [categories, setCategories] = useState([]);
     const [isLoadingCategories, setIsLoadingCategories] = useState(true);
+    const [isPageLoading, setIsPageLoading] = useState(true);
+    const [isHeroLoaded, setIsHeroLoaded] = useState(false);
+
+    useEffect(() => {
+        // Hide loader only when both API and Hero Image are ready
+        if (!isLoadingCategories && isHeroLoaded) {
+            // Add a small delay for smooth transition
+            const timer = setTimeout(() => setIsPageLoading(false), 500);
+            return () => clearTimeout(timer);
+        }
+    }, [isLoadingCategories, isHeroLoaded]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -150,7 +162,9 @@ const HomePage = () => {
 
 
     return (
-        <AnimatedPage>
+        <>
+            <Loader isLoading={isPageLoading} />
+            <AnimatedPage>
             <SEO 
                 title="Ancient Ayurveda, Modern Wellness" 
                 description="Hridved brings you pure Ayurvedic formulations handcrafted with wisdom from ancient texts, delivered with modern purity standards. Explore our range of herbal medicines, oils, and wellness products."
@@ -167,6 +181,7 @@ const HomePage = () => {
                             zoomIntensity={1.05}
                             loading="eager"
                             fetchPriority="high"
+                            onLoad={() => setIsHeroLoaded(true)}
                         />
                         <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/20 to-transparent pointer-events-none"></div>
                     </div>
@@ -631,6 +646,7 @@ const HomePage = () => {
 
             </div>
         </AnimatedPage>
+        </>
     );
 };
 

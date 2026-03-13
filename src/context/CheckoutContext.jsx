@@ -11,17 +11,36 @@ export const useCheckout = () => {
 };
 
 export const CheckoutProvider = ({ children }) => {
-    const [checkoutData, setCheckoutData] = useState({
-        currentStep: 1, // 1: Address, 2: Shipping, 3: Payment, 4: Success
-        address: null,
-        shippingMethod: null,
-        shippingProvider: null,
-        shippingCost: 0,
-        orderId: null,
-        orderDetails: null,
-        coupon: null,
-        discount: 0,
+    // Load initial state from localStorage if available
+    const [checkoutData, setCheckoutData] = useState(() => {
+        const savedData = localStorage.getItem('checkoutData');
+        const initial = {
+            currentStep: 1, // 1: Address, 2: Shipping, 3: Payment, 4: Success
+            address: null,
+            shippingMethod: null,
+            shippingProvider: null,
+            shippingCost: 0,
+            orderId: null,
+            orderDetails: null,
+            coupon: null,
+            discount: 0,
+        };
+        
+        if (savedData) {
+            try {
+                const parsed = JSON.parse(savedData);
+                return { ...initial, ...parsed };
+            } catch (e) {
+                return initial;
+            }
+        }
+        return initial;
     });
+
+    // Save to localStorage whenever checkoutData changes
+    React.useEffect(() => {
+        localStorage.setItem('checkoutData', JSON.stringify(checkoutData));
+    }, [checkoutData]);
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
