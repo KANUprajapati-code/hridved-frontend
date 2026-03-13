@@ -1,4 +1,4 @@
-import { ArrowRight, Leaf, ShieldCheck, Award, Heart, History, Users, Loader } from 'lucide-react';
+import { ArrowRight, Leaf, ShieldCheck, Award, Heart, History, Users, Loader, Truck, CheckCircle, Droplets, Sparkles, Sun } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import AnimatedPage from '../components/AnimatedPage';
 import ScrollReveal from '../components/ScrollReveal';
@@ -34,6 +34,11 @@ const AboutUsPage = () => {
             Award: <Award size={36} />,
             Heart: <Heart size={36} />,
             History: <History size={36} />,
+            Truck: <Truck size={36} />,
+            CheckCircle: <CheckCircle size={36} />,
+            Droplets: <Droplets size={36} />,
+            Sparkles: <Sparkles size={36} />,
+            Sun: <Sun size={36} />,
         };
         return icons[iconName] || <Leaf size={36} />;
     };
@@ -161,12 +166,14 @@ const AboutUsPage = () => {
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
                             {aboutData.values && aboutData.values.length > 0 ? (
                                 aboutData.values.map((val, idx) => (
-                                    <ScrollReveal key={idx} delay={idx * 100} className="text-center group">
-                                        <div className="w-20 h-20 bg-background rounded-full flex items-center justify-center mx-auto mb-8 text-primary group-hover:bg-primary group-hover:text-white transition-all duration-500 shadow-inner">
-                                            {getIcon(val.icon)}
+                                    <ScrollReveal key={idx} delay={idx * 100} className="text-center group h-full">
+                                        <div className="bg-white p-8 rounded-3xl shadow-sm hover:shadow-xl transition-all duration-500 border border-gray-50 h-full flex flex-col items-center">
+                                            <div className="w-20 h-20 bg-background rounded-2xl flex items-center justify-center mb-8 text-primary group-hover:bg-primary group-hover:text-white transition-all duration-500 shadow-inner">
+                                                {getIcon(val.icon)}
+                                            </div>
+                                            <h4 className="text-xl font-bold text-primary mb-4">{val.title || "Promise Item"}</h4>
+                                            <p className="text-gray-500 leading-relaxed">{val.description || "Description coming soon."}</p>
                                         </div>
-                                        <h4 className="text-xl font-bold text-primary mb-4">{val.title}</h4>
-                                        <p className="text-gray-500">{val.description}</p>
                                     </ScrollReveal>
                                 ))
                             ) : (
