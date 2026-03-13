@@ -251,12 +251,22 @@ const AboutEditPage = () => {
                 <div className="bg-white shadow-xl rounded-2xl overflow-hidden border border-gray-100">
                     <div className="bg-primary/5 px-8 py-4 border-b border-gray-100 flex justify-between items-center">
                         <h2 className="text-xl font-semibold text-primary">Our Values</h2>
-                        <button
-                            onClick={addValue}
-                            className="bg-secondary text-primary px-3 py-1 rounded-md text-sm font-bold flex items-center gap-1 hover:bg-secondary-dark transition-colors"
-                        >
-                            <Plus size={16} /> Add Value
-                        </button>
+                        <div className="flex gap-2">
+                            <button
+                                onClick={addValue}
+                                className="bg-secondary text-primary px-3 py-1.5 rounded-md text-sm font-bold flex items-center gap-1 hover:bg-secondary-dark transition-colors"
+                            >
+                                <Plus size={16} /> Add Value
+                            </button>
+                            <button
+                                onClick={handleSubmit}
+                                disabled={saving}
+                                className="bg-primary text-white px-3 py-1.5 rounded-md text-sm font-bold flex items-center gap-1 hover:bg-primary-dark transition-colors"
+                            >
+                                {saving ? <Loader className="animate-spin" size={16} /> : <Save size={16} />}
+                                Save Promises
+                            </button>
+                        </div>
                     </div>
                     <div className="p-8">
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
