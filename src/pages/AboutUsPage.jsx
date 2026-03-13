@@ -249,33 +249,6 @@ const AboutUsPage = () => {
                         </div>
                     </div>
                 </section>
-
-                {/* CTA Section */}
-                <section className="py-24">
-                    <div className="container mx-auto px-4">
-                        <ScrollReveal className="bg-primary rounded-[3rem] p-16 text-center text-white relative overflow-hidden shadow-2xl">
-                            <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-32 translate-x-32"></div>
-                            <div className="absolute bottom-0 left-0 w-64 h-64 bg-white/5 rounded-full translate-y-32 -translate-x-32"></div>
-
-                            <h2 className="text-4xl md:text-5xl font-serif font-bold mb-8">Experience Pure Ayurveda</h2>
-                            <p className="text-xl text-gray-200 mb-12 max-w-2xl mx-auto leading-relaxed">
-                                Join thousands of people who have transformed their lives through the power of authentic Ayurvedic wellness.
-                            </p>
-                            <div className="flex flex-wrap justify-center gap-6 relative z-10">
-                                <Link to="/shop">
-                                    <AnimatedButton className="bg-secondary text-primary px-12 py-4 rounded-full font-bold hover:bg-white transition-all border-none text-lg shadow-lg">
-                                        Shop Our Collection
-                                    </AnimatedButton>
-                                </Link>
-                                <Link to="/consultation">
-                                    <AnimatedButton variant="outline" className="border-2 border-white text-white px-12 py-4 rounded-full font-bold hover:bg-white hover:text-primary transition-all text-lg shadow-lg">
-                                        Book a Consultation
-                                    </AnimatedButton>
-                                </Link>
-                            </div>
-                        </ScrollReveal>
-                    </div>
-                </section>
             </div>
         </AnimatedPage>
     );

@@ -407,31 +407,6 @@ const HomePage = () => {
                         </ScrollReveal>
                     </div>
                 </section>
-                {/* Newsletter Section */}
-                <section className="py-20 bg-primary text-white">
-                    <div className="container mx-auto px-4 text-center">
-                        <ScrollReveal>
-                            <h2 className="text-3xl md:text-4xl font-sans font-bold mb-4">Join the Ayurveda Journey</h2>
-                            <p className="text-gray-300 mb-8 max-w-2xl mx-auto">
-                                Subscribe to our newsletter for holistic wellness tips, exclusive offers, and early access to new Ayurvedic formulations.
-                            </p>
-                            <form className="max-w-md mx-auto flex flex-col sm:flex-row gap-4">
-                                <input
-                                    type="email"
-                                    placeholder="Your Email Address"
-                                    className="flex-grow px-6 py-3 rounded-full text-gray-800 focus:outline-none focus:ring-2 focus:ring-secondary"
-                                    required
-                                />
-                                <AnimatedButton
-                                    type="submit"
-                                    className="bg-secondary text-primary px-8 py-3 rounded-full font-bold hover:bg-white transition-colors duration-300 border-none"
-                                >
-                                    Subscribe
-                                </AnimatedButton>
-                            </form>
-                        </ScrollReveal>
-                    </div>
-                </section>
             </div>
         </AnimatedPage>
     );
