@@ -225,8 +225,7 @@ const ProductPage = () => {
                                     </div>
                                 </div>
 
-                                {/* Pincode Shipping Check */}
-                                <PincodeShippingCheck productPrice={product.price} />
+                                
                             </div>
                         </div>
                     </div>
