@@ -395,9 +395,23 @@ export default function CheckoutAddressPage() {
                                         <span>Subtotal</span>
                                         <span>₹{cart.cartItems.reduce((acc, item) => acc + (item.price * item.qty), 0).toLocaleString()}</span>
                                     </div>
+                                    {checkoutData.discount > 0 && (
+                                        <div className="flex justify-between text-green-600 font-bold">
+                                            <span>Discount ({checkoutData.coupon?.code})</span>
+                                            <span>-₹{checkoutData.discount.toLocaleString()}</span>
+                                        </div>
+                                    )}
+                                    <div className="flex justify-between text-gray-600">
+                                        <span>GST</span>
+                                        <span>₹{cart.cartItems.reduce((acc, item) => acc + (item.price * item.qty * (item.gst || 0) / 100), 0).toLocaleString()}</span>
+                                    </div>
                                     <div className="border-t border-gray-200 my-2 pt-2 flex justify-between font-bold text-gray-900 text-lg">
                                         <span>Total</span>
-                                        <span>₹{(cart.cartItems.reduce((acc, item) => acc + (item.price * item.qty), 0)).toLocaleString()}</span>
+                                        <span>₹{(
+                                            cart.cartItems.reduce((acc, item) => acc + (item.price * item.qty), 0) + 
+                                            cart.cartItems.reduce((acc, item) => acc + (item.price * item.qty * (item.gst || 0) / 100), 0) - 
+                                            (checkoutData.discount || 0)
+                                        ).toLocaleString()}</span>
                                     </div>
                                 </div>
                                 <p className="text-[10px] text-gray-400 mt-2 text-right">* Shipping calculated at next step</p>
