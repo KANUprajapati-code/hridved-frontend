@@ -20,7 +20,7 @@ const ShippingPage = () => {
     const cartItems = cart?.cartItems || [];
 
     const subtotal = cartItems.reduce((acc, item) => acc + item.qty * item.price, 0);
-    const shipping = subtotal > 499 ? 0 : 50;
+    const shipping = subtotal > 999 ? 0 : 50;
     const total = subtotal + shipping;
 
     const submitHandler = (e) => {
@@ -41,9 +41,9 @@ const ShippingPage = () => {
         <div className="bg-background min-h-screen animate-fade-in pb-12">
             {/* Dynamic Free Shipping Banner */}
             <div className="bg-primary text-white py-1.5 text-center text-[10px] font-bold uppercase tracking-[0.2em] shadow-inner">
-                {subtotal >= 499 
+                {subtotal >= 999 
                     ? "✓ Free Shipping Applied to your Order" 
-                    : `Add ₹${(499 - subtotal).toLocaleString()} More for Free Shipping`
+                    : `Add ₹${(999 - subtotal).toLocaleString()} More for Free Shipping`
                 }
             </div>
 

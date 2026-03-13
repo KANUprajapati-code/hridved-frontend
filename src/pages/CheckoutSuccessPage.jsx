@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useCheckout } from '../context/CheckoutContext';
 import { useAuth } from '../context/AuthContext';
+import { useCart } from '../context/CartContext';
 import CheckoutStepIndicator from '../components/CheckoutStepIndicator';
 import api from '../utils/api';
 import AnimatedPage from '../components/AnimatedPage';
@@ -14,6 +15,7 @@ export default function CheckoutSuccessPage() {
     const [searchParams] = useSearchParams();
     const { checkoutData, resetCheckout } = useCheckout();
     const { user } = useAuth();
+    const { clearCart } = useCart();
     // Initialize with orderDetails from context to avoid initial loading flicker
     const [orderDetails, setOrderDetails] = useState(checkoutData.orderDetails || null);
     const [loading, setLoading] = useState(!checkoutData.orderDetails);
@@ -66,6 +68,13 @@ export default function CheckoutSuccessPage() {
             if (pollInterval) clearInterval(pollInterval);
         };
     }, [orderId, navigate, fetchOrderDetails, orderDetails?._id, orderDetails?.isPaid]);
+    
+    // Clear cart once order is confirmed
+    useEffect(() => {
+        if (orderDetails && (orderDetails.isPaid || orderDetails.paymentMethod === 'COD')) {
+            if (clearCart) clearCart();
+        }
+    }, [orderDetails?.isPaid, orderDetails?.paymentMethod]);
 
     const calculateEstimatedDelivery = () => {
         if (!orderDetails) return null;

@@ -29,7 +29,7 @@ const ShippingPolicy = () => {
                                         <h3 className="text-xl font-serif font-bold m-0 text-primary">Shipping Rates</h3>
                                     </div>
                                     <p className="text-sm">
-                                        We offer <strong>FREE SHIPPING</strong> on all orders above ₹499. For orders below ₹499, a flat shipping fee of ₹50 is applicable.
+                                        We offer <strong>FREE SHIPPING</strong> on all orders above ₹999. For orders below ₹999, a flat shipping fee of ₹50 is applicable.
                                     </p>
                                 </div>
 

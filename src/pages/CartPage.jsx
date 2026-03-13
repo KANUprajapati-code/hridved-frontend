@@ -92,7 +92,7 @@ const CartPage = () => {
     }
 
     const discountedSubtotal = subtotal - discount;
-    const shipping = discountedSubtotal > 499 ? 0 : 50;
+    const shipping = discountedSubtotal > 999 ? 0 : 50;
 
     // Calculate tax based on per-item GST
     const tax = cartItems.reduce((acc, item) => {
@@ -133,12 +133,12 @@ const CartPage = () => {
                             <div className="flex justify-between items-end mb-2">
                                 <span className="text-xs font-bold uppercase tracking-widest text-secondary">Free Shipping Status</span>
                                 <span className="text-sm font-medium">
-                                    {subtotal >= 499 ? (
+                                    {subtotal >= 999 ? (
                                         <span className="flex items-center gap-1.5 text-secondary">
                                             <Truck size={16} /> FREE SHIPPING UNLOCKED!
                                         </span>
                                     ) : (
-                                        `₹${(499 - subtotal).toLocaleString()} more for FREE shipping`
+                                        `₹${(999 - subtotal).toLocaleString()} more for FREE shipping`
                                     )}
                                 </span>
                             </div>
@@ -146,11 +146,11 @@ const CartPage = () => {
                                 <motion.div 
                                     className="h-full bg-secondary shadow-[0_0_15px_rgba(251,191,36,0.5)]"
                                     initial={{ width: 0 }}
-                                    animate={{ width: `${Math.min(100, (subtotal / 499) * 100)}%` }}
+                                    animate={{ width: `${Math.min(100, (subtotal / 999) * 100)}%` }}
                                     transition={{ duration: 0.8, ease: "easeOut" }}
                                 />
                             </div>
-                            <p className="text-[10px] mt-2 text-center text-white/70 italic">Standard delivery for order value above ₹499 is free of charge.</p>
+                            <p className="text-[10px] mt-2 text-center text-white/70 italic">Standard delivery for order value above ₹999 is free of charge.</p>
                         </div>
                     </div>
                 </div>

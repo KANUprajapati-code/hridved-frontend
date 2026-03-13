@@ -14,7 +14,7 @@ import PaymentButton from '../components/PaymentButton';
 export default function CheckoutPaymentPage() {
     const navigate = useNavigate();
     const { user } = useAuth();
-    const { cart } = useCart();
+    const { cart, clearCart } = useCart();
     const { checkoutData, updateStep, setErrorMessage, clearError, setOrderId } = useCheckout();
 
     const [loading] = useState(false);
@@ -174,6 +174,7 @@ export default function CheckoutPaymentPage() {
 
             if (res.success) {
                 setOrderId(res.data._id, res.data);
+                if (clearCart) clearCart();
                 navigate(`/checkout/success?id=${res.data._id}`);
                 return res.data;
             } else {

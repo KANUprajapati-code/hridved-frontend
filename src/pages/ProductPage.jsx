@@ -90,7 +90,7 @@ const ProductPage = () => {
 
     const handleBuyNow = () => {
         addToCart(product, qty);
-        navigate('/checkout/address');
+        navigate('/cart');
     };
 
     if (loading) return <div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div></div>;
@@ -213,7 +213,7 @@ const ProductPage = () => {
                                         <Truck className="text-primary mt-1" size={20} />
                                         <div>
                                             <h4 className="font-bold text-gray-800 text-sm">Free Shipping</h4>
-                                            <p className="text-xs text-gray-500">On all orders above ₹499</p>
+                                            <p className="text-xs text-gray-500">On all orders above ₹999</p>
                                         </div>
                                     </div>
                                     <div className="flex items-start gap-3">

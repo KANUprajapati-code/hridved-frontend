@@ -30,7 +30,7 @@ const PlaceOrderPage = () => {
     const itemsPrice = addDecimals(
         cartItems.reduce((acc, item) => acc + item.price * item.qty, 0)
     );
-    const shippingPrice = addDecimals(itemsPrice >= 499 ? 0 : 50);
+    const shippingPrice = addDecimals(itemsPrice >= 999 ? 0 : 50);
     const codPrice = addDecimals(paymentMethod === 'COD' ? 50 : 0);
     const taxPrice = addDecimals(
         cartItems.reduce((acc, item) => acc + (item.price * item.qty * (item.gst || 0) / 100), 0)

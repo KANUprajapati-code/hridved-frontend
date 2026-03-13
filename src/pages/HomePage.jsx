@@ -67,7 +67,14 @@ const HomePage = () => {
                 <div className="overflow-hidden">
                     <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6 lg:gap-8">
                         {visibleProducts.map((product) => (
-                            <div key={product._id} className="bg-white rounded-2xl overflow-hidden hover:shadow-2xl transition-all duration-500 border border-gray-100 group/card h-full flex flex-col">
+                            <div key={product._id} className="bg-white rounded-2xl overflow-hidden hover:shadow-2xl transition-all duration-500 border border-gray-100 group/card h-full flex flex-col relative">
+                                {product.mrp > product.price && (
+                                    <div className="absolute top-2 left-2 z-20">
+                                        <span className="bg-green-600 text-white text-[8px] sm:text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-widest shadow-lg">
+                                            {Math.round(((product.mrp - product.price) / product.mrp) * 100)}% OFF
+                                        </span>
+                                    </div>
+                                )}
                                 <div className="aspect-[4/5] bg-gray-50 relative overflow-hidden">
                                     <Link to={`/product/${product._id}`}>
                                         <AnimatedImage src={product.image || 'https://images.unsplash.com/photo-1545205597-3d9d02c29597?w=800&q=80'} alt={product.name} className="w-full h-full object-cover transition-transform duration-700 group-hover/card:scale-110" />
@@ -89,9 +96,17 @@ const HomePage = () => {
                                         </Link>
                                         <p className="text-sm text-gray-400 mb-4 font-medium">{product.category}</p>
                                     </div>
-                                    <div className="flex items-center justify-between mt-auto pt-4 border-t border-gray-50">
-                                        <span className="font-bold text-primary text-xl tracking-tight">₹{product.price}</span>
-                                        <div className="flex gap-0.5">
+                                    <div className="flex flex-col gap-1 mt-auto pt-4 border-t border-gray-50">
+                                        <div className="flex items-baseline gap-2">
+                                            <span className="font-bold text-primary text-xl tracking-tight">₹{product.price}</span>
+                                            {product.mrp > product.price && (
+                                                <span className="text-xs text-gray-400 line-through">₹{product.mrp}</span>
+                                            )}
+                                        </div>
+                                        {product.mrp > product.price && (
+                                            <span className="text-[10px] text-green-600 font-bold">Save ₹{product.mrp - product.price}</span>
+                                        )}
+                                        <div className="flex gap-0.5 mt-2">
                                             {[...Array(5)].map((_, i) => (
                                                 <Star key={i} size={12} fill={i < (product.rating || 4) ? "currentColor" : "none"} className={i < (product.rating || 4) ? "text-yellow-400" : "text-gray-200"} />
                                             ))}
@@ -294,6 +309,50 @@ const HomePage = () => {
                     </div>
                 </section>
 
+                {/* Offer Banner */}
+                <section className="bg-primary py-4 border-y border-white/10">
+                    <div className="container mx-auto px-4">
+                        <div className="flex flex-col md:flex-row items-center justify-center gap-4 text-center">
+                            <motion.div 
+                                initial={{ scale: 0.9, opacity: 0 }}
+                                whileInView={{ scale: 1, opacity: 1 }}
+                                className="flex items-center gap-3"
+                            >
+                                <div className="bg-secondary p-2 rounded-full text-primary">
+                                    <Truck size={20} />
+                                </div>
+                                <p className="text-white font-bold tracking-wider text-sm md:text-base">
+                                    CELEBRATION OFFER: <span className="text-secondary">FREE SHIPPING</span> ON ALL ORDERS ABOVE ₹999
+                                </p>
+                            </motion.div>
+                            <Link to="/shop">
+                                <button className="bg-white text-primary px-6 py-1.5 rounded-full font-black text-[10px] uppercase tracking-widest hover:bg-secondary transition-colors">
+                                    Shop Now
+                                </button>
+                            </Link>
+                        </div>
+                    </div>
+                </section>
+
+                {/* Best Sellers Section */}
+                <section className="py-12 md:py-20 bg-background/50">
+                    <div className="container mx-auto">
+                        <ScrollReveal>
+                            <div className="flex flex-col sm:flex-row justify-between items-center sm:items-end mb-8 md:mb-10 gap-4">
+                                <div className="text-center sm:text-left">
+                                    <h2 className="text-2xl md:text-4xl font-sans font-bold text-primary">Our Bestsellers</h2>
+                                    <p className="text-sm md:text-base text-gray-500 mt-1 md:mt-2">Customer favorites that deliver results.</p>
+                                </div>
+                                <Link to="/shop" className="text-primary font-bold text-xs tracking-wider uppercase hover:text-secondary hover:underline underline-offset-4">
+                                    View All Products
+                                </Link>
+                            </div>
+
+                            <BestsellerCarousel products={bestsellers} />
+                        </ScrollReveal>
+                    </div>
+                </section>
+
                 {/* The Essence of Purity Section [New] */}
                 <section className="py-24 md:py-32 bg-background relative overflow-hidden">
                     <div className="absolute bottom-[-10%] left-[-5%] opacity-5 float-slow pointer-events-none" style={{ animationDelay: '2s' }}>
@@ -381,21 +440,53 @@ const HomePage = () => {
                     </div>
                 </section>
 
-                {/* Best Sellers Section */}
-                <section className="py-12 md:py-20 bg-background/50">
-                    <div className="container mx-auto">
+                {/* Ayurvedic Wisdom (Blog) Section */}
+                <section className="py-12 md:py-24 bg-white">
+                    <div className="container mx-auto whitespace-normal">
                         <ScrollReveal>
-                            <div className="flex flex-col sm:flex-row justify-between items-center sm:items-end mb-8 md:mb-10 gap-4">
-                                <div className="text-center sm:text-left">
-                                    <h2 className="text-2xl md:text-4xl font-sans font-bold text-primary">Our Bestsellers</h2>
-                                    <p className="text-sm md:text-base text-gray-500 mt-1 md:mt-2">Customer favorites that deliver results.</p>
+                            <div className="flex flex-col md:flex-row justify-between items-center md:items-end mb-10 md:mb-16 gap-4">
+                                <div className="text-center md:text-left">
+                                    <span className="text-secondary font-bold uppercase tracking-[0.2em] text-[10px] md:text-xs mb-2 md:mb-3 block">Knowledge Base</span>
+                                    <h2 className="text-3xl md:text-5xl font-sans font-bold text-primary mb-1 md:mb-2">Ayurvedic Wisdom</h2>
+                                    <p className="text-sm md:text-base text-gray-500">Expert insights for a harmonious lifestyle.</p>
                                 </div>
-                                <Link to="/shop" className="text-primary font-bold text-xs tracking-wider uppercase hover:text-secondary hover:underline underline-offset-4">
-                                    View All Products
+                                <Link to="/blogs" className="text-primary font-bold hover:text-secondary group flex items-center bg-primary/5 px-6 py-3 rounded-full transition-all hover:bg-primary/10 text-sm md:text-base">
+                                    Read All Articles <ArrowRight size={20} className="ml-2 group-hover:translate-x-1 transition-transform" />
                                 </Link>
                             </div>
 
-                            <BestsellerCarousel products={bestsellers} />
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
+                                {tips.length > 0 ? (
+                                    tips.slice(0, 3).map((tip) => (
+                                        <Link to="/blogs" key={tip._id} className="group cursor-pointer block">
+                                            <article>
+                                                <div className="rounded-3xl md:rounded-[2rem] overflow-hidden mb-6 h-48 md:h-64 relative shadow-md group-hover:shadow-2xl transition-all duration-500">
+                                                    <AnimatedImage src={tip.image} alt={tip.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                                                    <div className="absolute top-4 md:top-6 left-4 md:left-6 bg-white/90 backdrop-blur-md px-3 md:px-4 py-1.5 rounded-full text-[9px] md:text-[10px] font-black uppercase tracking-widest text-primary z-10 shadow-sm">
+                                                        {tip.category}
+                                                    </div>
+                                                </div>
+                                                <div className="px-1 md:px-2">
+                                                    <h3 className="text-xl md:text-2xl font-sans font-bold text-primary mb-2 md:mb-3 group-hover:text-secondary transition-colors leading-tight">
+                                                        {tip.title}
+                                                    </h3>
+                                                    <p className="text-xs md:text-base text-gray-500 line-clamp-2 mb-4 leading-relaxed">
+                                                        {tip.description}
+                                                    </p>
+                                                    <div className="flex items-center text-primary font-bold text-xs md:text-sm group/link">
+                                                        <span className="border-b-2 border-secondary/30 group-hover/link:border-secondary transition-colors pb-0.5">Explore Insight</span>
+                                                        <ArrowRight size={16} className="ml-1 opacity-0 -translate-x-2 group-hover/link:opacity-100 group-hover/link:translate-x-0 transition-all" />
+                                                    </div>
+                                                </div>
+                                            </article>
+                                        </Link>
+                                    ))
+                                ) : (
+                                    <div className="col-span-3 text-center py-20 bg-background rounded-3xl border-2 border-dashed border-gray-100 italic text-gray-400">
+                                        Wisdom is gathering. Check back soon.
+                                    </div>
+                                )}
+                            </div>
                         </ScrollReveal>
                     </div>
                 </section>
