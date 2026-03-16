@@ -1,1 +1,0 @@
-import{j as t}from"./index-9_r8zMGw.js";import{N as r}from"./vendor-react-B8KVy-C4.js";import"./vendor-utils-C0Zqfgkc.js";import"./vendor-ui-6nA28FLa.js";const m=()=>t.jsx(r,{to:"/checkout/address",replace:!0});export{m as default};

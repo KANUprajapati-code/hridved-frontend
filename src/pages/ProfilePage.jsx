@@ -338,7 +338,7 @@ const OrdersList = ({ orders, loading, onTrack, isAdmin }) => (
         {loading ? (
             <SkeletonLoader />
         ) : orders.length === 0 ? (
-            <EmptyState icon={<Package />} message="You haven't placed any orders yet." link="/shop" linkText="Start Shopping" />
+            <EmptyState icon={<Package size={32} />} message="You haven't placed any orders yet." link="/shop" linkText="Start Shopping" />
         ) : (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {orders.map(order => (
@@ -396,7 +396,7 @@ const ConsultationsList = ({ consultations, loading }) => (
         {loading ? (
             <SkeletonLoader />
         ) : consultations.length === 0 ? (
-            <EmptyState icon={<Stethoscope />} message="No consultations booked yet." link="/consultation" linkText="Book Appointment" />
+            <EmptyState icon={<Stethoscope size={32} />} message="No consultations booked yet." link="/consultation" linkText="Book Appointment" />
         ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {consultations.map(booking => (
@@ -583,7 +583,7 @@ const TrackingRow = ({ label, value, italic = false }) => (
 const EmptyState = ({ icon, message, link, linkText }) => (
     <div className="text-center py-20 bg-gray-50 rounded-[40px] border border-dashed border-gray-200">
         <div className="w-20 h-20 bg-white rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-xl shadow-gray-200/50 text-gray-200">
-            {icon && Object.cloneElement(icon, { size: 32 })}
+            {icon && icon}
         </div>
         <p className="text-gray-500 font-bold mb-4">{message}</p>
         <Link to={link || '/'} className="inline-block bg-primary text-white px-8 py-3 rounded-2xl font-bold shadow-lg shadow-primary/20 hover:bg-secondary hover:text-primary transition-all active:scale-95">
