@@ -25,8 +25,20 @@ const TrackOrderPage = () => {
         setTrackingData(null);
 
         try {
-            const { data } = await api.get(`/shipping/track/${orderId}`);
-            setTrackingData(data);
+            const { data } = await api.post(`/orders/track`, { query: orderId });
+            const order = data[0]; // Get the most recent order matched
+            
+            setTrackingData({
+                status: order.shippingStatus || 'Processing',
+                waybill: order.waybill || 'Pending Allocation',
+                fulfilledby: order.shippingProvider || 'Hridved Fulfillment',
+                orderid: order._id,
+                location: order.trackingHistory && order.trackingHistory.length > 0 ? order.trackingHistory[0].location : 'Order placed',
+                lastscanned: order.trackingHistory && order.trackingHistory.length > 0 && order.trackingHistory[0].dateAndTime 
+                    ? new Date(order.trackingHistory[0].dateAndTime).toLocaleString() 
+                    : new Date(order.createdAt).toLocaleString(),
+                remark: (order.trackingHistory && order.trackingHistory.length > 0 ? order.trackingHistory[0].remark : order.trackingStatus) || 'Awaiting update from carrier'
+            });
         } catch (err) {
             setError(err.response?.data?.message || 'Failed to locate order automatically.');
         } finally {

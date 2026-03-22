@@ -23,6 +23,20 @@ const CartPage = () => {
     const [couponError, setCouponError] = useState('');
     const [recommendedProducts, setRecommendedProducts] = useState([]);
     const { addToast } = useContext(ToastContext);
+    
+    // WhatsApp Checkout State
+    const [shippingDetails, setShippingDetails] = useState({
+        fullName: '',
+        mobileNumber: '',
+        email: '',
+        houseNumber: '',
+        landmark: '',
+        city: '',
+        state: '',
+        pincode: ''
+    });
+    const [formErrors, setFormErrors] = useState({});
+    const [isProcessingOrder, setIsProcessingOrder] = useState(false);
 
     useEffect(() => {
         const fetchRecommendations = async () => {
@@ -38,18 +52,112 @@ const CartPage = () => {
 
     const cartItems = cart?.cartItems || [];
 
-    const checkoutHandler = () => {
-        // Save coupon/discount to context if any
-        if (appliedCoupon) {
-            applyCoupon(appliedCoupon, discount);
-        } else {
-            applyCoupon(null, 0);
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setShippingDetails(prev => ({ ...prev, [name]: value }));
+        if (formErrors[name]) {
+            setFormErrors(prev => ({ ...prev, [name]: '' }));
+        }
+    };
+
+    const validateForm = () => {
+        const errors = {};
+        if (!shippingDetails.fullName.trim()) errors.fullName = 'Required';
+        if (!shippingDetails.mobileNumber.trim()) errors.mobileNumber = 'Required';
+        else if (!/^\\d{10}$/.test(shippingDetails.mobileNumber)) errors.mobileNumber = 'Invalid';
+        if (!shippingDetails.houseNumber.trim()) errors.houseNumber = 'Required';
+        if (!shippingDetails.city.trim()) errors.city = 'Required';
+        if (!shippingDetails.state.trim()) errors.state = 'Required';
+        if (!shippingDetails.pincode.trim()) errors.pincode = 'Required';
+        else if (!/^\\d{6}$/.test(shippingDetails.pincode)) errors.pincode = 'Invalid';
+        
+        setFormErrors(errors);
+        return Object.keys(errors).length === 0;
+    };
+
+    const handleWhatsAppCheckout = async () => {
+        if (!validateForm()) {
+            if (addToast) addToast('Please fill all required fields correctly', 'error');
+            return;
         }
 
-        if (!user) {
-            navigate('/login?redirect=checkout/address');
-        } else {
-            navigate('/checkout/address');
+        setIsProcessingOrder(true);
+        try {
+            const orderData = {
+                orderItems: cartItems.map(item => ({
+                    product: item.product,
+                    name: item.name,
+                    image: item.image,
+                    price: item.price,
+                    qty: item.qty,
+                    weight: item.weight || 0.5
+                })),
+                shippingAddress: {
+                    fullName: shippingDetails.fullName,
+                    mobileNumber: shippingDetails.mobileNumber,
+                    houseNumber: shippingDetails.houseNumber,
+                    landmark: shippingDetails.landmark,
+                    city: shippingDetails.city,
+                    state: shippingDetails.state,
+                    pincode: shippingDetails.pincode
+                },
+                email: shippingDetails.email,
+                itemsPrice: subtotal,
+                taxPrice: tax,
+                shippingPrice: shipping,
+                totalPrice: total,
+                discountAmount: discount
+            };
+
+            const { data } = await api.post('/orders/whatsapp', orderData);
+            
+            let msg = `Hello, I want to place an order:\\n\\n🛒 *Order Details:*\\n`;
+            cartItems.forEach((item, idx) => {
+                msg += `${idx + 1}. ${item.name} (Qty: ${item.qty}) - ₹${item.price * item.qty}\\n`;
+            });
+            
+            msg += `\\n💰 *Pricing:*\\n`;
+            msg += `Total: ₹${subtotal}\\n`;
+            if (appliedCoupon) {
+                msg += `Promo Code: ${appliedCoupon.code}\\n`;
+                msg += `Discount: -₹${discount}\\n`;
+            }
+            if (shipping > 0) msg += `Shipping: ₹${shipping}\\n`;
+            if (tax > 0) msg += `GST: ₹${tax.toFixed(2)}\\n`;
+            msg += `*Final Amount: ₹${total.toFixed(2)}*\\n\\n`;
+
+            msg += `📦 *Shipping Details:*\\n`;
+            msg += `Name: ${shippingDetails.fullName}\\n`;
+            msg += `Phone: ${shippingDetails.mobileNumber}\\n`;
+            if (shippingDetails.email) msg += `Email: ${shippingDetails.email}\\n`;
+            msg += `Address: ${shippingDetails.houseNumber}${shippingDetails.landmark ? ', ' + shippingDetails.landmark : ''}\\n`;
+            msg += `City: ${shippingDetails.city}\\n`;
+            msg += `State: ${shippingDetails.state}\\n`;
+            msg += `Pincode: ${shippingDetails.pincode}\\n\\n`;
+            
+            msg += `🔗 Order Source: ${window.location.href}\\n`;
+            if (data._id) {
+                msg += `📄 Order Ref: ${data._id}\\n`;
+            }
+            msg += `\\nPlease confirm my order.`;
+
+            const encodedMsg = encodeURIComponent(msg);
+            // Replace XXXXXXXXXX with actual WhatsApp number
+            const waNumber = '919537166547'; // Using a placeholder that user can configure
+            const waLink = `https://wa.me/${waNumber}?text=${encodedMsg}`;
+            
+            window.open(waLink, '_blank');
+            
+            if (addToast) addToast('Order placed! Redirecting to WhatsApp...', 'success');
+            
+            cartItems.forEach(item => removeFromCart(item.product));
+            
+            setTimeout(() => navigate('/shop'), 2000);
+        } catch (error) {
+            console.error('WhatsApp Checkout Error:', error);
+            if (addToast) addToast('Failed to process order. Please try again.', 'error');
+        } finally {
+            setIsProcessingOrder(false);
         }
     };
 
@@ -323,11 +431,106 @@ const CartPage = () => {
                                         )}
                                     </div>
 
+                                    {/* Customer Details Form */}
+                                    <div className="mt-8 mb-6 border-t border-gray-100 pt-6">
+                                        <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                                            <Truck size={18} className="text-primary" /> Delivery Details
+                                        </h3>
+                                        <div className="grid grid-cols-1 gap-3">
+                                            <div>
+                                                <input
+                                                    type="text"
+                                                    name="fullName"
+                                                    placeholder="Full Name *"
+                                                    value={shippingDetails.fullName}
+                                                    onChange={handleInputChange}
+                                                    className={`w-full border ${formErrors.fullName ? 'border-red-500' : 'border-gray-300'} rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary`}
+                                                />
+                                            </div>
+                                            <div>
+                                                <input
+                                                    type="text"
+                                                    name="mobileNumber"
+                                                    placeholder="Phone Number *"
+                                                    value={shippingDetails.mobileNumber}
+                                                    onChange={handleInputChange}
+                                                    className={`w-full border ${formErrors.mobileNumber ? 'border-red-500' : 'border-gray-300'} rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary`}
+                                                />
+                                            </div>
+                                            <div>
+                                                <input
+                                                    type="email"
+                                                    name="email"
+                                                    placeholder="Email (Optional)"
+                                                    value={shippingDetails.email}
+                                                    onChange={handleInputChange}
+                                                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary"
+                                                />
+                                            </div>
+                                            <div>
+                                                <input
+                                                    type="text"
+                                                    name="houseNumber"
+                                                    placeholder="Address Line 1 *"
+                                                    value={shippingDetails.houseNumber}
+                                                    onChange={handleInputChange}
+                                                    className={`w-full border ${formErrors.houseNumber ? 'border-red-500' : 'border-gray-300'} rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary`}
+                                                />
+                                            </div>
+                                            <div>
+                                                <input
+                                                    type="text"
+                                                    name="landmark"
+                                                    placeholder="Address Line 2 (Optional)"
+                                                    value={shippingDetails.landmark}
+                                                    onChange={handleInputChange}
+                                                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary"
+                                                />
+                                            </div>
+                                            <div className="flex gap-2">
+                                                <div className="w-1/2">
+                                                    <input
+                                                        type="text"
+                                                        name="city"
+                                                        placeholder="City *"
+                                                        value={shippingDetails.city}
+                                                        onChange={handleInputChange}
+                                                        className={`w-full border ${formErrors.city ? 'border-red-500' : 'border-gray-300'} rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary`}
+                                                    />
+                                                </div>
+                                                <div className="w-1/2">
+                                                    <input
+                                                        type="text"
+                                                        name="state"
+                                                        placeholder="State *"
+                                                        value={shippingDetails.state}
+                                                        onChange={handleInputChange}
+                                                        className={`w-full border ${formErrors.state ? 'border-red-500' : 'border-gray-300'} rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary`}
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <input
+                                                    type="text"
+                                                    name="pincode"
+                                                    placeholder="Pincode *"
+                                                    value={shippingDetails.pincode}
+                                                    onChange={handleInputChange}
+                                                    className={`w-full border ${formErrors.pincode ? 'border-red-500' : 'border-gray-300'} rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary`}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+
                                     <AnimatedButton
-                                        onClick={checkoutHandler}
-                                        className="w-full bg-primary text-white py-4 rounded-xl font-bold text-lg shadow-lg hover:bg-opacity-90 hover:shadow-xl transition-all block text-center border-none"
+                                        onClick={handleWhatsAppCheckout}
+                                        disabled={isProcessingOrder}
+                                        className="w-full bg-[#25D366] text-white py-4 rounded-xl font-bold text-lg shadow-lg hover:bg-[#128C7E] hover:shadow-xl transition-all block text-center border-none flex items-center justify-center gap-2"
                                     >
-                                        Proceed to Checkout
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+                                            <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232"/>
+                                        </svg>
+                                        {isProcessingOrder ? 'Processing...' : 'Place Order on WhatsApp'}
                                     </AnimatedButton>
 
                                     <div className="grid grid-cols-3 gap-2 mt-8 py-6 border-t border-gray-100">
