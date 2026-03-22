@@ -166,9 +166,9 @@ const OrderPage = () => {
                 <div className="md:w-2/3 space-y-8">
                     <div className="bg-white p-6 rounded shadow-sm border">
                         <h2 className="text-xl font-bold mb-4">Shipping</h2>
-                        <p className="mb-2"><strong>Name: </strong> {order.user.name}</p>
-                        <p className="mb-2"><strong>Mobile: </strong> {order.shippingAddress.mobileNumber}</p>
-                        <p className="mb-2"><strong>Email: </strong> <a href={`mailto:${order.user.email}`} className="text-secondary">{order.user.email}</a></p>
+                        <p className="mb-2"><strong>Name: </strong> {order.user?.name || order.shippingAddress?.fullName || 'Guest User'}</p>
+                        <p className="mb-2"><strong>Mobile: </strong> {order.shippingAddress?.mobileNumber}</p>
+                        <p className="mb-2"><strong>Email: </strong> {order.user?.email || order.email ? <a href={`mailto:${order.user?.email || order.email}`} className="text-secondary">{order.user?.email || order.email}</a> : 'N/A'}</p>
                         <p className="mb-4">
                             <strong>Address: </strong>
                             {order.shippingAddress.houseNumber}, {order.shippingAddress.landmark ? `${order.shippingAddress.landmark}, ` : ''}
