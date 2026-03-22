@@ -3,20 +3,18 @@ import { X, Star, MessageCircle, Heart } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import ProductImage from './ProductImage';
+import WhatsAppOrderModal from './WhatsAppOrderModal';
 
 const QuickViewModal = ({ product, isOpen, onClose }) => {
     const { addToCart } = useCart();
     const [quantity, setQuantity] = useState(1);
     const [isWishlisted, setIsWishlisted] = useState(false);
+    const [isWhatsAppModalOpen, setIsWhatsAppModalOpen] = useState(false);
 
     if (!isOpen || !product) return null;
 
     const handleWhatsAppOrder = () => {
-        const WHATSAPP_NUMBER = '917990411390';
-        const productUrl = `${window.location.origin}/product/${product._id}`;
-        const message = `Hello, I want to order this product:\n\n🛍 Product Name: ${product.name}\n💰 Price: ₹${product.price}\n🔗 Product Link: ${productUrl}\n\nPlease confirm availability.`;
-        window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`, '_blank');
-        onClose();
+        setIsWhatsAppModalOpen(true);
     };
 
     return (
@@ -167,6 +165,12 @@ const QuickViewModal = ({ product, isOpen, onClose }) => {
                     </div>
                 </div>
             </div>
+
+            <WhatsAppOrderModal 
+                product={product} 
+                isOpen={isWhatsAppModalOpen} 
+                onClose={() => setIsWhatsAppModalOpen(false)} 
+            />
         </div>
     );
 };

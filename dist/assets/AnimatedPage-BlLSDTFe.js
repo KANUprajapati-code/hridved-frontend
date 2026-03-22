@@ -1,0 +1,1 @@
+import{j as t,p as n}from"./index-BdzZjlPX.js";import{m as e}from"./vendor-ui-DjpYR-bI.js";const s=({children:i,className:a=""})=>t.jsx(e.div,{variants:n,initial:"initial",animate:"animate",exit:"exit",className:a,children:i});export{s as A};

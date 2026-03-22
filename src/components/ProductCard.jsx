@@ -5,10 +5,12 @@ import { useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import ProductImage from './ProductImage';
 import { useFlyingElement } from '../hooks/useFlyingElement';
+import WhatsAppOrderModal from './WhatsAppOrderModal';
 
 const ProductCard = ({ product, onQuickView }) => {
     const { addToCart } = useCart();
     const [isWishlisted, setIsWishlisted] = useState(false);
+    const [isWhatsAppModalOpen, setIsWhatsAppModalOpen] = useState(false);
     const { animateAddToCart } = useFlyingElement();
     const imageRef = useRef(null);
 
@@ -128,10 +130,7 @@ const ProductCard = ({ product, onQuickView }) => {
                         <button
                             onClick={(e) => {
                                 e.preventDefault();
-                                const WHATSAPP_NUMBER = '917990411390';
-                                const productUrl = `${window.location.origin}/product/${product._id}`;
-                                const message = `Hello, I want to order this product:\n\n🛍 Product Name: ${product.name}\n💰 Price: ₹${product.price}\n🔗 Product Link: ${productUrl}\n\nPlease confirm availability.`;
-                                window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`, '_blank');
+                                setIsWhatsAppModalOpen(true);
                             }}
                             className="bg-[#25D366] text-white p-2 sm:p-3 rounded-lg sm:rounded-xl hover:bg-[#1da851] transition-all duration-300 shadow-md hover:shadow-xl transform active:scale-95 mb-1"
                             title="Order on WhatsApp"
@@ -151,6 +150,12 @@ const ProductCard = ({ product, onQuickView }) => {
                     </div>
                 </div>
             </div>
+
+            <WhatsAppOrderModal 
+                product={product} 
+                isOpen={isWhatsAppModalOpen} 
+                onClose={() => setIsWhatsAppModalOpen(false)} 
+            />
         </motion.div>
     );
 };

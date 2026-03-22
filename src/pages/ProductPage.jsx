@@ -13,6 +13,7 @@ import AnimatedButton from '../components/AnimatedButton';
 import { useFlyingElement } from '../hooks/useFlyingElement';
 import ProductCard from '../components/ProductCard';
 import SEO from '../components/SEO';
+import WhatsAppOrderModal from '../components/WhatsAppOrderModal';
 
 const ProductPage = () => {
     const { id } = useParams();
@@ -28,6 +29,7 @@ const ProductPage = () => {
     const { user } = useAuth();
     const { addToast } = useContext(ToastContext) || {};
     const [activeTab, setActiveTab] = useState('description');
+    const [isWhatsAppModalOpen, setIsWhatsAppModalOpen] = useState(false);
 
     // Animation hooks
     const { animateAddToCart } = useFlyingElement();
@@ -94,15 +96,7 @@ const ProductPage = () => {
     };
 
     const handleWhatsAppOrder = () => {
-        const WHATSAPP_NUMBER = '917990411390'; // TODO: Replace with your actual number
-        const message = `Hello, I want to order this product:
-
-🛍 Product Name: ${product.name}
-💰 Price: ₹${product.price}
-🔗 Product Link: ${window.location.href}
-
-Please confirm availability.`;
-        window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`, '_blank');
+        setIsWhatsAppModalOpen(true);
     };
 
     if (loading) return <div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div></div>;
@@ -397,6 +391,12 @@ Please confirm availability.`;
                     )}
                 </div>
             </div>
+
+            <WhatsAppOrderModal 
+                product={product} 
+                isOpen={isWhatsAppModalOpen} 
+                onClose={() => setIsWhatsAppModalOpen(false)} 
+            />
         </AnimatedPage>
     );
 };
