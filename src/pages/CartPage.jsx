@@ -37,6 +37,7 @@ const CartPage = () => {
     });
     const [formErrors, setFormErrors] = useState({});
     const [isProcessingOrder, setIsProcessingOrder] = useState(false);
+    const [paymentMethod, setPaymentMethod] = useState('COD');
 
     useEffect(() => {
         const fetchRecommendations = async () => {
@@ -83,6 +84,8 @@ const CartPage = () => {
 
         setIsProcessingOrder(true);
         try {
+            const codCharge = paymentMethod === 'COD' ? 50 : 0;
+
             const orderData = {
                 orderItems: cartItems.map(item => ({
                     product: item.product,
@@ -105,41 +108,46 @@ const CartPage = () => {
                 itemsPrice: subtotal,
                 taxPrice: tax,
                 shippingPrice: shipping,
+                codPrice: codCharge,
                 totalPrice: total,
-                discountAmount: discount
+                discountAmount: discount,
+                paymentMethod: paymentMethod === 'COD' ? 'WhatsApp COD' : 'WhatsApp Prepaid'
             };
 
             const { data } = await api.post('/orders/whatsapp', orderData);
             
-            let msg = `Hello, I want to place an order:\\n\\n🛒 *Order Details:*\\n`;
+            let msg = `Hello, I want to place an order:\n\n🛒 *Order Details:*\n`;
             cartItems.forEach((item, idx) => {
-                msg += `${idx + 1}. ${item.name} (Qty: ${item.qty}) - ₹${item.price * item.qty}\\n`;
+                msg += `${idx + 1}. ${item.name} (Qty: ${item.qty}) - ₹${item.price * item.qty}\n`;
             });
             
-            msg += `\\n💰 *Pricing:*\\n`;
-            msg += `Total: ₹${subtotal}\\n`;
+            msg += `\n💰 *Pricing:*\n`;
+            msg += `Total: ₹${subtotal}\n`;
             if (appliedCoupon) {
-                msg += `Promo Code: ${appliedCoupon.code}\\n`;
-                msg += `Discount: -₹${discount}\\n`;
+                msg += `Promo Code: ${appliedCoupon.code}\n`;
+                msg += `Discount: -₹${discount}\n`;
             }
-            if (shipping > 0) msg += `Shipping: ₹${shipping}\\n`;
-            if (tax > 0) msg += `GST: ₹${tax.toFixed(2)}\\n`;
-            msg += `*Final Amount: ₹${total.toFixed(2)}*\\n\\n`;
+            if (shipping > 0) msg += `Shipping: ₹${shipping}\n`;
+            if (tax > 0) msg += `GST: ₹${tax.toFixed(2)}\n`;
+            if (codCharge > 0) msg += `COD Fee: ₹${codCharge}\n`;
+            msg += `*Final Amount: ₹${total.toFixed(2)}*\n\n`;
 
-            msg += `📦 *Shipping Details:*\\n`;
-            msg += `Name: ${shippingDetails.fullName}\\n`;
-            msg += `Phone: ${shippingDetails.mobileNumber}\\n`;
-            if (shippingDetails.email) msg += `Email: ${shippingDetails.email}\\n`;
-            msg += `Address: ${shippingDetails.houseNumber}${shippingDetails.landmark ? ', ' + shippingDetails.landmark : ''}\\n`;
-            msg += `City: ${shippingDetails.city}\\n`;
-            msg += `State: ${shippingDetails.state}\\n`;
-            msg += `Pincode: ${shippingDetails.pincode}\\n\\n`;
+            msg += `📦 *Shipping Details:*\n`;
+            msg += `Name: ${shippingDetails.fullName}\n`;
+            msg += `Phone: ${shippingDetails.mobileNumber}\n`;
+            if (shippingDetails.email) msg += `Email: ${shippingDetails.email}\n`;
+            msg += `Address: ${shippingDetails.houseNumber}${shippingDetails.landmark ? ', ' + shippingDetails.landmark : ''}\n`;
+            msg += `City: ${shippingDetails.city}\n`;
+            msg += `State: ${shippingDetails.state}\n`;
+            msg += `Pincode: ${shippingDetails.pincode}\n\n`;
             
-            msg += `🔗 Order Source: ${window.location.href}\\n`;
+            msg += `💳 *Payment Method:* ${paymentMethod === 'COD' ? 'Cash on Delivery (COD)' : 'Prepaid (Online Payment)'}\n\n`;
+            
+            msg += `🔗 Order Source: ${window.location.href}\n`;
             if (data._id) {
-                msg += `📄 Order Ref: ${data._id}\\n`;
+                msg += `📄 Order Ref: ${data._id}\n`;
             }
-            msg += `\\nPlease confirm my order.`;
+            msg += `\nPlease confirm my order.`;
 
             const encodedMsg = encodeURIComponent(msg);
             // Replace XXXXXXXXXX with actual WhatsApp number
@@ -209,7 +217,8 @@ const CartPage = () => {
         return acc + (item.price * item.qty * itemGst / 100);
     }, 0);
 
-    const total = discountedSubtotal + shipping + tax;
+    const codCharge = paymentMethod === 'COD' ? 50 : 0;
+    const total = discountedSubtotal + shipping + tax + codCharge;
 
     if (cartItems.length === 0) {
         return (
@@ -374,6 +383,13 @@ const CartPage = () => {
                                             <span className="font-bold text-gray-900">₹{tax.toLocaleString()}</span>
                                         </div>
 
+                                        {paymentMethod === 'COD' && (
+                                            <div className="flex justify-between text-gray-600">
+                                                <span>COD Fee</span>
+                                                <span className="font-bold text-gray-900">₹{codCharge.toLocaleString()}</span>
+                                            </div>
+                                        )}
+
 
                                         <div className="border-t border-gray-100 pt-4 flex justify-between items-center">
                                             <span className="font-bold text-lg text-gray-900">Total Amount</span>
@@ -519,6 +535,38 @@ const CartPage = () => {
                                                     className={`w-full border ${formErrors.pincode ? 'border-red-500' : 'border-gray-300'} rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary`}
                                                 />
                                             </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Payment Method Selection */}
+                                    <div className="mb-6 border-gray-100">
+                                        <h3 className="text-sm font-bold text-gray-800 mb-3 uppercase tracking-wider flex items-center gap-2">
+                                            Payment Method
+                                        </h3>
+                                        <div className="grid grid-cols-2 gap-3">
+                                            <label className={`border-2 rounded-xl p-3 flex flex-col items-center justify-center gap-2 cursor-pointer transition-all ${paymentMethod === 'Prepaid' ? 'border-primary bg-primary/5 text-primary' : 'border-gray-200 bg-white text-gray-500 hover:border-gray-300'}`}>
+                                                <input 
+                                                    type="radio" 
+                                                    name="payment" 
+                                                    value="Prepaid" 
+                                                    className="hidden" 
+                                                    checked={paymentMethod === 'Prepaid'} 
+                                                    onChange={() => setPaymentMethod('Prepaid')} 
+                                                />
+                                                <span className="font-bold text-sm">Online/Prepaid</span>
+                                            </label>
+
+                                            <label className={`border-2 rounded-xl p-3 flex flex-col items-center justify-center gap-2 cursor-pointer transition-all ${paymentMethod === 'COD' ? 'border-primary bg-primary/5 text-primary' : 'border-gray-200 bg-white text-gray-500 hover:border-gray-300'}`}>
+                                                <input 
+                                                    type="radio" 
+                                                    name="payment" 
+                                                    value="COD" 
+                                                    className="hidden" 
+                                                    checked={paymentMethod === 'COD'} 
+                                                    onChange={() => setPaymentMethod('COD')} 
+                                                />
+                                                <span className="font-bold text-sm flex flex-col items-center text-center">Cash on Delivery <span className="text-xs text-secondary tracking-widest">+₹50</span></span>
+                                            </label>
                                         </div>
                                     </div>
 

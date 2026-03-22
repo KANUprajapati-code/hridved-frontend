@@ -122,8 +122,10 @@ const WhatsAppOrderModal = ({ product, isOpen, onClose }) => {
                 itemsPrice: product.price,
                 taxPrice: 0, // Quick order might not calc exact taxes here or assume included
                 shippingPrice: finalPrice > 999 ? 0 : 50,
-                totalPrice: finalPrice + (finalPrice > 999 ? 0 : 50),
-                discountAmount: discountAmount
+                codPrice: paymentMethod === 'COD' ? 50 : 0,
+                totalPrice: finalPrice + (finalPrice > 999 ? 0 : 50) + (paymentMethod === 'COD' ? 50 : 0),
+                discountAmount: discountAmount,
+                paymentMethod: paymentMethod === 'COD' ? 'WhatsApp COD' : 'WhatsApp Prepaid'
             };
 
             const { data } = await api.post('/orders/whatsapp', orderData);
@@ -131,7 +133,8 @@ const WhatsAppOrderModal = ({ product, isOpen, onClose }) => {
             const WHATSAPP_NUMBER = '917990411390';
             const productUrl = `${window.location.origin}/product/${product._id}`;
             const shipping = finalPrice > 999 ? 0 : 50;
-            const total = finalPrice + shipping;
+            const codCharge = paymentMethod === 'COD' ? 50 : 0;
+            const total = finalPrice + shipping + codCharge;
             
             let message = `Hello, I want to order this product:\n\n`;
             message += `🛍 *Product:* ${product.name}\n`;
@@ -142,6 +145,7 @@ const WhatsAppOrderModal = ({ product, isOpen, onClose }) => {
                 message += `📉 *Discount:* -₹${discountAmount.toFixed(2)}\n`;
             }
             if (shipping > 0) message += `🚚 *Shipping:* ₹${shipping}\n`;
+            if (codCharge > 0) message += `💵 *COD Fee:* ₹${codCharge}\n`;
             message += `✨ *Final Price:* ₹${total.toFixed(2)}\n\n`;
             
             message += `🔗 *Link:* ${productUrl}\n\n`;
@@ -210,7 +214,7 @@ const WhatsAppOrderModal = ({ product, isOpen, onClose }) => {
                         <div className="flex-1">
                             <h3 className="font-bold text-gray-800 text-sm line-clamp-2">{product.name}</h3>
                             <div className="mt-1 flex items-baseline gap-2">
-                                <span className="font-black text-primary">₹{finalPrice}</span>
+                                <span className="font-black text-primary">₹{finalPrice + (paymentMethod === 'COD' ? 50 : 0)}</span>
                                 {appliedPromo && <span className="text-xs text-gray-400 line-through">₹{product.price}</span>}
                             </div>
                         </div>
