@@ -65,12 +65,12 @@ const CartPage = () => {
         const errors = {};
         if (!shippingDetails.fullName.trim()) errors.fullName = 'Required';
         if (!shippingDetails.mobileNumber.trim()) errors.mobileNumber = 'Required';
-        else if (!/^\\d{10}$/.test(shippingDetails.mobileNumber)) errors.mobileNumber = 'Invalid';
+        else if (shippingDetails.mobileNumber.trim().length < 10) errors.mobileNumber = 'Invalid';
         if (!shippingDetails.houseNumber.trim()) errors.houseNumber = 'Required';
         if (!shippingDetails.city.trim()) errors.city = 'Required';
         if (!shippingDetails.state.trim()) errors.state = 'Required';
         if (!shippingDetails.pincode.trim()) errors.pincode = 'Required';
-        else if (!/^\\d{6}$/.test(shippingDetails.pincode)) errors.pincode = 'Invalid';
+        else if (shippingDetails.pincode.trim().length < 6) errors.pincode = 'Invalid';
         
         setFormErrors(errors);
         return Object.keys(errors).length === 0;
