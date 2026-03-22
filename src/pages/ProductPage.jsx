@@ -189,6 +189,14 @@ const ProductPage = () => {
                                         >+</button>
                                     </div>
                                     <div className="flex flex-1 gap-2 sm:gap-4">
+                                        <AnimatedButton
+                                            onClick={handleAddToCart}
+                                            disabled={product.countInStock === 0}
+                                            className="flex-1 bg-white text-primary border-2 border-primary h-12 rounded-full font-bold hover:bg-primary hover:text-white transition shadow-sm flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed text-sm px-2 w-full"
+                                        >
+                                            <ShoppingCart size={20} />
+                                            Add to Cart
+                                        </AnimatedButton>
                                         <button
                                             onClick={handleWhatsAppOrder}
                                             disabled={product.countInStock === 0}

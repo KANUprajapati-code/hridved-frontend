@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Star, MessageCircle, Eye, Heart } from 'lucide-react';
+import { Star, MessageCircle, Eye, Heart, ShoppingCart } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useRef, useState } from 'react';
 import { motion } from 'framer-motion';
@@ -127,16 +127,32 @@ const ProductCard = ({ product, onQuickView }) => {
                                 In Stock
                             </span>
                         </div>
-                        <button
-                            onClick={(e) => {
-                                e.preventDefault();
-                                setIsWhatsAppModalOpen(true);
-                            }}
-                            className="bg-[#25D366] text-white p-2 sm:p-3 rounded-lg sm:rounded-xl hover:bg-[#1da851] transition-all duration-300 shadow-md hover:shadow-xl transform active:scale-95 mb-1"
-                            title="Order on WhatsApp"
-                        >
-                            <MessageCircle size={14} className="sm:w-[18px] sm:h-[18px]" />
-                        </button>
+                        <div className="flex gap-2 mb-1">
+                            <button
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    const cartIcon = document.getElementById('cart-icon-container');
+                                    if (imageRef.current && cartIcon) {
+                                        animateAddToCart(imageRef.current, cartIcon, product.image);
+                                    }
+                                    addToCart(product, 1);
+                                }}
+                                className="bg-white text-primary border border-primary p-2 sm:p-3 rounded-lg sm:rounded-xl hover:bg-primary hover:text-white transition-all duration-300 shadow-sm flex items-center justify-center transform active:scale-95"
+                                title="Add to Cart"
+                            >
+                                <ShoppingCart size={14} className="sm:w-[18px] sm:h-[18px]" />
+                            </button>
+                            <button
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    setIsWhatsAppModalOpen(true);
+                                }}
+                                className="bg-[#25D366] text-white p-2 sm:p-3 rounded-lg sm:rounded-xl hover:bg-[#1da851] transition-all duration-300 shadow-md hover:shadow-xl transform active:scale-95"
+                                title="Order on WhatsApp"
+                            >
+                                <MessageCircle size={14} className="sm:w-[18px] sm:h-[18px]" />
+                            </button>
+                        </div>
                         <div className="flex text-secondary gap-0.5">
                             {[...Array(5)].map((_, i) => (
                                 <Star
