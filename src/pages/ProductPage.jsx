@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useContext } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import api from '../utils/api';
-import { Star, Truck, ShieldCheck, ShoppingCart, Clock, Heart, Zap } from 'lucide-react';
+import { Star, Truck, ShieldCheck, ShoppingCart, Clock, Heart, Zap, MessageCircle } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { ToastContext } from '../context/ToastContext';
@@ -91,6 +91,18 @@ const ProductPage = () => {
     const handleBuyNow = () => {
         addToCart(product, qty);
         navigate('/cart');
+    };
+
+    const handleWhatsAppOrder = () => {
+        const WHATSAPP_NUMBER = '917990411390'; // TODO: Replace with your actual number
+        const message = `Hello, I want to order this product:
+
+🛍 Product Name: ${product.name}
+💰 Price: ₹${product.price}
+🔗 Product Link: ${window.location.href}
+
+Please confirm availability.`;
+        window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`, '_blank');
     };
 
     if (loading) return <div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div></div>;
@@ -183,22 +195,14 @@ const ProductPage = () => {
                                         >+</button>
                                     </div>
                                     <div className="flex flex-1 gap-2 sm:gap-4">
-                                        <AnimatedButton
-                                            onClick={handleBuyNow}
+                                        <button
+                                            onClick={handleWhatsAppOrder}
                                             disabled={product.countInStock === 0}
-                                            className="flex-1 bg-orange-500 text-white h-12 rounded-full font-bold hover:bg-opacity-90 transition shadow-lg hover:shadow-xl flex items-center justify-center gap-2 disabled:bg-gray-400 disabled:cursor-not-allowed border-none text-sm px-2"
+                                            className="flex-1 bg-[#25D366] text-white h-12 rounded-full font-bold hover:bg-[#1da851] transition shadow-lg hover:shadow-xl flex items-center justify-center gap-2 disabled:bg-gray-400 disabled:cursor-not-allowed border-none text-sm px-2 w-full"
                                         >
-                                            <Zap size={18} />
-                                            Buy Now
-                                        </AnimatedButton>
-                                        <AnimatedButton
-                                            onClick={handleAddToCart}
-                                            disabled={product.countInStock === 0}
-                                            className="flex-1 bg-primary text-white h-12 rounded-full font-bold hover:bg-opacity-90 transition shadow-lg hover:shadow-xl flex items-center justify-center gap-2 disabled:bg-gray-400 disabled:cursor-not-allowed border-none text-sm px-2"
-                                        >
-                                            <ShoppingCart size={18} />
-                                            {product.countInStock === 0 ? 'Out of Stock' : 'Add to Cart'}
-                                        </AnimatedButton>
+                                            <MessageCircle size={20} />
+                                            {product.countInStock === 0 ? 'Out of Stock' : 'Order on WhatsApp'}
+                                        </button>
                                     </div>
                                     <button
                                         className="hidden sm:flex w-12 h-12 rounded-full border border-gray-200 items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-50 transition shadow-sm"

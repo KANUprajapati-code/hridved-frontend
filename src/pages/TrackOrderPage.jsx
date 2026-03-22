@@ -5,7 +5,7 @@ import {
     Search, Truck, Package, CheckCircle, 
     Circle, MapPin, Calendar, Clock, 
     ChevronRight, AlertCircle, Info, ArrowLeft,
-    Box, ShieldCheck, MapPinned
+    Box, ShieldCheck, MapPinned, MessageCircle
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
@@ -28,10 +28,16 @@ const TrackOrderPage = () => {
             const { data } = await api.get(`/shipping/track/${orderId}`);
             setTrackingData(data);
         } catch (err) {
-            setError(err.response?.data?.message || 'Failed to locate order. Please check the ID or Waybill Number.');
+            setError(err.response?.data?.message || 'Failed to locate order automatically.');
         } finally {
             setLoading(false);
         }
+    };
+
+    const handleWhatsAppTrack = () => {
+        const WHATSAPP_NUMBER = '917990411390';
+        const message = `Hello, I want to track my order. My Order ID / Phone Number is: ${orderId}`;
+        window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`, '_blank');
     };
 
     const statusSteps = [
@@ -64,7 +70,7 @@ const TrackOrderPage = () => {
                 {/* Hero Section */}
                 <div className="text-center mb-12 animate-fade-in">
                     <h1 className="text-4xl md:text-5xl font-serif font-bold text-primary mb-4">Track Your Order</h1>
-                    <p className="text-gray-500 max-w-md mx-auto">Enter your Order ID or Waybill number to see exactly where your Hridved journey is.</p>
+                    <p className="text-gray-500 max-w-md mx-auto">Enter your Order ID or Phone number to see where your Hridved journey is.</p>
                 </div>
 
                 {/* Search Card */}
@@ -76,7 +82,7 @@ const TrackOrderPage = () => {
                     <div className="flex-1 relative">
                         <input
                             type="text"
-                            placeholder="Order ID / Waybill (e.g. 65db...)"
+                            placeholder="Order ID / Phone Number (e.g. 987654...)"
                             className="w-full bg-gray-50/50 border-2 border-gray-50 rounded-2xl px-6 py-4 focus:outline-none focus:border-primary/20 focus:ring-4 focus:ring-primary/5 transition-all font-bold text-gray-900 placeholder-gray-300 shadow-inner"
                             value={orderId}
                             onChange={(e) => setOrderId(e.target.value)}
@@ -99,12 +105,20 @@ const TrackOrderPage = () => {
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -10 }}
-                            className="bg-red-50 border border-red-100 p-6 rounded-3xl flex items-center gap-4 mb-12 text-red-600 shadow-sm"
+                            className="bg-red-50 border border-red-100 p-6 rounded-3xl flex flex-col md:flex-row items-center justify-between gap-4 mb-12 shadow-sm text-center md:text-left"
                         >
-                            <div className="bg-white p-2 rounded-full shadow-sm shadow-red-100">
-                                <AlertCircle size={20} />
+                            <div className="flex items-center gap-4 text-red-600">
+                                <div className="bg-white p-2 rounded-full shadow-sm shadow-red-100">
+                                    <AlertCircle size={20} />
+                                </div>
+                                <p className="font-bold text-sm tracking-wide">{error}</p>
                             </div>
-                            <p className="font-bold text-sm tracking-wide">{error}</p>
+                            <button
+                                onClick={handleWhatsAppTrack}
+                                className="bg-[#25D366] text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 hover:bg-[#1da851] transition-colors whitespace-nowrap"
+                            >
+                                <MessageCircle size={18} /> Ask on WhatsApp
+                            </button>
                         </motion.div>
                     )}
                 </AnimatePresence>

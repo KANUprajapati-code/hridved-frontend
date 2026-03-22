@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Calendar, Clock, MapPin, Users, Zap, CheckCircle, ArrowLeft, Video, Ticket } from 'lucide-react';
+import { Calendar, Clock, MapPin, Users, Zap, CheckCircle, ArrowLeft, Video, Ticket, MessageCircle } from 'lucide-react';
 import api from '../utils/api';
 import { ToastContext } from '../context/ToastContext';
 
@@ -87,8 +87,8 @@ const DoctorBookingPage = () => {
         }
     };
 
-    const initiatePayment = async () => {
-        if (!selectedDate || !selectedTime || !patientName || !patientPhone || !patientEmail) {
+    const handleWhatsAppConsult = async () => {
+        if (!selectedDate || !selectedTime || !patientName || !patientPhone) {
             if (addToast) addToast('Please fill all required fields', 'error');
             return;
         }
@@ -96,71 +96,18 @@ const DoctorBookingPage = () => {
         setBookingInProgress(true);
 
         try {
-            // Create booking with pending status
-            const bookingData = {
-                doctorId,
-                doctorName: doctor.name,
-                consultationType,
-                appointmentDate: selectedDate,
-                appointmentTime: selectedTime,
-                patientName,
-                patientPhone,
-                patientEmail,
-                issue,
-                amount: doctor.fee,
-                couponCode: appliedCoupon ? appliedCoupon.code : undefined,
-                status: 'pending',
-            };
+            const WHATSAPP_NUMBER = '917990411390';
+            const formattedDate = new Date(selectedDate).toLocaleDateString();
+            const message = `Hello, I want to book a consultation.
 
-            // Call backend to initiate payment
-            console.log('[DOCTOR-BOOKING] Initiating booking with data:', bookingData);
-            const { data } = await api.post('/doctor-bookings/doctor-booking', bookingData);
+👤 Name: ${patientName}
+📅 Preferred Date: ${formattedDate} at ${selectedTime}
+🩺 Service: ${consultationType === 'video' ? 'Video Call' : 'In-Clinic'} (${doctor.name})
+${issue ? `📝 Concern: ${issue}` : ''}
 
-            if (data.razorpayOrderId) {
-                // Open Razorpay payment modal
-                const options = {
-                    key: data.razorpayKeyId,
-                    amount: data.amount,
-                    currency: 'INR',
-                    name: 'Doctor Consultation',
-                    description: `Consultation with Dr. ${doctor.name}`,
-                    order_id: data.razorpayOrderId,
-                    handler: async (response) => {
-                        try {
-                            // Verify payment
-                            const verifyData = await api.post('/doctor-bookings/verify-doctor-booking', {
-                                orderId: data.razorpayOrderId,
-                                paymentId: response.razorpay_payment_id,
-                                signature: response.razorpay_signature,
-                            });
+Please guide me further.`;
 
-                            if (verifyData.data.success) {
-                                if (addToast) addToast('Appointment booked successfully!', 'success');
-                                setTimeout(() => navigate('/profile'), 2000);
-                            } else {
-                                if (addToast) addToast('Payment verification failed', 'error');
-                            }
-                        } catch (error) {
-                            console.error('Payment verification error:', error);
-                            if (addToast) addToast('Payment verification failed', 'error');
-                        }
-                    },
-                    prefill: {
-                        name: patientName,
-                        email: patientEmail,
-                        contact: patientPhone,
-                    },
-                    theme: {
-                        color: '#22c55e',
-                    },
-                };
-
-                const razorpay = new window.Razorpay(options);
-                razorpay.open();
-            }
-        } catch (error) {
-            console.error('Booking error:', error);
-            if (addToast) addToast(error.response?.data?.message || 'Failed to initiate booking', 'error');
+            window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`, '_blank');
         } finally {
             setBookingInProgress(false);
         }
@@ -465,11 +412,11 @@ const DoctorBookingPage = () => {
 
                                 {/* CTA Button */}
                                 <button
-                                    onClick={initiatePayment}
+                                    onClick={handleWhatsAppConsult}
                                     disabled={bookingInProgress || !selectedDate || !selectedTime}
-                                    className="w-full bg-green-600 text-white py-4 rounded-lg font-bold text-lg hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                                    className="w-full bg-[#25D366] text-white py-4 rounded-lg font-bold text-lg hover:bg-[#1da851] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                                 >
-                                    <Zap size={20} /> {bookingInProgress ? 'Processing...' : 'Pay & Book Appointment'}
+                                    <MessageCircle size={20} /> {bookingInProgress ? 'Processing...' : 'Consult on WhatsApp'}
                                 </button>
 
                                 <p className="text-xs text-gray-500 text-center">

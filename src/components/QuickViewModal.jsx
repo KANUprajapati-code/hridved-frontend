@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { X, Star, ShoppingCart, Heart } from 'lucide-react';
+import { X, Star, MessageCircle, Heart } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import ProductImage from './ProductImage';
@@ -11,8 +11,11 @@ const QuickViewModal = ({ product, isOpen, onClose }) => {
 
     if (!isOpen || !product) return null;
 
-    const handleAddToCart = () => {
-        addToCart(product, quantity);
+    const handleWhatsAppOrder = () => {
+        const WHATSAPP_NUMBER = '917990411390';
+        const productUrl = `${window.location.origin}/product/${product._id}`;
+        const message = `Hello, I want to order this product:\n\n🛍 Product Name: ${product.name}\n💰 Price: ₹${product.price}\n🔗 Product Link: ${productUrl}\n\nPlease confirm availability.`;
+        window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`, '_blank');
         onClose();
     };
 
@@ -144,12 +147,12 @@ const QuickViewModal = ({ product, isOpen, onClose }) => {
                                 </div>
 
                                 <button
-                                    onClick={handleAddToCart}
+                                    onClick={handleWhatsAppOrder}
                                     disabled={product.countInStock === 0}
-                                    className="w-full bg-primary text-white py-3 rounded-lg font-semibold hover:bg-primary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                                    className="w-full bg-[#25D366] text-white py-3 rounded-lg font-semibold hover:bg-[#1da851] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                                 >
-                                    <ShoppingCart size={20} />
-                                    Add to Cart
+                                    <MessageCircle size={20} />
+                                    Order on WhatsApp
                                 </button>
 
                                 <Link

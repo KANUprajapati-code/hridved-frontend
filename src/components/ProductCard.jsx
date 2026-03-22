@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Star, ShoppingCart, Eye, Heart } from 'lucide-react';
+import { Star, MessageCircle, Eye, Heart } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useRef, useState } from 'react';
 import { motion } from 'framer-motion';
@@ -126,17 +126,17 @@ const ProductCard = ({ product, onQuickView }) => {
                             </span>
                         </div>
                         <button
-                            onClick={() => {
-                                addToCart(product);
-                                const cartIcon = document.getElementById('cart-icon-container');
-                                if (imageRef.current && cartIcon) {
-                                    animateAddToCart(imageRef.current, cartIcon, product.image);
-                                }
+                            onClick={(e) => {
+                                e.preventDefault();
+                                const WHATSAPP_NUMBER = '917990411390';
+                                const productUrl = `${window.location.origin}/product/${product._id}`;
+                                const message = `Hello, I want to order this product:\n\n🛍 Product Name: ${product.name}\n💰 Price: ₹${product.price}\n🔗 Product Link: ${productUrl}\n\nPlease confirm availability.`;
+                                window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`, '_blank');
                             }}
-                            className="bg-primary text-white p-2 sm:p-3 rounded-lg sm:rounded-xl hover:bg-secondary hover:text-primary transition-all duration-300 shadow-md hover:shadow-xl transform active:scale-95 mb-1"
-                            title="Add to Cart"
+                            className="bg-[#25D366] text-white p-2 sm:p-3 rounded-lg sm:rounded-xl hover:bg-[#1da851] transition-all duration-300 shadow-md hover:shadow-xl transform active:scale-95 mb-1"
+                            title="Order on WhatsApp"
                         >
-                            <ShoppingCart size={14} className="sm:w-[18px] sm:h-[18px]" />
+                            <MessageCircle size={14} className="sm:w-[18px] sm:h-[18px]" />
                         </button>
                         <div className="flex text-secondary gap-0.5">
                             {[...Array(5)].map((_, i) => (
