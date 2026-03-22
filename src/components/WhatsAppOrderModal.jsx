@@ -128,7 +128,7 @@ const WhatsAppOrderModal = ({ product, isOpen, onClose }) => {
 
             const { data } = await api.post('/orders/whatsapp', orderData);
 
-            const WHATSAPP_NUMBER = '919537166547';
+            const WHATSAPP_NUMBER = '917990411390';
             const productUrl = `${window.location.origin}/product/${product._id}`;
             const shipping = finalPrice > 999 ? 0 : 50;
             const total = finalPrice + shipping;

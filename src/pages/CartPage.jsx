@@ -143,7 +143,7 @@ const CartPage = () => {
 
             const encodedMsg = encodeURIComponent(msg);
             // Replace XXXXXXXXXX with actual WhatsApp number
-            const waNumber = '919537166547'; // Using a placeholder that user can configure
+            const waNumber = '917990411390'; // Using a placeholder that user can configure
             const waLink = `https://wa.me/${waNumber}?text=${encodedMsg}`;
             
             window.open(waLink, '_blank');
