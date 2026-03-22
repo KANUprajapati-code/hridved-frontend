@@ -69,6 +69,10 @@ const OrderPage = () => {
     const [stripePromise, setStripePromise] = useState(null);
     const [clientSecret, setClientSecret] = useState('');
 
+    // Tracking State
+    const [trackingInput, setTrackingInput] = useState('');
+    const [courierInput, setCourierInput] = useState('');
+
     useEffect(() => {
         if (!user || !user.isAdmin) {
             navigate('/profile');
@@ -122,6 +126,22 @@ const OrderPage = () => {
         } catch (error) {
             console.error(error);
             alert('Error updating order');
+        }
+    };
+
+    const trackingUpdateHandler = async () => {
+        try {
+            const { data } = await api.put(`/orders/${order._id}/tracking`, {
+                trackingId: trackingInput,
+                courierName: courierInput || 'Standard Courier'
+            });
+            setOrder(data);
+            alert('Tracking Updated Successfully');
+            setTrackingInput('');
+            setCourierInput('');
+        } catch (error) {
+            console.error(error);
+            alert('Error updating tracking info');
         }
     };
 
@@ -248,10 +268,40 @@ const OrderPage = () => {
                     {user && user.isAdmin && (
                         <div className="bg-white p-6 rounded shadow-md border mt-8">
                             <h2 className="text-xl font-bold mb-6 border-b pb-4 flex items-center gap-2 text-primary">
-                                <Truck size={24} /> Vamaship Shipping Control
+                                <Truck size={24} /> Admin Shipping Controls
                             </h2>
 
-                            <div className="space-y-4">
+                            <div className="space-y-6">
+                                {/* Manual Tracking Update */}
+                                <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                                    <h3 className="font-bold text-gray-800 mb-3 text-sm uppercase tracking-wider">Manual Tracking Update</h3>
+                                    <div className="flex flex-col gap-3">
+                                        <input 
+                                            type="text" 
+                                            placeholder="Courier Name (e.g., BlueDart)" 
+                                            value={courierInput}
+                                            onChange={(e) => setCourierInput(e.target.value)}
+                                            className="px-4 py-2 border border-gray-300 rounded focus:outline-none focus:border-primary"
+                                        />
+                                        <input 
+                                            type="text" 
+                                            placeholder="AWB / Tracking ID" 
+                                            value={trackingInput}
+                                            onChange={(e) => setTrackingInput(e.target.value)}
+                                            className="px-4 py-2 border border-gray-300 rounded focus:outline-none focus:border-primary"
+                                        />
+                                        <button 
+                                            onClick={trackingUpdateHandler}
+                                            disabled={!trackingInput}
+                                            className="bg-primary text-white py-2 rounded hover:bg-opacity-90 transition font-bold disabled:opacity-50"
+                                        >
+                                            Update Tracking
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="space-y-4 mt-6">
                                 {/* Row 1: Create & Pickup */}
                                 <div className="grid grid-cols-2 gap-4">
                                     <button

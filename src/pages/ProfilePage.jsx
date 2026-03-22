@@ -376,7 +376,7 @@ const OrdersList = ({ orders, loading, onTrack, isAdmin }) => (
                                     </Link>
                                 )}
                                 <button 
-                                    onClick={() => onTrack(order._id, order.waybill)}
+                                    onClick={() => onTrack(order._id, order.waybill || order.trackingId)}
                                     className="bg-primary hover:bg-secondary text-white hover:text-primary px-5 py-2.5 rounded-xl font-bold text-sm shadow-lg shadow-primary/20 transition-all active:scale-95"
                                 >
                                     Track
