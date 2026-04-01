@@ -52,20 +52,7 @@ const HomePage = () => {
     }, []);
 
     const BestsellerCarousel = ({ products }) => {
-        const [currentIndex, setCurrentIndex] = useState(0);
-        const [direction, setDirection] = useState(0);
-
-        const nextSlide = () => {
-            setDirection(1);
-            setCurrentIndex((prevIndex) => (prevIndex + 1) % Math.max(1, products.length));
-        };
-
-        const prevSlide = () => {
-            setDirection(-1);
-            setCurrentIndex((prevIndex) => (prevIndex - 1 + products.length) % Math.max(1, products.length));
-        };
-
-        const visibleProducts = products.length > 0 ? (products.length > 4 ? products.slice(currentIndex, currentIndex + 4).concat(products.slice(0, Math.max(0, 4 - (products.length - currentIndex)))) : products) : [
+        const visibleProducts = products.length > 0 ? products : [
             { _id: '1', name: 'Premium Hair Oil', image: 'https://images.unsplash.com/photo-1626444341257-58a13e41ae2a?w=800&q=80', price: 499, category: 'Hair Care', rating: 5 },
             { _id: '2', name: 'Herbal Skin Cream', image: 'https://images.unsplash.com/photo-1556229162-5c63ed9c4ffb?w=800&q=80', price: 599, category: 'Skin Care', rating: 4 },
             { _id: '3', name: 'Immunity Booster Churn', image: 'https://images.unsplash.com/photo-1611080626919-7cf5a9caab53?w=800&q=80', price: 349, category: 'Immunity', rating: 5 },
@@ -76,8 +63,8 @@ const HomePage = () => {
 
         return (
             <div className="relative group/carousel">
-                <div className="overflow-hidden">
-                    <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6 lg:gap-8">
+                <div>
+                    <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-6 lg:gap-8">
                         {visibleProducts.map((product) => (
                             <div key={product._id} className="bg-white rounded-2xl overflow-hidden hover:shadow-2xl transition-all duration-500 border border-gray-100 group/card h-full flex flex-col relative">
                                 {product.mrp > product.price && (
@@ -129,16 +116,6 @@ const HomePage = () => {
                         ))}
                     </div>
                 </div>
-                {products.length > 4 && (
-                    <>
-                        <button onClick={prevSlide} className="absolute top-1/2 -left-4 xl:-left-8 transform -translate-y-1/2 bg-white p-3 rounded-full shadow-xl text-primary z-20 hover:bg-primary hover:text-white transition-all duration-300 opacity-0 group-hover/carousel:opacity-100">
-                            <ArrowRight size={24} className="rotate-180" />
-                        </button>
-                        <button onClick={nextSlide} className="absolute top-1/2 -right-4 xl:-right-8 transform -translate-y-1/2 bg-white p-3 rounded-full shadow-xl text-primary z-20 hover:bg-primary hover:text-white transition-all duration-300 opacity-0 group-hover/carousel:opacity-100">
-                            <ArrowRight size={24} />
-                        </button>
-                    </>
-                )}
             </div>
         );
     };
