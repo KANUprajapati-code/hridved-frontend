@@ -78,9 +78,9 @@ const HomePage = () => {
                                     <Link to={`/product/${product._id}`}>
                                         <AnimatedImage src={product.image || 'https://images.unsplash.com/photo-1545205597-3d9d02c29597?w=800&q=80'} alt={product.name} className="w-full h-full object-cover transition-transform duration-700 group-hover/card:scale-110" />
                                     </Link>
-                                    <div className="absolute inset-0 bg-black/0 group-hover/card:bg-black/5 transition-colors duration-300"></div>
+                                    <div className="absolute inset-0 bg-black/0 group-hover/card:bg-black/5 transition-colors duration-300 pointer-events-none"></div>
                                     <Link to={`/product/${product._id}`}>
-                                        <button className="absolute bottom-4 right-4 bg-white/90 backdrop-blur-sm p-3 rounded-full shadow-lg text-primary transform translate-y-12 opacity-0 group-hover/card:translate-y-0 group-hover/card:opacity-100 transition-all duration-300 hover:bg-primary hover:text-white z-10">
+                                        <button className="absolute bottom-4 right-4 bg-white/90 backdrop-blur-sm p-3 rounded-full shadow-lg text-primary transform translate-y-12 opacity-0 group-hover/card:translate-y-0 group-hover/card:opacity-100 transition-all duration-300 hover:bg-primary hover:text-white z-10 pointer-events-auto">
                                             <ArrowRight size={20} />
                                         </button>
                                     </Link>

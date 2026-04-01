@@ -60,12 +60,16 @@ const ProductCard = ({ product, onQuickView }) => {
                 </Link>
 
                 {/* Hover Actions - Visible on mobile/touch, hover on desktop */}
-                <div className="absolute inset-0 bg-black/10 lg:bg-black/20 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-3">
+                <div className="absolute inset-0 bg-black/10 lg:bg-black/20 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-3 pointer-events-none">
                     <motion.button
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.9 }}
-                        onClick={() => onQuickView && onQuickView(product)}
-                        className="w-12 h-12 bg-white rounded-full flex items-center justify-center text-primary shadow-2xl hover:bg-primary hover:text-white transition-all transform translate-y-0 lg:-translate-y-4 lg:group-hover:translate-y-0 duration-300"
+                        onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            onQuickView && onQuickView(product);
+                        }}
+                        className="w-12 h-12 bg-white rounded-full flex items-center justify-center text-primary shadow-2xl hover:bg-primary hover:text-white transition-all transform translate-y-0 lg:-translate-y-4 lg:group-hover:translate-y-0 duration-300 pointer-events-auto"
                         title="Quick View"
                     >
                         <Eye size={20} />
@@ -74,8 +78,12 @@ const ProductCard = ({ product, onQuickView }) => {
                     <motion.button
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.9 }}
-                        onClick={() => setIsWishlisted(!isWishlisted)}
-                        className={`w-12 h-12 rounded-full flex items-center justify-center shadow-2xl transition-all transform translate-y-0 lg:translate-y-4 lg:group-hover:translate-y-0 duration-300 delay-75 ${isWishlisted ? 'bg-red-500 text-white' : 'bg-white text-primary hover:bg-red-50'
+                        onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            setIsWishlisted(!isWishlisted);
+                        }}
+                        className={`w-12 h-12 rounded-full flex items-center justify-center shadow-2xl transition-all transform translate-y-0 lg:translate-y-4 lg:group-hover:translate-y-0 duration-300 delay-75 pointer-events-auto ${isWishlisted ? 'bg-red-500 text-white' : 'bg-white text-primary hover:bg-red-50'
                             }`}
                         title="Add to Wishlist"
                     >
