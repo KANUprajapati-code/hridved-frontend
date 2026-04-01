@@ -20,7 +20,7 @@ const WhatsAppOrderModal = ({ product, isOpen, onClose }) => {
     });
     const [formErrors, setFormErrors] = useState({});
     const [isProcessingOrder, setIsProcessingOrder] = useState(false);
-    const [paymentMethod, setPaymentMethod] = useState('COD');
+    const [paymentMethod, setPaymentMethod] = useState('Prepaid');
     
     // Promo Code State
     const [promoCode, setPromoCode] = useState('');

@@ -37,7 +37,7 @@ const CartPage = () => {
     });
     const [formErrors, setFormErrors] = useState({});
     const [isProcessingOrder, setIsProcessingOrder] = useState(false);
-    const [paymentMethod, setPaymentMethod] = useState('COD');
+    const [paymentMethod, setPaymentMethod] = useState('Prepaid');
 
     useEffect(() => {
         const fetchRecommendations = async () => {
