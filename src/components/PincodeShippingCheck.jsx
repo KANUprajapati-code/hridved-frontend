@@ -19,28 +19,32 @@ const PincodeShippingCheck = ({ productPrice = 0 }) => {
         setResult(null);
 
         try {
+            // Still call the API to ensure the backend is touched, 
+            // but we will override the serviceability result
             const { data } = await api.post('/shipping/serviceability', {
                 pincode: parseInt(pincode),
                 weight: 0.5,
                 cod: productPrice > 0 ? 1 : 0,
             });
 
-            if (data && data.serviceability) {
-                setResult({
-                    available: true,
-                    message: `Delivery available in ${2-4} business days`,
-                    estimatedDelivery: '2-4 business days',
-                    couriers: data.couriers || ['FedEx', 'DTDC'],
-                });
-            } else {
-                setResult({
-                    available: false,
-                    message: 'Delivery not available at this pincode',
-                });
-            }
+            // Always set available to true as requested by the user
+            setResult({
+                available: true,
+                message: `Delivery available in 2-4 business days`,
+                estimatedDelivery: '2-4 business days',
+                couriers: (data && data.shippingOptions && data.shippingOptions.length > 0) 
+                    ? data.shippingOptions.map(opt => opt.provider) 
+                    : ['BlueDart', 'Delhivery', 'FedEx'],
+            });
         } catch (err) {
-            setError('Unable to check serviceability. Please try again.');
-            console.error('Serviceability check error:', err);
+            // Even if API fails, we show as available to satisfy the "always available" requirement
+            setResult({
+                available: true,
+                message: `Delivery available in 2-4 business days`,
+                estimatedDelivery: '2-4 business days',
+                couriers: ['Standard Delivery'],
+            });
+            console.error('Serviceability check error (ignored):', err);
         } finally {
             setLoading(false);
         }
