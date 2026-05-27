@@ -159,14 +159,13 @@ const HomePage = () => {
                 {/* Hero Section - Optimized for mobile aspect ratio */}
                 <section className="relative min-h-[350px] xs:min-h-[450px] sm:min-h-[600px] md:min-h-[700px] lg:min-h-[85vh] flex items-center overflow-hidden bg-primary py-12 sm:py-20">
                     <div className="absolute inset-0 w-full h-full bg-primary">
-                        <AnimatedImage
+                        <img
                             src={getImageUrl(content?.hero?.image) || "/hero-bg.png"}
                             alt="Ayurveda Wellness"
-                            containerClassName="w-full h-full !rounded-none"
                             className="w-full h-full object-cover object-[center_25%] sm:object-center shadow-inner"
-                            zoomIntensity={1.05}
                             loading="eager"
-                            fetchPriority="high"
+                            fetchpriority="high"
+                            decoding="sync"
                             onLoad={() => setIsHeroLoaded(true)}
                         />
                         <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/20 to-transparent pointer-events-none"></div>

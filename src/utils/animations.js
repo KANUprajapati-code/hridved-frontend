@@ -1,25 +1,22 @@
 // Animation variants for Framer Motion
 // Premium smooth animations inspired by Apple and Amazon
 
-// Page Transitions
+// Page Transitions - Optimized to be ultra-fast and lag-free
 export const pageVariants = {
   initial: {
     opacity: 0,
-    y: 20,
   },
   animate: {
     opacity: 1,
-    y: 0,
     transition: {
-      duration: 0.5,
+      duration: 0.15,
       ease: 'easeOut',
     },
   },
   exit: {
     opacity: 0,
-    y: -20,
     transition: {
-      duration: 0.3,
+      duration: 0.1,
       ease: 'easeIn',
     },
   },
@@ -31,36 +28,36 @@ export const containerVariants = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.2,
+      staggerChildren: 0.05,
+      delayChildren: 0.05,
     },
   },
 };
 
 // Individual item animation for staggered lists
 export const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
+  hidden: { opacity: 0, y: 10 },
   visible: {
     opacity: 1,
     y: 0,
     transition: {
-      duration: 0.4,
+      duration: 0.25,
       ease: 'easeOut',
     },
   },
 };
 
-// Scroll reveal animation
+// Scroll reveal animation - Light and snappy for zero repaint lag
 export const scrollRevealVariants = {
   hidden: {
     opacity: 0,
-    y: 50,
+    y: 12,
   },
   visible: {
     opacity: 1,
     y: 0,
     transition: {
-      duration: 0.6,
+      duration: 0.35,
       ease: 'easeOut',
     },
   },
