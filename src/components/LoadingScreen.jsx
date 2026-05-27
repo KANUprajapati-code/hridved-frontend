@@ -173,26 +173,6 @@ const LoadingScreen = () => {
                 </div>
             </div>
 
-            {/* Cinematic Sparkles */}
-            {[...Array(20)].map((_, i) => (
-                <motion.div
-                    key={`sparkle-${i}`}
-                    className="absolute w-1 h-1 bg-[#FFD700] rounded-full shadow-[0_0_8px_#fff]"
-                    style={{
-                        left: `${Math.random() * 100}%`,
-                        top: `${Math.random() * 100}%`,
-                    }}
-                    animate={{
-                        opacity: [0, 0.9, 0],
-                        scale: [0, 1.4, 0],
-                    }}
-                    transition={{
-                        duration: 4 + Math.random() * 3,
-                        repeat: Infinity,
-                        delay: Math.random() * 5
-                    }}
-                />
-            ))}
         </motion.div>
     );
 };

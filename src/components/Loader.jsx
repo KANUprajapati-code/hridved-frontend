@@ -12,19 +12,6 @@ const Loader = ({ isLoading }) => {
                     className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-white"
                 >
                     <div className="relative">
-                        {/* Elegant Pulsating Rings */}
-                        <motion.div
-                            animate={{
-                                scale: [1, 1.2, 1],
-                                opacity: [0.3, 0.1, 0.3],
-                            }}
-                            transition={{
-                                duration: 2,
-                                repeat: Infinity,
-                                ease: "easeInOut"
-                            }}
-                            className="absolute inset-0 bg-primary/10 rounded-full scale-150 blur-xl"
-                        />
                         
                         {/* Logo / Icon */}
                         <motion.div
@@ -55,12 +42,7 @@ const Loader = ({ isLoading }) => {
                                 HRIDVED
                             </motion.h1>
                             
-                            <motion.div
-                                initial={{ width: 0 }}
-                                animate={{ width: "60px" }}
-                                transition={{ delay: 1, duration: 1 }}
-                                className="h-0.5 bg-secondary mt-3 rounded-full"
-                            />
+                            
                             
                             <motion.p
                                 initial={{ opacity: 0 }}

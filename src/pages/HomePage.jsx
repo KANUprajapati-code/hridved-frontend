@@ -21,12 +21,21 @@ const HomePage = () => {
     const [isHeroLoaded, setIsHeroLoaded] = useState(false);
 
     useEffect(() => {
-        // Hide loader only when both API and Hero Image are ready
+        // Safety fallback to hide loader after 1.5s regardless of image loading
+        const safetyTimer = setTimeout(() => {
+            setIsPageLoading(false);
+        }, 1500);
+
         if (!isLoadingCategories && isHeroLoaded) {
-            // Add a small delay for smooth transition
-            const timer = setTimeout(() => setIsPageLoading(false), 500);
-            return () => clearTimeout(timer);
+            // Snappy transition delay
+            const timer = setTimeout(() => setIsPageLoading(false), 150);
+            return () => {
+                clearTimeout(timer);
+                clearTimeout(safetyTimer);
+            };
         }
+        
+        return () => clearTimeout(safetyTimer);
     }, [isLoadingCategories, isHeroLoaded]);
 
     useEffect(() => {

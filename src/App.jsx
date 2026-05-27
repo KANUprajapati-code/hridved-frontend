@@ -80,8 +80,8 @@ function App() {
             loadingCleared = true;
             
             const timeElapsed = Date.now() - startTime;
-            // Reduced to 2s for better UX, while still showing the creative effect
-            const remainingTime = Math.max(0, 2000 - timeElapsed);
+            // Reduced for instantaneous rendering and premium, fast UX
+            const remainingTime = Math.max(0, 400 - timeElapsed);
             
             setTimeout(() => {
                 setSiteLoading(false);
