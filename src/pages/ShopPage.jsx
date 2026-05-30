@@ -234,12 +234,18 @@ const ShopPage = () => {
                         </div>
 
                         {/* Sidebar Filters */}
-                        <div className={`fixed inset-0 z-[60] bg-black/50 md:relative md:inset-auto md:z-0 md:bg-transparent md:w-64 lg:w-72 flex-shrink-0 transition-opacity duration-300 ${showMobileFilters ? 'opacity-100 visible' : 'opacity-0 invisible md:visible md:opacity-100'}`}>
-                            <div className={`absolute left-0 top-0 h-full w-4/5 max-w-xs bg-white p-6 overflow-y-auto md:p-0 md:bg-transparent md:h-auto md:w-full md:max-w-none md:static transform transition-transform duration-300 ${showMobileFilters ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
+                        <div 
+                            className={`fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm md:relative md:inset-auto md:z-0 md:bg-transparent md:w-64 lg:w-72 flex-shrink-0 transition-all duration-300 ${showMobileFilters ? 'opacity-100 visible' : 'opacity-0 invisible md:visible md:opacity-100'}`}
+                            onClick={() => setShowMobileFilters(false)}
+                        >
+                            <div 
+                                className={`absolute left-0 top-0 h-full w-4/5 max-w-xs bg-white p-6 overflow-y-auto md:p-0 md:bg-transparent md:h-auto md:w-full md:max-w-none md:static transform transition-transform duration-300 ${showMobileFilters ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}
+                                onClick={(e) => e.stopPropagation()}
+                            >
                                 <div className="flex items-center justify-between mb-8 md:hidden">
                                     <h3 className="text-xl font-sans font-bold text-primary">Filters</h3>
                                     <button onClick={() => setShowMobileFilters(false)} className="text-gray-400 hover:text-primary">
-                                        <Filter size={24} className="rotate-90" />
+                                        <X size={24} />
                                     </button>
                                 </div>
 
