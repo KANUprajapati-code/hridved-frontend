@@ -82,7 +82,7 @@ const Header = () => {
                     <img
                         src="/logo-asset4.png"
                         alt="HRIDVED AYURVEDA"
-                        className="h-14 md:h-10 w-auto object-contain transition-transform hover:scale-105"
+                        className="h-9 sm:h-10 w-auto object-contain transition-transform hover:scale-105"
                     />
                 </Link>
 

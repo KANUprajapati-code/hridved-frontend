@@ -132,7 +132,7 @@ const ProductCard = ({ product, onQuickView }) => {
                 </div>
 
                 {/* Bottom Actions - Add to Cart and Buy Now side-by-side */}
-                <div className="flex gap-2 mt-auto">
+                <div className="flex flex-col sm:flex-row gap-2 mt-auto">
                     <button
                         onClick={(e) => {
                             e.preventDefault();
@@ -142,7 +142,7 @@ const ProductCard = ({ product, onQuickView }) => {
                             }
                             addToCart(product, 1);
                         }}
-                        className="flex-1 bg-primary text-white py-3 rounded-xl hover:bg-opacity-95 hover:shadow-md transition-all duration-300 flex items-center justify-center gap-1.5 font-black text-[10px] uppercase tracking-wider active:scale-[0.98] disabled:opacity-50"
+                        className="w-full sm:w-auto sm:flex-1 bg-primary text-white py-3 rounded-xl hover:bg-opacity-95 hover:shadow-md transition-all duration-300 flex items-center justify-center gap-1.5 font-black text-[10px] uppercase tracking-wider active:scale-[0.98] disabled:opacity-50"
                         disabled={product.countInStock === 0}
                     >
                         <ShoppingCart size={13} />
@@ -153,7 +153,7 @@ const ProductCard = ({ product, onQuickView }) => {
                             e.preventDefault();
                             setIsWhatsAppModalOpen(true);
                         }}
-                        className="flex-1 bg-[#25D366] text-white py-3 rounded-xl hover:bg-[#1da851] hover:shadow-md transition-all duration-300 flex items-center justify-center gap-1.5 font-black text-[10px] uppercase tracking-wider active:scale-[0.98]"
+                        className="w-full sm:w-auto sm:flex-1 bg-[#25D366] text-white py-3 rounded-xl hover:bg-[#1da851] hover:shadow-md transition-all duration-300 flex items-center justify-center gap-1.5 font-black text-[10px] uppercase tracking-wider active:scale-[0.98]"
                     >
                         <MessageCircle size={13} />
                         <span>Buy Now</span>

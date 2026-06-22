@@ -291,7 +291,7 @@ const CartPage = () => {
                             {cartItems.map((item, index) => (
                                 <ScrollReveal key={item.product} delay={index * 0.1}>
                                     <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm flex flex-col sm:flex-row gap-6 items-center sm:items-start transition hover:shadow-md">
-                                        <Link to={`/product/${item.product}`} className="w-full sm:w-32 h-32 flex-shrink-0 bg-gray-50 rounded-lg overflow-hidden flex items-center justify-center">
+                                        <Link to={`/product/${item.product}`} className="w-24 h-24 sm:w-32 sm:h-32 flex-shrink-0 bg-gray-50 rounded-lg overflow-hidden flex items-center justify-center">
                                             <img src={item.image} alt={item.name} className="w-full h-full object-contain p-2" />
                                         </Link>
 
