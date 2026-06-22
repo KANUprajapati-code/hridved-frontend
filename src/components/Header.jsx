@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ShoppingCart, User, Search, Menu, X, Home, ShoppingBag, Stethoscope, FileText, Compass, Info, Phone, Shield, LogOut } from 'lucide-react';
+import { ShoppingCart, User, Search, Menu, X, Home, ShoppingBag, Stethoscope, FileText, Compass, Info, Phone, Shield, LogOut, MapPin, Facebook, Instagram, Twitter, Mail } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
@@ -55,9 +55,28 @@ const Header = () => {
         <motion.header
             variants={headerVariants}
             animate={isVisible ? 'visible' : 'hidden'}
-            className={`sticky top-0 z-50 transition-all duration-300 bg-primary text-white ${scrolled ? 'shadow-md py-1' : 'py-2'}`}
+            className={`sticky top-0 z-50 transition-all duration-300 bg-primary text-white p-0`}
         >
-            <div className="container mx-auto flex justify-between items-center relative">
+            {/* Row 1: Announcement Bar */}
+            <div className="bg-black/90 text-white py-2 text-center text-[10px] sm:text-xs font-black tracking-widest uppercase border-b border-white/5 px-4">
+                Get 10% Off Your First Purchase. Use Code: <span className="text-secondary">WELCOME10</span>
+            </div>
+
+            {/* Row 2: Location and Socials - Desktop only */}
+            <div className="hidden md:flex bg-black/20 border-b border-white/5 py-1.5 px-6 text-[10px] justify-between items-center text-gray-300 tracking-wider uppercase font-bold">
+                <div className="flex items-center gap-1.5">
+                    <MapPin size={12} className="text-secondary" />
+                    <span>Delivering to India | Free Shipping above ₹999</span>
+                </div>
+                <div className="flex items-center gap-4">
+                    <a href="https://facebook.com" target="_blank" rel="noreferrer" className="hover:text-secondary transition-colors"><Facebook size={12} /></a>
+                    <a href="https://instagram.com" target="_blank" rel="noreferrer" className="hover:text-secondary transition-colors"><Instagram size={12} /></a>
+                    <a href="https://twitter.com" target="_blank" rel="noreferrer" className="hover:text-secondary transition-colors"><Twitter size={12} /></a>
+                    <a href="mailto:hridvedpharama@gmail.com" className="hover:text-secondary transition-colors"><Mail size={12} /></a>
+                </div>
+            </div>
+
+            <div className={`container mx-auto flex justify-between items-center relative px-4 transition-all duration-300 ${scrolled ? 'py-2' : 'py-3.5'}`}>
                 {/* Logo */}
                 <Link to="/" className="flex-shrink-0">
                     <img

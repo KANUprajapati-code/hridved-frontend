@@ -43,6 +43,7 @@ const QuickViewModal = ({ product, isOpen, onClose }) => {
                                     className="rounded"
                                     width={300}
                                     height={320}
+                                    objectFit="contain"
                                 />
                             </div>
                         </div>

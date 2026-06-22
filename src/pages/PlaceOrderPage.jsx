@@ -10,8 +10,8 @@ const PlaceOrderPage = () => {
     const { user } = useAuth();
     const navigate = useNavigate();
     const [shippingAddress, setShippingAddress] = useState({});
-    const [paymentMethod, setPaymentMethod] = useState('razorpay');
-    const [shippingProvider, setShippingProvider] = useState('Vamaship');
+    const [paymentMethod, setPaymentMethod] = useState('COD');
+    const [shippingProvider, setShippingProvider] = useState('Local');
 
     useEffect(() => {
         if (!user) navigate('/login');
@@ -91,24 +91,13 @@ const PlaceOrderPage = () => {
                     <div className="bg-white p-6 rounded shadow-sm border">
                         <h2 className="text-xl font-bold mb-4 text-gray-800">Payment Method</h2>
                         <div className="flex flex-col gap-3">
-                            <label className="flex items-center gap-3 p-3 border rounded cursor-pointer hover:bg-gray-50 transition">
-                                <input
-                                    type="radio"
-                                    name="paymentMethod"
-                                    value="Stripe"
-                                    checked={paymentMethod === 'Stripe'}
-                                    onChange={(e) => setPaymentMethod(e.target.value)}
-                                    className="accent-primary w-5 h-5"
-                                />
-                                <span className="font-medium">Credit/Debit Card (Stripe)</span>
-                            </label>
-                            <label className="flex items-center gap-3 p-3 border rounded cursor-pointer hover:bg-gray-50 transition">
+                            <label className="flex items-center gap-3 p-3 border rounded cursor-pointer hover:bg-gray-50 transition bg-primary/5 border-primary">
                                 <input
                                     type="radio"
                                     name="paymentMethod"
                                     value="COD"
-                                    checked={paymentMethod === 'COD'}
-                                    onChange={(e) => setPaymentMethod(e.target.value)}
+                                    checked={true}
+                                    readOnly={true}
                                     className="accent-primary w-5 h-5"
                                 />
                                 <span className="font-medium">Cash on Delivery (COD)</span>

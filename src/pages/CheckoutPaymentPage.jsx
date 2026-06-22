@@ -8,8 +8,7 @@ import api from '../utils/api';
 import AnimatedPage from '../components/AnimatedPage';
 import AnimatedButton from '../components/AnimatedButton';
 import ScrollReveal from '../components/ScrollReveal';
-import { CreditCard, Lock, ShieldCheck, ChevronLeft, ArrowRight, MapPin, Package } from 'lucide-react';
-import PaymentButton from '../components/PaymentButton';
+import { CreditCard, Lock, ChevronLeft, ArrowRight, MapPin, Package } from 'lucide-react';
 
 export default function CheckoutPaymentPage() {
     const navigate = useNavigate();
@@ -19,7 +18,7 @@ export default function CheckoutPaymentPage() {
 
     const [loading] = useState(false);
     const [creatingOrder, setCreatingOrder] = useState(false);
-    const [paymentMethod, setPaymentMethod] = useState('razorpay');
+    const [paymentMethod, setPaymentMethod] = useState('COD');
 
     const orderId = checkoutData.orderId;
 
@@ -284,41 +283,21 @@ export default function CheckoutPaymentPage() {
                                         </h3>
 
                                         <div className="space-y-4 mb-8">
-                                            {/* Razorpay Option */}
-                                            <label className={`flex items-center p-4 border-2 rounded-xl cursor-pointer transition-all ${paymentMethod === 'razorpay' ? 'border-primary bg-primary/5' : 'border-gray-200 hover:border-primary/50'}`}>
-                                                <input
-                                                    type="radio"
-                                                    name="paymentMethod"
-                                                    value="razorpay"
-                                                    checked={paymentMethod === 'razorpay'}
-                                                    onChange={() => setPaymentMethod('razorpay')}
-                                                    className="w-5 h-5 accent-primary mr-4"
-                                                />
-                                                <div className="flex-1">
-                                                    <div className="font-bold text-gray-900">Online Payment</div>
-                                                    <div className="text-xs text-gray-500">Cards, UPI, Netbanking, Wallets</div>
-                                                    {paymentMethod === 'razorpay' && (
-                                                        <div className="text-[10px] text-primary font-bold bg-white border border-primary px-2 py-0.5 rounded inline-block mt-1 uppercase tracking-wider">Razorpay Secured</div>
-                                                    )}
-                                                </div>
-                                                {paymentMethod === 'razorpay' && <ShieldCheck size={20} className="text-primary" />}
-                                            </label>
-
                                             {/* COD Option */}
-                                            <label className={`flex items-center p-4 border-2 rounded-xl cursor-pointer transition-all ${paymentMethod === 'COD' ? 'border-primary bg-primary/5' : 'border-gray-200 hover:border-primary/50'}`}>
+                                            <label className="flex items-center p-4 border-2 rounded-xl cursor-pointer border-primary bg-primary/5">
                                                 <input
                                                     type="radio"
                                                     name="paymentMethod"
                                                     value="COD"
-                                                    checked={paymentMethod === 'COD'}
-                                                    onChange={() => setPaymentMethod('COD')}
+                                                    checked={true}
+                                                    readOnly={true}
                                                     className="w-5 h-5 accent-primary mr-4"
                                                 />
                                                 <div className="flex-1">
                                                     <div className="font-bold text-gray-900">Cash on Delivery (COD)</div>
                                                     <div className="text-xs text-gray-500">Pay when you receive your order</div>
                                                 </div>
-                                                {paymentMethod === 'COD' && <Package size={20} className="text-primary" />}
+                                                <Package size={20} className="text-primary" />
                                             </label>
                                         </div>
 
@@ -332,29 +311,15 @@ export default function CheckoutPaymentPage() {
                                         </div>
 
                                         <div className="mt-auto">
-                                            {paymentMethod === 'razorpay' ? (
-                                                <PaymentButton
-                                                    amount={totalPrice}
-                                                    onBeforePayment={createOrderBackend}
-                                                    onError={(err) => setErrorMessage(err)}
-                                                />
-                                            ) : (
-                                                <AnimatedButton
-                                                    onClick={handleCODOrder}
-                                                    disabled={creatingOrder}
-                                                    className="w-full bg-primary text-white py-4 rounded-xl font-bold text-lg shadow-lg hover:bg-opacity-90 hover:shadow-xl transition-all flex items-center justify-center gap-2 border-none"
-                                                >
-                                                    {creatingOrder ? "Processing..." : <>Complete Order <ArrowRight size={20} /></>}
-                                                </AnimatedButton>
-                                            )}
+                                            <AnimatedButton
+                                                onClick={handleCODOrder}
+                                                disabled={creatingOrder}
+                                                className="w-full bg-primary text-white py-4 rounded-xl font-bold text-lg shadow-lg hover:bg-opacity-90 hover:shadow-xl transition-all flex items-center justify-center gap-2 border-none"
+                                            >
+                                                {creatingOrder ? "Processing..." : <>Complete Order <ArrowRight size={20} /></>}
+                                            </AnimatedButton>
 
                                             <div className="mt-4 flex flex-col items-center justify-center gap-2 text-xs text-gray-500">
-                                                {orderId && !checkoutData.isPaymentConfirmed && paymentMethod === 'razorpay' && (
-                                                    <div className="flex items-center gap-2 text-primary font-bold animate-pulse mb-2 text-sm bg-primary/5 px-4 py-2 rounded-full border border-primary/10">
-                                                        <div className="w-2 h-2 bg-primary rounded-full animate-ping"></div>
-                                                        Waiting for payment confirmation...
-                                                    </div>
-                                                )}
                                                 <div className="flex items-center gap-2">
                                                     <Lock size={12} />
                                                     <span>Your information is safe & secure</span>

@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Star, Truck, ShieldCheck, Leaf, Users, Award, Heart, History, CheckCircle, Droplets, Sun, Sparkles } from 'lucide-react';
+import { ArrowRight, Star, Truck, ShieldCheck, Leaf, Users, Award, Heart, History, CheckCircle, Droplets, Sun, Sparkles, Play, VolumeX, ChevronLeft, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import api, { getImageUrl } from '../utils/api';
 import AnimatedPage from '../components/AnimatedPage';
@@ -20,15 +20,49 @@ const HomePage = () => {
     const [isLoadingCategories, setIsLoadingCategories] = useState(true);
     const [isPageLoading, setIsPageLoading] = useState(true);
     const [isHeroLoaded, setIsHeroLoaded] = useState(false);
+    const [activeSlide, setActiveSlide] = useState(0);
+
+    const slides = [
+        {
+            badge: "PREMIUM WELLNESS",
+            title: "Ancient Wisdom. Masterfully Pure.",
+            subtitle: "Experience the pinnacle of Ayurvedic excellence. Pure formulations handcrafted for your modern lifestyle.",
+            image: getImageUrl(content?.hero?.image) || "https://images.unsplash.com/photo-1612170153139-6f881ff067e0?q=80&w=1200&auto=format",
+            ctaText: "Shop Collection",
+            link: "/shop"
+        },
+        {
+            badge: "DOCTOR CONSULTATION",
+            title: "Consult Certified Ayurvedic Specialists.",
+            subtitle: "Get personalized care, authentic treatment plans, and virtual consultations from our panel of specialists.",
+            image: "https://images.unsplash.com/photo-1584820927498-cfe5211fd8bf?q=80&w=1200&auto=format",
+            ctaText: "Book Appointment",
+            link: "/consultation"
+        },
+        {
+            badge: "100% PURE & CERTIFIED",
+            title: "Handcrafted in Small Batches.",
+            subtitle: "Slow-cooked for 72 hours in traditional vessels. Lab-tested against 140+ safety parameters.",
+            image: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=1200&auto=format",
+            ctaText: "Our Purity Story",
+            link: "/about"
+        }
+    ];
 
     useEffect(() => {
-        // Safety fallback to hide loader after 1.5s regardless of image loading
+        const slideInterval = setInterval(() => {
+            setActiveSlide(prev => (prev + 1) % slides.length);
+        }, 7000);
+        return () => clearInterval(slideInterval);
+    }, [slides.length]);
+
+    useEffect(() => {
+        // Safety fallback to hide loader after 1.5s
         const safetyTimer = setTimeout(() => {
             setIsPageLoading(false);
         }, 1500);
 
         if (!isLoadingCategories && isHeroLoaded) {
-            // Snappy transition delay
             const timer = setTimeout(() => setIsPageLoading(false), 150);
             return () => {
                 clearTimeout(timer);
@@ -54,35 +88,41 @@ const HomePage = () => {
                 setTips(tipsRes.data || []);
                 setCategories(categoriesRes.data || []);
                 setIsLoadingCategories(false);
+                setIsHeroLoaded(true);
             } catch (error) {
                 console.error("Failed to load data", error);
+                setIsLoadingCategories(false);
+                setIsHeroLoaded(true);
             }
         };
         fetchData();
     }, []);
 
-    const BestsellerCarousel = ({ products }) => {
-        const visibleProducts = products.length > 0 ? products : [
-            { _id: '1', name: 'Premium Hair Oil', image: 'https://images.unsplash.com/photo-1626444341257-58a13e41ae2a?w=800&q=80', price: 499, category: 'Hair Care', rating: 5, countInStock: 10 },
-            { _id: '2', name: 'Herbal Skin Cream', image: 'https://images.unsplash.com/photo-1556229162-5c63ed9c4ffb?w=800&q=80', price: 599, category: 'Skin Care', rating: 4, countInStock: 10 },
-            { _id: '3', name: 'Immunity Booster Churn', image: 'https://images.unsplash.com/photo-1611080626919-7cf5a9caab53?w=800&q=80', price: 349, category: 'Immunity', rating: 5, countInStock: 10 },
-            { _id: '4', name: 'Natural Sandalwood Oil', image: 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=800&q=80', price: 899, category: 'Oils', rating: 4, countInStock: 10 },
-        ];
-
-        if (!visibleProducts || visibleProducts.length === 0) return <p className="text-center text-gray-500">No bestselling products found.</p>;
-
-        return (
-            <div className="relative group/carousel">
-                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-6 lg:gap-8">
-                    {visibleProducts.map((product) => (
-                        <ScrollReveal key={product._id} className="h-full">
-                            <ProductCard product={product} />
-                        </ScrollReveal>
-                    ))}
-                </div>
-            </div>
-        );
+    const handlePrevSlide = () => {
+        setActiveSlide(prev => (prev - 1 + slides.length) % slides.length);
     };
+
+    const handleNextSlide = () => {
+        setActiveSlide(prev => (prev + 1) % slides.length);
+    };
+
+    const reelReviews = [
+        {
+            title: "GUT AND DIGESTION",
+            image: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=600&auto=format",
+            isNew: true
+        },
+        {
+            title: "HAIR AND SCALP CARE",
+            image: "https://images.unsplash.com/photo-1626444341257-58a13e41ae2a?q=80&w=600&auto=format",
+            isNew: true
+        },
+        {
+            title: "MENS VITALITY BOOSTER",
+            image: "https://images.unsplash.com/photo-1611080626919-7cf5a9caab53?q=80&w=600&auto=format",
+            isNew: false
+        }
+    ];
 
     const getIcon = (iconName, size = 32) => {
         switch (iconName) {
@@ -101,442 +141,378 @@ const HomePage = () => {
         }
     };
 
-
     return (
         <>
             <Loader isLoading={isPageLoading} />
             <AnimatedPage>
-            <SEO 
-                title="Ancient Ayurveda, Modern Wellness" 
-                description="Hridved brings you pure Ayurvedic formulations handcrafted with wisdom from ancient texts, delivered with modern purity standards. Explore our range of herbal medicines, oils, and wellness products."
-            />
-            <div className="min-h-screen bg-background">
-                {/* Hero Section - Optimized for mobile aspect ratio */}
-                <section className="relative min-h-[350px] xs:min-h-[450px] sm:min-h-[600px] md:min-h-[700px] lg:min-h-[85vh] flex items-center overflow-hidden bg-primary py-12 sm:py-20">
-                    <div className="absolute inset-0 w-full h-full bg-primary">
-                        <img
-                            src={getImageUrl(content?.hero?.image) || "/hero-bg.png"}
-                            alt="Ayurveda Wellness"
-                            className="w-full h-full object-cover object-[center_25%] sm:object-center shadow-inner"
-                            loading="eager"
-                            fetchpriority="high"
-                            decoding="sync"
-                            onLoad={() => setIsHeroLoaded(true)}
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/20 to-transparent pointer-events-none"></div>
-                    </div>
-
-                    <div className="container mx-auto relative z-10 py-12 sm:py-0">
-                        <ScrollReveal>
-                            <div className="max-w-2xl text-white">
-                                <motion.span 
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ duration: 0.6 }}
-                                    className="bg-secondary/90 backdrop-blur-md text-primary font-bold px-4 py-1.5 rounded-full text-xs md:text-sm uppercase tracking-[0.2em] mb-4 md:mb-6 inline-block shadow-lg"
-                                >
-                                    Authentic Wellness
-                                </motion.span>
-                                <motion.h1 
-                                    initial={{ opacity: 0, y: 30 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ duration: 0.8, delay: 0.2 }}
-                                    className="text-3xl sm:text-5xl md:text-6xl lg:text-7.5xl font-sans font-extrabold mb-4 md:mb-6 leading-tight tracking-tight drop-shadow-2xl"
-                                >
-                                    {content?.hero?.title || <>Ancient Wisdom.<br className="hidden sm:block" /> Masterfully Pure.</>}
-                                </motion.h1>
-                                <motion.p 
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ duration: 0.8, delay: 0.4 }}
-                                    className="text-[14px] sm:text-lg md:text-xl mb-8 md:mb-12 text-gray-100 font-light max-w-lg leading-relaxed opacity-90"
-                                >
-                                    {content?.hero?.subtitle || "Experience the pinnacle of Ayurvedic excellence. Pure formulations handcrafted for your modern lifestyle."}
-                                </motion.p>
-                                <motion.div 
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ duration: 0.8, delay: 0.6 }}
-                                    className="flex flex-wrap gap-5"
-                                >
-                                    <Link to="/shop">
-                                        <AnimatedButton className="bg-secondary text-primary px-10 md:px-12 py-3.5 md:py-5 rounded-full text-sm md:text-lg font-black hover:bg-white transition-all duration-500 border-none shadow-2xl hover:scale-105 active:scale-95">
-                                            {content?.hero?.ctaText || "Shop Collection"}
-                                        </AnimatedButton>
-                                    </Link>
-                                    <Link to="/consultation">
-                                        <AnimatedButton variant="outline" className="bg-white/10 backdrop-blur-lg border-2 border-white/30 text-white px-10 md:px-12 py-3.5 md:py-5 rounded-full text-sm md:text-lg font-bold hover:bg-white hover:text-primary transition-all duration-500 shadow-xl">
-                                            Consult Doctor
-                                        </AnimatedButton>
-                                    </Link>
-                                </motion.div>
-                            </div>
-                        </ScrollReveal>
-                    </div>
-
-                    {/* Scroll Indicator */}
-                    <div className="absolute bottom-10 left-1/2 -translate-x-1/2 hidden md:flex flex-col items-center gap-3">
-                        <span className="text-white/40 text-[10px] uppercase tracking-[0.3em] font-bold">Scroll</span>
-                        <div className="w-6 h-10 border-2 border-white/20 rounded-full flex justify-center p-1">
-                            <div className="scroll-indicator w-1 h-2 bg-white rounded-full"></div>
-                        </div>
-                    </div>
-                </section>
-
-                {/* Brand Trust Bar - Refined Marquee */}
-                <div className="bg-white border-b border-gray-50 overflow-hidden py-6 md:py-8 shadow-sm">
-                    <div className="container mx-auto px-4">
-                        <div className="flex flex-row overflow-x-auto no-scrollbar scroll-smooth justify-start md:justify-center items-center gap-8 md:gap-24 opacity-60 whitespace-nowrap">
-                            {(content?.trustBar?.items?.length > 0 ? content.trustBar.items : [
-                                { title: '100% Organically Sourced', icon: 'Leaf' },
-                                { title: 'GMP & Ayush Certified', icon: 'Award' },
-                                { title: 'Pure Himalayan Ingredients', icon: 'ShieldCheck' },
-                                { title: 'Eco-Friendly Shipping', icon: 'Truck' }
-                            ]).map((item, i) => (
-                                <div key={i} className="flex items-center gap-4 group hover:opacity-100 transition-opacity flex-shrink-0">
-                                    <div className="group-hover:scale-110 transition-transform text-primary">
-                                        {getIcon(item.icon, 24)}
-                                    </div>
-                                    <span className="text-[10px] md:text-xs font-black uppercase tracking-[0.2em] text-gray-600">{item.title}</span>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </div>
-
-                {/* Shop by Category Section - Circular Icons */}
-                <section className="py-16 md:py-24 bg-white relative overflow-hidden">
-                    {/* Floating Background Element */}
-                    <div className="absolute top-20 right-[-5%] opacity-5 float-slow pointer-events-none">
-                        <Leaf size={300} strokeWidth={0.5} />
-                    </div>
+                <SEO 
+                    title="Ancient Ayurveda, Modern Wellness" 
+                    description="Hridved brings you pure Ayurvedic formulations handcrafted with wisdom from ancient texts, delivered with modern purity standards. Explore our range of herbal medicines, oils, and wellness products."
+                />
+                
+                <div className="min-h-screen bg-background">
                     
-                    <div className="container mx-auto">
-                        <ScrollReveal>
-                            <div className="text-center mb-12 md:mb-20">
-                                <span className="text-secondary font-bold uppercase tracking-[0.3em] text-[10px] md:text-xs mb-3 block">Discover Wellness</span>
-                                <h2 className="text-3xl md:text-5xl font-sans font-black text-primary mb-4">Shop by Category</h2>
-                                <div className="w-20 h-1 bg-secondary mx-auto rounded-full"></div>
-                            </div>
-
-                            <div className="flex overflow-x-auto pb-10 gap-8 md:gap-14 no-scrollbar justify-start md:justify-center scroll-smooth items-center px-4">
-                                {isLoadingCategories ? (
-                                    // Circular Skeletons
-                                    [...Array(6)].map((_, i) => (
-                                        <div key={i} className="flex flex-col items-center flex-shrink-0 animate-pulse">
-                                            <div className="w-24 h-24 md:w-36 md:h-36 rounded-full bg-gray-100 border-2 md:border-8 border-gray-50 mb-4 md:mb-6 shadow-xl md:shadow-2xl"></div>
-                                            <div className="h-3 w-16 bg-gray-100 rounded"></div>
-                                        </div>
-                                    ))
-                                ) : (categories.length > 0 ? categories : [
-                                    { name: 'Skin care', image: 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=800&auto=format&fit=crop&q=80' },
-                                    { name: 'Hair care', image: 'https://images.unsplash.com/photo-1522337660859-02fbefca4702?w=800&auto=format&fit=crop&q=80' },
-                                    { name: 'Personal care', image: 'https://images.unsplash.com/photo-1556229010-6c3f2c9ca418?w=800&auto=format&fit=crop&q=80' },
-                                    { name: 'Immunity', image: 'https://images.unsplash.com/photo-1546868214-e95b36449173?w=800&auto=format&fit=crop&q=80' },
-                                    { name: 'Ayurved medicine', image: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=800&auto=format&fit=crop&q=80' },
-                                    { name: 'Consultation', image: 'https://images.unsplash.com/photo-1584820927498-cfe5211fd8bf?w=800&auto=format&fit=crop&q=80' },
-                                ]).map((cat, idx) => {
-                                    const link = cat.name.toLowerCase() === 'consultation' ? '/consultation' : `/shop?category=${encodeURIComponent(cat.name)}`;
-                                    return (
-                                        <Link to={link} key={idx} className="flex flex-col items-center group flex-shrink-0">
-                                            <div className="w-24 h-24 md:w-36 md:h-36 rounded-full overflow-hidden border-2 md:border-8 border-gray-50 group-hover:border-secondary transition-all duration-700 mb-4 md:mb-6 shadow-xl md:shadow-2xl relative bg-white transform group-hover:scale-105 group-hover:-translate-y-2">
-                                                <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/20 transition-colors duration-500 z-10 flex items-center justify-center opacity-0 group-hover:opacity-100">
-                                                    <ArrowRight className="text-white" size={32} />
-                                                </div>
-                                                <AnimatedImage
-                                                    src={cat.image || cat.img}
-                                                    alt={cat.name}
-                                                    className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-125 group-hover:rotate-3"
-                                                    containerClassName="w-full h-full"
-                                                    loading="eager"
-                                                />
-                                            </div>
-                                            <h3 className="text-[11px] md:text-sm font-black text-gray-800 group-hover:text-primary transition-colors tracking-[0.15em] uppercase text-center w-full">{cat.name}</h3>
-                                        </Link>
-                                    );
-                                })}
-                            </div>
-                        </ScrollReveal>
-                    </div>
-                </section>
-
-                {/* Offer Banner */}
-                <section className="bg-primary py-4 border-y border-white/10">
-                    <div className="container mx-auto px-4">
-                        <div className="flex flex-col md:flex-row items-center justify-center gap-4 text-center">
-                            <motion.div 
-                                initial={{ scale: 0.9, opacity: 0 }}
-                                whileInView={{ scale: 1, opacity: 1 }}
-                                className="flex items-center gap-3"
-                            >
-                                <div className="bg-secondary p-2 rounded-full text-primary">
-                                    <Truck size={20} />
-                                </div>
-                                <p className="text-white font-bold tracking-wider text-sm md:text-base">
-                                    CELEBRATION OFFER: <span className="text-secondary">FREE SHIPPING</span> ON ALL ORDERS ABOVE ₹999
-                                </p>
-                            </motion.div>
-                            <Link to="/shop">
-                                <button className="bg-white text-primary px-6 py-1.5 rounded-full font-black text-[10px] uppercase tracking-widest hover:bg-secondary transition-colors">
-                                    Shop Now
-                                </button>
-                            </Link>
-                        </div>
-                    </div>
-                </section>
-
-                {/* Best Sellers Section */}
-                <section className="py-12 md:py-20 bg-background/50">
-                    <div className="container mx-auto">
-                        <ScrollReveal>
-                            <div className="flex flex-col sm:flex-row justify-between items-center sm:items-end mb-8 md:mb-10 gap-4">
-                                <div className="text-center sm:text-left">
-                                    <h2 className="text-2xl md:text-4xl font-sans font-bold text-primary">Our Bestsellers</h2>
-                                    <p className="text-sm md:text-base text-gray-500 mt-1 md:mt-2">Customer favorites that deliver results.</p>
-                                </div>
-                                <Link to="/shop" className="text-primary font-bold text-xs tracking-wider uppercase hover:text-secondary hover:underline underline-offset-4">
-                                    View All Products
-                                </Link>
-                            </div>
-
-                            <BestsellerCarousel products={bestsellers} />
-                        </ScrollReveal>
-                    </div>
-                </section>
-
-                {/* The Essence of Purity Section [New] */}
-                <section className="py-24 md:py-32 bg-background relative overflow-hidden">
-                    <div className="absolute bottom-[-10%] left-[-5%] opacity-5 float-slow pointer-events-none" style={{ animationDelay: '2s' }}>
-                        <Droplets size={350} strokeWidth={0.5} />
-                    </div>
-
-                    <div className="container mx-auto">
-                        <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
-                            <div className="lg:w-1/2">
-                                <ScrollReveal direction="left">
-                                    <span className="text-secondary font-bold uppercase tracking-[0.3em] text-xs mb-4 block">
-                                        {content?.purity?.title || "The Process of Perfection"}
-                                    </span>
-                                    <h2 className="text-4xl md:text-6xl font-sans font-black text-primary mb-8 leading-tight">
-                                        {content?.purity?.subtitle ? (
-                                            <>Handcrafted with <br/><span className="italic font-serif font-light text-secondary">{content.purity.subtitle}</span></>
-                                        ) : (
-                                            <>Handcrafted with <br/><span className="italic font-serif font-light text-secondary">Ancient Wisdom</span></>
-                                        )}
-                                    </h2>
-                                    
-                                    <div className="space-y-10">
-                                        {(content?.purity?.items?.length > 0 ? content.purity.items : [
-                                            { icon: 'CheckCircle', title: "Precision Batch Sourcing", description: "We hand-select ingredients from peak Himalayan altitudes for maximum nutrient density." },
-                                            { icon: 'Droplets', title: "Authentic Kashaya Preparation", description: "Herbs are slow-cooked for 72 hours across traditional copper vessels to preserve essence." },
-                                            { icon: 'Sparkles', title: "Modern Purity standards", description: "Every gram is tested against 140+ safety parameters in our GMP-certified labs." }
-                                        ]).map((item, i) => (
-                                            <div key={i} className="flex gap-6 group">
-                                                <div className="flex-shrink-0 w-12 h-12 rounded-2xl bg-white shadow-sm flex items-center justify-center border border-gray-100 group-hover:bg-primary group-hover:text-white transition-all duration-300 transform group-hover:rotate-12 text-secondary group-hover:text-white">
-                                                    {getIcon(item.icon, 24)}
-                                                </div>
-                                                <div>
-                                                    <h4 className="text-lg font-bold text-primary mb-2 tracking-tight">{item.title}</h4>
-                                                    <p className="text-gray-500 leading-relaxed text-sm md:text-base">{item.description}</p>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-
-                                    <div className="mt-12">
-                                        <Link to="/about">
-                                            <AnimatedButton className="bg-primary text-white px-10 py-4 rounded-full font-bold hover:shadow-2xl transition-all border-none flex items-center gap-3">
-                                                Our Full Story <ArrowRight size={18} />
-                                            </AnimatedButton>
-                                        </Link>
-                                    </div>
-                                </ScrollReveal>
-                            </div>
+                    {/* Hero Section Carousel Slider - contained within rounded cards like Myura */}
+                    <section className="container mx-auto px-4 pt-8 pb-16 relative">
+                        <div className="relative w-full h-[450px] sm:h-[550px] md:h-[650px] rounded-[2.5rem] overflow-hidden shadow-2xl bg-primary">
                             
-                            <div className="lg:w-1/2 relative">
-                                <ScrollReveal direction="right">
-                                    <div className="relative z-10 grid grid-cols-2 gap-4">
-                                        <div className="space-y-4 pt-12">
-                                            <AnimatedImage 
-                                                src={getImageUrl(content?.purity?.image1) || "https://images.unsplash.com/photo-1612170153139-6f881ff067e0?q=80&w=600&auto=format"} 
-                                                className="rounded-[2rem] shadow-2xl h-80 object-cover w-full" 
-                                            />
-                                            <div className="bg-secondary p-8 rounded-[2rem] text-primary shadow-xl">
-                                                <p className="text-3xl font-black mb-1">100%</p>
-                                                <p className="text-xs uppercase font-bold tracking-widest opacity-80">Natural Purity</p>
-                                            </div>
-                                        </div>
-                                        <div className="space-y-4">
-                                            <div className="bg-primary p-8 rounded-[2rem] text-white shadow-xl">
-                                                <p className="text-3xl font-black mb-1">500+</p>
-                                                <p className="text-xs uppercase font-bold tracking-widest opacity-80">Classical Cures</p>
-                                            </div>
-                                            <AnimatedImage 
-                                                src={getImageUrl(content?.purity?.image2) || "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=600&auto=format"} 
-                                                className="rounded-[2rem] shadow-2xl h-96 object-cover w-full" 
-                                            />
+                            {/* Slide Content */}
+                            <AnimatePresence mode="wait">
+                                <motion.div
+                                    key={activeSlide}
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    exit={{ opacity: 0 }}
+                                    transition={{ duration: 0.6 }}
+                                    className="absolute inset-0 w-full h-full"
+                                >
+                                    {/* Image background with gradient */}
+                                    <img
+                                        src={slides[activeSlide].image}
+                                        alt={slides[activeSlide].title}
+                                        className="w-full h-full object-cover object-center"
+                                    />
+                                    <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent pointer-events-none"></div>
+
+                                    {/* Slide Text Content overlay */}
+                                    <div className="absolute inset-0 flex items-center px-8 sm:px-16 md:px-24 z-10">
+                                        <div className="max-w-2xl text-white">
+                                            {/* Pill Tag */}
+                                            <span className="bg-secondary/90 text-primary font-black px-4 py-1.5 rounded-full text-xs uppercase tracking-[0.2em] mb-4 sm:mb-6 inline-block shadow-md">
+                                                {slides[activeSlide].badge}
+                                            </span>
+                                            
+                                            {/* Title */}
+                                            <h1 className="text-3xl sm:text-5xl md:text-6xl font-sans font-black mb-4 sm:mb-6 leading-tight drop-shadow-lg">
+                                                {slides[activeSlide].title}
+                                            </h1>
+                                            
+                                            {/* Subtitle */}
+                                            <p className="text-[13px] sm:text-base md:text-lg mb-8 sm:mb-12 text-gray-200 font-light leading-relaxed max-w-lg opacity-90">
+                                                {slides[activeSlide].subtitle}
+                                            </p>
+                                            
+                                            {/* CTA button */}
+                                            <Link to={slides[activeSlide].link}>
+                                                <button className="bg-white text-primary hover:bg-secondary hover:text-primary px-10 py-4 rounded-full font-black text-xs uppercase tracking-[0.2em] transition-all duration-300 shadow-xl hover:scale-105 active:scale-95 border-none">
+                                                    {slides[activeSlide].ctaText} →
+                                                </button>
+                                            </Link>
                                         </div>
                                     </div>
-                                    
-                                    {/* Decorative badge */}
-                                    <div className="absolute -bottom-8 -right-8 w-40 h-40 bg-white rounded-full shadow-2xl flex items-center justify-center p-4 border-8 border-background z-20 hidden md:flex animate-pulse">
-                                        <div className="text-center">
-                                            <CheckCircle className="text-primary mx-auto mb-1" size={32} />
-                                            <p className="text-[10px] font-black uppercase text-primary tracking-tighter">Ayush Certified</p>
-                                        </div>
-                                    </div>
-                                </ScrollReveal>
+                                </motion.div>
+                            </AnimatePresence>
+
+                            {/* Slider Navigation Arrows - styled top right like Myura */}
+                            <div className="absolute top-6 right-6 z-20 flex gap-2">
+                                <button
+                                    onClick={handlePrevSlide}
+                                    className="w-10 h-10 bg-white/80 hover:bg-white text-primary rounded-full flex items-center justify-center shadow-md transition-all active:scale-90 border-none"
+                                >
+                                    <ChevronLeft size={20} />
+                                </button>
+                                <button
+                                    onClick={handleNextSlide}
+                                    className="w-10 h-10 bg-white/80 hover:bg-white text-primary rounded-full flex items-center justify-center shadow-md transition-all active:scale-90 border-none"
+                                >
+                                    <ChevronRight size={20} />
+                                </button>
+                            </div>
+
+                            {/* Dot Indicators - bottom centered */}
+                            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex gap-2">
+                                {slides.map((_, index) => (
+                                    <button
+                                        key={index}
+                                        onClick={() => setActiveSlide(index)}
+                                        className={`h-1.5 rounded-full transition-all duration-300 ${
+                                            activeSlide === index ? 'w-8 bg-secondary' : 'w-2 bg-white/40'
+                                        }`}
+                                    />
+                                ))}
                             </div>
                         </div>
-                    </div>
-                </section>
+                    </section>
 
-
-
-                {/* Feature Split Section: Tradition Meets Science */}
-                <section className="py-24 md:py-36 bg-white overflow-hidden relative">
-                    <div className="absolute top-1/2 left-0 w-64 h-64 bg-secondary/10 rounded-full blur-[100px] -z-10 translate-y-[-50%]"></div>
-                    
-                    <div className="container mx-auto">
-                        <div className="flex flex-col md:flex-row items-center gap-16 lg:gap-24">
-                            <div className="md:w-1/2 relative lg:pr-12">
-                                <ScrollReveal direction="left">
-                                    <div className="relative">
-                                        <div className="absolute -top-10 -right-10 w-40 h-40 bg-secondary/20 rounded-full blur-3xl -z-10"></div>
-                                        <div className="rounded-[2.5rem] overflow-hidden shadow-[0_50px_100px_-20px_rgba(0,0,0,0.2)] border-8 border-white">
-                                            {content?.tradition?.image ? (
-                                                <AnimatedImage
-                                                    src={content.tradition.image}
-                                                    alt="Tradition meets Science"
-                                                    className="w-full h-[600px] object-cover"
-                                                />
-                                            ) : (
-                                                <AnimatedImage
-                                                    src="https://images.unsplash.com/photo-1617462432650-6a9b407ec1ea?q=80&w=1000&auto=format&fit=crop"
-                                                    alt="Tradition meets Science"
-                                                    className="w-full h-[600px] object-cover"
-                                                />
-                                            )}
-                                        </div>
-                                        <div className="absolute -bottom-10 -right-6 md:-right-12 glass-morphism p-8 md:p-10 rounded-[2rem] luxury-shadow max-w-xs border border-white/50 z-20">
-                                            <Sparkles className="text-secondary mb-4" size={32} />
-                                            <p className="font-serif text-primary text-xl italic leading-relaxed">&quot;The perfect balance of ancient wisdom and modern standards.&quot;</p>
-                                        </div>
-                                    </div>
-                                </ScrollReveal>
-                            </div>
-                            <div className="md:w-1/2 mt-20 md:mt-0">
-                                <ScrollReveal direction="right">
-                                    <span className="text-secondary font-bold uppercase tracking-[0.4em] text-xs mb-6 block">Our Eternal Philosophy</span>
-                                    <h2 className="text-4xl md:text-6xl font-sans font-black text-primary mb-8 leading-tight">
-                                        {content?.tradition?.title || <>Where Tradition<br /><span className="text-secondary italic font-serif font-light">meets Modern</span> Science</>}
-                                    </h2>
-                                    <div className="space-y-6 text-gray-600 mb-10 leading-relaxed text-lg">
-                                        {content?.tradition?.subtitle?.split('\n\n').map((p, i) => (
-                                            <p key={i} className="opacity-80 font-light">{p}</p>
-                                        )) || (
-                                            <>
-                                                <p className="opacity-80 font-light">Founded in 2020, HRIDVED has been at the forefront of the Ayurvedic revolution. We bridge the gap between ancient sacred texts and the precision of modern clinical research.</p>
-                                                <p className="opacity-80 font-light">Today, we produce over 500+ classical and proprietary medicines in our state-of-the-art labs, ensuring every drop is a testament to authenticity.</p>
-                                            </>
-                                        )}
-                                    </div>
-                                    <Link to="/about">
-                                        <AnimatedButton variant="outline" className="group border-2 border-primary text-primary px-10 py-4 rounded-full font-bold hover:bg-primary hover:text-white transition-all duration-500 flex items-center gap-3 border-none ring-1 ring-primary/20">
-                                            The Hridved Story <ArrowRight size={18} className="group-hover:translate-x-2 transition-transform" />
-                                        </AnimatedButton>
-                                    </Link>
-                                </ScrollReveal>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                {/* Testimonials Section - Luxury Magazine Style */}
-                {content?.testimonials?.items?.length > 0 && (
-                    <section className="py-24 md:py-36 bg-primary text-white overflow-hidden relative">
-                        <div className="absolute top-0 right-0 w-[50%] h-full bg-white opacity-[0.02] pointer-events-none"></div>
+                    {/* Slogan Intro Section - "Ayurveda. Simplified. Wellness That Works." format */}
+                    <section className="py-16 md:py-24 text-center max-w-4xl mx-auto px-4">
+                        <span className="text-secondary font-black uppercase tracking-[0.3em] text-[10px] md:text-xs mb-3 block">
+                            Authentic Formulations
+                        </span>
+                        <h2 className="text-3xl md:text-5xl font-sans font-black text-primary leading-tight">
+                            Ayurveda. Simplified.<br />
+                            <span className="text-secondary">Wellness That Works.</span>
+                        </h2>
                         
-                        <div className="container mx-auto relative z-10">
-                            <ScrollReveal>
-                                <div className="text-center mb-16 md:mb-24">
-                                    <span className="text-secondary font-bold uppercase tracking-[0.4em] text-xs mb-4 block">Shared Journeys</span>
-                                    <h2 className="text-4xl md:text-6xl font-serif font-light italic mb-2">Voices of Wellness</h2>
-                                    <div className="w-16 h-0.5 bg-secondary/50 mx-auto mt-6"></div>
-                                </div>
-                                
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-16">
-                                    {content.testimonials.items.map((item, idx) => (
-                                        <div key={idx} className="flex flex-col group">
-                                            <div className="mb-8">
-                                                <div className="flex gap-1 mb-6">
-                                                    {[...Array(5)].map((_, i) => (
-                                                        <Star key={i} size={14} className="text-secondary fill-secondary" />
-                                                    ))}
-                                                </div>
-                                                <p className="text-xl md:text-2xl font-serif italic font-light leading-relaxed mb-8 opacity-90 group-hover:opacity-100 transition-opacity">
-                                                    &ldquo;{item.description}&rdquo;
-                                                </p>
-                                            </div>
-                                            <div className="mt-auto flex items-center gap-5 pt-8 border-t border-white/10">
-                                                <div className="w-14 h-14 bg-white/10 rounded-full flex items-center justify-center text-secondary font-black text-xl border border-white/10 group-hover:bg-secondary group-hover:text-primary transition-all duration-500">
-                                                    {item.title?.charAt(0) || 'U'}
-                                                </div>
-                                                <div>
-                                                    <h4 className="font-bold text-lg tracking-tight">{item.title}</h4>
-                                                    <p className="text-xs text-secondary font-black uppercase tracking-[0.2em]">{item.link || 'Verified Purist'}</p>
-                                                </div>
-                                            </div>
+                        <div className="w-20 h-1.5 bg-primary mx-auto rounded-full mt-6 mb-8"></div>
+                        
+                        <p className="text-gray-500 font-light text-base md:text-lg leading-relaxed max-w-2xl mx-auto mb-10">
+                            Thoughtfully made Ayurvedic solutions to energize, restore, and support your natural balance. Handcrafted in small batches with pristine sourcing, ensuring the ultimate standard of wellness you deserve.
+                        </p>
+                        
+                        <Link to="/shop">
+                            <button className="bg-primary text-white hover:bg-secondary hover:text-primary px-10 py-4 rounded-full font-black text-xs uppercase tracking-[0.2em] transition-all duration-300 shadow-xl hover:scale-105 active:scale-95 border-none">
+                                Shop Collection →
+                            </button>
+                        </Link>
+                    </section>
+
+                    {/* Brand Trust Bar */}
+                    <div className="bg-white border-y border-gray-100 overflow-hidden py-6 md:py-8 shadow-sm">
+                        <div className="container mx-auto px-4">
+                            <div className="flex flex-row overflow-x-auto no-scrollbar scroll-smooth justify-start md:justify-center items-center gap-8 md:gap-24 opacity-80 whitespace-nowrap">
+                                {(content?.trustBar?.items?.length > 0 ? content.trustBar.items : [
+                                    { title: '100% Organically Sourced', icon: 'Leaf' },
+                                    { title: 'GMP & Ayush Certified', icon: 'Award' },
+                                    { title: 'Pure Himalayan Ingredients', icon: 'ShieldCheck' },
+                                    { title: 'Eco-Friendly Shipping', icon: 'Truck' }
+                                ]).map((item, i) => (
+                                    <div key={i} className="flex items-center gap-4 group hover:opacity-100 transition-opacity flex-shrink-0">
+                                        <div className="group-hover:scale-110 transition-transform text-primary">
+                                            {getIcon(item.icon, 24)}
                                         </div>
-                                    ))}
+                                        <span className="text-[10px] md:text-xs font-black uppercase tracking-[0.2em] text-gray-600">{item.title}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Shop by Category Section - Circular Icons */}
+                    <section className="py-16 md:py-24 bg-white relative overflow-hidden">
+                        <div className="absolute top-20 right-[-5%] opacity-5 float-slow pointer-events-none">
+                            <Leaf size={300} strokeWidth={0.5} />
+                        </div>
+                        
+                        <div className="container mx-auto">
+                            <ScrollReveal>
+                                <div className="text-center mb-12 md:mb-20">
+                                    <span className="text-secondary font-bold uppercase tracking-[0.3em] text-[10px] md:text-xs mb-3 block">Discover Wellness</span>
+                                    <h2 className="text-3xl md:text-5xl font-sans font-black text-primary mb-4">Shop by Category</h2>
+                                    <div className="w-20 h-1 bg-secondary mx-auto rounded-full"></div>
+                                </div>
+
+                                <div className="flex overflow-x-auto pb-10 gap-8 md:gap-14 no-scrollbar justify-start md:justify-center scroll-smooth items-center px-4">
+                                    {isLoadingCategories ? (
+                                        [...Array(6)].map((_, i) => (
+                                            <div key={i} className="flex flex-col items-center flex-shrink-0 animate-pulse">
+                                                <div className="w-24 h-24 md:w-36 md:h-36 rounded-full bg-gray-100 border-2 md:border-8 border-gray-50 mb-4 md:mb-6 shadow-xl md:shadow-2xl"></div>
+                                                <div className="h-3 w-16 bg-gray-100 rounded"></div>
+                                            </div>
+                                        ))
+                                    ) : (categories.length > 0 ? categories : [
+                                        { name: 'Skin care', image: 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=800&auto=format&fit=crop&q=80' },
+                                        { name: 'Hair care', image: 'https://images.unsplash.com/photo-1522337660859-02fbefca4702?w=800&auto=format&fit=crop&q=80' },
+                                        { name: 'Personal care', image: 'https://images.unsplash.com/photo-1556229010-6c3f2c9ca418?w=800&auto=format&fit=crop&q=80' },
+                                        { name: 'Immunity', image: 'https://images.unsplash.com/photo-1546868214-e95b36449173?w=800&auto=format&fit=crop&q=80' },
+                                        { name: 'Ayurved medicine', image: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=800&auto=format&fit=crop&q=80' },
+                                        { name: 'Consultation', image: 'https://images.unsplash.com/photo-1584820927498-cfe5211fd8bf?w=800&auto=format&fit=crop&q=80' },
+                                    ]).map((cat, idx) => {
+                                        const link = cat.name.toLowerCase() === 'consultation' ? '/consultation' : `/shop?category=${encodeURIComponent(cat.name)}`;
+                                        return (
+                                            <Link to={link} key={idx} className="flex flex-col items-center group flex-shrink-0">
+                                                <div className="w-24 h-24 md:w-36 md:h-36 rounded-full overflow-hidden border-2 md:border-8 border-gray-50 group-hover:border-secondary transition-all duration-700 mb-4 md:mb-6 shadow-xl md:shadow-2xl relative bg-white transform group-hover:scale-105 group-hover:-translate-y-2">
+                                                    <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/20 transition-colors duration-500 z-10 flex items-center justify-center opacity-0 group-hover:opacity-100">
+                                                        <ArrowRight className="text-white" size={32} />
+                                                    </div>
+                                                    <AnimatedImage
+                                                        src={cat.image || cat.img}
+                                                        alt={cat.name}
+                                                        className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-125 group-hover:rotate-3"
+                                                        containerClassName="w-full h-full"
+                                                        loading="eager"
+                                                    />
+                                                </div>
+                                                <h3 className="text-[11px] md:text-sm font-black text-gray-800 group-hover:text-primary transition-colors tracking-[0.15em] uppercase text-center w-full">{cat.name}</h3>
+                                            </Link>
+                                        );
+                                    })}
                                 </div>
                             </ScrollReveal>
                         </div>
                     </section>
-                )}
 
-                {/* Why Choose Us - Enhanced Cards */}
-                <section className="py-24 md:py-32 bg-background relative overflow-hidden px-5">
-                    <div className="absolute top-[20%] left-[-10%] opacity-5 float-slow pointer-events-none">
-                        <History size={400} strokeWidth={0.5} />
-                    </div>
+                    {/* ProSeries / Bestsellers Section */}
+                    <section className="py-16 md:py-24 bg-background/50 border-t border-gray-100">
+                        <div className="container mx-auto px-4">
+                            <ScrollReveal>
+                                <div className="text-center mb-12 md:mb-16">
+                                    <span className="text-secondary font-black uppercase tracking-[0.3em] text-[10px] md:text-xs mb-3 block">
+                                        ProSeries Collection
+                                    </span>
+                                    <h2 className="text-3xl md:text-5xl font-sans font-black text-primary mb-4">
+                                        Our Bestsellers
+                                    </h2>
+                                    <p className="text-sm md:text-base text-gray-500 font-light max-w-2xl mx-auto">
+                                        Our most exclusive wellness collection. Crafted with the finest ingredients, advanced formulations, and uncompromising quality.
+                                    </p>
+                                    <div className="w-16 h-1 bg-secondary mx-auto rounded-full mt-5"></div>
+                                </div>
 
-                    <div className="container mx-auto">
-                        <ScrollReveal>
-                            <div className="text-center mb-20 md:mb-24">
-                                <span className="text-secondary font-black uppercase tracking-[0.4em] text-[10px] md:text-xs mb-4 block">
-                                    {content?.promise?.subtitle || "The Hridved Promise"}
-                                </span>
-                                <h2 className="text-3xl md:text-6xl font-sans font-black text-primary mb-8 tracking-tighter">
-                                    {content?.promise?.title || <>The Gold Standard <br className="hidden md:block" /> of Modern Ayurveda</>}
-                                </h2>
-                                <div className="w-24 h-1.5 bg-secondary mx-auto rounded-full"></div>
-                            </div>
+                                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6 lg:gap-8 mb-12">
+                                    {bestsellers.length > 0 ? (
+                                        bestsellers.map((product) => (
+                                            <ProductCard key={product._id} product={product} />
+                                        ))
+                                    ) : (
+                                        [...Array(4)].map((_, i) => (
+                                            <div key={i} className="h-96 bg-gray-50 border border-gray-100 rounded-[2rem] animate-pulse"></div>
+                                        ))
+                                    )}
+                                </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
-                                {(content?.promise?.items?.length > 0 ? content.promise.items : [
-                                    { title: '100% Organically Sourced', description: 'Hand-harvested at peak potency from protected Himalayan altitudes.', icon: 'Leaf' },
-                                    { title: 'GMP & Ayush Certified', description: 'Pharma-grade precision in every drop, surpassing global safety standards.', icon: 'ShieldCheck' },
-                                    { title: 'Conscious Packaging', description: 'Committed to the Earth with zero-plastic, biodegradable glass containers.', icon: 'Truck' }
-                                ]).map((item, idx) => (
-                                    <div key={idx} className="bg-white p-10 md:p-14 rounded-[2.5rem] shadow-sm border border-gray-100 hover:luxury-shadow hover:-translate-y-3 transition-all duration-700 group relative overflow-hidden flex flex-col h-full">
-                                        <div className="w-20 h-20 bg-primary/5 rounded-3xl flex items-center justify-center mb-10 text-primary group-hover:bg-primary group-hover:text-white transition-all duration-500 transform group-hover:rotate-6">
-                                            {getIcon(item.icon)}
+                                <div className="text-center">
+                                    <Link to="/shop">
+                                        <button className="bg-primary text-white hover:bg-secondary hover:text-primary px-10 py-4 rounded-full font-black text-xs uppercase tracking-[0.2em] transition-all duration-300 shadow-xl border-none">
+                                            Explore ProSeries Collection →
+                                        </button>
+                                    </Link>
+                                </div>
+                            </ScrollReveal>
+                        </div>
+                    </section>
+
+                    {/* Video Reviews / Reels Section - styled like Myura */}
+                    <section className="py-16 md:py-24 bg-white border-t border-gray-100">
+                        <div className="container mx-auto px-4">
+                            <ScrollReveal>
+                                <div className="text-center mb-12 md:mb-16">
+                                    <span className="text-secondary font-black uppercase tracking-[0.3em] text-[10px] md:text-xs mb-3 block">
+                                        Ayurveda in Action
+                                    </span>
+                                    <h2 className="text-3xl md:text-5xl font-sans font-black text-primary mb-4">
+                                        Shared Journeys
+                                    </h2>
+                                    <p className="text-sm md:text-base text-gray-500 font-light max-w-xl mx-auto">
+                                        Real reviews from real people. Watch how Hridved formulations have helped restore balance and energy.
+                                    </p>
+                                    <div className="w-16 h-1 bg-secondary mx-auto rounded-full mt-5"></div>
+                                </div>
+
+                                {/* Reels slider/grid container */}
+                                <div className="flex flex-col md:flex-row gap-6 max-w-5xl mx-auto justify-center">
+                                    {reelReviews.map((reel, idx) => (
+                                        <div 
+                                            key={idx} 
+                                            className="w-full md:w-80 group relative rounded-[2rem] overflow-hidden shadow-lg border border-gray-100 flex flex-col hover:shadow-2xl transition-all duration-500"
+                                        >
+                                            {/* Reel Video Thumbnail */}
+                                            <div className="h-96 relative overflow-hidden bg-gray-100">
+                                                <img 
+                                                    src={reel.image} 
+                                                    alt={reel.title} 
+                                                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                                                />
+                                                {/* Dark overlay */}
+                                                <div className="absolute inset-0 bg-black/25 group-hover:bg-black/35 transition-colors pointer-events-none"></div>
+
+                                                {/* Play Button Overlay */}
+                                                <div className="absolute inset-0 flex items-center justify-center">
+                                                    <div className="w-14 h-14 bg-white/95 rounded-full flex items-center justify-center text-primary shadow-2xl group-hover:scale-110 group-hover:bg-secondary group-hover:text-primary transition-all duration-300">
+                                                        <Play size={20} className="fill-current ml-1" />
+                                                    </div>
+                                                </div>
+
+                                                {/* Badges */}
+                                                {reel.isNew && (
+                                                    <span className="absolute top-4 left-4 bg-primary text-white text-[9px] font-black px-2.5 py-0.5 rounded-full tracking-wider uppercase">
+                                                        NEW
+                                                    </span>
+                                                )}
+
+                                                {/* Audio Control */}
+                                                <button className="absolute bottom-4 right-4 w-8 h-8 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center text-white border-none shadow-md">
+                                                    <VolumeX size={14} />
+                                                </button>
+                                            </div>
+
+                                            {/* Label below thumbnail */}
+                                            <div className="bg-gray-50 border-t border-gray-100 py-4 text-center">
+                                                <h4 className="text-xs font-black text-gray-700 tracking-wider uppercase">
+                                                    {reel.title}
+                                                </h4>
+                                            </div>
                                         </div>
-                                        <h3 className="text-2xl font-black text-primary mb-4 tracking-tight leading-tight">{item.title}</h3>
-                                        <p className="text-gray-500 leading-relaxed font-light opacity-80 mb-0">{item.description}</p>
-                                        
-                                        <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-secondary/5 rounded-full group-hover:scale-150 transition-transform duration-700"></div>
+                                    ))}
+                                </div>
+
+                                <div className="text-center mt-12">
+                                    <button className="bg-gray-100 text-primary hover:bg-secondary hover:text-primary px-8 py-3.5 rounded-full font-black text-[10px] uppercase tracking-[0.2em] transition-all duration-300 shadow-sm border-none">
+                                        View All Videos →
+                                    </button>
+                                </div>
+                            </ScrollReveal>
+                        </div>
+                    </section>
+
+                    {/* Unified "At Hridved Wellness" Certified Grid Section */}
+                    <section className="py-16 md:py-24 bg-background relative overflow-hidden">
+                        <div className="container mx-auto px-4 max-w-6xl">
+                            <ScrollReveal>
+                                <div className="text-center mb-12 md:mb-16">
+                                    <h2 className="text-3xl md:text-5xl font-sans font-black text-primary mb-4">
+                                        At Hridved Wellness
+                                    </h2>
+                                    <p className="text-sm md:text-base text-gray-500 font-light max-w-xl mx-auto">
+                                        We believe true well-being comes from nature. Our thoughtfully crafted Ayurvedic supplements blend ancient wisdom with modern science to help you feel your best, naturally.
+                                    </p>
+                                    <div className="w-16 h-1 bg-secondary mx-auto rounded-full mt-5"></div>
+                                </div>
+
+                                {/* Certification Grid - 4 badges like Myura */}
+                                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto mb-16">
+                                    <div className="bg-[#f3f4f6]/50 border border-gray-100 rounded-3xl p-6 text-center shadow-sm flex flex-col items-center justify-center group hover:bg-white hover:shadow-md transition-all duration-500">
+                                        <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center text-primary mb-4 group-hover:bg-primary group-hover:text-white transition-colors duration-300">
+                                            <Award size={22} />
+                                        </div>
+                                        <h4 className="text-xs sm:text-sm font-black text-gray-800 uppercase tracking-wider">
+                                            Lab Tested
+                                        </h4>
                                     </div>
-                                ))}
-                            </div>
-                        </ScrollReveal>
-                    </div>
-                </section>
+                                    
+                                    <div className="bg-[#f0fdf4]/50 border border-gray-100 rounded-3xl p-6 text-center shadow-sm flex flex-col items-center justify-center group hover:bg-white hover:shadow-md transition-all duration-500">
+                                        <div className="w-12 h-12 bg-[#22c55e]/10 rounded-2xl flex items-center justify-center text-[#22c55e] mb-4 group-hover:bg-[#22c55e] group-hover:text-white transition-colors duration-300">
+                                            <ShieldCheck size={22} />
+                                        </div>
+                                        <h4 className="text-xs sm:text-sm font-black text-gray-800 uppercase tracking-wider">
+                                            Verified Ingredients
+                                        </h4>
+                                    </div>
 
+                                    <div className="bg-[#fef9c3]/50 border border-gray-100 rounded-3xl p-6 text-center shadow-sm flex flex-col items-center justify-center group hover:bg-white hover:shadow-md transition-all duration-500">
+                                        <div className="w-12 h-12 bg-secondary/15 rounded-2xl flex items-center justify-center text-secondary mb-4 group-hover:bg-secondary group-hover:text-primary transition-colors duration-300">
+                                            <CheckCircle size={22} />
+                                        </div>
+                                        <h4 className="text-xs sm:text-sm font-black text-gray-800 uppercase tracking-wider">
+                                            GMP Certified
+                                        </h4>
+                                    </div>
 
-            </div>
-        </AnimatedPage>
+                                    <div className="bg-[#fae8ff]/50 border border-gray-100 rounded-3xl p-6 text-center shadow-sm flex flex-col items-center justify-center group hover:bg-white hover:shadow-md transition-all duration-500">
+                                        <div className="w-12 h-12 bg-purple-600/10 rounded-2xl flex items-center justify-center text-purple-600 mb-4 group-hover:bg-purple-600 group-hover:text-white transition-colors duration-300">
+                                            <Award size={22} />
+                                        </div>
+                                        <h4 className="text-xs sm:text-sm font-black text-gray-800 uppercase tracking-wider">
+                                            Ayush Certified
+                                        </h4>
+                                    </div>
+                                </div>
+
+                                {/* Callout Brand logo block at the bottom of At Hridved section */}
+                                <div className="text-center max-w-xl mx-auto pt-6">
+                                    <div className="w-28 h-28 rounded-full border-4 border-white shadow-xl bg-white flex items-center justify-center mx-auto mb-6 transform hover:scale-105 transition-transform duration-500 overflow-hidden">
+                                        <img src="/logo-asset4.png" alt="Hridved Logo" className="w-20 h-auto object-contain" />
+                                    </div>
+                                    <p className="text-gray-600 text-sm md:text-base font-light italic leading-relaxed">
+                                        "Ayurvedic wellness made simple. Hridved offers honest, natural supplements and formulations for daily vitality and balance—no shortcuts, just nature."
+                                    </p>
+                                </div>
+                            </ScrollReveal>
+                        </div>
+                    </section>
+
+                </div>
+            </AnimatedPage>
         </>
     );
 };

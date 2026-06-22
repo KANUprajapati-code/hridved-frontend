@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import { scrollRevealVariants } from '../utils/animations';
+import { useEffect, useState } from 'react';
 
 const ScrollReveal = ({
   children,
@@ -14,6 +14,27 @@ const ScrollReveal = ({
     threshold,
     triggerOnce,
   });
+
+  const [hasShownBefore, setHasShownBefore] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const shown = window.sessionStorage.getItem('hridved_scroll_reveal_shown');
+      if (shown === 'true') {
+        setHasShownBefore(true);
+      } else {
+        // Mark as shown after 3 seconds so the very first view of the site can animate nicely
+        const timer = setTimeout(() => {
+          window.sessionStorage.setItem('hridved_scroll_reveal_shown', 'true');
+        }, 3000);
+        return () => clearTimeout(timer);
+      }
+    }
+  }, []);
+
+  if (hasShownBefore) {
+    return <div className={className}>{children}</div>;
+  }
 
   return (
     <motion.div

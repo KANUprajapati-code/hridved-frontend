@@ -43,6 +43,7 @@ const ImageZoom = ({ images = [] }) => {
                     }`}
                     width={600}
                     height={600}
+                    objectFit="contain"
                 />
 
                 {/* Zoom Hint */}
@@ -98,6 +99,7 @@ const ImageZoom = ({ images = [] }) => {
                                 width={150}
                                 height={150}
                                 showPlaceholder={false}
+                                objectFit="contain"
                             />
                         </button>
                     ))}

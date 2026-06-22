@@ -10,6 +10,7 @@ const ProductImage = ({
     height,
     onLoad,
     showPlaceholder = true,
+    objectFit = 'cover',
 }) => {
     const [isLoading, setIsLoading] = useState(true);
     const [hasError, setHasError] = useState(false);
@@ -21,13 +22,13 @@ const ProductImage = ({
         // If it's a Cloudinary URL, add optimization parameters
         if (url && url.includes('cloudinary.com')) {
             // Add automatic format conversion, quality optimization, and dimensions
-            // Format: /c_fill,w_<width>,h_<height>,q_auto,f_auto/
             const parts = url.split('/upload/');
             if (parts.length === 2) {
                 const baseUrl = parts[0];
                 const imagePath = parts[1];
-                // Add transformations: crop fill, auto quality, auto format, progressive JPG
-                return `${baseUrl}/upload/c_fill,q_auto,f_auto/${imagePath}`;
+                // Use c_fit for contain mode, c_fill for cover mode
+                const cropMode = objectFit === 'contain' ? 'c_fit' : 'c_fill';
+                return `${baseUrl}/upload/${cropMode},q_auto,f_auto/${imagePath}`;
             }
         }
 
@@ -50,7 +51,7 @@ const ProductImage = ({
                 src={optimizedSrc || src}
                 alt={alt}
                 placeholder={placeholderSvg}
-                className={`w-full h-full object-cover transition-opacity duration-500 ${isLoading ? 'opacity-0' : 'opacity-100'}`}
+                className={`w-full h-full ${objectFit === 'contain' ? 'object-contain p-1' : 'object-cover'} transition-opacity duration-500 ${isLoading ? 'opacity-0' : 'opacity-100'}`}
                 width={width}
                 height={height}
                 onLoad={() => {
