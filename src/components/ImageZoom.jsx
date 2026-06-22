@@ -30,7 +30,7 @@ const ImageZoom = ({ images = [] }) => {
         <div className="flex flex-col gap-4">
             {/* Main Image with Zoom */}
             <div
-                className="relative w-full aspect-square bg-gray-100 rounded-xl overflow-hidden cursor-zoom-in group border border-gray-200"
+                className="relative w-full aspect-square bg-white rounded-xl overflow-hidden cursor-zoom-in group border border-gray-200"
                 onMouseMove={handleMouseMove}
                 onMouseEnter={() => setIsZoomed(true)}
                 onMouseLeave={() => setIsZoomed(false)}

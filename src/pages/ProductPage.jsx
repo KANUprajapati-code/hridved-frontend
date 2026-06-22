@@ -124,7 +124,7 @@ const ProductPage = () => {
                     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-0">
                             {/* Image Section */}
-                            <div className="p-8 bg-gray-50 flex flex-col justify-between" ref={imageRef}>
+                            <div className="p-4 md:p-8 bg-white flex flex-col justify-between border-b md:border-b-0 md:border-r border-gray-100" ref={imageRef}>
                                 <ImageZoom
                                     images={
                                         product.images && product.images.length > 0
@@ -135,7 +135,7 @@ const ProductPage = () => {
                             </div>
 
                             {/* Details Section */}
-                            <div className="p-8 lg:p-12">
+                            <div className="p-4 md:p-8 lg:p-12 bg-white">
                                 <h1 className="text-3xl md:text-5xl font-sans font-bold text-primary mb-2 leading-tight">{product.name}</h1>
                                 <div className="text-sm text-secondary font-bold uppercase tracking-wider mb-4">{product.category}</div>
 
@@ -188,7 +188,7 @@ const ProductPage = () => {
                                             className="w-12 sm:w-10 h-full hover:bg-gray-100 rounded-r-full flex items-center justify-center text-gray-600 font-bold text-xl"
                                         >+</button>
                                     </div>
-                                    <div className="flex flex-1 gap-2 sm:gap-4">
+                                    <div className="flex-1 flex flex-col sm:flex-row gap-2 sm:gap-4">
                                         <button
                                             onClick={handleAddToCart}
                                             disabled={product.countInStock === 0}

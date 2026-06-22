@@ -25,7 +25,7 @@ const ProductCard = ({ product, onQuickView }) => {
 
             {/* Image Section */}
             <div className="p-1.5 pb-0 bg-white">
-                <div className="relative aspect-square overflow-hidden bg-gray-50 rounded-2xl flex items-center justify-center">
+                <div className="relative aspect-square overflow-hidden bg-white border border-gray-50 rounded-2xl flex items-center justify-center">
                     <Link to={`/product/${product._id}`} className="w-full h-full block" ref={imageRef}>
                         <ProductImage
                             src={product.image}
