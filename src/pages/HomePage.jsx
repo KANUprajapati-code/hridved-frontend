@@ -10,6 +10,7 @@ import AnimatedImage from '../components/AnimatedImage';
 import AnimatedButton from '../components/AnimatedButton';
 import SEO from '../components/SEO';
 import Loader from '../components/Loader';
+import ProductCard from '../components/ProductCard';
 
 const HomePage = () => {
     const [content, setContent] = useState(null);
@@ -62,68 +63,22 @@ const HomePage = () => {
 
     const BestsellerCarousel = ({ products }) => {
         const visibleProducts = products.length > 0 ? products : [
-            { _id: '1', name: 'Premium Hair Oil', image: 'https://images.unsplash.com/photo-1626444341257-58a13e41ae2a?w=800&q=80', price: 499, category: 'Hair Care', rating: 5 },
-            { _id: '2', name: 'Herbal Skin Cream', image: 'https://images.unsplash.com/photo-1556229162-5c63ed9c4ffb?w=800&q=80', price: 599, category: 'Skin Care', rating: 4 },
-            { _id: '3', name: 'Immunity Booster Churn', image: 'https://images.unsplash.com/photo-1611080626919-7cf5a9caab53?w=800&q=80', price: 349, category: 'Immunity', rating: 5 },
-            { _id: '4', name: 'Natural Sandalwood Oil', image: 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=800&q=80', price: 899, category: 'Oils', rating: 4 },
+            { _id: '1', name: 'Premium Hair Oil', image: 'https://images.unsplash.com/photo-1626444341257-58a13e41ae2a?w=800&q=80', price: 499, category: 'Hair Care', rating: 5, countInStock: 10 },
+            { _id: '2', name: 'Herbal Skin Cream', image: 'https://images.unsplash.com/photo-1556229162-5c63ed9c4ffb?w=800&q=80', price: 599, category: 'Skin Care', rating: 4, countInStock: 10 },
+            { _id: '3', name: 'Immunity Booster Churn', image: 'https://images.unsplash.com/photo-1611080626919-7cf5a9caab53?w=800&q=80', price: 349, category: 'Immunity', rating: 5, countInStock: 10 },
+            { _id: '4', name: 'Natural Sandalwood Oil', image: 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=800&q=80', price: 899, category: 'Oils', rating: 4, countInStock: 10 },
         ];
 
         if (!visibleProducts || visibleProducts.length === 0) return <p className="text-center text-gray-500">No bestselling products found.</p>;
 
         return (
             <div className="relative group/carousel">
-                <div>
-                    <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-6 lg:gap-8">
-                        {visibleProducts.map((product) => (
-                            <div key={product._id} className="bg-white rounded-2xl overflow-hidden hover:shadow-2xl transition-all duration-500 border border-gray-100 group/card h-full flex flex-col relative">
-                                {product.mrp > product.price && (
-                                    <div className="absolute top-2 left-2 z-20">
-                                        <span className="bg-green-600 text-white text-[8px] sm:text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-widest shadow-lg">
-                                            {Math.round(((product.mrp - product.price) / product.mrp) * 100)}% OFF
-                                        </span>
-                                    </div>
-                                )}
-                                <div className="aspect-[4/5] bg-gray-50 relative overflow-hidden">
-                                    <Link to={`/product/${product._id}`}>
-                                        <AnimatedImage src={product.image || 'https://images.unsplash.com/photo-1545205597-3d9d02c29597?w=800&q=80'} alt={product.name} className="w-full h-full object-cover transition-transform duration-700 group-hover/card:scale-110" />
-                                    </Link>
-                                    <div className="absolute inset-0 bg-black/0 group-hover/card:bg-black/5 transition-colors duration-300 pointer-events-none"></div>
-                                    <Link to={`/product/${product._id}`}>
-                                        <button className="absolute bottom-4 right-4 bg-white/90 backdrop-blur-sm p-3 rounded-full shadow-lg text-primary transform translate-y-12 opacity-0 group-hover/card:translate-y-0 group-hover/card:opacity-100 transition-all duration-300 hover:bg-primary hover:text-white z-10 pointer-events-auto">
-                                            <ArrowRight size={20} />
-                                        </button>
-                                    </Link>
-                                    {product.countInStock === 0 && (
-                                        <div className="absolute top-4 left-4 bg-red-500/90 backdrop-blur-sm text-white text-[10px] uppercase tracking-widest font-black px-2 py-1 rounded-sm z-10 shadow-sm">Out of Stock</div>
-                                    )}
-                                </div>
-                                <div className="p-5 flex-grow flex flex-col justify-between">
-                                    <div>
-                                        <Link to={`/product/${product._id}`}>
-                                            <h3 className="font-sans font-bold text-lg text-gray-900 mb-1 group-hover/card:text-primary transition-colors line-clamp-1">{product.name}</h3>
-                                        </Link>
-                                        <p className="text-sm text-gray-400 mb-4 font-medium">{product.category}</p>
-                                    </div>
-                                    <div className="flex flex-col gap-1 mt-auto pt-4 border-t border-gray-50">
-                                        <div className="flex items-baseline gap-2">
-                                            <span className="font-bold text-primary text-xl tracking-tight">₹{product.price}</span>
-                                            {product.mrp > product.price && (
-                                                <span className="text-xs text-gray-400 line-through">₹{product.mrp}</span>
-                                            )}
-                                        </div>
-                                        {product.mrp > product.price && (
-                                            <span className="text-[10px] text-green-600 font-bold">Save ₹{product.mrp - product.price}</span>
-                                        )}
-                                        <div className="flex gap-0.5 mt-2">
-                                            {[...Array(5)].map((_, i) => (
-                                                <Star key={i} size={12} fill={i < (product.rating || 4) ? "currentColor" : "none"} className={i < (product.rating || 4) ? "text-yellow-400" : "text-gray-200"} />
-                                            ))}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
+                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-6 lg:gap-8">
+                    {visibleProducts.map((product) => (
+                        <ScrollReveal key={product._id} className="h-full">
+                            <ProductCard product={product} />
+                        </ScrollReveal>
+                    ))}
                 </div>
             </div>
         );
@@ -230,15 +185,15 @@ const HomePage = () => {
 
                 {/* Brand Trust Bar - Refined Marquee */}
                 <div className="bg-white border-b border-gray-50 overflow-hidden py-6 md:py-8 shadow-sm">
-                    <div className="container mx-auto">
-                        <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-24 opacity-60">
+                    <div className="container mx-auto px-4">
+                        <div className="flex flex-row overflow-x-auto no-scrollbar scroll-smooth justify-start md:justify-center items-center gap-8 md:gap-24 opacity-60 whitespace-nowrap">
                             {(content?.trustBar?.items?.length > 0 ? content.trustBar.items : [
                                 { title: '100% Organically Sourced', icon: 'Leaf' },
                                 { title: 'GMP & Ayush Certified', icon: 'Award' },
                                 { title: 'Pure Himalayan Ingredients', icon: 'ShieldCheck' },
                                 { title: 'Eco-Friendly Shipping', icon: 'Truck' }
                             ]).map((item, i) => (
-                                <div key={i} className="flex items-center gap-4 group hover:opacity-100 transition-opacity">
+                                <div key={i} className="flex items-center gap-4 group hover:opacity-100 transition-opacity flex-shrink-0">
                                     <div className="group-hover:scale-110 transition-transform text-primary">
                                         {getIcon(item.icon, 24)}
                                     </div>

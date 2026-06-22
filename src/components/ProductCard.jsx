@@ -49,6 +49,23 @@ const ProductCard = ({ product, onQuickView }) => {
                 )}
             </div>
 
+            {/* Wishlist Button - Floating on top-right on mobile, hidden on desktop */}
+            <div className="absolute top-2 right-2 z-20 lg:hidden">
+                <motion.button
+                    whileTap={{ scale: 0.9 }}
+                    onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setIsWishlisted(!isWishlisted);
+                    }}
+                    className={`w-8 h-8 rounded-full flex items-center justify-center shadow-md border border-gray-100 bg-white transition-all ${
+                        isWishlisted ? 'text-red-500' : 'text-gray-400'
+                    }`}
+                >
+                    <Heart size={15} fill={isWishlisted ? "currentColor" : "none"} />
+                </motion.button>
+            </div>
+
             {/* Image Section - Scaled for mobile */}
             <div className="relative h-48 sm:h-72 overflow-hidden bg-gray-50 flex items-center justify-center">
                 <Link to={`/product/${product._id}`} className="w-full h-full block" ref={imageRef}>
@@ -59,8 +76,8 @@ const ProductCard = ({ product, onQuickView }) => {
                     />
                 </Link>
 
-                {/* Hover Actions - Visible on mobile/touch, hover on desktop */}
-                <div className="absolute inset-0 bg-black/10 lg:bg-black/20 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-3 pointer-events-none">
+                {/* Hover Actions - Hidden on mobile/touch, visible on hover on desktop */}
+                <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 hidden lg:flex items-center justify-center gap-3 pointer-events-none">
                     <motion.button
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.9 }}
@@ -100,38 +117,54 @@ const ProductCard = ({ product, onQuickView }) => {
                 )}
             </div>
 
-            {/* Info Section - Tighter for mobile */}
+            {/* Info Section - Balanced for mobile & desktop */}
             <div className="p-3 sm:p-6 flex flex-col flex-grow">
+                {/* Category */}
                 <div className="mb-1 sm:mb-2">
                     <Link to={`/shop?category=${product.category}`} className="text-[8px] sm:text-[10px] font-black text-secondary uppercase tracking-[0.1em] hover:text-primary transition-colors">
                         {product.category}
                     </Link>
                 </div>
 
+                {/* Product Name */}
                 <Link to={`/product/${product._id}`} className="group-hover:text-primary transition-colors">
-                    <h3 className="text-sm sm:text-lg font-bold text-gray-800 line-clamp-2 mb-2 sm:mb-3 leading-tight sm:leading-snug">{product.name}</h3>
+                    <h3 className="text-xs sm:text-lg font-bold text-gray-800 line-clamp-2 mb-1.5 sm:mb-3 leading-tight sm:leading-snug">{product.name}</h3>
                 </Link>
 
-                <div className="mt-auto flex items-center justify-between pt-2 sm:pt-4 border-t border-gray-50">
+                {/* Rating (Inline for mobile, part of right side on desktop) */}
+                <div className="flex sm:hidden text-secondary gap-0.5 mb-2">
+                    {[...Array(5)].map((_, i) => (
+                        <Star
+                            key={i}
+                            size={10}
+                            className={i < (product.rating || 0) ? "text-secondary" : "text-gray-200"}
+                            fill={i < (product.rating || 0) ? "currentColor" : "none"}
+                        />
+                    ))}
+                </div>
+
+                {/* Pricing and Actions - Desktop View */}
+                <div className="hidden sm:flex mt-auto items-center justify-between pt-4 border-t border-gray-50">
                     <div className="flex flex-col">
-                        <span className="text-[8px] sm:text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">Investment</span>
+                        <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">Investment</span>
                         <div className="flex flex-col">
                             <div className="flex items-baseline gap-2">
-                                <span className="text-lg sm:text-2xl font-black text-primary font-sans">₹{product.price}</span>
+                                <span className="text-2xl font-black text-primary font-sans">₹{product.price}</span>
                                 {product.mrp > product.price && (
-                                    <span className="text-xs sm:text-sm text-gray-400 line-through font-medium">₹{product.mrp}</span>
+                                    <span className="text-sm text-gray-400 line-through font-medium">₹{product.mrp}</span>
                                 )}
                             </div>
                             {product.mrp > product.price && (
-                                <span className="text-[10px] sm:text-xs text-green-600 font-black mt-0.5 whitespace-nowrap">
+                                <span className="text-xs text-green-600 font-black mt-0.5 whitespace-nowrap">
                                     Save ₹{product.mrp - product.price} ({Math.round(((product.mrp - product.price) / product.mrp) * 100)}% OFF)
                                 </span>
                             )}
                         </div>
                     </div>
+                    
                     <div className="flex flex-col items-end">
                         <div className="mb-2">
-                             <span className="text-[8px] sm:text-[10px] text-green-600 font-bold bg-green-50 px-2 py-0.5 rounded-full border border-green-100">
+                            <span className="text-[10px] text-green-600 font-bold bg-green-50 px-2 py-0.5 rounded-full border border-green-100">
                                 In Stock
                             </span>
                         </div>
@@ -145,20 +178,20 @@ const ProductCard = ({ product, onQuickView }) => {
                                     }
                                     addToCart(product, 1);
                                 }}
-                                className="bg-white text-primary border border-primary p-2 sm:p-3 rounded-lg sm:rounded-xl hover:bg-primary hover:text-white transition-all duration-300 shadow-sm flex items-center justify-center transform active:scale-95"
+                                className="bg-white text-primary border border-primary p-3 rounded-xl hover:bg-primary hover:text-white transition-all duration-300 shadow-sm flex items-center justify-center transform active:scale-95"
                                 title="Add to Cart"
                             >
-                                <ShoppingCart size={14} className="sm:w-[18px] sm:h-[18px]" />
+                                <ShoppingCart size={18} />
                             </button>
                             <button
                                 onClick={(e) => {
                                     e.preventDefault();
                                     setIsWhatsAppModalOpen(true);
                                 }}
-                                className="bg-[#25D366] text-white p-2 sm:p-3 rounded-lg sm:rounded-xl hover:bg-[#1da851] transition-all duration-300 shadow-md hover:shadow-xl transform active:scale-95"
+                                className="bg-[#25D366] text-white p-3 rounded-xl hover:bg-[#1da851] transition-all duration-300 shadow-md hover:shadow-xl transform active:scale-95"
                                 title="Order on WhatsApp"
                             >
-                                <MessageCircle size={14} className="sm:w-[18px] sm:h-[18px]" />
+                                <MessageCircle size={18} />
                             </button>
                         </div>
                         <div className="flex text-secondary gap-0.5">
@@ -171,6 +204,59 @@ const ProductCard = ({ product, onQuickView }) => {
                                 />
                             ))}
                         </div>
+                    </div>
+                </div>
+
+                {/* Pricing and Actions - Mobile View */}
+                <div className="flex sm:hidden flex-col mt-auto pt-2 border-t border-gray-50">
+                    {/* Price & Savings */}
+                    <div className="flex flex-wrap items-baseline gap-1.5 mb-0.5">
+                        <span className="text-sm font-black text-primary font-sans">₹{product.price}</span>
+                        {product.mrp > product.price && (
+                            <span className="text-[9px] text-gray-400 line-through font-medium">₹{product.mrp}</span>
+                        )}
+                    </div>
+                    {product.mrp > product.price && (
+                        <span className="text-[8px] text-green-600 font-extrabold mb-1.5 block leading-none">
+                            Save ₹{product.mrp - product.price} ({Math.round(((product.mrp - product.price) / product.mrp) * 100)}% OFF)
+                        </span>
+                    )}
+
+                    {/* Stock Status */}
+                    <div className="mb-2">
+                        <span className="text-[8px] text-green-600 font-bold bg-green-50 px-1.5 py-0.5 rounded-full border border-green-100">
+                            In Stock
+                        </span>
+                    </div>
+
+                    {/* Quick Add Buttons */}
+                    <div className="flex gap-1.5 mt-auto">
+                        <button
+                            onClick={(e) => {
+                                e.preventDefault();
+                                const cartIcon = document.getElementById('cart-icon-container');
+                                if (imageRef.current && cartIcon) {
+                                    animateAddToCart(imageRef.current, cartIcon, product.image);
+                                }
+                                addToCart(product, 1);
+                            }}
+                            className="w-1/2 bg-white text-primary border border-primary py-2 rounded-lg flex items-center justify-center gap-1 text-[9px] font-black active:bg-primary active:text-white transition-all shadow-sm"
+                            title="Add to Cart"
+                        >
+                            <ShoppingCart size={11} />
+                            <span>Add</span>
+                        </button>
+                        <button
+                            onClick={(e) => {
+                                e.preventDefault();
+                                setIsWhatsAppModalOpen(true);
+                            }}
+                            className="w-1/2 bg-[#25D366] text-white py-2 rounded-lg flex items-center justify-center gap-1 text-[9px] font-black active:bg-[#1da851] transition-all shadow-sm"
+                            title="Order on WhatsApp"
+                        >
+                            <MessageCircle size={11} />
+                            <span>WhatsApp</span>
+                        </button>
                     </div>
                 </div>
             </div>

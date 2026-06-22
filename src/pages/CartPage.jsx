@@ -617,7 +617,7 @@ const CartPage = () => {
                     {/* You Might Also Like */}
                     <div className="mt-20">
                         <h3 className="text-2xl font-serif font-bold text-gray-800 mb-8">You Might Also Like</h3>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
                             {recommendedProducts.map((product) => (
                                 <ProductCard key={product._id} product={product} />
                             ))}

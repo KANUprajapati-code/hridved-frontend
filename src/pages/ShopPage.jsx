@@ -496,7 +496,7 @@ const ShopPage = () => {
                             ) : (
                                 <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
                                     {products.map((product, index) => (
-                                        <ScrollReveal key={product._id} delay={index * 0.1}>
+                                        <ScrollReveal key={product._id} delay={index * 0.1} className="h-full">
                                             <ProductCard product={product} onQuickView={handleQuickView} />
                                         </ScrollReveal>
                                     ))}
