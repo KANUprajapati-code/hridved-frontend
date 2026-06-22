@@ -96,7 +96,7 @@ const DoctorBookingPage = () => {
         setBookingInProgress(true);
 
         try {
-            const WHATSAPP_NUMBER = '917990411390';
+            const WHATSAPP_NUMBER = '918980411390';
             const formattedDate = new Date(selectedDate).toLocaleDateString();
             const message = `Hello, I want to book a consultation.
 
