@@ -72,7 +72,7 @@ const Header = () => {
                     <a href="https://facebook.com" target="_blank" rel="noreferrer" className="hover:text-secondary transition-colors"><Facebook size={12} /></a>
                     <a href="https://instagram.com" target="_blank" rel="noreferrer" className="hover:text-secondary transition-colors"><Instagram size={12} /></a>
                     <a href="https://twitter.com" target="_blank" rel="noreferrer" className="hover:text-secondary transition-colors"><Twitter size={12} /></a>
-                    <a href="mailto:hridvedpharama@gmail.com" className="hover:text-secondary transition-colors"><Mail size={12} /></a>
+                    <a href="mailto:hridved.customercare@gmail.com" className="hover:text-secondary transition-colors"><Mail size={12} /></a>
                 </div>
             </div>
 

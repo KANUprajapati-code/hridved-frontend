@@ -84,7 +84,7 @@ const TermsAndConditions = () => {
                                 <p>
                                     If you have any questions about our Terms and Conditions, please contact us at:
                                 </p>
-                                <p className="mt-2 text-primary font-bold font-serif">hridvedpharama@gmail.com</p>
+                                <p className="mt-2 text-primary font-bold font-serif">hridved.customercare@gmail.com</p>
                             </div>
                         </div>
                     </div>

@@ -79,7 +79,7 @@ const ShippingPolicy = () => {
                                 <p>
                                     If you have any questions regarding your shipment, please reach out to our support team:
                                 </p>
-                                <p className="mt-2 text-primary font-bold font-serif">hridvedpharama@gmail.com</p>
+                                <p className="mt-2 text-primary font-bold font-serif">hridved.customercare@gmail.com</p>
                             </div>
                         </div>
                     </div>

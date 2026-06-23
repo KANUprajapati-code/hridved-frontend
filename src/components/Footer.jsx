@@ -109,7 +109,7 @@ const Footer = () => {
                             </div>
                             <div>
                                 <p className="text-[9px] text-gray-400 uppercase font-bold tracking-wider leading-none mb-1">Email</p>
-                                <p className="text-xs font-bold text-gray-200">hridvedpharama@gmail.com</p>
+                                <p className="text-xs font-bold text-gray-200">hridved.customercare@gmail.com</p>
                             </div>
                         </div>
 
@@ -119,7 +119,7 @@ const Footer = () => {
                             </div>
                             <div>
                                 <p className="text-[9px] text-gray-400 uppercase font-bold tracking-wider leading-none mb-1">Address</p>
-                                <p className="text-xs font-bold text-gray-200 leading-tight">23 Vraj Garden Society, Bayad, Dist: Aravalli, Gujarat 383325</p>
+                                <p className="text-xs font-bold text-gray-200 leading-tight">HRIDVED AYURVEDA, 1st Floor, Girishbhai Hospital Complex, Ahmedabad-Himatnagar Highway, Approach Road, Prantij, Gujarat - 383205</p>
                             </div>
                         </div>
                     </div>

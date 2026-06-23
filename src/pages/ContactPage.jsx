@@ -37,7 +37,7 @@ const ContactPage = () => {
                             <MapPin className="mt-1 flex-shrink-0" />
                             <div>
                                 <h3 className="font-bold">Our Location</h3>
-                                <p className="text-gray-300 text-sm">23 VRAJ GARDEN SOCIETY, BAYAD, DIST: ARAVALLI Gujarat 383325</p>
+                                <p className="text-gray-300 text-sm">HRIDVED AYURVEDA, 1st Floor, Girishbhai Hospital Complex, Ahmedabad-Himatnagar Highway, Approach Road, Prantij, Gujarat - 383205</p>
                             </div>
                         </li>
                         <li className="flex items-start space-x-4">
@@ -51,7 +51,7 @@ const ContactPage = () => {
                             <Mail className="mt-1 flex-shrink-0" />
                             <div>
                                 <h3 className="font-bold">Email</h3>
-                                <p className="text-gray-300">hridvedpharama@gmail.com</p>
+                                <p className="text-gray-300">hridved.customercare@gmail.com</p>
                             </div>
                         </li>
                     </ul>
