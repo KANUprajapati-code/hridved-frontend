@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Star, Truck, ShieldCheck, Leaf, Users, Award, Heart, History, CheckCircle, Droplets, Sun, Sparkles, Play, VolumeX, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowRight, Star, Truck, ShieldCheck, Leaf, Users, Award, Heart, History, CheckCircle, Droplets, Sun, Sparkles, Play, VolumeX, ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import api, { getImageUrl } from '../utils/api';
 import AnimatedPage from '../components/AnimatedPage';
@@ -21,31 +21,51 @@ const HomePage = () => {
     const [isPageLoading, setIsPageLoading] = useState(true);
     const [isHeroLoaded, setIsHeroLoaded] = useState(false);
     const [activeSlide, setActiveSlide] = useState(0);
+    const [activeVideoUrl, setActiveVideoUrl] = useState(null);
+
+    const isYouTubeUrl = (url) => {
+        if (!url) return false;
+        return url.includes('youtube.com') || url.includes('youtu.be');
+    };
+
+    const getYouTubeEmbedUrl = (url) => {
+        if (!url) return '';
+        let videoId = '';
+        if (url.includes('youtube.com/watch')) {
+            const urlParams = new URLSearchParams(url.split('?')[1]);
+            videoId = urlParams.get('v');
+        } else if (url.includes('youtu.be/')) {
+            videoId = url.split('youtu.be/')[1]?.split('?')[0];
+        } else if (url.includes('youtube.com/embed/')) {
+            videoId = url.split('youtube.com/embed/')[1]?.split('?')[0];
+        }
+        return `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+    };
 
     const slides = [
         {
             badge: "PREMIUM WELLNESS",
-            title: "Ancient Wisdom. Masterfully Pure.",
-            subtitle: "Experience the pinnacle of Ayurvedic excellence. Pure formulations handcrafted for your modern lifestyle.",
+            title: content?.hero?.title || "Ancient Wisdom. Masterfully Pure.",
+            subtitle: content?.hero?.subtitle || "Experience the pinnacle of Ayurvedic excellence. Pure formulations handcrafted for your modern lifestyle.",
             image: getImageUrl(content?.hero?.image) || "https://images.unsplash.com/photo-1612170153139-6f881ff067e0?q=80&w=1200&auto=format",
-            ctaText: "Shop Collection",
-            link: "/shop"
+            ctaText: content?.hero?.ctaText || "Shop Collection",
+            link: content?.hero?.ctaLink || "/shop"
         },
         {
             badge: "DOCTOR CONSULTATION",
-            title: "Consult Certified Ayurvedic Specialists.",
-            subtitle: "Get personalized care, authentic treatment plans, and virtual consultations from our panel of specialists.",
-            image: "https://images.unsplash.com/photo-1584820927498-cfe5211fd8bf?q=80&w=1200&auto=format",
-            ctaText: "Book Appointment",
-            link: "/consultation"
+            title: content?.hero2?.title || "Consult Certified Ayurvedic Specialists.",
+            subtitle: content?.hero2?.subtitle || "Get personalized care, authentic treatment plans, and virtual consultations from our panel of specialists.",
+            image: getImageUrl(content?.hero2?.image) || "https://images.unsplash.com/photo-1584820927498-cfe5211fd8bf?q=80&w=1200&auto=format",
+            ctaText: content?.hero2?.ctaText || "Book Appointment",
+            link: content?.hero2?.ctaLink || "/consultation"
         },
         {
             badge: "100% PURE & CERTIFIED",
-            title: "Handcrafted in Small Batches.",
-            subtitle: "Slow-cooked for 72 hours in traditional vessels. Lab-tested against 140+ safety parameters.",
-            image: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=1200&auto=format",
-            ctaText: "Our Purity Story",
-            link: "/about"
+            title: content?.hero3?.title || "Handcrafted in Small Batches.",
+            subtitle: content?.hero3?.subtitle || "Slow-cooked for 72 hours in traditional vessels. Lab-tested against 140+ safety parameters.",
+            image: getImageUrl(content?.hero3?.image) || "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=1200&auto=format",
+            ctaText: content?.hero3?.ctaText || "Our Purity Story",
+            link: content?.hero3?.ctaLink || "/about"
         }
     ];
 
@@ -106,21 +126,24 @@ const HomePage = () => {
         setActiveSlide(prev => (prev + 1) % slides.length);
     };
 
-    const reelReviews = [
+    const reelReviews = content?.videos?.items?.length > 0 ? content.videos.items : [
         {
             title: "GUT AND DIGESTION",
             image: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=600&auto=format",
-            isNew: true
+            description: "new",
+            link: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
         },
         {
             title: "HAIR AND SCALP CARE",
             image: "https://images.unsplash.com/photo-1626444341257-58a13e41ae2a?q=80&w=600&auto=format",
-            isNew: true
+            description: "new",
+            link: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4"
         },
         {
             title: "MENS VITALITY BOOSTER",
             image: "https://images.unsplash.com/photo-1611080626919-7cf5a9caab53?q=80&w=600&auto=format",
-            isNew: false
+            description: "",
+            link: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4"
         }
     ];
 
@@ -394,12 +417,16 @@ const HomePage = () => {
                                     {reelReviews.map((reel, idx) => (
                                         <div 
                                             key={idx} 
-                                            className="w-full md:w-80 group relative rounded-[2rem] overflow-hidden shadow-lg border border-gray-100 flex flex-col hover:shadow-2xl transition-all duration-500"
+                                            onClick={() => {
+                                                const videoUrl = reel.link || "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4";
+                                                setActiveVideoUrl(videoUrl);
+                                            }}
+                                            className="w-full md:w-80 group relative rounded-[2rem] overflow-hidden shadow-lg border border-gray-100 flex flex-col hover:shadow-2xl transition-all duration-500 cursor-pointer"
                                         >
                                             {/* Reel Video Thumbnail */}
                                             <div className="h-96 relative overflow-hidden bg-gray-100">
                                                 <img 
-                                                    src={reel.image} 
+                                                    src={getImageUrl(reel.image)} 
                                                     alt={reel.title} 
                                                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                                                 />
@@ -414,16 +441,11 @@ const HomePage = () => {
                                                 </div>
 
                                                 {/* Badges */}
-                                                {reel.isNew && (
+                                                {(reel.isNew || reel.description?.toLowerCase() === 'new') && (
                                                     <span className="absolute top-4 left-4 bg-primary text-white text-[9px] font-black px-2.5 py-0.5 rounded-full tracking-wider uppercase">
                                                         NEW
                                                     </span>
                                                 )}
-
-                                                {/* Audio Control */}
-                                                <button className="absolute bottom-4 right-4 w-8 h-8 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center text-white border-none shadow-md">
-                                                    <VolumeX size={14} />
-                                                </button>
                                             </div>
 
                                             {/* Label below thumbnail */}
@@ -510,6 +532,41 @@ const HomePage = () => {
                             </ScrollReveal>
                         </div>
                     </section>
+
+                    {/* Dynamic Video Review Modal */}
+                    {activeVideoUrl && (
+                        <div className="fixed inset-0 z-[9999] bg-black/85 flex items-center justify-center p-4 md:p-8 backdrop-blur-sm animate-fade-in animate-duration-200">
+                            <div className="relative w-full max-w-4xl bg-black rounded-3xl overflow-hidden shadow-2xl border border-gray-800">
+                                {/* Close Button */}
+                                <button 
+                                    onClick={() => setActiveVideoUrl(null)}
+                                    className="absolute top-4 right-4 z-[10000] w-10 h-10 bg-white/10 hover:bg-white/20 text-white rounded-full flex items-center justify-center transition-all active:scale-95 border-none shadow-lg cursor-pointer"
+                                >
+                                    <X size={20} />
+                                </button>
+
+                                {/* Video Player */}
+                                <div className="aspect-video w-full flex items-center justify-center bg-black">
+                                    {isYouTubeUrl(activeVideoUrl) ? (
+                                        <iframe 
+                                            className="w-full h-full border-none"
+                                            src={getYouTubeEmbedUrl(activeVideoUrl)}
+                                            title="Video Player"
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                            allowFullScreen
+                                        ></iframe>
+                                    ) : (
+                                        <video 
+                                            className="w-full h-full object-contain"
+                                            src={getImageUrl(activeVideoUrl)}
+                                            controls
+                                            autoPlay
+                                        ></video>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    )}
 
                 </div>
             </AnimatedPage>

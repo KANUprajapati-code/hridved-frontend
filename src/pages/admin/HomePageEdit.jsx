@@ -7,6 +7,10 @@ import { Save, ArrowLeft, Plus, Trash2, Leaf, ShieldCheck, Truck, Award, Heart, 
 const HomePageEdit = () => {
     const [loading, setLoading] = useState(true);
     const [hero, setHero] = useState({ title: '', subtitle: '', ctaText: '', ctaLink: '', image: '' });
+    const [hero2, setHero2] = useState({ title: '', subtitle: '', ctaText: '', ctaLink: '', image: '' });
+    const [hero3, setHero3] = useState({ title: '', subtitle: '', ctaText: '', ctaLink: '', image: '' });
+    const [activeHeroTab, setActiveHeroTab] = useState(1);
+    const [videos, setVideos] = useState({ items: [] });
     const [tradition, setTradition] = useState({ title: '', subtitle: '', image: '' });
     const [testimonials, setTestimonials] = useState({ items: [] });
     const [promise, setPromise] = useState({ title: '', subtitle: '', items: [] });
@@ -19,11 +23,24 @@ const HomePageEdit = () => {
             try {
                 const { data } = await api.get('/content');
                 if (data.hero) setHero(data.hero);
+                if (data.hero2) setHero2(data.hero2);
+                if (data.hero3) setHero3(data.hero3);
                 if (data.tradition) setTradition(data.tradition);
                 if (data.testimonials) setTestimonials(data.testimonials);
                 if (data.promise) setPromise(data.promise);
                 if (data.purity) setPurity(data.purity);
                 if (data.trustBar) setTrustBar(data.trustBar);
+                if (data.videos) {
+                    setVideos(data.videos);
+                } else {
+                    setVideos({
+                        items: [
+                            { title: 'GUT AND DIGESTION', image: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=600&auto=format', link: '', description: 'new' },
+                            { title: 'HAIR AND SCALP CARE', image: 'https://images.unsplash.com/photo-1626444341257-58a13e41ae2a?q=80&w=600&auto=format', link: '', description: 'new' },
+                            { title: 'MENS VITALITY BOOSTER', image: 'https://images.unsplash.com/photo-1611080626919-7cf5a9caab53?q=80&w=600&auto=format', link: '', description: '' }
+                        ]
+                    });
+                }
                 setLoading(false);
             } catch (error) {
                 console.error("Error fetching content", error);
@@ -51,6 +68,89 @@ const HomePageEdit = () => {
             console.error('Hero image upload failed:', error);
             setUploading(false);
             alert('Upload failed. Try a smaller image.');
+        }
+    };
+
+    const uploadHero2ImageHandler = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        setUploading(true);
+        try {
+            const compressedFile = await compressImage(file, { quality: 0.7, maxWidth: 1920 });
+            const formData = new FormData();
+            formData.append('image', compressedFile);
+
+            const { data } = await api.post('/upload', formData);
+            const normalizedPath = data.replace(/\\/g, '/');
+            setHero2({ ...hero2, image: normalizedPath });
+            setUploading(false);
+        } catch (error) {
+            console.error('Hero 2 image upload failed:', error);
+            setUploading(false);
+            alert('Upload failed. Try a smaller image.');
+        }
+    };
+
+    const uploadHero3ImageHandler = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        setUploading(true);
+        try {
+            const compressedFile = await compressImage(file, { quality: 0.7, maxWidth: 1920 });
+            const formData = new FormData();
+            formData.append('image', compressedFile);
+
+            const { data } = await api.post('/upload', formData);
+            const normalizedPath = data.replace(/\\/g, '/');
+            setHero3({ ...hero3, image: normalizedPath });
+            setUploading(false);
+        } catch (error) {
+            console.error('Hero 3 image upload failed:', error);
+            setUploading(false);
+            alert('Upload failed. Try a smaller image.');
+        }
+    };
+
+    const uploadVideoThumbnailHandler = async (e, index) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        setUploading(true);
+        try {
+            const compressedFile = await compressImage(file, { quality: 0.7, maxWidth: 800 });
+            const formData = new FormData();
+            formData.append('image', compressedFile);
+
+            const { data } = await api.post('/upload', formData);
+            const normalizedPath = data.replace(/\\/g, '/');
+            handleVideoChange(index, 'image', normalizedPath);
+            setUploading(false);
+        } catch (error) {
+            console.error('Video thumbnail upload failed:', error);
+            setUploading(false);
+            alert('Upload failed. Try a smaller image.');
+        }
+    };
+
+    const uploadVideoFileHandler = async (e, index) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        setUploading(true);
+        try {
+            const formData = new FormData();
+            formData.append('video', file);
+
+            const { data } = await api.post('/upload/video', formData);
+            const normalizedPath = data.replace(/\\/g, '/');
+            handleVideoChange(index, 'link', normalizedPath);
+            setUploading(false);
+        } catch (error) {
+            console.error('Video upload failed:', error);
+            setUploading(false);
+            alert('Video upload failed. Try a smaller video file (e.g. mp4, under 10MB).');
         }
     };
 
@@ -121,9 +221,39 @@ const HomePageEdit = () => {
         e.preventDefault();
         try {
             await api.put('/content/hero', hero);
-            alert('Hero section updated!');
+            alert('Hero Slide 1 updated!');
         } catch (error) {
-            alert('Error updating hero');
+            alert('Error updating hero Slide 1');
+        }
+    };
+
+    const saveHero2 = async (e) => {
+        e.preventDefault();
+        try {
+            await api.put('/content/hero2', hero2);
+            alert('Hero Slide 2 updated!');
+        } catch (error) {
+            alert('Error updating Hero Slide 2');
+        }
+    };
+
+    const saveHero3 = async (e) => {
+        e.preventDefault();
+        try {
+            await api.put('/content/hero3', hero3);
+            alert('Hero Slide 3 updated!');
+        } catch (error) {
+            alert('Error updating Hero Slide 3');
+        }
+    };
+
+    const saveVideos = async (e) => {
+        e.preventDefault();
+        try {
+            await api.put('/content/videos', videos);
+            alert('Videos updated!');
+        } catch (error) {
+            alert('Error updating videos');
         }
     };
 
@@ -175,6 +305,25 @@ const HomePageEdit = () => {
         } catch (error) {
             alert('Error updating trust bar');
         }
+    };
+
+    const handleVideoChange = (index, field, value) => {
+        const newItems = [...(videos.items || [])];
+        if (!newItems[index]) newItems[index] = {};
+        newItems[index][field] = value;
+        setVideos({ ...videos, items: newItems });
+    };
+
+    const addVideoItem = () => {
+        setVideos({
+            ...videos,
+            items: [...(videos.items || []), { title: '', image: '', link: '', description: '' }]
+        });
+    };
+
+    const removeVideoItem = (index) => {
+        const newItems = videos.items.filter((_, i) => i !== index);
+        setVideos({ ...videos, items: newItems });
     };
 
     const handleTestimonialChange = (index, field, value) => {
@@ -279,79 +428,258 @@ const HomePageEdit = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {/* Hero Editor */}
                 <div className="bg-white p-6 rounded-lg shadow border">
-                    <h2 className="text-xl font-bold mb-4 border-b pb-2 text-primary">Hero Section</h2>
-                    <form onSubmit={saveHero} className="space-y-4">
-                        <div>
-                            <label className="block text-sm font-bold mb-1">Title</label>
-                            <input
-                                type="text"
-                                value={hero.title}
-                                onChange={(e) => setHero({ ...hero, title: e.target.value })}
-                                className="w-full border p-2 rounded"
-                            />
+                    <h2 className="text-xl font-bold mb-4 border-b pb-2 text-primary flex justify-between items-center">
+                        Hero Section Carousel
+                        <div className="flex gap-1 text-xs">
+                            {[1, 2, 3].map((num) => (
+                                <button
+                                    key={num}
+                                    type="button"
+                                    onClick={() => setActiveHeroTab(num)}
+                                    className={`px-3 py-1 rounded-md font-bold transition-all ${activeHeroTab === num ? 'bg-primary text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                                >
+                                    Slide {num}
+                                </button>
+                            ))}
                         </div>
-                        <div>
-                            <label className="block text-sm font-bold mb-1">Subtitle</label>
-                            <textarea
-                                value={hero.subtitle}
-                                onChange={(e) => setHero({ ...hero, subtitle: e.target.value })}
-                                className="w-full border p-2 rounded"
-                                rows="3"
-                            />
-                        </div>
-                        <div className="grid grid-cols-2 gap-4">
+                    </h2>
+                    
+                    {activeHeroTab === 1 && (
+                        <form onSubmit={saveHero} className="space-y-4">
                             <div>
-                                <label className="block text-sm font-bold mb-1">CTA Text</label>
+                                <label className="block text-sm font-bold mb-1">Badge / Tag</label>
+                                <p className="text-[10px] text-gray-400 italic mb-1">Standard: PREMIUM WELLNESS</p>
+                            </div>
+                            <div>
+                                <label className="block text-sm font-bold mb-1">Title</label>
                                 <input
                                     type="text"
-                                    value={hero.ctaText}
-                                    onChange={(e) => setHero({ ...hero, ctaText: e.target.value })}
+                                    value={hero.title}
+                                    onChange={(e) => setHero({ ...hero, title: e.target.value })}
                                     className="w-full border p-2 rounded"
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-bold mb-1">CTA Link</label>
-                                <input
-                                    type="text"
-                                    value={hero.ctaLink}
-                                    onChange={(e) => setHero({ ...hero, ctaLink: e.target.value })}
+                                <label className="block text-sm font-bold mb-1">Subtitle</label>
+                                <textarea
+                                    value={hero.subtitle}
+                                    onChange={(e) => setHero({ ...hero, subtitle: e.target.value })}
                                     className="w-full border p-2 rounded"
+                                    rows="3"
                                 />
                             </div>
-                        </div>
-                        <div>
-                            <label className="block text-sm font-bold mb-1">Hero Image</label>
-                            <input
-                                type="text"
-                                value={hero.image}
-                                onChange={(e) => setHero({ ...hero, image: e.target.value })}
-                                className="w-full border p-2 rounded mb-2"
-                                placeholder="Image URL or Upload"
-                            />
-                            <input
-                                type="file"
-                                id="hero-image-file"
-                                className="hidden"
-                                onChange={uploadHeroImageHandler}
-                            />
-                            <label htmlFor="hero-image-file" className="cursor-pointer bg-gray-100 py-2 px-4 rounded border hover:bg-gray-200 inline-block text-sm font-bold">
-                                {uploading ? 'Uploading...' : 'Upload Image'}
-                            </label>
-                            {hero.image && (
-                                <div className="mt-4">
-                                    <p className="text-xs text-gray-400 mb-2">Image Preview:</p>
-                                    <img 
-                                        src={getImageUrl(hero.image)} 
-                                        alt="Hero Preview" 
-                                        className="h-32 w-auto rounded border shadow-sm"
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-sm font-bold mb-1">CTA Text</label>
+                                    <input
+                                        type="text"
+                                        value={hero.ctaText}
+                                        onChange={(e) => setHero({ ...hero, ctaText: e.target.value })}
+                                        className="w-full border p-2 rounded"
                                     />
                                 </div>
-                            )}
-                        </div>
-                        <button type="submit" className="bg-primary text-white px-4 py-2 rounded flex items-center gap-2 hover:bg-opacity-90 transition-all">
-                            <Save size={16} /> Save Hero Section
-                        </button>
-                    </form>
+                                <div>
+                                    <label className="block text-sm font-bold mb-1">CTA Link</label>
+                                    <input
+                                        type="text"
+                                        value={hero.ctaLink}
+                                        onChange={(e) => setHero({ ...hero, ctaLink: e.target.value })}
+                                        className="w-full border p-2 rounded"
+                                    />
+                                </div>
+                            </div>
+                            <div>
+                                <label className="block text-sm font-bold mb-1">Hero Image</label>
+                                <input
+                                    type="text"
+                                    value={hero.image}
+                                    onChange={(e) => setHero({ ...hero, image: e.target.value })}
+                                    className="w-full border p-2 rounded mb-2"
+                                    placeholder="Image URL or Upload"
+                                />
+                                <input
+                                    type="file"
+                                    id="hero-image-file"
+                                    className="hidden"
+                                    onChange={uploadHeroImageHandler}
+                                />
+                                <label htmlFor="hero-image-file" className="cursor-pointer bg-gray-100 py-2 px-4 rounded border hover:bg-gray-200 inline-block text-sm font-bold">
+                                    {uploading ? 'Uploading...' : 'Upload Image'}
+                                </label>
+                                {hero.image && (
+                                    <div className="mt-4">
+                                        <p className="text-xs text-gray-400 mb-2">Image Preview:</p>
+                                        <img 
+                                            src={getImageUrl(hero.image)} 
+                                            alt="Hero Preview" 
+                                            className="h-32 w-auto rounded border shadow-sm"
+                                        />
+                                    </div>
+                                )}
+                            </div>
+                            <button type="submit" className="bg-primary text-white px-4 py-2 rounded flex items-center gap-2 hover:bg-opacity-90 transition-all">
+                                <Save size={16} /> Save Slide 1 Content
+                            </button>
+                        </form>
+                    )}
+
+                    {activeHeroTab === 2 && (
+                        <form onSubmit={saveHero2} className="space-y-4">
+                            <div>
+                                <label className="block text-sm font-bold mb-1">Badge / Tag</label>
+                                <p className="text-[10px] text-gray-400 italic mb-1">Standard: DOCTOR CONSULTATION</p>
+                            </div>
+                            <div>
+                                <label className="block text-sm font-bold mb-1">Title</label>
+                                <input
+                                    type="text"
+                                    value={hero2.title}
+                                    onChange={(e) => setHero2({ ...hero2, title: e.target.value })}
+                                    className="w-full border p-2 rounded"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-bold mb-1">Subtitle</label>
+                                <textarea
+                                    value={hero2.subtitle}
+                                    onChange={(e) => setHero2({ ...hero2, subtitle: e.target.value })}
+                                    className="w-full border p-2 rounded"
+                                    rows="3"
+                                />
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-sm font-bold mb-1">CTA Text</label>
+                                    <input
+                                        type="text"
+                                        value={hero2.ctaText}
+                                        onChange={(e) => setHero2({ ...hero2, ctaText: e.target.value })}
+                                        className="w-full border p-2 rounded"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-bold mb-1">CTA Link</label>
+                                    <input
+                                        type="text"
+                                        value={hero2.ctaLink}
+                                        onChange={(e) => setHero2({ ...hero2, ctaLink: e.target.value })}
+                                        className="w-full border p-2 rounded"
+                                    />
+                                </div>
+                            </div>
+                            <div>
+                                <label className="block text-sm font-bold mb-1">Hero Image</label>
+                                <input
+                                    type="text"
+                                    value={hero2.image}
+                                    onChange={(e) => setHero2({ ...hero2, image: e.target.value })}
+                                    className="w-full border p-2 rounded mb-2"
+                                    placeholder="Image URL or Upload"
+                                />
+                                <input
+                                    type="file"
+                                    id="hero2-image-file"
+                                    className="hidden"
+                                    onChange={uploadHero2ImageHandler}
+                                />
+                                <label htmlFor="hero2-image-file" className="cursor-pointer bg-gray-100 py-2 px-4 rounded border hover:bg-gray-200 inline-block text-sm font-bold">
+                                    {uploading ? 'Uploading...' : 'Upload Image'}
+                                </label>
+                                {hero2.image && (
+                                    <div className="mt-4">
+                                        <p className="text-xs text-gray-400 mb-2">Image Preview:</p>
+                                        <img 
+                                            src={getImageUrl(hero2.image)} 
+                                            alt="Hero 2 Preview" 
+                                            className="h-32 w-auto rounded border shadow-sm"
+                                        />
+                                    </div>
+                                )}
+                            </div>
+                            <button type="submit" className="bg-primary text-white px-4 py-2 rounded flex items-center gap-2 hover:bg-opacity-90 transition-all">
+                                <Save size={16} /> Save Slide 2 Content
+                            </button>
+                        </form>
+                    )}
+
+                    {activeHeroTab === 3 && (
+                        <form onSubmit={saveHero3} className="space-y-4">
+                            <div>
+                                <label className="block text-sm font-bold mb-1">Badge / Tag</label>
+                                <p className="text-[10px] text-gray-400 italic mb-1">Standard: 100% PURE & CERTIFIED</p>
+                            </div>
+                            <div>
+                                <label className="block text-sm font-bold mb-1">Title</label>
+                                <input
+                                    type="text"
+                                    value={hero3.title}
+                                    onChange={(e) => setHero3({ ...hero3, title: e.target.value })}
+                                    className="w-full border p-2 rounded"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-bold mb-1">Subtitle</label>
+                                <textarea
+                                    value={hero3.subtitle}
+                                    onChange={(e) => setHero3({ ...hero3, subtitle: e.target.value })}
+                                    className="w-full border p-2 rounded"
+                                    rows="3"
+                                />
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-sm font-bold mb-1">CTA Text</label>
+                                    <input
+                                        type="text"
+                                        value={hero3.ctaText}
+                                        onChange={(e) => setHero3({ ...hero3, ctaText: e.target.value })}
+                                        className="w-full border p-2 rounded"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-bold mb-1">CTA Link</label>
+                                    <input
+                                        type="text"
+                                        value={hero3.ctaLink}
+                                        onChange={(e) => setHero3({ ...hero3, ctaLink: e.target.value })}
+                                        className="w-full border p-2 rounded"
+                                    />
+                                </div>
+                            </div>
+                            <div>
+                                <label className="block text-sm font-bold mb-1">Hero Image</label>
+                                <input
+                                    type="text"
+                                    value={hero3.image}
+                                    onChange={(e) => setHero3({ ...hero3, image: e.target.value })}
+                                    className="w-full border p-2 rounded mb-2"
+                                    placeholder="Image URL or Upload"
+                                />
+                                <input
+                                    type="file"
+                                    id="hero3-image-file"
+                                    className="hidden"
+                                    onChange={uploadHero3ImageHandler}
+                                />
+                                <label htmlFor="hero3-image-file" className="cursor-pointer bg-gray-100 py-2 px-4 rounded border hover:bg-gray-200 inline-block text-sm font-bold">
+                                    {uploading ? 'Uploading...' : 'Upload Image'}
+                                </label>
+                                {hero3.image && (
+                                    <div className="mt-4">
+                                        <p className="text-xs text-gray-400 mb-2">Image Preview:</p>
+                                        <img 
+                                            src={getImageUrl(hero3.image)} 
+                                            alt="Hero 3 Preview" 
+                                            className="h-32 w-auto rounded border shadow-sm"
+                                        />
+                                    </div>
+                                )}
+                            </div>
+                            <button type="submit" className="bg-primary text-white px-4 py-2 rounded flex items-center gap-2 hover:bg-opacity-90 transition-all">
+                                <Save size={16} /> Save Slide 3 Content
+                            </button>
+                        </form>
+                    )}
                 </div>
 
                 {/* Tradition Editor */}
@@ -709,6 +1037,106 @@ const HomePageEdit = () => {
                         </div>
                         <button type="submit" className="bg-primary text-white px-4 py-2 rounded flex items-center gap-2 hover:bg-opacity-90 transition-all">
                             <Save size={16} /> Save Testimonials
+                        </button>
+                    </form>
+                </div>
+
+                {/* Video Reviews/Reels Editor */}
+                <div className="bg-white p-6 rounded-lg shadow border md:col-span-2">
+                    <div className="flex justify-between items-center mb-4 border-b pb-2">
+                        <h2 className="text-xl font-bold text-primary flex items-center gap-2">
+                            Shared Journeys (Homepage Videos / Reels)
+                            <button type="button" onClick={addVideoItem} className="bg-secondary text-primary text-xs px-3 py-1 rounded-md font-bold flex items-center gap-1 ml-4">
+                                <Plus size={14} /> Add Video
+                            </button>
+                        </h2>
+                    </div>
+                    <form onSubmit={saveVideos} className="space-y-6">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            {videos.items?.map((item, index) => (
+                                <div key={index} className="bg-gray-50 p-4 rounded-xl border relative shadow-sm hover:shadow-md transition-shadow">
+                                    <button
+                                        type="button"
+                                        onClick={() => removeVideoItem(index)}
+                                        className="absolute top-2 right-2 text-red-500 hover:bg-red-50 p-1 rounded"
+                                    >
+                                        <Trash2 size={16} />
+                                    </button>
+                                    <div className="space-y-4 pt-2">
+                                        <div>
+                                            <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1">Video Title</label>
+                                            <input
+                                                type="text"
+                                                value={item.title || ''}
+                                                onChange={(e) => handleVideoChange(index, 'title', e.target.value)}
+                                                className="w-full border p-2 rounded text-sm font-bold"
+                                                placeholder="e.g. GUT AND DIGESTION"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1">Badge (e.g. "NEW" or leave blank)</label>
+                                            <input
+                                                type="text"
+                                                value={item.description || ''}
+                                                onChange={(e) => handleVideoChange(index, 'description', e.target.value)}
+                                                className="w-full border p-2 rounded text-sm"
+                                                placeholder='e.g. new'
+                                            />
+                                        </div>
+                                        
+                                        {/* Thumbnail Image upload */}
+                                        <div>
+                                            <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1">Thumbnail Image</label>
+                                            <input
+                                                type="text"
+                                                value={item.image || ''}
+                                                onChange={(e) => handleVideoChange(index, 'image', e.target.value)}
+                                                className="w-full border p-2 rounded text-sm mb-1"
+                                                placeholder="Thumbnail Image URL"
+                                            />
+                                            <input
+                                                type="file"
+                                                id={`video-thumb-file-${index}`}
+                                                className="hidden"
+                                                onChange={(e) => uploadVideoThumbnailHandler(e, index)}
+                                            />
+                                            <label htmlFor={`video-thumb-file-${index}`} className="cursor-pointer bg-white border px-2 py-1 rounded text-xs hover:bg-gray-100 inline-block font-bold">
+                                                {uploading ? 'Uploading...' : 'Upload Thumbnail'}
+                                            </label>
+                                            {item.image && (
+                                                <div className="mt-2">
+                                                    <img src={getImageUrl(item.image)} alt="Thumbnail Preview" className="h-16 w-auto rounded border" />
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        {/* Video Link/Upload */}
+                                        <div>
+                                            <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1">Video URL (YouTube or Direct MP4 link)</label>
+                                            <input
+                                                type="text"
+                                                value={item.link || ''}
+                                                onChange={(e) => handleVideoChange(index, 'link', e.target.value)}
+                                                className="w-full border p-2 rounded text-sm mb-1"
+                                                placeholder="Video Link (YouTube or direct file)"
+                                            />
+                                            <input
+                                                type="file"
+                                                id={`video-file-${index}`}
+                                                className="hidden"
+                                                accept="video/*"
+                                                onChange={(e) => uploadVideoFileHandler(e, index)}
+                                            />
+                                            <label htmlFor={`video-file-${index}`} className="cursor-pointer bg-white border px-2 py-1 rounded text-xs hover:bg-gray-100 inline-block font-bold">
+                                                {uploading ? 'Uploading...' : 'Upload Video File'}
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                        <button type="submit" className="bg-primary text-white px-4 py-2 rounded flex items-center gap-2 hover:bg-opacity-90 transition-all">
+                            <Save size={16} /> Save Video Settings
                         </button>
                     </form>
                 </div>
