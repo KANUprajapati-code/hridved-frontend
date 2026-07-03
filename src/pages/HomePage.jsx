@@ -355,7 +355,7 @@ const HomePage = () => {
                     </section>
 
                     {/* ProSeries / Bestsellers Section */}
-                    <section className="py-20 md:py-24 bg-background/50 border-t border-gray-100">
+                    <section className="py-16 md:py-24 bg-background/50 border-t border-gray-100">
                         <div className="container mx-auto px-4">
                             <ScrollReveal>
                                 <div className="text-center mb-12 md:mb-16">
