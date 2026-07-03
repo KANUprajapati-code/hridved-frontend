@@ -47,7 +47,7 @@ const HomePage = () => {
             badge: "PREMIUM WELLNESS",
             title: content?.hero?.title || "Ancient Wisdom. Masterfully Pure.",
             subtitle: content?.hero?.subtitle || "Experience the pinnacle of Ayurvedic excellence. Pure formulations handcrafted for your modern lifestyle.",
-            image: getImageUrl(content?.hero?.image) || "https://images.unsplash.com/photo-1612170153139-6f881ff067e0?q=80&w=1200&auto=format",
+            image: getImageUrl(content?.hero?.image) || "",
             ctaText: content?.hero?.ctaText || "Shop Collection",
             link: content?.hero?.ctaLink || "/shop"
         },
@@ -89,7 +89,7 @@ const HomePage = () => {
                 clearTimeout(safetyTimer);
             };
         }
-        
+
         return () => clearTimeout(safetyTimer);
     }, [isLoadingCategories, isHeroLoaded]);
 
@@ -168,17 +168,17 @@ const HomePage = () => {
         <>
             <Loader isLoading={isPageLoading} />
             <AnimatedPage>
-                <SEO 
-                    title="Ancient Ayurveda, Modern Wellness" 
+                <SEO
+                    title="Ancient Ayurveda, Modern Wellness"
                     description="Hridved brings you pure Ayurvedic formulations handcrafted with wisdom from ancient texts, delivered with modern purity standards. Explore our range of herbal medicines, oils, and wellness products."
                 />
-                
+
                 <div className="min-h-screen bg-background">
-                    
+
                     {/* Hero Section Carousel Slider - contained within rounded cards like Myura */}
                     <section className="container mx-auto px-4 pt-8 pb-16 relative">
                         <div className="relative w-full h-[450px] sm:h-[550px] md:h-[650px] rounded-[2.5rem] overflow-hidden shadow-2xl bg-primary">
-                            
+
                             {/* Slide Content */}
                             <AnimatePresence mode="wait">
                                 <motion.div
@@ -204,17 +204,17 @@ const HomePage = () => {
                                             <span className="bg-secondary/90 text-primary font-black px-4 py-1.5 rounded-full text-xs uppercase tracking-[0.2em] mb-4 sm:mb-6 inline-block shadow-md">
                                                 {slides[activeSlide].badge}
                                             </span>
-                                            
+
                                             {/* Title */}
                                             <h1 className="text-3xl sm:text-5xl md:text-6xl font-sans font-black mb-4 sm:mb-6 leading-tight drop-shadow-lg">
                                                 {slides[activeSlide].title}
                                             </h1>
-                                            
+
                                             {/* Subtitle */}
                                             <p className="text-[13px] sm:text-base md:text-lg mb-8 sm:mb-12 text-gray-200 font-light leading-relaxed max-w-lg opacity-90">
                                                 {slides[activeSlide].subtitle}
                                             </p>
-                                            
+
                                             {/* CTA button */}
                                             <Link to={slides[activeSlide].link}>
                                                 <button className="bg-white text-primary hover:bg-secondary hover:text-primary px-10 py-4 rounded-full font-black text-xs uppercase tracking-[0.2em] transition-all duration-300 shadow-xl hover:scale-105 active:scale-95 border-none">
@@ -248,9 +248,8 @@ const HomePage = () => {
                                     <button
                                         key={index}
                                         onClick={() => setActiveSlide(index)}
-                                        className={`h-1.5 rounded-full transition-all duration-300 ${
-                                            activeSlide === index ? 'w-8 bg-secondary' : 'w-2 bg-white/40'
-                                        }`}
+                                        className={`h-1.5 rounded-full transition-all duration-300 ${activeSlide === index ? 'w-8 bg-secondary' : 'w-2 bg-white/40'
+                                            }`}
                                     />
                                 ))}
                             </div>
@@ -266,13 +265,13 @@ const HomePage = () => {
                             Ayurveda. Simplified.<br />
                             <span className="text-secondary">Wellness That Works.</span>
                         </h2>
-                        
+
                         <div className="w-20 h-1.5 bg-primary mx-auto rounded-full mt-6 mb-8"></div>
-                        
+
                         <p className="text-gray-500 font-light text-base md:text-lg leading-relaxed max-w-2xl mx-auto mb-10">
                             Thoughtfully made Ayurvedic solutions to energize, restore, and support your natural balance. Handcrafted in small batches with pristine sourcing, ensuring the ultimate standard of wellness you deserve.
                         </p>
-                        
+
                         <Link to="/shop">
                             <button className="bg-primary text-white hover:bg-secondary hover:text-primary px-10 py-4 rounded-full font-black text-xs uppercase tracking-[0.2em] transition-all duration-300 shadow-xl hover:scale-105 active:scale-95 border-none">
                                 Shop Collection →
@@ -306,7 +305,7 @@ const HomePage = () => {
                         <div className="absolute top-20 right-[-5%] opacity-5 float-slow pointer-events-none">
                             <Leaf size={300} strokeWidth={0.5} />
                         </div>
-                        
+
                         <div className="container mx-auto">
                             <ScrollReveal>
                                 <div className="text-center mb-12 md:mb-20">
@@ -356,7 +355,7 @@ const HomePage = () => {
                     </section>
 
                     {/* ProSeries / Bestsellers Section */}
-                    <section className="py-16 md:py-24 bg-background/50 border-t border-gray-100">
+                    <section className="py-20 md:py-24 bg-background/50 border-t border-gray-100">
                         <div className="container mx-auto px-4">
                             <ScrollReveal>
                                 <div className="text-center mb-12 md:mb-16">
@@ -415,8 +414,8 @@ const HomePage = () => {
                                 {/* Reels slider/grid container */}
                                 <div className="flex flex-col md:flex-row gap-6 max-w-5xl mx-auto justify-center">
                                     {reelReviews.map((reel, idx) => (
-                                        <div 
-                                            key={idx} 
+                                        <div
+                                            key={idx}
                                             onClick={() => {
                                                 const videoUrl = reel.link || "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4";
                                                 setActiveVideoUrl(videoUrl);
@@ -425,9 +424,9 @@ const HomePage = () => {
                                         >
                                             {/* Reel Video Thumbnail */}
                                             <div className="h-96 relative overflow-hidden bg-gray-100">
-                                                <img 
-                                                    src={getImageUrl(reel.image)} 
-                                                    alt={reel.title} 
+                                                <img
+                                                    src={getImageUrl(reel.image)}
+                                                    alt={reel.title}
                                                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                                                 />
                                                 {/* Dark overlay */}
@@ -491,7 +490,7 @@ const HomePage = () => {
                                             Lab Tested
                                         </h4>
                                     </div>
-                                    
+
                                     <div className="bg-[#f0fdf4]/50 border border-gray-100 rounded-3xl p-6 text-center shadow-sm flex flex-col items-center justify-center group hover:bg-white hover:shadow-md transition-all duration-500">
                                         <div className="w-12 h-12 bg-[#22c55e]/10 rounded-2xl flex items-center justify-center text-[#22c55e] mb-4 group-hover:bg-[#22c55e] group-hover:text-white transition-colors duration-300">
                                             <ShieldCheck size={22} />
@@ -538,7 +537,7 @@ const HomePage = () => {
                         <div className="fixed inset-0 z-[9999] bg-black/85 flex items-center justify-center p-4 md:p-8 backdrop-blur-sm animate-fade-in animate-duration-200">
                             <div className="relative w-full max-w-4xl bg-black rounded-3xl overflow-hidden shadow-2xl border border-gray-800">
                                 {/* Close Button */}
-                                <button 
+                                <button
                                     onClick={() => setActiveVideoUrl(null)}
                                     className="absolute top-4 right-4 z-[10000] w-10 h-10 bg-white/10 hover:bg-white/20 text-white rounded-full flex items-center justify-center transition-all active:scale-95 border-none shadow-lg cursor-pointer"
                                 >
@@ -548,7 +547,7 @@ const HomePage = () => {
                                 {/* Video Player */}
                                 <div className="aspect-video w-full flex items-center justify-center bg-black">
                                     {isYouTubeUrl(activeVideoUrl) ? (
-                                        <iframe 
+                                        <iframe
                                             className="w-full h-full border-none"
                                             src={getYouTubeEmbedUrl(activeVideoUrl)}
                                             title="Video Player"
@@ -556,7 +555,7 @@ const HomePage = () => {
                                             allowFullScreen
                                         ></iframe>
                                     ) : (
-                                        <video 
+                                        <video
                                             className="w-full h-full object-contain"
                                             src={getImageUrl(activeVideoUrl)}
                                             controls
