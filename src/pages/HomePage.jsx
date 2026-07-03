@@ -378,7 +378,7 @@ const HomePage = () => {
                                         ))
                                     ) : (
                                         [...Array(4)].map((_, i) => (
-                                            <div key={i} className="h-96 bg-gray-50 border border-gray-100 rounded-[2rem] animate-pulse"></div>
+                                            <div key={i} className="h-110 bg-gray-50 border border-gray-100 rounded-[2rem] animate-pulse"></div>
                                         ))
                                     )}
                                 </div>
