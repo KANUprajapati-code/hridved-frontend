@@ -38,10 +38,6 @@ const Footer = () => {
                         </li>
                         <li className="flex items-center gap-2">
                             <span className="w-1.5 h-1.5 bg-gray-500 rounded-full"></span>
-                            <Link to="/consultation" className="text-gray-300 hover:text-secondary">Consultation</Link>
-                        </li>
-                        <li className="flex items-center gap-2">
-                            <span className="w-1.5 h-1.5 bg-gray-500 rounded-full"></span>
                             <Link to="/blogs" className="text-gray-300 hover:text-secondary">Blog</Link>
                         </li>
                         <li className="flex items-center gap-2">
@@ -99,7 +95,7 @@ const Footer = () => {
                             </div>
                             <div>
                                 <p className="text-[9px] text-gray-400 uppercase font-bold tracking-wider leading-none mb-1">Phone</p>
-                                <p className="text-xs font-bold text-gray-200">+91 89804 11390</p>
+                                <p className="text-xs font-bold text-gray-200">+91 92654 01508</p>
                             </div>
                         </div>
 

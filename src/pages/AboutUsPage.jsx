@@ -237,7 +237,7 @@ const AboutUsPage = () => {
                                             <span className="font-medium text-lg">Generations of Accumulated Wisdom</span>
                                         </li>
                                     </ul>
-                                    <Link to="/consultation">
+                                    <Link to="/contact">
                                         <AnimatedButton className="bg-primary text-white px-10 py-4 rounded-full font-bold hover:shadow-2xl transition-all border-none text-lg">
                                             Speak to Our Experts <ArrowRight className="ml-2" size={20} />
                                         </AnimatedButton>

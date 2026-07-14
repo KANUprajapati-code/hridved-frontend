@@ -79,11 +79,6 @@ const ShopPage = () => {
 
         if (p && !isNaN(p)) setPage(Number(p));
         else setPage(1);
-
-        // Consultation check
-        if (cat === 'Consultation') {
-            navigate('/consultation');
-        }
     }, [location.search]);
 
     const updateFilters = (newFilters) => {
@@ -130,10 +125,6 @@ const ShopPage = () => {
     }, [location.search]);
 
     const handleCategoryToggle = (categoryName) => {
-        if (categoryName.toLowerCase() === 'consultation') {
-            navigate('/consultation');
-            return;
-        }
         const newCategories = selectedCategories.includes(categoryName)
             ? selectedCategories.filter(c => c !== categoryName)
             : [...selectedCategories, categoryName];

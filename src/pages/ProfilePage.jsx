@@ -396,7 +396,7 @@ const ConsultationsList = ({ consultations, loading }) => (
         {loading ? (
             <SkeletonLoader />
         ) : consultations.length === 0 ? (
-            <EmptyState icon={<Stethoscope size={32} />} message="No consultations booked yet." link="/consultation" linkText="Book Appointment" />
+            <EmptyState icon={<Stethoscope size={32} />} message="No consultations booked yet." link="/contact" linkText="Contact Us" />
         ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {consultations.map(booking => (

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ShoppingCart, User, Search, Menu, X, Home, ShoppingBag, Stethoscope, FileText, Compass, Info, Phone, Shield, LogOut, MapPin, Facebook, Instagram, Twitter, Mail } from 'lucide-react';
+import { ShoppingCart, User, Search, Menu, X, Home, ShoppingBag, FileText, Compass, Info, Phone, Shield, LogOut, MapPin, Facebook, Instagram, Twitter, Mail } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
@@ -90,7 +90,6 @@ const Header = () => {
                 <nav className="hidden lg:flex space-x-6 xl:space-x-8 items-center font-medium mx-4">
                     <Link to="/" className="hover:text-secondary transition text-gray-100">Home</Link>
                     <Link to="/shop" className="hover:text-secondary transition text-gray-100">Shop</Link>
-                    <Link to="/consultation" className="hover:text-secondary transition text-gray-100">Consultation</Link>
                     <Link to="/blogs" className="hover:text-secondary transition text-gray-100">Blog</Link>
                     <Link to="/about" className="hover:text-secondary transition text-gray-100">About us</Link>
                     <Link to="/contact" className="hover:text-secondary transition text-gray-100">Contact</Link>
@@ -371,14 +370,6 @@ const Header = () => {
                                     >
                                         <ShoppingBag size={16} className="text-gray-400 group-hover:text-primary transition-colors" />
                                         Shop Products
-                                    </Link>
-                                    <Link 
-                                        to="/consultation" 
-                                        onClick={() => setIsOpen(false)}
-                                        className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-50 text-gray-700 hover:text-primary transition-all text-xs font-bold group"
-                                    >
-                                        <Stethoscope size={16} className="text-gray-400 group-hover:text-primary transition-colors" />
-                                        Consultation
                                     </Link>
                                     <Link 
                                         to="/blogs" 

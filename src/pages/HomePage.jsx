@@ -52,14 +52,6 @@ const HomePage = () => {
             link: content?.hero?.ctaLink || "/shop"
         },
         {
-            badge: "DOCTOR CONSULTATION",
-            title: content?.hero2?.title || "Consult Certified Ayurvedic Specialists.",
-            subtitle: content?.hero2?.subtitle || "Get personalized care, authentic treatment plans, and virtual consultations from our panel of specialists.",
-            image: getImageUrl(content?.hero2?.image) || "https://images.unsplash.com/photo-1584820927498-cfe5211fd8bf?q=80&w=1200&auto=format",
-            ctaText: content?.hero2?.ctaText || "Book Appointment",
-            link: content?.hero2?.ctaLink || "/consultation"
-        },
-        {
             badge: "100% PURE & CERTIFIED",
             title: content?.hero3?.title || "Handcrafted in Small Batches.",
             subtitle: content?.hero3?.subtitle || "Slow-cooked for 72 hours in traditional vessels. Lab-tested against 140+ safety parameters.",
@@ -328,9 +320,8 @@ const HomePage = () => {
                                         { name: 'Personal care', image: 'https://images.unsplash.com/photo-1556229010-6c3f2c9ca418?w=800&auto=format&fit=crop&q=80' },
                                         { name: 'Immunity', image: 'https://images.unsplash.com/photo-1546868214-e95b36449173?w=800&auto=format&fit=crop&q=80' },
                                         { name: 'Ayurved medicine', image: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=800&auto=format&fit=crop&q=80' },
-                                        { name: 'Consultation', image: 'https://images.unsplash.com/photo-1584820927498-cfe5211fd8bf?w=800&auto=format&fit=crop&q=80' },
-                                    ]).map((cat, idx) => {
-                                        const link = cat.name.toLowerCase() === 'consultation' ? '/consultation' : `/shop?category=${encodeURIComponent(cat.name)}`;
+                                    ]).filter(cat => cat.name.toLowerCase() !== 'consultation').map((cat, idx) => {
+                                        const link = `/shop?category=${encodeURIComponent(cat.name)}`;
                                         return (
                                             <Link to={link} key={idx} className="flex flex-col items-center group flex-shrink-0">
                                                 <div className="w-24 h-24 md:w-36 md:h-36 rounded-full overflow-hidden border-2 md:border-8 border-gray-50 group-hover:border-secondary transition-all duration-700 mb-4 md:mb-6 shadow-xl md:shadow-2xl relative bg-white transform group-hover:scale-105 group-hover:-translate-y-2">

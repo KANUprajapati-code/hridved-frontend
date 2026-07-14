@@ -44,7 +44,7 @@ const ContactPage = () => {
                             <Phone className="mt-1 flex-shrink-0" />
                             <div>
                                 <h3 className="font-bold">Phone</h3>
-                                <p className="text-gray-300">+91 79904 11390</p>
+                                <p className="text-gray-300">+91 92654 01508</p>
                             </div>
                         </li>
                         <li className="flex items-start space-x-4">

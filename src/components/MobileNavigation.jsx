@@ -1,5 +1,5 @@
 import { useLocation, Link } from 'react-router-dom';
-import { Home, ShoppingBag, Stethoscope, ShoppingCart, User } from 'lucide-react';
+import { Home, ShoppingBag, MessageCircle, ShoppingCart, User } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
@@ -25,9 +25,9 @@ const MobileNavigation = () => {
             icon: ShoppingBag,
         },
         {
-            label: 'Consult',
-            path: '/consultation',
-            icon: Stethoscope,
+            label: 'Contact',
+            path: '/contact',
+            icon: MessageCircle,
         },
         {
             label: 'Cart',

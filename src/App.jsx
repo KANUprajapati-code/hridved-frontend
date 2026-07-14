@@ -36,8 +36,6 @@ const PaymentFailed = lazy(() => import('./pages/PaymentFailed'));
 const BlogPage = lazy(() => import('./pages/BlogPage'));
 const BlogDetailPage = lazy(() => import('./pages/BlogDetailPage'));
 const ContactPage = lazy(() => import('./pages/ContactPage'));
-const DoctorConsultation = lazy(() => import('./pages/DoctorConsultation'));
-const DoctorBookingPage = lazy(() => import('./pages/DoctorBookingPage'));
 const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'));
 const ReturnPolicy = lazy(() => import('./pages/ReturnPolicy'));
 const TermsAndConditions = lazy(() => import('./pages/TermsAndConditions'));
@@ -151,8 +149,6 @@ function App() {
                                                         <Route path="/blogs" element={<BlogPage />} />
                                                         <Route path="/blog/:slug" element={<BlogDetailPage />} />
                                                         <Route path="/contact" element={<ContactPage />} />
-                                                        <Route path="/consultation" element={<DoctorConsultation />} />
-                                                        <Route path="/doctor/:doctorId/book" element={<DoctorBookingPage />} />
                                                         <Route path="/privacy" element={<PrivacyPolicy />} />
                                                         <Route path="/return-policy" element={<ReturnPolicy />} />
                                                         <Route path="/terms" element={<TermsAndConditions />} />
