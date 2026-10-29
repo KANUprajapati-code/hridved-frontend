@@ -32,9 +32,15 @@ export const setupRecaptcha = (containerId = 'recaptcha-container') => {
     window.recaptchaVerifier = null;
   }
 
-  const container = document.getElementById(containerId);
+  let container = document.getElementById(containerId);
   if (!container) {
-    console.warn(`reCAPTCHA container #${containerId} not found in DOM. Ensure an element with id="${containerId}" exists.`);
+    container = document.createElement('div');
+    container.id = containerId;
+    container.style.position = 'fixed';
+    container.style.bottom = '0';
+    container.style.right = '0';
+    container.style.zIndex = '99999';
+    document.body.appendChild(container);
   }
 
   window.recaptchaVerifier = new RecaptchaVerifier(auth, containerId, {
