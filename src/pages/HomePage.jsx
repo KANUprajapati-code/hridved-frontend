@@ -253,68 +253,69 @@ const HomePage = () => {
         setActiveVideoUrl(reelReviews[prevIdx].link);
     };
 
-    // Flagship Hero Product: Dynamic bestseller from MongoDB or signature Keshraj formula
-    const flagshipFromDb = bestsellers.find(p => 
-        p.name?.toLowerCase().includes('keshraj') || 
-        p.name?.toLowerCase().includes('oil') || 
-        p.name?.toLowerCase().includes('hair')
-    ) || bestsellers[0];
+    // Flagship Hero Product: Suvarnaprashan / Suvrnaprasan from MongoDB or authentic formulation
+    const suvarnaprashanFromDb = bestsellers.find(p => 
+        p.name?.toLowerCase().includes('suv') || 
+        p.name?.toLowerCase().includes('swarna') || 
+        p.name?.toLowerCase().includes('gold')
+    );
 
-    const heroProduct = flagshipFromDb ? {
-        ...flagshipFromDb,
-        name: flagshipFromDb.name || "Hridved Keshraj 72-Hour Copper-Brewed Hair Oil",
-        image: flagshipFromDb.image || "/hero-bg.png",
-        price: flagshipFromDb.price || 699,
-        mrp: flagshipFromDb.mrp || 899,
-        rating: flagshipFromDb.rating || 4.9,
-        numReviews: flagshipFromDb.numReviews || 342,
-        countInStock: flagshipFromDb.countInStock || 35
+    const heroProduct = suvarnaprashanFromDb ? {
+        ...suvarnaprashanFromDb,
+        _id: suvarnaprashanFromDb._id || "69999d3f601a51e1407f45cc",
+        name: suvarnaprashanFromDb.name || "HRIDVED SUVRNAPRASAN DROP 15ML",
+        image: suvarnaprashanFromDb.image || "https://res.cloudinary.com/dzyyckpal/image/upload/v1786369409/hridved_uploads/766194416_17900478183546574_2292074687249109710_n-1786369409386.jpg",
+        price: suvarnaprashanFromDb.price || 999,
+        mrp: suvarnaprashanFromDb.mrp || 1299,
+        rating: suvarnaprashanFromDb.rating || 4.9,
+        numReviews: suvarnaprashanFromDb.numReviews || 528,
+        countInStock: suvarnaprashanFromDb.countInStock || 100
     } : {
-        _id: "hridved-keshraj-flagship-72hr",
-        name: "Hridved Keshraj 72-Hour Copper-Brewed Hair Oil",
-        image: "/hero-bg.png",
-        price: 699,
-        mrp: 899,
+        _id: "69999d3f601a51e1407f45cc",
+        name: "HRIDVED SUVRNAPRASAN DROP 15ML",
+        image: "https://res.cloudinary.com/dzyyckpal/image/upload/v1786369409/hridved_uploads/766194416_17900478183546574_2292074687249109710_n-1786369409386.jpg",
+        price: 999,
+        mrp: 1299,
         rating: 4.9,
-        numReviews: 342,
-        countInStock: 35
+        numReviews: 528,
+        countInStock: 100
     };
 
     const heroPacks = [
         {
-            id: '100ml',
-            title: '100ml Starter Pack',
-            badge: 'Try the Ritual',
-            duration: '30-Day Ritual',
+            id: '15ml',
+            title: '15ml Starter Dose',
+            badge: 'Pushya Nakshatra Trial',
+            duration: '30-Day Immuno Drops',
             bottleCount: 1,
-            price: heroProduct.price,
-            mrp: heroProduct.mrp,
-            savings: heroProduct.mrp - heroProduct.price,
-            discountPct: Math.round(((heroProduct.mrp - heroProduct.price) / heroProduct.mrp) * 100)
+            price: heroProduct.price || 999,
+            mrp: heroProduct.mrp || 1299,
+            savings: (heroProduct.mrp || 1299) - (heroProduct.price || 999),
+            discountPct: Math.round((((heroProduct.mrp || 1299) - (heroProduct.price || 999)) / (heroProduct.mrp || 1299)) * 100)
         },
         {
-            id: '200ml',
-            title: '200ml Twin Pack',
-            badge: 'Save ₹249 • Most Popular',
-            duration: '60-Day Complete Therapy',
+            id: '30ml',
+            title: '30ml Twin Pack (2x15ml)',
+            badge: 'Save ₹899 • Most Popular',
+            duration: '90-Day Brain & Memory Course',
             bottleCount: 2,
-            price: Math.round(heroProduct.price * 2 * 0.88),
-            mrp: heroProduct.mrp * 2,
-            savings: (heroProduct.mrp * 2) - Math.round(heroProduct.price * 2 * 0.88),
-            discountPct: Math.round((((heroProduct.mrp * 2) - Math.round(heroProduct.price * 2 * 0.88)) / (heroProduct.mrp * 2)) * 100),
+            price: 1699,
+            mrp: 2598,
+            savings: 2598 - 1699,
+            discountPct: 35,
             isPopular: true
         },
         {
-            id: '300ml',
-            title: '3-Month Regrowth Kit (300ml)',
-            badge: 'Best Value • Free Neem Comb',
-            duration: '90-Day Root Awakening Kit',
+            id: '45ml',
+            title: '6-Month Sanskar Kit (3x15ml)',
+            badge: 'Best Value • Complete Growth',
+            duration: '180-Day Holistic Wellness Kit',
             bottleCount: 3,
-            price: Math.round(heroProduct.price * 3 * 0.78),
-            mrp: heroProduct.mrp * 3,
-            savings: (heroProduct.mrp * 3) - Math.round(heroProduct.price * 3 * 0.78),
-            discountPct: Math.round((((heroProduct.mrp * 3) - Math.round(heroProduct.price * 3 * 0.78)) / (heroProduct.mrp * 3)) * 100),
-            giftText: 'Includes Pure Handcrafted Neem Comb'
+            price: 2399,
+            mrp: 3897,
+            savings: 3897 - 2399,
+            discountPct: 38,
+            giftText: 'Includes Pure Brass Dropper'
         }
     ];
 
@@ -322,12 +323,14 @@ const HomePage = () => {
 
     const heroCartPayload = {
         _id: heroProduct._id,
+        product: heroProduct._id,
         name: `${heroProduct.name} (${currentPack.title})`,
         image: heroProduct.image,
         price: currentPack.price,
         mrp: currentPack.mrp,
-        countInStock: heroProduct.countInStock || 50,
-        selectedVariant: currentPack.title
+        countInStock: heroProduct.countInStock || 100,
+        selectedVariant: currentPack.title,
+        multiplier: currentPack.bottleCount || 1,
     };
 
     const handleHeroAddToCart = (e) => {
@@ -630,13 +633,13 @@ const HomePage = () => {
                                 {/* Section Header */}
                                 <div className="text-center mb-10 md:mb-14">
                                     <span className="inline-flex items-center gap-1.5 bg-secondary/15 text-primary text-[10px] md:text-xs font-black uppercase tracking-[0.25em] px-4 py-1.5 rounded-full mb-3 border border-secondary/30">
-                                        <Sparkles size={13} className="text-secondary" /> THE HRIDVED SIGNATURE • BESTSELLER
+                                        <Sparkles size={13} className="text-secondary" /> THE HRIDVED SIGNATURE • AYURVEDIC BAL SANSKAR
                                     </span>
                                     <h2 className="text-3xl md:text-5xl font-sans font-black text-primary mb-3">
                                         Hero Formulation Spotlight
                                     </h2>
                                     <p className="text-sm md:text-base text-gray-500 font-light max-w-xl mx-auto">
-                                        Slow-cooked in copper vessels for 72 hours according to ancient classical scriptures. Our #1 trusted formulation for visible results.
+                                        Classical Kashyapa Samhita formulation prepared with Certified 24K Swarna Bhasma, Medhya Brahmi, and Shankhpushpi in pure Cow Ghee & Raw Honey. The premier daily immunity and memory booster for children (0–16 years).
                                     </p>
                                     <div className="w-16 h-1 bg-secondary mx-auto rounded-full mt-4"></div>
                                 </div>
@@ -654,10 +657,10 @@ const HomePage = () => {
                                                 {/* Floating Botanical Badges */}
                                                 <div className="absolute top-4 left-4 z-20 flex flex-col gap-2 pointer-events-none">
                                                     <span className="bg-primary text-white text-[9px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider shadow-md flex items-center gap-1">
-                                                        <Award size={11} className="text-secondary" /> #1 Bestseller
+                                                        <Award size={11} className="text-secondary" /> #1 Child Bal Rasayana
                                                     </span>
                                                     <span className="bg-amber-100 text-amber-900 border border-amber-200 text-[9px] font-bold px-2 py-0.5 rounded-full shadow-xs">
-                                                        72h Copper Decoction
+                                                        24K Certified Gold Bhasma
                                                     </span>
                                                 </div>
 
@@ -681,16 +684,16 @@ const HomePage = () => {
                                             {/* Purity Guarantee Mini-Strip */}
                                             <div className="grid grid-cols-3 gap-2 w-full max-w-sm mt-4 text-center">
                                                 <div className="bg-gray-50 border border-gray-100 rounded-xl p-2">
-                                                    <p className="text-[10px] font-bold text-gray-700">0% Mineral Oils</p>
-                                                    <p className="text-[8px] text-gray-400">Pure Plant Actives</p>
+                                                    <p className="text-[10px] font-bold text-gray-700">24K Gold Bhasma</p>
+                                                    <p className="text-[8px] text-gray-400">Lab Tested Purity</p>
                                                 </div>
                                                 <div className="bg-gray-50 border border-gray-100 rounded-xl p-2">
                                                     <p className="text-[10px] font-bold text-gray-700">Ayush Certified</p>
                                                     <p className="text-[8px] text-gray-400">GMP Licensed</p>
                                                 </div>
                                                 <div className="bg-gray-50 border border-gray-100 rounded-xl p-2">
-                                                    <p className="text-[10px] font-bold text-gray-700">Copper Brewed</p>
-                                                    <p className="text-[8px] text-gray-400">72-Hour Potency</p>
+                                                    <p className="text-[10px] font-bold text-gray-700">0% Chemicals</p>
+                                                    <p className="text-[8px] text-gray-400">Pure Honey & Ghee</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -702,16 +705,16 @@ const HomePage = () => {
                                                 <div className="flex items-center gap-1 bg-amber-50 px-2.5 py-1 rounded-full border border-amber-200">
                                                     <div className="flex text-amber-500">
                                                         {[...Array(5)].map((_, i) => (
-                                                            <Star key={i} size={13} className="fill-current text-secondary" />
+                                                             <Star key={i} size={13} className="fill-current text-secondary" />
                                                         ))}
                                                     </div>
                                                     <span className="text-xs font-black text-amber-900 ml-1">4.9 / 5.0</span>
                                                 </div>
                                                 <span className="text-xs text-gray-500 font-medium">
-                                                    Based on <strong>340+ Verified Buyers</strong>
+                                                    Based on <strong>520+ Happy Parents</strong>
                                                 </span>
                                                 <span className="text-emerald-700 bg-emerald-50 text-[10px] font-bold px-2 py-0.5 rounded-md border border-emerald-100">
-                                                    98.4% Report Visible Results
+                                                    99.2% Report Enhanced Immunity & Vitality
                                                 </span>
                                             </div>
 
@@ -722,19 +725,19 @@ const HomePage = () => {
                                                 </Link>
                                             </h3>
                                             <p className="text-sm text-gray-600 font-light leading-relaxed mb-4">
-                                                Handcrafted using classical Taila Paka Vidhi. Infused with cold-pressed Rosemary, Bhringraj, Brahmi, and 21 rare botanicals slow-cooked in pure copper vessels to nourish hair roots and restore natural vibrancy.
+                                                Inspired by Maharshi Kashyapa’s sacred Suvarnaprashan Sanskar. Formulated with authentic 24K Swarna Bhasma (Gold Ash), Medhya Brahmi, Shankhpushpi, Vacha, and Guduchi in pure Desi Cow Ghee and Raw Honey to stimulate healthy brain development, sharpen memory, strengthen natural disease resistance, and promote overall physical growth in children.
                                             </p>
 
                                             {/* Botanical Highlights Chips */}
                                             <div className="flex flex-wrap gap-2 mb-6">
-                                                <span className="inline-flex items-center gap-1 bg-primary/5 text-primary text-[10px] font-black px-2.5 py-1 rounded-full border border-primary/10">
-                                                    <Leaf size={11} /> Cold-Pressed Rosemary & Bhringraj
+                                                <span className="inline-flex items-center gap-1 bg-amber-50 text-amber-900 text-[10px] font-black px-2.5 py-1 rounded-full border border-amber-200">
+                                                    <Sparkles size={11} className="text-secondary" /> 24K Certified Swarna Bhasma
                                                 </span>
-                                                <span className="inline-flex items-center gap-1 bg-secondary/15 text-primary text-[10px] font-black px-2.5 py-1 rounded-full border border-secondary/20">
-                                                    <Droplets size={11} className="text-secondary" /> 72-Hour Copper Decoction
+                                                <span className="inline-flex items-center gap-1 bg-primary/5 text-primary text-[10px] font-black px-2.5 py-1 rounded-full border border-primary/10">
+                                                    <Leaf size={11} /> Medhya Brahmi & Shankhpushpi
                                                 </span>
                                                 <span className="inline-flex items-center gap-1 bg-emerald-50 text-emerald-800 text-[10px] font-black px-2.5 py-1 rounded-full border border-emerald-100">
-                                                    <ShieldCheck size={11} /> 100% Ayurvedic Classical Formula
+                                                    <ShieldCheck size={11} /> 100% Ayush Certified • Child Safe (0-16 Yrs)
                                                 </span>
                                             </div>
 

@@ -16,10 +16,11 @@ export default function CheckoutPaymentPage() {
     const navigate = useNavigate();
     const { user } = useAuth();
     const { cart, clearCart } = useCart();
-    const { checkoutData, updateStep, setErrorMessage, clearError, setOrderId } = useCheckout();
+    const { checkoutData, updateStep, setErrorMessage, clearError, setOrderId, error } = useCheckout();
 
     const [loading] = useState(false);
     const [creatingOrder, setCreatingOrder] = useState(false);
+    const [orderError, setOrderError] = useState('');
     const [paymentMethod, setPaymentMethod] = useState('razorpay');
 
     const orderId = checkoutData.orderId;
@@ -91,14 +92,16 @@ export default function CheckoutPaymentPage() {
     const createOrderBackend = async () => {
         try {
             setCreatingOrder(true);
+            setOrderError('');
             clearError();
 
             const { itemsPrice, taxPrice, shippingPrice, totalPrice, discountPrice } = calculateTotals();
             const cartItems = cart?.cartItems || [];
 
             const { data: res } = await api.post('/checkout/create-order', {
-                addressId: checkoutData.address._id,
-                deliveryOption: checkoutData.shippingMethod,
+                addressId: checkoutData.address?._id,
+                shippingAddress: checkoutData.address,
+                deliveryOption: checkoutData.shippingMethod || 'Standard',
                 orderItems: cartItems.map(item => ({
                     name: item.name,
                     qty: item.qty,
@@ -115,6 +118,7 @@ export default function CheckoutPaymentPage() {
                 totalPrice,
                 paymentMethod: 'razorpay',
                 shippingProvider: checkoutData.shippingProvider || 'Vamaship',
+                email: user?.email || checkoutData.address?.email || '',
             });
 
             if (res.success) {
@@ -126,7 +130,9 @@ export default function CheckoutPaymentPage() {
             }
         } catch (error) {
             console.error('Error creating order:', error);
-            setErrorMessage(error.response?.data?.message || error.message || 'Failed to create order');
+            const msg = error.response?.data?.message || error.message || 'Failed to create order';
+            setErrorMessage(msg);
+            setOrderError(msg);
             throw error;
         } finally {
             setCreatingOrder(false);
@@ -136,14 +142,16 @@ export default function CheckoutPaymentPage() {
     const handleCODOrder = async () => {
         try {
             setCreatingOrder(true);
+            setOrderError('');
             clearError();
 
             const { itemsPrice, taxPrice, shippingPrice, totalPrice, discountPrice } = calculateTotals();
             const cartItems = cart?.cartItems || [];
 
             const { data: res } = await api.post('/checkout/create-order', {
-                addressId: checkoutData.address._id,
-                deliveryOption: checkoutData.shippingMethod,
+                addressId: checkoutData.address?._id,
+                shippingAddress: checkoutData.address,
+                deliveryOption: checkoutData.shippingMethod || 'Standard',
                 orderItems: cartItems.map(item => ({
                     name: item.name,
                     qty: item.qty,
@@ -160,6 +168,7 @@ export default function CheckoutPaymentPage() {
                 totalPrice,
                 paymentMethod: 'COD',
                 shippingProvider: checkoutData.shippingProvider || 'Vamaship',
+                email: user?.email || checkoutData.address?.email || '',
             });
 
             if (res.success) {
@@ -183,7 +192,9 @@ export default function CheckoutPaymentPage() {
             }
         } catch (error) {
             console.error('Error creating COD order:', error);
-            setErrorMessage(error.response?.data?.message || error.message || 'Failed to create order');
+            const msg = error.response?.data?.message || error.message || 'Failed to confirm COD order. Please verify your address and try again.';
+            setErrorMessage(msg);
+            setOrderError(msg);
         } finally {
             setCreatingOrder(false);
         }
@@ -342,6 +353,19 @@ export default function CheckoutPaymentPage() {
 
                                         {/* Action Button */}
                                         <div>
+                                            {(orderError || error) && (
+                                                <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-xl text-xs flex items-center justify-between gap-2 shadow-xs animate-shake">
+                                                    <span className="font-medium">{orderError || error}</span>
+                                                    <button 
+                                                        type="button" 
+                                                        onClick={() => { setOrderError(''); clearError(); }} 
+                                                        className="text-red-500 hover:text-red-800 font-bold ml-2 cursor-pointer text-sm"
+                                                    >
+                                                        ✕
+                                                    </button>
+                                                </div>
+                                            )}
+
                                             {paymentMethod === 'razorpay' ? (
                                                 <PaymentButton
                                                     amount={totalPrice}
