@@ -152,19 +152,41 @@ const HomePageEdit = () => {
         const file = e.target.files[0];
         if (!file) return;
 
+        // Vercel serverless request body limit is 4.5MB
+        const MAX_PAYLOAD_BYTES = 4.5 * 1024 * 1024;
+        if (file.size > MAX_PAYLOAD_BYTES) {
+            const sizeInMb = (file.size / (1024 * 1024)).toFixed(1);
+            alert(
+                `Video size is ${sizeInMb}MB. Vercel serverless upload limit is 4.5MB per file.\n\n` +
+                `Options:\n` +
+                `1. Compress your video below 4.5MB.\n` +
+                `2. Or copy and paste the Instagram Reel link or external video URL directly into the link box.`
+            );
+            return;
+        }
+
         setUploading(true);
         try {
             const formData = new FormData();
             formData.append('video', file);
 
             const { data } = await api.post('/upload/video', formData);
-            const normalizedPath = data.replace(/\\/g, '/');
+            const normalizedPath = typeof data === 'string' ? data.replace(/\\/g, '/') : (data.url || data);
             handleVideoChange(index, 'link', normalizedPath);
+
+            // If no custom thumbnail is set yet, auto-generate Cloudinary poster thumbnail
+            if (!videos.items[index]?.image && normalizedPath.includes('cloudinary.com')) {
+                const autoPoster = normalizedPath.replace(/\.(mp4|mov|webm|mkv|avi)$/i, '.jpg');
+                handleVideoChange(index, 'image', autoPoster);
+            }
+
             setUploading(false);
+            alert('Video uploaded successfully!');
         } catch (error) {
             console.error('Video upload failed:', error);
             setUploading(false);
-            alert('Video upload failed. Try a smaller video file (e.g. mp4, under 10MB).');
+            const errMsg = error.response?.data?.message || error.response?.data || error.message || 'Server error';
+            alert(`Video upload failed: ${errMsg}\n\nTip: You can also paste an Instagram Reel link or external video URL directly.`);
         }
     };
 
