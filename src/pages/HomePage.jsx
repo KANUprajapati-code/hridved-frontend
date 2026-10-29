@@ -475,17 +475,20 @@ const HomePage = () => {
 
                     {/* Hero Section Carousel Slider - Contained with preserved aspect ratio & split luxury layout */}
                     <section className="container mx-auto px-4 pt-6 pb-12 sm:pb-16 relative">
-                        <div className="relative w-full min-h-[560px] md:h-[600px] lg:h-[640px] rounded-[2rem] sm:rounded-[2.5rem] overflow-hidden shadow-2xl bg-gradient-to-br from-[#0a1e12] via-[#07160d] to-[#030a06] border border-emerald-950/40 flex items-center">
+                        <div className="relative w-full min-h-[560px] md:h-[600px] lg:h-[640px] rounded-[2rem] sm:rounded-[2.5rem] overflow-hidden shadow-2xl bg-gradient-to-br from-[#053807]/92 via-[#0b4311]/88 to-[#032405]/92 backdrop-blur-xl border border-emerald-500/20 flex items-center">
 
-                            {/* Ambient Blurred Background (Matches Current Slide Colors) */}
+                            {/* Ambient Blurred Background (Matches Current Slide Colors with Botanical Glow) */}
                             <div className="absolute inset-0 overflow-hidden pointer-events-none">
                                 <img
                                     src={currentSlide.image}
                                     alt=""
-                                    className="w-full h-full object-cover blur-3xl opacity-20 scale-125 transform transition-all duration-1000"
+                                    className="w-full h-full object-cover blur-3xl opacity-30 scale-125 transform transition-all duration-1000 mix-blend-overlay"
                                 />
-                                <div className="absolute inset-0 bg-gradient-to-r from-black/95 via-black/80 to-black/60 md:to-black/35"></div>
-                                <div className="absolute -right-24 top-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-secondary/10 rounded-full blur-[100px] pointer-events-none"></div>
+                                {/* Transparent Green Botanical Gradient Overlay */}
+                                <div className="absolute inset-0 bg-gradient-to-r from-[#053807]/95 via-[#053807]/75 to-[#053807]/40 md:to-transparent"></div>
+                                {/* Golden & Emerald Glow Highlights */}
+                                <div className="absolute -right-24 top-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-secondary/15 rounded-full blur-[120px] pointer-events-none"></div>
+                                <div className="absolute -left-10 -bottom-20 w-[400px] h-[400px] bg-emerald-500/15 rounded-full blur-[100px] pointer-events-none"></div>
                             </div>
 
                             {/* Slide Content */}
@@ -516,7 +519,7 @@ const HomePage = () => {
                                     {/* CTA Button and Trust Notes */}
                                     <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 sm:gap-6">
                                         <Link to={currentSlide.link}>
-                                            <button className="inline-flex items-center gap-2.5 bg-secondary text-primary hover:bg-white hover:text-primary px-8 sm:px-10 py-3.5 sm:py-4 rounded-full font-black text-xs uppercase tracking-[0.2em] transition-all duration-300 shadow-xl hover:scale-105 active:scale-95 group border-none">
+                                            <button className="inline-flex items-center gap-2.5 bg-secondary text-primary hover:bg-white hover:text-primary px-8 sm:px-10 py-3.5 sm:py-4 rounded-full font-black text-xs uppercase tracking-[0.2em] transition-all duration-300 shadow-xl hover:scale-105 active:scale-95 group border-none cursor-pointer">
                                                 <span>{currentSlide.ctaText || "Shop Collection"}</span>
                                                 <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
                                             </button>
@@ -542,32 +545,32 @@ const HomePage = () => {
                                 </div>
                             </div>
 
-                            {/* Slider Navigation Arrows - styled top right with sleek glassmorphism */}
+                            {/* Slider Navigation Arrows - styled top right with sleek green glassmorphism */}
                             <div className="absolute top-5 right-5 sm:top-6 sm:right-6 z-30 flex gap-2">
                                 <button
                                     onClick={handlePrevSlide}
                                     aria-label="Previous slide"
-                                    className="w-10 h-10 bg-black/40 hover:bg-black/70 text-white backdrop-blur-md rounded-full flex items-center justify-center shadow-lg border border-white/20 transition-all active:scale-90 hover:scale-105"
+                                    className="w-10 h-10 bg-primary/60 hover:bg-primary text-white backdrop-blur-md rounded-full flex items-center justify-center shadow-lg border border-white/20 transition-all active:scale-90 hover:scale-105 cursor-pointer"
                                 >
                                     <ChevronLeft size={20} />
                                 </button>
                                 <button
                                     onClick={handleNextSlide}
                                     aria-label="Next slide"
-                                    className="w-10 h-10 bg-black/40 hover:bg-black/70 text-white backdrop-blur-md rounded-full flex items-center justify-center shadow-lg border border-white/20 transition-all active:scale-90 hover:scale-105"
+                                    className="w-10 h-10 bg-primary/60 hover:bg-primary text-white backdrop-blur-md rounded-full flex items-center justify-center shadow-lg border border-white/20 transition-all active:scale-90 hover:scale-105 cursor-pointer"
                                 >
                                     <ChevronRight size={20} />
                                 </button>
                             </div>
 
-                            {/* Dot Indicators - bottom centered */}
-                            <div className="absolute bottom-5 sm:bottom-6 left-1/2 -translate-x-1/2 z-30 flex items-center gap-2 bg-black/40 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/10">
+                            {/* Dot Indicators - bottom centered with green glassmorphism */}
+                            <div className="absolute bottom-5 sm:bottom-6 left-1/2 -translate-x-1/2 z-30 flex items-center gap-2 bg-primary/60 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/15">
                                 {slides.map((_, index) => (
                                     <button
                                         key={index}
                                         onClick={() => setActiveSlide(index)}
                                         aria-label={`Go to slide ${index + 1}`}
-                                        className={`h-2 rounded-full transition-all duration-300 ${
+                                        className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
                                             activeSlide === index 
                                                 ? 'w-7 bg-secondary shadow-sm shadow-secondary/50' 
                                                 : 'w-2 bg-white/40 hover:bg-white/70'
