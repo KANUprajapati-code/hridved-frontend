@@ -1,0 +1,17 @@
+# https://www.robotstxt.org/robotstxt.html
+
+User-agent: *
+Allow: /
+
+# Sitemaps
+Sitemap: https://hridved.com/sitemap.xml
+
+# Disallow admin and auth routes
+Disallow: /admin/
+Disallow: /login
+Disallow: /register
+Disallow: /profile
+Disallow: /checkout/
+Disallow: /cart
+Disallow: /opt-out
+

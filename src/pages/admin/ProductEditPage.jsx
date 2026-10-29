@@ -1,0 +1,341 @@
+
+import { useState, useEffect } from 'react';
+import { useParams, useNavigate, Link } from 'react-router-dom';
+import api from '../../utils/api';
+import { compressImage } from '../../utils/imageCompression';
+import { Upload, ArrowLeft } from 'lucide-react';
+
+const ProductEditPage = () => {
+    const { id } = useParams();
+    const navigate = useNavigate();
+
+    const [name, setName] = useState('');
+    const [price, setPrice] = useState(0);
+    const [mrp, setMrp] = useState(0);
+    const [image, setImage] = useState('');
+    const [brand, setBrand] = useState('');
+    const [category, setCategory] = useState('');
+    const [countInStock, setCountInStock] = useState(0);
+    const [description, setDescription] = useState('');
+    const [isBestseller, setIsBestseller] = useState(false);
+    const [images, setImages] = useState([]);
+    const [benefits, setBenefits] = useState('');
+    const [howToUse, setHowToUse] = useState('');
+    const [gst, setGst] = useState(0);
+    const [weight, setWeight] = useState(0.5);
+    const [uploading, setUploading] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [categories, setCategories] = useState([]);
+
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const { data } = await api.get('/categories');
+                setCategories(data);
+            } catch (error) {
+                console.error('Error fetching categories:', error);
+            }
+        };
+
+        const fetchProduct = async () => {
+            try {
+                const { data } = await api.get(`/products/${id}`);
+                setName(data.name);
+                setPrice(data.price);
+                setMrp(data.mrp || 0);
+                setImage(data.image);
+                setBrand(data.brand);
+                setCategory(data.category);
+                setCountInStock(data.countInStock);
+                setDescription(data.description || '');
+                setBenefits(data.benefits || '');
+                setHowToUse(data.howToUse || '');
+                setIsBestseller(data.isBestseller || false);
+                setImages(data.images || []);
+                setGst(data.gst || 0);
+                setWeight(data.weight || 0.5);
+                setLoading(false);
+            } catch (error) {
+                console.error(error);
+                setLoading(false);
+            }
+        };
+
+        fetchCategories();
+        fetchProduct();
+    }, [id]);
+
+    const uploadFileHandler = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        setUploading(true);
+        try {
+            // Compress image before upload (max 1.5MB approx)
+            const compressedFile = await compressImage(file, { quality: 0.7, maxWidth: 1600 });
+
+            const formData = new FormData();
+            formData.append('image', compressedFile);
+
+            const { data } = await api.post('/upload', formData);
+            setImage(data);
+            setUploading(false);
+        } catch (error) {
+            console.error('Upload failed:', error);
+            alert('Image upload failed. If the image is very large, try a smaller one.');
+            setUploading(false);
+        }
+    };
+
+    const uploadMultipleHandler = async (e) => {
+        const files = Array.from(e.target.files);
+        if (files.length === 0) return;
+        if (files.length > 5) {
+            alert('You can only upload up to 5 images');
+            return;
+        }
+
+        setUploading(true);
+        try {
+            const formData = new FormData();
+
+            // Compress each image before adding to formData
+            for (const file of files) {
+                const compressedFile = await compressImage(file, { quality: 0.7, maxWidth: 1200 });
+                formData.append('images', compressedFile);
+            }
+
+            const { data } = await api.post('/upload/multiple', formData);
+            setImages(data);
+            setUploading(false);
+        } catch (error) {
+            console.error('Multiple upload failed:', error);
+            alert('Multiple images upload failed. Try uploading fewer or smaller images.');
+            setUploading(false);
+        }
+    };
+
+    const submitHandler = async (e) => {
+        e.preventDefault();
+        try {
+            await api.put(`/products/${id}`, {
+                name,
+                price,
+                mrp,
+                image,
+                brand,
+                category,
+                description,
+                countInStock,
+                isBestseller,
+                images,
+                benefits,
+                howToUse,
+                gst,
+                weight,
+            });
+            navigate('/admin/productlist');
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    if (loading) return <div className="text-center py-20">Loading...</div>;
+
+    return (
+        <div className="container mx-auto px-4 py-8 max-w-2xl">
+            <Link to="/admin/productlist" className="text-gray-500 hover:text-primary mb-4 flex items-center gap-2 transition-colors">
+                <ArrowLeft size={18} /> Go Back
+            </Link>
+
+            <div className="bg-white p-8 rounded-lg shadow-md border">
+                <h1 className="text-2xl font-serif font-bold text-primary mb-6">Edit Product</h1>
+
+                <form onSubmit={submitHandler} className="space-y-4">
+                    <div>
+                        <label className="block text-gray-700 font-bold mb-2">Name</label>
+                        <input
+                            type="text"
+                            required
+                            className="w-full border p-2 rounded focus:outline-none focus:border-secondary"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-gray-700 font-bold mb-2">Selling Price</label>
+                        <input
+                            type="number"
+                            required
+                            className="w-full border p-2 rounded focus:outline-none focus:border-secondary"
+                            value={price}
+                            onChange={(e) => setPrice(e.target.value)}
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-gray-700 font-bold mb-2">MRP (Original Price with Strikethrough)</label>
+                        <input
+                            type="number"
+                            required
+                            className="w-full border p-2 rounded focus:outline-none focus:border-secondary"
+                            value={mrp}
+                            onChange={(e) => setMrp(e.target.value)}
+                        />
+                    </div>
+                    {/* Image Upload */}
+                    <div>
+                        <label className="block text-gray-700 font-bold mb-2">Image</label>
+                        <input
+                            type="text"
+                            required
+                            className="w-full border p-2 rounded focus:outline-none focus:border-secondary mb-2"
+                            value={image}
+                            onChange={(e) => setImage(e.target.value)}
+                        />
+                        <div className="relative">
+                            <input
+                                type="file"
+                                id="image-file"
+                                className="hidden"
+                                onChange={uploadFileHandler}
+                            />
+                            <label htmlFor="image-file" className="cursor-pointer bg-gray-100 py-2 px-4 rounded border hover:bg-gray-200 inline-flex items-center gap-2">
+                                <Upload size={16} /> {uploading ? 'Uploading...' : 'Upload Image'}
+                            </label>
+                        </div>
+                    </div>
+                    {/* Multiple Images Upload */}
+                    <div>
+                        <label className="block text-gray-700 font-bold mb-2">Additional Images (Max 5)</label>
+                        <input
+                            type="text"
+                            className="w-full border p-2 rounded focus:outline-none focus:border-secondary mb-2"
+                            value={images.join(', ')}
+                            onChange={(e) => setImages(e.target.value.split(',').map(url => url.trim()))}
+                            placeholder="Enter image URLs comma separated"
+                        />
+                        <div className="relative">
+                            <input
+                                type="file"
+                                id="multiple-images-file"
+                                className="hidden"
+                                multiple
+                                onChange={uploadMultipleHandler}
+                            />
+                            <label htmlFor="multiple-images-file" className="cursor-pointer bg-gray-100 py-2 px-4 rounded border hover:bg-gray-200 inline-flex items-center gap-2">
+                                <Upload size={16} /> {uploading ? 'Uploading...' : 'Upload Images'}
+                            </label>
+                        </div>
+                    </div>
+                    <div>
+                        <label className="block text-gray-700 font-bold mb-2">Category</label>
+                        <select
+                            required
+                            className="w-full border p-2 rounded focus:outline-none focus:border-secondary transition-all bg-white"
+                            value={category}
+                            onChange={(e) => setCategory(e.target.value)}
+                        >
+                            <option value="">Select Category</option>
+                            {categories.map((cat) => (
+                                <option key={cat._id} value={cat.name}>
+                                    {cat.name}
+                                </option>
+                            ))}
+                        </select>
+                        <p className="text-[10px] text-gray-400 mt-1 italic">Manage categories in the Admin Sidebar if the one you need is missing.</p>
+                    </div>
+                    <div>
+                        <label className="block text-gray-700 font-bold mb-2">Brand</label>
+                        <input
+                            type="text"
+                            required
+                            className="w-full border p-2 rounded focus:outline-none focus:border-secondary"
+                            value={brand}
+                            onChange={(e) => setBrand(e.target.value)}
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-gray-700 font-bold mb-2">Count In Stock</label>
+                        <input
+                            type="number"
+                            required
+                            className="w-full border p-2 rounded focus:outline-none focus:border-secondary"
+                            value={countInStock}
+                            onChange={(e) => setCountInStock(e.target.value)}
+                        />
+                    </div>
+                    <div className="flex items-center">
+                        <input
+                            type="checkbox"
+                            id="isBestseller"
+                            className="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
+                            checked={isBestseller}
+                            onChange={(e) => setIsBestseller(e.target.checked)}
+                        />
+                        <label htmlFor="isBestseller" className="ml-2 block text-gray-700 font-bold">
+                            Is Bestseller?
+                        </label>
+                    </div>
+                    <div>
+                        <label className="block text-gray-700 font-bold mb-2">Description</label>
+                        <textarea
+                            required
+                            rows="4"
+                            className="w-full border p-2 rounded focus:outline-none focus:border-secondary"
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                        ></textarea>
+                    </div>
+                    <div>
+                        <label className="block text-gray-700 font-bold mb-2">Benefits</label>
+                        <textarea
+                            rows="4"
+                            className="w-full border p-2 rounded focus:outline-none focus:border-secondary"
+                            value={benefits}
+                            onChange={(e) => setBenefits(e.target.value)}
+                        ></textarea>
+                    </div>
+                    <div>
+                        <label className="block text-gray-700 font-bold mb-2">How To Use</label>
+                        <textarea
+                            rows="4"
+                            className="w-full border p-2 rounded focus:outline-none focus:border-secondary"
+                            value={howToUse}
+                            onChange={(e) => setHowToUse(e.target.value)}
+                        ></textarea>
+                    </div>
+                    <div>
+                        <label className="block text-gray-700 font-bold mb-2">GST (%)</label>
+                        <input
+                            type="number"
+                            required
+                            className="w-full border p-2 rounded focus:outline-none focus:border-secondary"
+                            value={gst}
+                            onChange={(e) => setGst(e.target.value)}
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-gray-700 font-bold mb-2">Weight (kg)</label>
+                        <input
+                            type="number"
+                            step="0.01"
+                            required
+                            className="w-full border p-2 rounded focus:outline-none focus:border-secondary"
+                            value={weight}
+                            onChange={(e) => setWeight(e.target.value)}
+                        />
+                    </div>
+
+                    <button
+                        type="submit"
+                        className="w-full bg-primary text-white py-2 rounded hover:bg-opacity-90 transition font-bold"
+                    >
+                        Update Product
+                    </button>
+                </form>
+            </div>
+        </div>
+    );
+};
+
+export default ProductEditPage;

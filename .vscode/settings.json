@@ -1,6 +1,0 @@
-{
-  "terminal.integrated.cwd": "${workspaceFolder}/hridved-frontend-main",
-  "terminal.integrated.env.windows": {
-    "PATH": "C:\\Program Files\\nodejs;${env:PATH}"
-  }
-}
