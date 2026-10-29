@@ -63,7 +63,7 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    // ================= OTP LOGIN / SEND VIA FIREBASE =================
+    // ================= OTP LOGIN / SEND VIA DIRECT FAST2SMS / SMS GATEWAY =================
     const sendOtp = async (phone, containerId = 'recaptcha-container') => {
         const cleanPhone = phone.toString().replace(/\D/g, '').slice(-10);
         if (cleanPhone.length !== 10) {
@@ -71,21 +71,23 @@ export const AuthProvider = ({ children }) => {
         }
 
         try {
-            // 1. Try Firebase Phone Authentication first
-            const appVerifier = setupRecaptcha(containerId);
-            if (!appVerifier) {
-                throw new Error('reCAPTCHA initialization failed');
-            }
-            const formattedPhone = `+91${cleanPhone}`;
-            const result = await signInWithPhoneNumber(auth, formattedPhone, appVerifier);
-            window.confirmationResult = result;
-            setConfirmationResult(result);
-            return { success: true, method: 'firebase', phone: cleanPhone };
-        } catch (firebaseErr) {
-            console.warn('Firebase sendOtp error, falling back to server OTP:', firebaseErr);
-            // 2. Seamless server fallback if domain not authorized or during local setup
+            // 1. Direct Server OTP dispatch (Fast2SMS / Live SMS Gateway)
             const { data } = await api.post('/users/otp/send', { phone: cleanPhone });
             return { ...data, method: 'server', phone: cleanPhone };
+        } catch (serverErr) {
+            console.warn('Server sendOtp notice, attempting Firebase fallback:', serverErr?.response?.data || serverErr.message);
+            // 2. Firebase fallback if server is unreachable
+            try {
+                const appVerifier = setupRecaptcha(containerId);
+                const formattedPhone = `+91${cleanPhone}`;
+                const result = await signInWithPhoneNumber(auth, formattedPhone, appVerifier);
+                window.confirmationResult = result;
+                setConfirmationResult(result);
+                return { success: true, method: 'firebase', phone: cleanPhone };
+            } catch (firebaseErr) {
+                const msg = serverErr?.response?.data?.message || firebaseErr.message || 'Failed to send OTP code';
+                throw new Error(msg);
+            }
         }
     };
 
