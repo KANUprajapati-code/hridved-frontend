@@ -185,12 +185,10 @@ const HomePage = () => {
                 }
                 setIsLoadingCategories(false);
                 setIsHeroLoaded(true);
-                setIsPageLoading(false);
             } catch (error) {
                 console.error("Failed to load data from MongoDB", error);
                 setIsLoadingCategories(false);
                 setIsHeroLoaded(true);
-                setIsPageLoading(false);
             }
         };
         fetchData();
