@@ -288,20 +288,6 @@ const LoginPage = () => {
                                     </button>
                                 </div>
 
-                                {devOtp && (
-                                    <div className="bg-amber-50 border border-amber-200 text-amber-900 rounded-xl p-3 text-xs flex items-center justify-between">
-                                        <div>
-                                            <span className="font-bold">Test OTP:</span> <span className="font-mono text-base font-black text-primary">{devOtp}</span>
-                                        </div>
-                                        <button
-                                            type="button"
-                                            onClick={() => setOtp(devOtp.split(''))}
-                                            className="bg-primary text-white text-[10px] font-bold px-2 py-1 rounded-lg"
-                                        >
-                                            Auto Fill
-                                        </button>
-                                    </div>
-                                )}
 
                                 <div className="flex justify-between gap-2" onPaste={handleOtpPaste}>
                                     {otp.map((digit, idx) => (
