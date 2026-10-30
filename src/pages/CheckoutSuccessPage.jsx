@@ -8,7 +8,7 @@ import api from '../utils/api';
 import AnimatedPage from '../components/AnimatedPage';
 import AnimatedButton from '../components/AnimatedButton';
 import ScrollReveal from '../components/ScrollReveal';
-import { CheckCircle, Package, Calendar, Home, Phone, ShoppingBag, List, Check, Truck } from 'lucide-react';
+import { CheckCircle, Package, Calendar, Home, Phone, ShoppingBag, List, Check, Truck, MessageCircle } from 'lucide-react';
 import { trackWebsiteEvent } from '../utils/websiteAnalytics';
 
 export default function CheckoutSuccessPage() {
@@ -106,6 +106,26 @@ export default function CheckoutSuccessPage() {
         navigate(`/order/${orderId}`);
     };
 
+    // Generate Instant WhatsApp Order Confirmation URL for Order Desk (7990934095)
+    const getWhatsAppOrderUrl = () => {
+        if (!orderDetails) return '#';
+        const itemsList = orderDetails.orderItems?.map(i => `${i.name} (x${i.qty})`).join(', ') || 'Ayurvedic Formulations';
+        const shortOrderId = String(orderDetails._id).slice(-8).toUpperCase();
+
+        const message = 
+            `Namaste Hridved Order Desk! 🙏\n\n` +
+            `I have placed Order #${shortOrderId} on the website.\n\n` +
+            `📦 *Order Summary:*\n` +
+            `• Items: ${itemsList}\n` +
+            `• Amount: ₹${orderDetails.totalPrice}\n` +
+            `• Payment Mode: ${orderDetails.paymentMethod === 'COD' ? 'Cash on Delivery (COD)' : 'Prepaid (Online Paid)'}\n` +
+            `• Customer Name: ${orderDetails.shippingAddress?.fullName || 'Customer'}\n` +
+            `• Delivery City: ${orderDetails.shippingAddress?.city || ''} (${orderDetails.shippingAddress?.pincode || ''})\n\n` +
+            `Please confirm my order and share courier dispatch and tracking updates here. Thank you!`;
+
+        return `https://wa.me/917990934095?text=${encodeURIComponent(message)}`;
+    };
+
     if (loading) {
         return (
             <AnimatedPage>
@@ -174,6 +194,44 @@ export default function CheckoutSuccessPage() {
                                     : "We're waiting for payment confirmation from the bank. This usually takes a few seconds."}
                             </p>
                         </div>
+
+                        {/* Instant WhatsApp Order Confirmation Banner */}
+                        {(orderDetails.isPaid || orderDetails.paymentMethod === 'COD') && (
+                            <div className="bg-gradient-to-r from-[#053807] via-[#09420d] to-[#032405] text-white rounded-3xl p-6 sm:p-7 mb-10 shadow-xl border border-emerald-500/20 relative overflow-hidden">
+                                <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-400/10 rounded-full blur-3xl pointer-events-none" />
+                                <div className="flex flex-col md:flex-row items-center justify-between gap-6 relative z-10">
+                                    <div className="flex items-start gap-4 text-left">
+                                        <div className="w-14 h-14 rounded-2xl bg-[#25D366]/20 border border-[#25D366]/40 flex items-center justify-center text-[#25D366] shrink-0 shadow-inner">
+                                            <MessageCircle size={28} className="fill-current" />
+                                        </div>
+                                        <div>
+                                            <div className="flex flex-wrap items-center gap-2 mb-1">
+                                                <span className="bg-[#25D366] text-[#053807] text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full shadow-2xs">
+                                                    WhatsApp Live Alert
+                                                </span>
+                                                <span className="text-xs text-emerald-200 font-mono">Order Desk: +91 79909 34095</span>
+                                            </div>
+                                            <h3 className="text-lg sm:text-xl font-bold font-serif text-white">
+                                                Order Confirmation & Tracking Updates on WhatsApp
+                                            </h3>
+                                            <p className="text-xs text-white/80 mt-1 max-w-xl leading-relaxed">
+                                                Your order is booked! Tap below to send your confirmation to our Order Desk (<strong>+91 79909 34095</strong>) for live parcel dispatch and courier waybill updates.
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <a
+                                        href={getWhatsAppOrderUrl()}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="w-full md:w-auto bg-[#25D366] hover:bg-[#1da851] text-white font-bold text-xs uppercase tracking-widest px-7 py-4 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 flex items-center justify-center gap-2.5 shrink-0 active:scale-95 group"
+                                    >
+                                        <MessageCircle size={18} className="fill-current group-hover:scale-110 transition-transform" />
+                                        <span>Confirm on WhatsApp</span>
+                                    </a>
+                                </div>
+                            </div>
+                        )}
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <ScrollReveal>

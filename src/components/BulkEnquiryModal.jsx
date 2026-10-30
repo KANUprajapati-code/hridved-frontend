@@ -84,7 +84,7 @@ Clinical Notes: ${formData.notes || 'None provided'}`;
             `• Mobile: ${cleanPhone ? `+91 ${cleanPhone}` : 'N/A'}\n\n` +
             `Please share clinic verification procedure and wholesale pricing catalogue.`
         );
-        window.open(`https://wa.me/918980411390?text=${text}`, '_blank');
+        window.open(`https://wa.me/917990934095?text=${text}`, '_blank');
     };
 
     return (

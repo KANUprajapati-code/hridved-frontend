@@ -361,7 +361,7 @@ const HomePage = () => {
     const handleHeroWhatsApp = (e) => {
         e.preventDefault();
         const text = `Namaste Hridved Team! I would like to order ${heroProduct.name} - ${currentPack.title} for ₹${currentPack.price}. Please guide me on dispatch and how to use it for best results.`;
-        window.open(`https://wa.me/918980411390?text=${encodeURIComponent(text)}`, '_blank');
+        window.open(`https://wa.me/917990934095?text=${encodeURIComponent(text)}`, '_blank');
     };
 
     const getIcon = (iconName, size = 32) => {
