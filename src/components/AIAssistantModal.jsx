@@ -454,7 +454,7 @@ const AIAssistantModal = () => {
                                     onClick={() => handleWhatsAppEscalate()} 
                                     className="text-emerald-700 font-bold hover:underline flex items-center gap-1 cursor-pointer"
                                 >
-                                    <MessageCircle size={10} /> +91 92654 01508
+                                    <MessageCircle size={10} /> +91 89804 11390
                                 </button>
                             </div>
                         </div>

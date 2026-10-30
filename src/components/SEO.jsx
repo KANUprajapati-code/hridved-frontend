@@ -56,7 +56,7 @@ const SEO = ({
             'description': 'Pure Ayurvedic formulations handcrafted following classical texts and modern purity standards.',
             'contactPoint': [{
                 '@type': 'ContactPoint',
-                'telephone': '+91-9265401508',
+                'telephone': '+91-8980411390',
                 'contactType': 'customer support',
                 'areaServed': 'IN',
                 'availableLanguage': ['en', 'hi']

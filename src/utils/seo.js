@@ -100,7 +100,7 @@ export const generateStructuredData = (type, data) => {
                 contactPoint: {
                     '@type': 'ContactPoint',
                     contactType: 'Customer Support',
-                    telephone: '+91-XXXXXXXXXX',
+                    telephone: '+91-8980411390',
                     email: 'support@hridved.in',
                 },
             };

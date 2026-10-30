@@ -250,7 +250,7 @@ const ProductPage = () => {
         const message = encodeURIComponent(
             `Namaste Hridved Vaidya, I am reviewing "${product.name}" (${activeVariant.name}, ₹${activeVariant.price}). Can you please guide me on its dosage, benefits, and suitability for my health concerns?`
         );
-        window.open(`https://wa.me/917990442340?text=${message}`, '_blank', 'noopener,noreferrer');
+        window.open(`https://wa.me/918980411390?text=${message}`, '_blank', 'noopener,noreferrer');
     };
 
     // Render skeleton placeholder during loading

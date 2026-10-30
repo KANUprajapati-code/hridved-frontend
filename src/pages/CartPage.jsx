@@ -263,7 +263,7 @@ const CartPage = () => {
             msg += `\nPlease confirm formulation dispatch and share tracking details.`;
 
             const encodedMsg = encodeURIComponent(msg);
-            const waNumber = '919265401508';
+            const waNumber = '918980411390';
             const waLink = `https://wa.me/${waNumber}?text=${encodedMsg}`;
             
             window.open(waLink, '_blank', 'noopener,noreferrer');

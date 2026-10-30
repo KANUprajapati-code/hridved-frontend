@@ -9,7 +9,7 @@
  * 5. Provides seamless triage across the 5 verified support categories.
  */
 
-export const SUPPORT_PHONE = '919265401508';
+export const SUPPORT_PHONE = '918980411390';
 export const SUPPORT_EMAIL = 'hridved.customercare@gmail.com';
 
 export const TRIAGE_CATEGORIES = [
@@ -266,7 +266,7 @@ export const getGroundedAnswer = (userQuery) => {
     // 6. ADMIT UNCERTAINTY (Strict Prompt 11 Requirement)
     return {
         status: 'uncertain',
-        message: "I do not have verified knowledge about that in my official Ayurvedic repository. As an authentic herbal guide, I never speculate on unverified claims. Would you like me to connect you directly with a qualified Vaidya on WhatsApp (+91 92654 01508) or log a support ticket?",
+        message: "I do not have verified knowledge about that in my official Ayurvedic repository. As an authentic herbal guide, I never speculate on unverified claims. Would you like me to connect you directly with a qualified Vaidya on WhatsApp (+91 89804 11390) or log a support ticket?",
         category: null,
         canEscalate: true
     };

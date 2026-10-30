@@ -98,8 +98,15 @@ const Footer = () => {
                                 <Phone size={18} />
                             </div>
                             <div>
-                                <p className="text-[9px] text-gray-400 uppercase font-bold tracking-wider leading-none mb-1">Phone</p>
-                                <p className="text-xs font-bold text-gray-200">+91 92654 01508</p>
+                                <p className="text-[9px] text-gray-400 uppercase font-bold tracking-wider leading-none mb-1">Phone & WhatsApp</p>
+                                <a 
+                                    href="https://wa.me/918980411390" 
+                                    target="_blank" 
+                                    rel="noopener noreferrer" 
+                                    className="text-xs font-bold text-gray-200 hover:text-secondary transition-colors"
+                                >
+                                    +91 89804 11390
+                                </a>
                             </div>
                         </div>
 

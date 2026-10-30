@@ -361,7 +361,7 @@ const HomePage = () => {
     const handleHeroWhatsApp = (e) => {
         e.preventDefault();
         const text = `Namaste Hridved Team! I would like to order ${heroProduct.name} - ${currentPack.title} for ₹${currentPack.price}. Please guide me on dispatch and how to use it for best results.`;
-        window.open(`https://wa.me/919265401508?text=${encodeURIComponent(text)}`, '_blank');
+        window.open(`https://wa.me/918980411390?text=${encodeURIComponent(text)}`, '_blank');
     };
 
     const getIcon = (iconName, size = 32) => {
@@ -1187,7 +1187,7 @@ const HomePage = () => {
 
                                         <div className="shrink-0 flex flex-col sm:flex-row gap-4">
                                             <a
-                                                href="https://wa.me/919876543210?text=Hello%20Hridved%2C%20I%20would%20like%20a%20free%20Ayurvedic%20doctor%20consultation."
+                                                href="https://wa.me/918980411390?text=Hello%20Hridved%2C%20I%20would%20like%20a%20free%20Ayurvedic%20doctor%20consultation."
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                                 className="inline-flex items-center justify-center gap-3 bg-secondary text-primary hover:bg-white hover:text-primary px-8 py-4 rounded-full font-bold text-xs uppercase tracking-widest transition-all duration-300 shadow-xl hover:scale-105 active:scale-95"

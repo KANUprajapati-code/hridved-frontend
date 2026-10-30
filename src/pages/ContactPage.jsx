@@ -10,7 +10,7 @@ import {
 import api from '../utils/api';
 import SEO from '../components/SEO';
 
-const WHATSAPP_PHONE = '919265401508';
+const WHATSAPP_PHONE = '918980411390';
 
 const INQUIRY_CATEGORIES = [
     { id: 'product', label: 'Product Questions', icon: <HelpCircle size={15} />, prefix: 'Product Formulation Question' },
@@ -119,7 +119,7 @@ const ContactPage = () => {
                                 className="mt-5 w-full bg-[#25D366] hover:bg-[#1da851] text-white py-3.5 px-4 rounded-2xl font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition-all active:scale-[0.98]"
                             >
                                 <MessageCircle size={16} />
-                                <span>Open WhatsApp Chat (+91 92654 01508)</span>
+                                <span>Open WhatsApp Chat (+91 89804 11390)</span>
                             </button>
                         </div>
 
@@ -148,7 +148,7 @@ const ContactPage = () => {
                                 <div>
                                     <h5 className="text-xs font-bold text-gray-900">Direct Customer Helpline</h5>
                                     <p className="text-xs text-primary font-bold mt-0.5 font-mono">
-                                        +91 92654 01508
+                                        +91 89804 11390
                                     </p>
                                     <p className="text-[11px] text-gray-400">Available on Call & WhatsApp</p>
                                 </div>
