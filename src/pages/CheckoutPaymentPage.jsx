@@ -24,52 +24,52 @@ export default function CheckoutPaymentPage() {
     const [paymentMethod, setPaymentMethod] = useState('razorpay');
 
     const orderId = checkoutData.orderId;
+    const hasAddress = !!checkoutData.address;
+    const hasShipping = !!checkoutData.shippingMethod;
+    const hasCartItems = (cart?.cartItems?.length || 0) > 0;
 
+    // Fast route guard
     useEffect(() => {
-        if (!checkoutData.address || !checkoutData.shippingMethod) {
+        if (!hasAddress || !hasShipping) {
             navigate('/checkout/address');
             return;
         }
-
-        // Check if cart has items
-        if (!cart?.cartItems || cart.cartItems.length === 0) {
+        if (!hasCartItems) {
             navigate('/cart');
             return;
         }
+    }, [hasAddress, hasShipping, hasCartItems, navigate]);
 
-        // Polling for payment status (Optimized for QR payments)
-        let pollInterval;
-        if (orderId && !checkoutData.isPaymentConfirmed && paymentMethod === 'razorpay') {
-            const startTime = Date.now();
-            const maxDuration = 120000; // 2 minutes
+    // Isolated payment polling effect
+    useEffect(() => {
+        if (!orderId || paymentMethod !== 'razorpay' || checkoutData.isPaymentConfirmed) return;
 
-            console.log(`[POLLING] Started for Order: ${orderId}`);
-            pollInterval = setInterval(async () => {
-                const elapsed = Date.now() - startTime;
-                if (elapsed > maxDuration) {
-                    console.log("[POLLING] Timed out after 2 minutes");
+        console.log(`[POLLING] Started for Order: ${orderId}`);
+        const startTime = Date.now();
+        const maxDuration = 120000;
+
+        const pollInterval = setInterval(async () => {
+            if (Date.now() - startTime > maxDuration) {
+                console.log("[POLLING] Timed out after 2 minutes");
+                clearInterval(pollInterval);
+                return;
+            }
+
+            try {
+                const { data: res } = await api.get(`/checkout/order/${orderId}?t=${Date.now()}`);
+                if (res.success && res.data?.isPaid) {
+                    console.log("[POLLING] Payment detected! Redirecting to success page.");
                     clearInterval(pollInterval);
-                    return;
+                    if (clearCart) clearCart();
+                    window.location.href = `/checkout/success?id=${orderId}`;
                 }
+            } catch (err) {
+                // Ignore transient network polling errors
+            }
+        }, 3500);
 
-                try {
-                    const { data: res } = await api.get(`/checkout/order/${orderId}?t=${Date.now()}`);
-                    if (res.success && res.data.isPaid) {
-                        console.log("[POLLING] Webhook/Payment detected! Redirecting to success page.");
-                        clearInterval(pollInterval);
-                        if (clearCart) clearCart();
-                        window.location.href = `/checkout/success?id=${orderId}`;
-                    }
-                } catch (err) {
-                    console.warn("[POLLING] Check warning:", err.message);
-                }
-            }, 3000);
-        }
-
-        return () => {
-            if (pollInterval) clearInterval(pollInterval);
-        };
-    }, [checkoutData, navigate, cart, orderId, paymentMethod, clearCart]);
+        return () => clearInterval(pollInterval);
+    }, [orderId, paymentMethod, checkoutData.isPaymentConfirmed]);
 
     useEffect(() => {
         trackWebsiteEvent('add_payment_info', {

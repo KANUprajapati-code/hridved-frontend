@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
@@ -38,18 +38,20 @@ export default function CheckoutAddressPage() {
 
     useEffect(() => { trackWebsiteEvent('begin_checkout'); }, []);
 
+    // Stabilized address fetching (Only runs on initial mount or when login status changes)
     useEffect(() => {
+        let isMounted = true;
+
         const fetchAddresses = async () => {
             try {
-                setLoading(true);
-                clearError();
                 if (user) {
                     const { data } = await api.get('/addresses');
+                    if (!isMounted) return;
                     setAddresses(data);
                     if (data.length === 0) {
                         setShowForm(true);
                     }
-                    if (checkoutData.address) {
+                    if (checkoutData.address?._id) {
                         setSelectedAddressId(checkoutData.address._id);
                     } else if (data.length > 0) {
                         setSelectedAddressId(data[0]._id);
@@ -58,9 +60,11 @@ export default function CheckoutAddressPage() {
                     // Guest checkout support
                     if (checkoutData.address) {
                         const guestAddr = checkoutData.address;
+                        if (!isMounted) return;
                         setAddresses([guestAddr]);
                         setSelectedAddressId(guestAddr._id);
-                        setFormData({
+                        setFormData(prev => ({
+                            ...prev,
                             fullName: guestAddr.fullName || '',
                             mobileNumber: guestAddr.mobileNumber || '',
                             pincode: guestAddr.pincode || '',
@@ -69,21 +73,22 @@ export default function CheckoutAddressPage() {
                             houseNumber: guestAddr.houseNumber || '',
                             landmark: guestAddr.landmark || '',
                             addressType: guestAddr.addressType || 'Home',
-                        });
+                        }));
                     } else {
-                        setShowForm(true);
+                        if (isMounted) setShowForm(true);
                     }
                 }
             } catch (error) {
                 console.error('Error fetching addresses:', error);
-                setErrorMessage('Failed to load addresses');
+                if (isMounted) setErrorMessage('Failed to load addresses');
             } finally {
-                setLoading(false);
+                if (isMounted) setLoading(false);
             }
         };
 
         fetchAddresses();
-    }, [user, clearError, checkoutData.address, setErrorMessage]);
+        return () => { isMounted = false; };
+    }, [user?._id]);
 
     const validateForm = () => {
         const errors = {};
@@ -166,6 +171,18 @@ export default function CheckoutAddressPage() {
             setSubmitting(false);
         }
     };
+
+    const { subtotal, gstPrice, grandTotal } = useMemo(() => {
+        const items = cart?.cartItems || [];
+        const sub = items.reduce((acc, item) => acc + (item.price * item.qty), 0);
+        const gst = items.reduce((acc, item) => acc + (item.price * item.qty * (item.gst || 0) / 100), 0);
+        const discount = checkoutData.discount || 0;
+        return {
+            subtotal: sub,
+            gstPrice: gst,
+            grandTotal: Math.max(0, sub + gst - discount)
+        };
+    }, [cart?.cartItems, checkoutData.discount]);
 
     if (loading) {
         return (
@@ -429,7 +446,7 @@ export default function CheckoutAddressPage() {
                                     <div className="border-t border-gray-300 my-2 pt-2"></div>
                                     <div className="flex justify-between text-gray-600">
                                         <span>Subtotal</span>
-                                        <span>₹{cart.cartItems.reduce((acc, item) => acc + (item.price * item.qty), 0).toLocaleString()}</span>
+                                        <span>₹{subtotal.toLocaleString()}</span>
                                     </div>
                                     {checkoutData.discount > 0 && (
                                         <div className="flex justify-between text-green-600 font-bold">
@@ -439,15 +456,11 @@ export default function CheckoutAddressPage() {
                                     )}
                                     <div className="flex justify-between text-gray-600">
                                         <span>GST</span>
-                                        <span>₹{cart.cartItems.reduce((acc, item) => acc + (item.price * item.qty * (item.gst || 0) / 100), 0).toLocaleString()}</span>
+                                        <span>₹{gstPrice.toFixed(2)}</span>
                                     </div>
                                     <div className="border-t border-gray-200 my-2 pt-2 flex justify-between font-bold text-gray-900 text-lg">
                                         <span>Total</span>
-                                        <span>₹{(
-                                            cart.cartItems.reduce((acc, item) => acc + (item.price * item.qty), 0) + 
-                                            cart.cartItems.reduce((acc, item) => acc + (item.price * item.qty * (item.gst || 0) / 100), 0) - 
-                                            (checkoutData.discount || 0)
-                                        ).toLocaleString()}</span>
+                                        <span>₹{grandTotal.toLocaleString()}</span>
                                     </div>
                                 </div>
                                 <p className="text-[10px] text-gray-400 mt-2 text-right">* Shipping calculated at next step</p>

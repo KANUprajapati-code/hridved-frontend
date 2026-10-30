@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, useCallback } from 'react';
+import React, { createContext, useState, useContext, useCallback, useMemo } from 'react';
 
 const CheckoutContext = createContext();
 
@@ -107,7 +107,7 @@ export const CheckoutProvider = ({ children }) => {
         setShippingOptions([]);
     }, []);
 
-    const value = {
+    const value = useMemo(() => ({
         checkoutData,
         loading,
         setLoading,
@@ -124,7 +124,21 @@ export const CheckoutProvider = ({ children }) => {
         setAvailableAddresses,
         resetCheckout,
         applyCoupon,
-    };
+    }), [
+        checkoutData,
+        loading,
+        error,
+        shippingOptions,
+        availableAddresses,
+        updateStep,
+        updateAddress,
+        updateShippingMethod,
+        setOrderId,
+        setErrorMessage,
+        clearError,
+        resetCheckout,
+        applyCoupon,
+    ]);
 
     return (
         <CheckoutContext.Provider value={value}>

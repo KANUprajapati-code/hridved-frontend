@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCheckout } from '../context/CheckoutContext';
 import { useCart } from '../context/CartContext';
@@ -15,10 +15,12 @@ export default function CheckoutShippingPage() {
     const { cart } = useCart();
     const { checkoutData, updateShippingMethod, updateStep, setErrorMessage, clearError, setShippingOptions, shippingOptions } = useCheckout();
 
-    const [selectedMethod, setSelectedMethod] = useState(checkoutData.shippingMethod || null);
-    const [shippingProvider, setShippingProvider] = useState('Vamaship');
+    const [selectedMethod, setSelectedMethod] = useState(checkoutData.shippingMethod || 'Standard');
+    const [shippingProvider, setShippingProvider] = useState('Local Courier');
     const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
+
+    const addressPincode = checkoutData.address?.pincode;
 
     useEffect(() => {
         if (!checkoutData.address) {
@@ -26,57 +28,52 @@ export default function CheckoutShippingPage() {
             return;
         }
 
-        fetchShippingRates();
-    }, [checkoutData.address, navigate]);
+        let isMounted = true;
+        const fetchRates = async () => {
+            try {
+                setLoading(true);
+                clearError();
+                const cartItems = cart?.cartItems || [];
+                const totalWeight = cartItems.reduce((acc, item) => acc + (Number(item.weight || 0.5) * item.qty), 0);
+                const orderSubtotal = cartItems.reduce((acc, item) => acc + (item.price * item.qty), 0) - (checkoutData.discount || 0);
 
-    const fetchShippingRates = useCallback(async () => {
-        try {
-            setLoading(true);
-            clearError();
-            const cartItems = cart?.cartItems || [];
-            const totalWeight = cartItems.reduce((acc, item) => acc + (Number(item.weight || 0.5) * item.qty), 0);
-            
-            console.log(`[SHIPPING] Calculated Total Weight: ${totalWeight}kg for ${cartItems.length} items`);
+                const { data } = await api.post('/shipping/serviceability', {
+                    pincode: addressPincode,
+                    weight: totalWeight,
+                    value: orderSubtotal
+                });
 
-            const { data } = await api.post('/shipping/serviceability', {
-                pincode: checkoutData.address.pincode,
-                weight: totalWeight,
-                value: cartItems.reduce((acc, item) => acc + (item.price * item.qty), 0) - (checkoutData.discount || 0)
-            });
-            setShippingOptions(data.shippingOptions || []);
+                if (!isMounted) return;
 
-            // Auto-select first option
-            if (data.shippingOptions && data.shippingOptions.length > 0) {
-                if (!checkoutData.shippingMethod) {
-                    setSelectedMethod(data.shippingOptions[0].type);
+                const options = data.shippingOptions || [];
+                setShippingOptions(options);
+
+                if (options.length > 0) {
+                    setSelectedMethod(prev => prev || options[0].type);
                 }
-            }
-        } catch (error) {
-            console.error('Error fetching shipping rates:', error);
-            setErrorMessage('Failed to load shipping options');
-            // Set default options on error
-            const defaultOptions = [
-                {
-                    type: 'Standard',
-                    days: '3-5',
-                    charge: 0,
-                    description: 'Standard Delivery (3-5 days)',
-                },
-                {
-                    type: 'Express',
-                    days: '1-2',
-                    charge: 0,
-                    description: 'Express Delivery (1-2 days)',
+            } catch (error) {
+                console.error('Error fetching shipping rates:', error);
+                const defaultOptions = [
+                    {
+                        type: 'Standard',
+                        days: '3-5',
+                        charge: 0,
+                        description: 'Standard Delivery (Free Delivery)',
+                        provider: 'Local Courier'
+                    }
+                ];
+                if (isMounted) {
+                    setShippingOptions(defaultOptions);
+                    setSelectedMethod(prev => prev || 'Standard');
                 }
-            ];
-            setShippingOptions(defaultOptions);
-            if (!checkoutData.shippingMethod) {
-                setSelectedMethod('Standard');
+            } finally {
+                if (isMounted) setLoading(false);
             }
-        } finally {
-            setLoading(false);
-        }
-    }, [checkoutData.address, checkoutData.shippingMethod, clearError, setErrorMessage, setShippingOptions]);
+        };
+
+        fetchRates();
+        return () => { isMounted = false; };
+    }, [addressPincode, navigate]);
 
     const handleContinue = async () => {
         if (!selectedMethod) {
@@ -104,6 +101,19 @@ export default function CheckoutShippingPage() {
             setSubmitting(false);
         }
     };
+
+    const { subtotal, gstPrice, grandTotal } = useMemo(() => {
+        const items = cart?.cartItems || [];
+        const sub = items.reduce((acc, item) => acc + (item.price * item.qty), 0);
+        const gst = items.reduce((acc, item) => acc + (item.price * item.qty * (item.gst || 0) / 100), 0);
+        const discount = checkoutData.discount || 0;
+        const shipping = checkoutData.shippingCost || 0;
+        return {
+            subtotal: sub,
+            gstPrice: gst,
+            grandTotal: Math.max(0, sub + gst + shipping - discount)
+        };
+    }, [cart?.cartItems, checkoutData.discount, checkoutData.shippingCost]);
 
     if (loading) {
         return (
@@ -205,7 +215,7 @@ export default function CheckoutShippingPage() {
                                 <div className="space-y-2 text-sm">
                                     <div className="flex justify-between text-gray-600">
                                         <span>Subtotal</span>
-                                        <span>₹{cart.cartItems.reduce((acc, item) => acc + (item.price * item.qty), 0).toLocaleString()}</span>
+                                        <span>₹{subtotal.toLocaleString()}</span>
                                     </div>
                                     {checkoutData.discount > 0 && (
                                         <div className="flex justify-between text-green-600 font-bold">
@@ -215,22 +225,17 @@ export default function CheckoutShippingPage() {
                                     )}
                                     <div className="flex justify-between text-gray-600">
                                         <span>Shipping</span>
-                                        <span className={checkoutData.shippingCost === 0 ? 'text-green-600' : ''}>
+                                        <span className={checkoutData.shippingCost === 0 ? 'text-green-600 font-bold' : ''}>
                                             {checkoutData.shippingCost === 0 ? 'Free' : `₹${checkoutData.shippingCost}`}
                                         </span>
                                     </div>
                                     <div className="flex justify-between text-gray-600">
                                         <span>GST</span>
-                                        <span>₹{cart.cartItems.reduce((acc, item) => acc + (item.price * item.qty * (item.gst || 0) / 100), 0).toLocaleString()}</span>
+                                        <span>₹{gstPrice.toFixed(2)}</span>
                                     </div>
                                     <div className="border-t border-gray-200 my-2 pt-2 flex justify-between font-bold text-gray-900 text-lg">
                                         <span>Total</span>
-                                        <span>₹{(
-                                            cart.cartItems.reduce((acc, item) => acc + (item.price * item.qty), 0) + 
-                                            (checkoutData.shippingCost || 0) + 
-                                            cart.cartItems.reduce((acc, item) => acc + (item.price * item.qty * (item.gst || 0) / 100), 0) - 
-                                            (checkoutData.discount || 0)
-                                        ).toLocaleString()}</span>
+                                        <span>₹{grandTotal.toLocaleString()}</span>
                                     </div>
                                 </div>
                             </div>

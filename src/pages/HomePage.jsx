@@ -280,41 +280,43 @@ const HomePage = () => {
         countInStock: 100
     };
 
+    const baseUnitPrice = heroProduct.price || 999;
+    const baseUnitMrp = heroProduct.mrp || 999;
+
     const heroPacks = [
         {
             id: '15ml',
-            title: '15ml Starter Dose',
-            badge: 'Pushya Nakshatra Trial',
-            duration: '30-Day Immuno Drops',
+            title: '1 Pack (15ml)',
+            badge: '5% OFF',
+            duration: '30-Day Immuno Course',
             bottleCount: 1,
-            price: heroProduct.price || 999,
-            mrp: heroProduct.mrp || 1299,
-            savings: (heroProduct.mrp || 1299) - (heroProduct.price || 999),
-            discountPct: Math.round((((heroProduct.mrp || 1299) - (heroProduct.price || 999)) / (heroProduct.mrp || 1299)) * 100)
+            price: Math.round(baseUnitPrice * 0.95),
+            mrp: baseUnitMrp,
+            savings: Math.round(baseUnitMrp - (baseUnitPrice * 0.95)),
+            discountPct: 5,
         },
         {
             id: '30ml',
-            title: '30ml Twin Pack (2x15ml)',
-            badge: 'Save ₹899 • Most Popular',
-            duration: '90-Day Brain & Memory Course',
+            title: '2 Pack (2x15ml)',
+            badge: '10% OFF',
+            duration: '60-Day Brain & Growth Pack',
             bottleCount: 2,
-            price: 1699,
-            mrp: 2598,
-            savings: 2598 - 1699,
-            discountPct: 35,
+            price: Math.round((baseUnitPrice * 2) * 0.90),
+            mrp: baseUnitMrp * 2,
+            savings: Math.round((baseUnitMrp * 2) - ((baseUnitPrice * 2) * 0.90)),
+            discountPct: 10,
             isPopular: true
         },
         {
             id: '45ml',
-            title: '6-Month Sanskar Kit (3x15ml)',
-            badge: 'Best Value • Complete Growth',
-            duration: '180-Day Holistic Wellness Kit',
+            title: '3 Pack (3x15ml)',
+            badge: '15% OFF',
+            duration: '90-Day Complete Sanskar Kit',
             bottleCount: 3,
-            price: 2399,
-            mrp: 3897,
-            savings: 3897 - 2399,
-            discountPct: 38,
-            giftText: 'Includes Pure Brass Dropper'
+            price: Math.round((baseUnitPrice * 3) * 0.85),
+            mrp: baseUnitMrp * 3,
+            savings: Math.round((baseUnitMrp * 3) - ((baseUnitPrice * 3) * 0.85)),
+            discountPct: 15,
         }
     ];
 
@@ -767,16 +769,15 @@ const HomePage = () => {
                                                                         : 'border-gray-200 bg-white hover:border-gray-300'
                                                                 }`}
                                                             >
-                                                                {pack.isPopular && (
-                                                                    <div className="absolute -top-2.5 right-3 bg-secondary text-primary font-black text-[9px] px-2 py-0.5 rounded-full uppercase tracking-wider shadow-sm">
-                                                                        Best Seller
-                                                                    </div>
-                                                                )}
-                                                                {pack.giftText && (
-                                                                    <div className="absolute -top-2.5 right-3 bg-emerald-700 text-white font-black text-[9px] px-2 py-0.5 rounded-full uppercase tracking-wider shadow-sm">
-                                                                        {pack.giftText}
-                                                                    </div>
-                                                                )}
+                                                                <div className={`absolute -top-2.5 right-3 font-black text-[9px] px-2 py-0.5 rounded-full uppercase tracking-wider shadow-sm ${
+                                                                    pack.discountPct === 15 
+                                                                        ? 'bg-amber-600 text-white' 
+                                                                        : pack.discountPct === 10 
+                                                                        ? 'bg-secondary text-primary' 
+                                                                        : 'bg-emerald-700 text-white'
+                                                                }`}>
+                                                                    {pack.discountPct}% OFF{pack.isPopular ? ' • POPULAR' : ''}
+                                                                </div>
                                                                 <div>
                                                                     <div className="flex items-center justify-between mb-1">
                                                                         <span className="text-xs font-black text-gray-900">{pack.duration}</span>
