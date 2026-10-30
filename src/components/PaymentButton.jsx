@@ -101,7 +101,7 @@ const PaymentButton = ({
                 currency: orderData.currency,
                 name: "HRIDVED AYURVEDA",
                 description: "Holistic Health & Classical Formulations",
-                image: "/logo-asset4.png",
+                image: window.location.protocol === 'https:' ? `${window.location.origin}/logo-asset4.png` : "https://www.hridved.in/logo-asset4.png",
                 order_id: orderData.id,
                 handler: async function (response) {
                     try {
