@@ -120,7 +120,7 @@ const ProductPage = () => {
                 mrp: baseMrp * 2,
                 sku: `HRV-${idSuffix}-2PK`,
                 stock: Math.floor(baseStock / 2),
-                badge: 'Save 10%',
+                badge: '10% OFF',
                 savings: (baseMrp * 2) - Math.round(basePrice * 2 * 0.9),
                 discountPct: Math.round((((baseMrp * 2) - Math.round(basePrice * 2 * 0.9)) / (baseMrp * 2)) * 100),
             },
@@ -133,7 +133,7 @@ const ProductPage = () => {
                 mrp: baseMrp * 3,
                 sku: `HRV-${idSuffix}-3PK`,
                 stock: Math.floor(baseStock / 3),
-                badge: 'Best Value • Save 15%',
+                badge: '15% OFF',
                 savings: (baseMrp * 3) - Math.round(basePrice * 3 * 0.85),
                 discountPct: Math.round((((baseMrp * 3) - Math.round(basePrice * 3 * 0.85)) / (baseMrp * 3)) * 100),
             },
@@ -506,14 +506,16 @@ const ProductPage = () => {
                                                                 : 'border-gray-200 hover:border-accent bg-white'
                                                         }`}
                                                     >
-                                                        {v.badge && (
-                                                            <span className="absolute -top-2.5 right-2 bg-secondary text-primary font-black text-[9px] px-2 py-0.5 rounded-full uppercase tracking-wider shadow-xs">
-                                                                {v.badge}
-                                                            </span>
-                                                        )}
                                                         <div>
-                                                            <div className="text-xs font-bold text-gray-900 leading-tight">
-                                                                {v.shortName}
+                                                            <div className="flex items-start justify-between gap-1 mb-1">
+                                                                <span className="text-xs font-bold text-gray-900 leading-tight">
+                                                                    {v.shortName}
+                                                                </span>
+                                                                {v.badge && (
+                                                                    <span className="bg-[#fbbf24] text-gray-950 font-black text-[9px] px-1.5 py-0.5 rounded-full uppercase tracking-wider shrink-0 shadow-2xs">
+                                                                        {v.badge}
+                                                                    </span>
+                                                                )}
                                                             </div>
                                                             <div className="text-[11px] text-gray-500 mt-0.5">
                                                                 {v.id === 'single' ? 'Trial Course' : v.id === 'twin' ? 'Sustained Relief' : 'Holistic Healing'}
@@ -542,10 +544,10 @@ const ProductPage = () => {
 
                                     {/* Quantity & Core Action CTAs */}
                                     <div className="space-y-3 mb-6">
-                                        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-                                            {/* Tactile Quantity Selector Primitive */}
-                                            <div className="flex items-center justify-between sm:justify-start gap-3 bg-[#FDFBF7] px-3 py-1.5 rounded-2xl border border-accent/40 shrink-0">
-                                                <span className="text-xs font-bold text-gray-700 sm:hidden">Quantity:</span>
+                                        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
+                                            {/* Tactile Quantity Selector */}
+                                            <div className="flex items-center justify-between sm:justify-start gap-2 shrink-0">
+                                                <span className="text-xs font-bold text-gray-600 sm:hidden">Quantity:</span>
                                                 <QuantitySelector
                                                     value={qty}
                                                     onChange={setQty}
@@ -556,14 +558,14 @@ const ProductPage = () => {
                                                 />
                                             </div>
 
-                                            {/* Action Buttons Container */}
-                                            <div className="grid grid-cols-2 gap-2.5 sm:flex sm:flex-1">
+                                            {/* Action Buttons: Add To Cart & Buy Now side-by-side */}
+                                            <div className="grid grid-cols-2 gap-2 flex-1 min-w-0">
                                                 {/* Add To Cart */}
                                                 <button
                                                     type="button"
                                                     onClick={handleAddToCart}
                                                     disabled={isOutOfStock}
-                                                    className={`h-12 flex-1 rounded-2xl font-bold transition-all shadow-xs flex items-center justify-center gap-2 text-xs sm:text-sm px-3 cursor-pointer text-center ${
+                                                    className={`h-11 flex-1 min-w-0 rounded-xl font-bold transition-all shadow-xs flex items-center justify-center gap-1.5 text-xs sm:text-sm px-2 sm:px-3 cursor-pointer text-center ${
                                                         isAddedState
                                                             ? 'bg-emerald-700 text-white border-2 border-emerald-700'
                                                             : 'bg-white text-primary border-2 border-primary hover:bg-primary hover:text-white'
@@ -571,12 +573,12 @@ const ProductPage = () => {
                                                 >
                                                     {isAddedState ? (
                                                         <>
-                                                            <CheckCircle2 size={17} className="text-secondary shrink-0" />
+                                                            <CheckCircle2 size={16} className="text-secondary shrink-0" />
                                                             <span className="truncate">Added! ✓</span>
                                                         </>
                                                     ) : (
                                                         <>
-                                                            <ShoppingCart size={17} className="shrink-0" />
+                                                            <ShoppingCart size={16} className="shrink-0" />
                                                             <span className="truncate">Add to Cart</span>
                                                         </>
                                                     )}
@@ -587,9 +589,9 @@ const ProductPage = () => {
                                                     type="button"
                                                     onClick={handleBuyNow}
                                                     disabled={isOutOfStock}
-                                                    className="h-12 flex-1 bg-primary text-white border-2 border-primary rounded-2xl font-bold hover:bg-primary/90 transition-all shadow-md flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed text-xs sm:text-sm px-3 cursor-pointer text-center"
+                                                    className="h-11 flex-1 min-w-0 bg-primary text-white border-2 border-primary rounded-xl font-bold hover:bg-primary/90 transition-all shadow-md flex items-center justify-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed text-xs sm:text-sm px-2 sm:px-3 cursor-pointer text-center"
                                                 >
-                                                    <Zap size={17} className="text-secondary shrink-0" />
+                                                    <Zap size={16} className="text-secondary shrink-0 fill-current" />
                                                     <span className="truncate">Buy Now</span>
                                                 </button>
                                             </div>

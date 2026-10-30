@@ -64,7 +64,7 @@ const QuantitySelector = ({
   return (
     <div
       className={`
-        inline-flex items-center border border-gray-200 rounded-xl bg-white
+        inline-flex items-center border border-gray-200 rounded-xl bg-white shrink-0 w-auto
         transition-colors hover:border-primary/40 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/10
         ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
         ${currentSize.container}
@@ -78,7 +78,7 @@ const QuantitySelector = ({
         aria-label="Decrease quantity"
         className={`
           inline-flex items-center justify-center text-gray-500 hover:text-primary hover:bg-gray-50 active:bg-gray-100
-          transition-colors rounded-l-xl
+          transition-colors rounded-l-xl shrink-0
           ${currentSize.btn}
           ${disabled || value <= min ? 'opacity-40 cursor-not-allowed hover:bg-transparent hover:text-gray-500' : 'cursor-pointer'}
         `}
@@ -95,9 +95,8 @@ const QuantitySelector = ({
         disabled={disabled}
         aria-label="Item quantity"
         className={`
-          text-center font-semibold text-gray-900 border-x border-gray-100 bg-transparent
-          focus:outline-hidden p-0 m-0
-          ${currentSize.input}
+          text-center font-bold text-gray-900 border-x border-gray-100 bg-transparent
+          focus:outline-hidden !p-0 !m-0 !w-12 !min-w-[48px] !max-w-[48px] !h-full !rounded-none !border-y-0
         `}
       />
 
@@ -108,7 +107,7 @@ const QuantitySelector = ({
         aria-label="Increase quantity"
         className={`
           inline-flex items-center justify-center text-gray-500 hover:text-primary hover:bg-gray-50 active:bg-gray-100
-          transition-colors rounded-r-xl
+          transition-colors rounded-r-xl shrink-0
           ${currentSize.btn}
           ${disabled || value >= max ? 'opacity-40 cursor-not-allowed hover:bg-transparent hover:text-gray-500' : 'cursor-pointer'}
         `}
