@@ -330,6 +330,23 @@ const LoginModal = () => {
                                             </button>
                                         </div>
 
+                                        {devOtp && (
+                                            <div
+                                                onClick={() => {
+                                                    const digits = devOtp.split('').slice(0, 6);
+                                                    setOtp(digits);
+                                                    if (otpInputRefs.current[5]) otpInputRefs.current[5].focus();
+                                                }}
+                                                className="cursor-pointer p-2.5 bg-amber-50 hover:bg-amber-100/80 border border-amber-300/80 rounded-2xl text-center text-xs font-medium text-amber-900 transition-all shadow-sm flex items-center justify-between"
+                                                title="Click to auto-fill test OTP"
+                                            >
+                                                <span className="text-[11px] font-bold text-amber-800 uppercase tracking-wide">Test Mode Code:</span>
+                                                <span className="font-mono font-black tracking-widest text-sm bg-white px-2.5 py-0.5 rounded-lg border border-amber-300 shadow-xs">
+                                                    {devOtp}
+                                                </span>
+                                                <span className="text-[10px] font-bold text-amber-700 underline">Auto-fill ⚡</span>
+                                            </div>
+                                        )}
 
                                         {/* OTP Boxes */}
                                         <div className="flex justify-between gap-2" onPaste={handleOtpPaste}>
