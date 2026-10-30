@@ -39,6 +39,7 @@ const ProductPage = () => {
     const [activeTab, setActiveTab] = useState('description');
     const [isWhatsAppModalOpen, setIsWhatsAppModalOpen] = useState(false);
     const [isBulkModalOpen, setIsBulkModalOpen] = useState(false);
+    const [isAddedState, setIsAddedState] = useState(false);
 
     const { addToCart } = useCart();
     const { user, openAuthModal } = useAuth();
@@ -222,9 +223,12 @@ const ProductPage = () => {
         
         // Trigger flying animation
         const cartIcon = document.getElementById('cart-icon-container');
-        if (imageRef.current && cartIcon) {
+        if (imageRef.current) {
             animateAddToCart(imageRef.current, cartIcon, product.image);
         }
+
+        setIsAddedState(true);
+        setTimeout(() => setIsAddedState(false), 1500);
 
         addToCart(item, qty);
         trackLeadEvent({ actionType: 'add_to_cart', product: item });
@@ -540,8 +544,8 @@ const ProductPage = () => {
                                     <div className="space-y-3 mb-6">
                                         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                                             {/* Tactile Quantity Selector Primitive */}
-                                            <div className="flex items-center justify-between sm:justify-start gap-3 bg-[#FDFBF7] p-1.5 rounded-2xl border border-accent/40">
-                                                <span className="text-xs font-bold text-gray-700 px-2 sm:hidden">Qty:</span>
+                                            <div className="flex items-center justify-between sm:justify-start gap-3 bg-[#FDFBF7] px-3 py-1.5 rounded-2xl border border-accent/40 shrink-0">
+                                                <span className="text-xs font-bold text-gray-700 sm:hidden">Quantity:</span>
                                                 <QuantitySelector
                                                     value={qty}
                                                     onChange={setQty}
@@ -552,27 +556,43 @@ const ProductPage = () => {
                                                 />
                                             </div>
 
-                                            {/* Add To Cart */}
-                                            <button
-                                                type="button"
-                                                onClick={handleAddToCart}
-                                                disabled={isOutOfStock}
-                                                className="flex-1 h-12 bg-white text-primary border-2 border-primary rounded-2xl font-bold hover:bg-primary hover:text-white transition-all shadow-xs flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed text-sm px-4 cursor-pointer"
-                                            >
-                                                <ShoppingCart size={18} />
-                                                Add to Cart
-                                            </button>
+                                            {/* Action Buttons Container */}
+                                            <div className="grid grid-cols-2 gap-2.5 sm:flex sm:flex-1">
+                                                {/* Add To Cart */}
+                                                <button
+                                                    type="button"
+                                                    onClick={handleAddToCart}
+                                                    disabled={isOutOfStock}
+                                                    className={`h-12 flex-1 rounded-2xl font-bold transition-all shadow-xs flex items-center justify-center gap-2 text-xs sm:text-sm px-3 cursor-pointer text-center ${
+                                                        isAddedState
+                                                            ? 'bg-emerald-700 text-white border-2 border-emerald-700'
+                                                            : 'bg-white text-primary border-2 border-primary hover:bg-primary hover:text-white'
+                                                    } disabled:opacity-50 disabled:cursor-not-allowed`}
+                                                >
+                                                    {isAddedState ? (
+                                                        <>
+                                                            <CheckCircle2 size={17} className="text-secondary shrink-0" />
+                                                            <span className="truncate">Added! ✓</span>
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            <ShoppingCart size={17} className="shrink-0" />
+                                                            <span className="truncate">Add to Cart</span>
+                                                        </>
+                                                    )}
+                                                </button>
 
-                                            {/* Direct Buy Now */}
-                                            <button
-                                                type="button"
-                                                onClick={handleBuyNow}
-                                                disabled={isOutOfStock}
-                                                className="flex-1 h-12 bg-primary text-white border-2 border-primary rounded-2xl font-bold hover:bg-primary/90 transition-all shadow-md flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed text-sm px-4 cursor-pointer"
-                                            >
-                                                <Zap size={18} className="text-secondary" />
-                                                Buy Now
-                                            </button>
+                                                {/* Direct Buy Now */}
+                                                <button
+                                                    type="button"
+                                                    onClick={handleBuyNow}
+                                                    disabled={isOutOfStock}
+                                                    className="h-12 flex-1 bg-primary text-white border-2 border-primary rounded-2xl font-bold hover:bg-primary/90 transition-all shadow-md flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed text-xs sm:text-sm px-3 cursor-pointer text-center"
+                                                >
+                                                    <Zap size={17} className="text-secondary shrink-0" />
+                                                    <span className="truncate">Buy Now</span>
+                                                </button>
+                                            </div>
                                         </div>
 
                                         {/* Order on WhatsApp Quick Button */}
@@ -580,15 +600,15 @@ const ProductPage = () => {
                                             type="button"
                                             onClick={handleWhatsAppOrder}
                                             disabled={isOutOfStock}
-                                            className="w-full h-11 bg-[#25D366] text-white rounded-2xl font-bold hover:bg-[#1da851] transition-all shadow-sm flex items-center justify-center gap-2 text-xs sm:text-sm cursor-pointer disabled:opacity-50"
+                                            className="w-full min-h-[44px] py-2.5 px-4 bg-[#25D366] text-white rounded-2xl font-bold hover:bg-[#1da851] transition-all shadow-sm flex items-center justify-center gap-2 text-xs sm:text-sm cursor-pointer disabled:opacity-50 text-center"
                                         >
-                                            <MessageCircle size={18} />
-                                            Order Instantly on WhatsApp (Fast Checkout)
+                                            <MessageCircle size={18} className="shrink-0" />
+                                            <span>Order Instantly on WhatsApp</span>
                                         </button>
                                     </div>
 
                                     {/* Vaidya WhatsApp Consultation Prompt */}
-                                    <div className="bg-primary/5 border border-primary/15 rounded-2xl p-3.5 mb-3 flex items-center justify-between gap-3">
+                                    <div className="bg-primary/5 border border-primary/15 rounded-2xl p-3.5 mb-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                                         <div className="flex items-center gap-2.5">
                                             <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0">
                                                 <Stethoscope size={16} />
@@ -601,14 +621,14 @@ const ProductPage = () => {
                                         <button
                                             type="button"
                                             onClick={handleVaidyaConsult}
-                                            className="px-3 py-1.5 bg-primary text-secondary text-xs font-bold rounded-xl hover:bg-primary/90 transition shadow-xs shrink-0 cursor-pointer"
+                                            className="w-full sm:w-auto px-4 py-2 bg-primary text-secondary text-xs font-bold rounded-xl hover:bg-primary/90 transition shadow-xs shrink-0 cursor-pointer text-center flex items-center justify-center"
                                         >
-                                            Ask Doctor
+                                            <span>Ask Doctor</span>
                                         </button>
                                     </div>
 
                                     {/* Practitioner / Clinic Bulk Wholesale Banner */}
-                                    <div className="bg-[#FDFBF7] border border-accent/40 rounded-2xl p-3.5 mb-6 flex items-center justify-between gap-3">
+                                    <div className="bg-[#FDFBF7] border border-accent/40 rounded-2xl p-3.5 mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                                         <div className="flex items-center gap-2.5">
                                             <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0">
                                                 <Building2 size={16} />
@@ -621,9 +641,9 @@ const ProductPage = () => {
                                         <button
                                             type="button"
                                             onClick={() => setIsBulkModalOpen(true)}
-                                            className="px-3 py-1.5 bg-white text-primary border border-primary/40 text-xs font-bold rounded-xl hover:bg-primary hover:text-white transition shadow-xs shrink-0 cursor-pointer"
+                                            className="w-full sm:w-auto px-4 py-2 bg-white text-primary border border-primary/40 text-xs font-bold rounded-xl hover:bg-primary hover:text-white transition shadow-xs shrink-0 cursor-pointer text-center flex items-center justify-center"
                                         >
-                                            Bulk Enquiry
+                                            <span>Bulk Enquiry</span>
                                         </button>
                                     </div>
 
@@ -663,7 +683,7 @@ const ProductPage = () => {
                                     key={tab.id}
                                     type="button"
                                     onClick={() => setActiveTab(tab.id)}
-                                    className={`pb-3 px-2 sm:px-4 font-bold text-xs sm:text-sm tracking-wide uppercase transition-all whitespace-nowrap cursor-pointer border-b-2 ${
+                                    className={`pb-3 px-3 sm:px-5 font-bold text-xs sm:text-sm tracking-wide uppercase transition-all whitespace-nowrap cursor-pointer border-b-2 text-center flex items-center justify-center shrink-0 ${
                                         activeTab === tab.id
                                             ? 'text-primary border-primary'
                                             : 'text-gray-400 border-transparent hover:text-gray-700'

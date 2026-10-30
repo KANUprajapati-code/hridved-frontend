@@ -16,6 +16,7 @@ const ProductCard = ({ product, onQuickView }) => {
     const { isInWishlist, toggleWishlist } = useWishlist();
     const isWishlisted = isInWishlist(product._id);
     const [isWhatsAppModalOpen, setIsWhatsAppModalOpen] = useState(false);
+    const [cardAdded, setCardAdded] = useState(false);
     const { animateAddToCart } = useFlyingElement();
     const imageRef = useRef(null);
 
@@ -121,24 +122,24 @@ const ProductCard = ({ product, onQuickView }) => {
                 </div>
 
                 {/* Pricing Badges Grid */}
-                <div className="flex flex-wrap items-center gap-1.5 justify-center mb-4 min-h-[32px]">
-                    <span className="bg-primary/5 text-primary text-[10px] font-black px-2.5 py-1 rounded-full border border-primary/10 tracking-wider">
-                        DEAL ₹{product.price}
+                <div className="flex items-baseline justify-center gap-2 mb-3 min-h-[28px] text-center px-1">
+                    <span className="text-sm font-black text-primary font-sans">
+                        ₹{product.price}
                     </span>
                     {product.mrp > product.price && (
-                        <span className="bg-secondary/10 text-secondary text-[10px] font-black px-2.5 py-1 rounded-full border border-secondary/10 tracking-wider">
-                            SAVE ₹{product.mrp - product.price}
+                        <span className="text-xs text-gray-400 line-through font-medium">
+                            ₹{product.mrp}
                         </span>
                     )}
                     {product.mrp > product.price && (
-                        <span className="text-[10px] text-gray-400 line-through font-medium">
-                            ₹{product.mrp}
+                        <span className="bg-emerald-50 text-emerald-800 text-[10px] font-bold px-1.5 py-0.5 rounded-md border border-emerald-100">
+                            Save ₹{product.mrp - product.price}
                         </span>
                     )}
                 </div>
 
-                {/* Bottom Actions - Add to Cart and Buy Now side-by-side */}
-                <div className="flex flex-col sm:flex-row gap-2 mt-auto">
+                {/* Bottom Actions - Add to Cart and Buy Now side-by-side in equal grid */}
+                <div className="grid grid-cols-2 gap-1.5 mt-auto pt-1">
                     <button
                         onClick={(e) => {
                             e.preventDefault();
@@ -154,17 +155,32 @@ const ProductCard = ({ product, onQuickView }) => {
                                 return;
                             }
                             const cartIcon = document.getElementById('cart-icon-container');
-                            if (imageRef.current && cartIcon) {
+                            if (imageRef.current) {
                                 animateAddToCart(imageRef.current, cartIcon, product.image);
                             }
+                            setCardAdded(true);
+                            setTimeout(() => setCardAdded(false), 1200);
                             addToCart(product, 1);
                             trackLeadEvent({ actionType: 'add_to_cart', product });
                         }}
-                        className="w-full sm:w-auto sm:flex-1 bg-primary text-white py-3 rounded-xl hover:bg-opacity-95 hover:shadow-md transition-all duration-300 flex items-center justify-center gap-1.5 font-black text-[10px] uppercase tracking-wider active:scale-[0.98] disabled:opacity-50"
+                        className={`w-full h-10 rounded-xl transition-all duration-300 flex items-center justify-center gap-1 font-black text-[10px] uppercase tracking-wider active:scale-[0.98] disabled:opacity-50 text-center cursor-pointer ${
+                            cardAdded
+                                ? 'bg-emerald-700 text-white shadow-sm'
+                                : 'bg-primary text-white hover:bg-opacity-95 hover:shadow-md'
+                        }`}
                         disabled={product.countInStock === 0}
                     >
-                        <ShoppingCart size={13} />
-                        <span>Add</span>
+                        {cardAdded ? (
+                            <>
+                                <span className="text-secondary font-bold">✓</span>
+                                <span className="truncate">Added</span>
+                            </>
+                        ) : (
+                            <>
+                                <ShoppingCart size={13} className="shrink-0" />
+                                <span className="truncate">Add</span>
+                            </>
+                        )}
                     </button>
                     <button
                         onClick={(e) => {
@@ -183,10 +199,10 @@ const ProductCard = ({ product, onQuickView }) => {
                             setIsWhatsAppModalOpen(true);
                             trackLeadEvent({ actionType: 'whatsapp_click', product });
                         }}
-                        className="w-full sm:w-auto sm:flex-1 bg-[#25D366] text-white py-3 rounded-xl hover:bg-[#1da851] hover:shadow-md transition-all duration-300 flex items-center justify-center gap-1.5 font-black text-[10px] uppercase tracking-wider active:scale-[0.98]"
+                        className="w-full h-10 bg-[#25D366] text-white rounded-xl hover:bg-[#1da851] hover:shadow-md transition-all duration-300 flex items-center justify-center gap-1 font-black text-[10px] uppercase tracking-wider active:scale-[0.98] text-center cursor-pointer"
                     >
-                        <MessageCircle size={13} />
-                        <span>Buy Now</span>
+                        <MessageCircle size={13} className="shrink-0" />
+                        <span className="truncate">Buy Now</span>
                     </button>
                 </div>
             </div>

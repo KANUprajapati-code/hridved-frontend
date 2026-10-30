@@ -60,6 +60,7 @@ const HomePage = () => {
     const [newsletterStatus, setNewsletterStatus] = useState('idle');
     const [newsletterMsg, setNewsletterMsg] = useState('');
     const [selectedPackIndex, setSelectedPackIndex] = useState(1); // 1 = 200ml Twin Pack (Most Popular)
+    const [heroAdded, setHeroAdded] = useState(false);
 
     const isYouTubeUrl = (url) => {
         if (!url) return false;
@@ -347,9 +348,11 @@ const HomePage = () => {
             return;
         }
         const cartIcon = document.getElementById('cart-icon-container');
-        if (heroImageRef.current && cartIcon) {
+        if (heroImageRef.current) {
             animateAddToCart(heroImageRef.current, cartIcon, heroProduct.image);
         }
+        setHeroAdded(true);
+        setTimeout(() => setHeroAdded(false), 1500);
         addToCart(heroCartPayload, 1);
     };
 
@@ -820,27 +823,38 @@ const HomePage = () => {
                                             <div className="flex flex-col sm:flex-row gap-3">
                                                 <button
                                                     onClick={handleHeroAddToCart}
-                                                    className="flex-1 bg-primary text-white hover:bg-opacity-95 px-6 py-4 rounded-full font-black text-xs uppercase tracking-[0.2em] transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer border-none"
+                                                    className={`flex-1 ${
+                                                        heroAdded ? 'bg-emerald-700' : 'bg-primary'
+                                                    } text-white hover:bg-opacity-95 px-6 py-3.5 sm:py-4 rounded-full font-black text-xs uppercase tracking-[0.15em] transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer border-none text-center`}
                                                 >
-                                                    <ShoppingCart size={16} />
-                                                    <span>Add to Bag</span>
+                                                    {heroAdded ? (
+                                                        <>
+                                                            <CheckCircle size={16} className="text-secondary shrink-0" />
+                                                            <span>Added to Bag! ✓</span>
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            <ShoppingCart size={16} className="shrink-0" />
+                                                            <span>Add to Bag</span>
+                                                        </>
+                                                    )}
                                                 </button>
 
                                                 <button
                                                     onClick={handleHeroBuyNow}
-                                                    className="flex-1 bg-gradient-to-r from-secondary to-[#c59e2b] text-primary hover:brightness-105 px-6 py-4 rounded-full font-black text-xs uppercase tracking-[0.2em] transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer border-none"
+                                                    className="flex-1 bg-gradient-to-r from-secondary to-[#c59e2b] text-primary hover:brightness-105 px-6 py-3.5 sm:py-4 rounded-full font-black text-xs uppercase tracking-[0.15em] transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer border-none text-center"
                                                 >
-                                                    <Zap size={16} className="fill-current" />
+                                                    <Zap size={16} className="fill-current shrink-0" />
                                                     <span>Instant Buy Now</span>
                                                 </button>
 
                                                 <button
                                                     onClick={handleHeroWhatsApp}
                                                     title="Order / Consult on WhatsApp"
-                                                    className="bg-[#25D366] hover:bg-[#1fa851] text-white px-5 py-4 rounded-full font-bold text-xs transition-all duration-300 shadow-lg hover:scale-105 active:scale-95 flex items-center justify-center gap-2 cursor-pointer border-none"
+                                                    className="bg-[#25D366] hover:bg-[#1fa851] text-white px-5 py-3.5 sm:py-4 rounded-full font-bold text-xs transition-all duration-300 shadow-lg hover:scale-105 active:scale-95 flex items-center justify-center gap-2 cursor-pointer border-none text-center"
                                                 >
-                                                    <MessageCircle size={16} />
-                                                    <span className="hidden sm:inline">WhatsApp</span>
+                                                    <MessageCircle size={16} className="shrink-0" />
+                                                    <span>WhatsApp</span>
                                                 </button>
                                             </div>
 
