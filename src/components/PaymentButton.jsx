@@ -35,8 +35,9 @@ const PaymentButton = ({
         const fetchKey = async () => {
             try {
                 const { data: keyRes } = await api.get('/razorpay/key');
-                if (keyRes.key) {
+                if (keyRes && keyRes.success && keyRes.key) {
                     setRzpKey(keyRes.key);
+                    setKeyError(false);
                 } else {
                     setKeyError(true);
                 }
@@ -126,8 +127,8 @@ const PaymentButton = ({
                 },
                 prefill: {
                     name: customerDetails.name || "Customer",
-                    email: customerDetails.email || "support@hridved.in",
-                    contact: customerDetails.phone || "9999999999"
+                    email: customerDetails.email || "",
+                    contact: customerDetails.phone ? customerDetails.phone.replace(/\D/g, '').slice(-10) : ""
                 },
                 theme: {
                     color: "#053807" // Locked Brand Forest Green

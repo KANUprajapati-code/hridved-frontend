@@ -372,7 +372,7 @@ export default function CheckoutPaymentPage() {
                                                     orderId={orderId}
                                                     customerDetails={{
                                                         name: checkoutData.address?.fullName,
-                                                        email: user?.email || '',
+                                                        email: user?.email || checkoutData.address?.email || '',
                                                         phone: checkoutData.address?.mobileNumber,
                                                     }}
                                                     onBeforePayment={createOrderBackend}
