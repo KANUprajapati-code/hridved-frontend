@@ -184,13 +184,11 @@ export default function CheckoutSuccessPage() {
                                 )}
                             </div>
                             <h1 className="text-3xl font-serif font-bold text-gray-900 mb-2">
-                                {orderDetails.isPaid || orderDetails.paymentMethod === 'COD' ? 'Order Confirmed!' : 'Verifying Payment...'}
+                                {orderDetails.isPaid || orderDetails.paymentMethod === 'COD' ? 'Aapka Order Confirm Ho Chuka Hai! 🎉' : 'Verifying Payment...'}
                             </h1>
-                            <p className="text-gray-600 text-lg">
+                            <p className="text-gray-600 text-base sm:text-lg">
                                 {orderDetails.isPaid || orderDetails.paymentMethod === 'COD'
-                                    ? orderDetails.paymentMethod === 'COD'
-                                        ? "Your order has been placed successfully via Cash on Delivery."
-                                        : "Thank you for your purchase. We've received your order."
+                                    ? `Thank you! Order #${String(orderDetails._id).slice(-8).toUpperCase()} confirm ho chuka hai. Ek confirmation message aapke phone ${orderDetails.shippingAddress?.mobileNumber ? `(+91 ${orderDetails.shippingAddress.mobileNumber})` : ''} par bhej diya gaya hai. Delivery in 3-5 days.`
                                     : "We're waiting for payment confirmation from the bank. This usually takes a few seconds."}
                             </p>
                         </div>
@@ -215,7 +213,7 @@ export default function CheckoutSuccessPage() {
                                                 Order Confirmation & Tracking Updates on WhatsApp
                                             </h3>
                                             <p className="text-xs text-white/80 mt-1 max-w-xl leading-relaxed">
-                                                Your order is booked! Tap below to send your confirmation to our Order Desk (<strong>+91 79909 34095</strong>) for live parcel dispatch and courier waybill updates.
+                                                Aapka order confirm ho chuka hai! Tap below to open WhatsApp with our dedicated Order Desk (<strong>+91 79909 34095</strong>) to receive your instant confirmation, invoice, and courier tracking updates.
                                             </p>
                                         </div>
                                     </div>

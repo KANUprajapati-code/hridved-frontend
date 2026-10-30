@@ -101,12 +101,12 @@ const HomePage = () => {
 
     const defaultSlides = [
         {
-            badge: "PREMIUM WELLNESS",
-            title: content?.hero?.title || "Ancient Wisdom. Masterfully Pure.",
-            subtitle: content?.hero?.subtitle || "Experience the pinnacle of Ayurvedic excellence. Pure formulations handcrafted for your modern lifestyle.",
-            image: getImageUrl(content?.hero?.image) || "",
-            ctaText: content?.hero?.ctaText || "Shop Collection",
-            link: content?.hero?.ctaLink || "/shop"
+            badge: "FLAGSHIP BAL RASAYANA",
+            title: content?.hero?.title || "Hridved Suvarnaprashan Drops 15ml",
+            subtitle: content?.hero?.subtitle || "Classical 24K Swarna Bhasma, Medhya Brahmi & Cow Ghee formulation. Daily immunity, memory & intellect booster for children (0-16 yrs).",
+            image: getImageUrl(content?.hero?.image) || "https://res.cloudinary.com/dzyyckpal/image/upload/v1786369409/hridved_uploads/766194416_17900478183546574_2292074687249109710_n-1786369409386.jpg",
+            ctaText: content?.hero?.ctaText || "Shop Suvarnaprashan Drop",
+            link: content?.hero?.ctaLink || "/product/69999d3f601a51e1407f45cc"
         },
         ...(content?.hero2?.image ? [{
             badge: "HAIR CARE RITUAL",
@@ -253,23 +253,22 @@ const HomePage = () => {
         setActiveVideoUrl(reelReviews[prevIdx].link);
     };
 
-    // Flagship Hero Product: Suvarnaprashan / Suvrnaprasan from MongoDB or authentic formulation
-    const suvarnaprashanFromDb = bestsellers.find(p => 
-        p.name?.toLowerCase().includes('suv') || 
-        p.name?.toLowerCase().includes('swarna') || 
-        p.name?.toLowerCase().includes('gold')
-    );
+    // Flagship Hero Product: Explicitly HRIDVED SUVRNAPRASAN DROP 15ML (ID: 69999d3f601a51e1407f45cc)
+    const suvarnaprashanDropFromDb = bestsellers.find(p => 
+        p._id === '69999d3f601a51e1407f45cc' || 
+        (p.name?.toLowerCase().includes('drop') && (p.name?.toLowerCase().includes('suv') || p.name?.toLowerCase().includes('swarna') || p.name?.toLowerCase().includes('prasan')))
+    ) || bestsellers.find(p => p._id === '69999d3f601a51e1407f45cc');
 
-    const heroProduct = suvarnaprashanFromDb ? {
-        ...suvarnaprashanFromDb,
-        _id: suvarnaprashanFromDb._id || "69999d3f601a51e1407f45cc",
-        name: suvarnaprashanFromDb.name || "HRIDVED SUVRNAPRASAN DROP 15ML",
-        image: suvarnaprashanFromDb.image || "https://res.cloudinary.com/dzyyckpal/image/upload/v1786369409/hridved_uploads/766194416_17900478183546574_2292074687249109710_n-1786369409386.jpg",
-        price: suvarnaprashanFromDb.price || 999,
-        mrp: suvarnaprashanFromDb.mrp || 1299,
-        rating: suvarnaprashanFromDb.rating || 4.9,
-        numReviews: suvarnaprashanFromDb.numReviews || 528,
-        countInStock: suvarnaprashanFromDb.countInStock || 100
+    const heroProduct = suvarnaprashanDropFromDb ? {
+        ...suvarnaprashanDropFromDb,
+        _id: suvarnaprashanDropFromDb._id || "69999d3f601a51e1407f45cc",
+        name: suvarnaprashanDropFromDb.name || "HRIDVED SUVRNAPRASAN DROP 15ML",
+        image: suvarnaprashanDropFromDb.image || "https://res.cloudinary.com/dzyyckpal/image/upload/v1786369409/hridved_uploads/766194416_17900478183546574_2292074687249109710_n-1786369409386.jpg",
+        price: suvarnaprashanDropFromDb.price || 999,
+        mrp: suvarnaprashanDropFromDb.mrp || 1299,
+        rating: suvarnaprashanDropFromDb.rating || 4.9,
+        numReviews: suvarnaprashanDropFromDb.numReviews || 528,
+        countInStock: suvarnaprashanDropFromDb.countInStock || 100
     } : {
         _id: "69999d3f601a51e1407f45cc",
         name: "HRIDVED SUVRNAPRASAN DROP 15ML",
@@ -775,7 +774,7 @@ const HomePage = () => {
                                                                 )}
                                                                 {pack.giftText && (
                                                                     <div className="absolute -top-2.5 right-3 bg-emerald-700 text-white font-black text-[9px] px-2 py-0.5 rounded-full uppercase tracking-wider shadow-sm">
-                                                                        Free Comb
+                                                                        {pack.giftText}
                                                                     </div>
                                                                 )}
                                                                 <div>
