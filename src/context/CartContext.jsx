@@ -14,6 +14,42 @@ export const CartProvider = ({ children }) => {
     const [cart, setCart] = useState({ cartItems: [] });
     const [isInitialized, setIsInitialized] = useState(false);
     const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
+    const [shippingConfig, setShippingConfig] = useState({
+        isFreeShipping: true,
+        shippingFee: 0,
+        freeShippingThreshold: 0,
+        codFee: 0,
+        isCodFeeEnabled: false,
+        vamashipEnabled: true
+    });
+
+    const refreshShippingConfig = async () => {
+        try {
+            const { data } = await api.get('/config/shipping');
+            if (data.success && data.data) {
+                setShippingConfig(data.data);
+            }
+        } catch (error) {
+            console.warn('[SHIPPING-CONFIG] Failed to fetch shipping config:', error.message);
+        }
+    };
+
+    useEffect(() => {
+        refreshShippingConfig();
+    }, []);
+
+    const calculateShipping = (amount) => {
+        if (!shippingConfig) return 0;
+        if (shippingConfig.isFreeShipping || Number(shippingConfig.shippingFee) === 0) return 0;
+        if (Number(shippingConfig.freeShippingThreshold) > 0 && amount >= Number(shippingConfig.freeShippingThreshold)) return 0;
+        return Number(shippingConfig.shippingFee) || 0;
+    };
+
+    const calculateCodFee = (paymentMethod) => {
+        if (paymentMethod !== 'COD') return 0;
+        if (!shippingConfig?.isCodFeeEnabled) return 0;
+        return Number(shippingConfig?.codFee) || 0;
+    };
 
     const openCartDrawer = () => setIsCartDrawerOpen(true);
     const closeCartDrawer = () => setIsCartDrawerOpen(false);
@@ -251,6 +287,10 @@ export const CartProvider = ({ children }) => {
                 setIsCartDrawerOpen,
                 openCartDrawer,
                 closeCartDrawer,
+                shippingConfig,
+                refreshShippingConfig,
+                calculateShipping,
+                calculateCodFee,
             }}
         >
             {children}

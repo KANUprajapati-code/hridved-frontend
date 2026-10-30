@@ -7,16 +7,19 @@ import Badge from './Badge';
 import { trackWebsiteEvent } from '../utils/websiteAnalytics';
 
 const CartDrawer = () => {
-  const { cart, isCartDrawerOpen, closeCartDrawer, updateCartItemQuantity, removeFromCart } = useCart();
+  const { cart, isCartDrawerOpen, closeCartDrawer, updateCartItemQuantity, removeFromCart, calculateShipping, shippingConfig } = useCart();
   const navigate = useNavigate();
 
   const cartItems = cart?.cartItems || [];
   const itemsCount = cartItems.reduce((acc, item) => acc + (Number(item.qty) || 1), 0);
   const subtotal = cartItems.reduce((acc, item) => acc + (Number(item.qty) || 1) * (Number(item.price) || 0), 0);
-  const freeShippingThreshold = 999;
-  const isFreeShipping = subtotal >= freeShippingThreshold;
-  const amountNeeded = Math.max(0, freeShippingThreshold - subtotal);
-  const progressPercent = Math.min(100, Math.round((subtotal / freeShippingThreshold) * 100));
+  
+  const shippingCharge = calculateShipping ? calculateShipping(subtotal) : 0;
+  const isFreeShipping = shippingCharge === 0;
+  const threshold = Number(shippingConfig?.freeShippingThreshold) || 0;
+  const hasThreshold = !shippingConfig?.isFreeShipping && threshold > 0 && Number(shippingConfig?.shippingFee) > 0;
+  const amountNeeded = hasThreshold ? Math.max(0, threshold - subtotal) : 0;
+  const progressPercent = hasThreshold ? Math.min(100, Math.round((subtotal / threshold) * 100)) : 100;
 
   useEffect(() => {
     if (isCartDrawerOpen && cartItems.length > 0) {
@@ -59,14 +62,14 @@ const CartDrawer = () => {
               <div className="flex justify-between text-gray-600">
                 <span>Shipping Estimate</span>
                 <span className={`font-bold ${isFreeShipping ? 'text-emerald-700' : 'text-gray-900'}`}>
-                  {isFreeShipping ? 'FREE' : '₹50'}
+                  {isFreeShipping ? 'FREE' : `₹${shippingCharge}`}
                 </span>
               </div>
               <div className="border-t border-accent/30 pt-2 flex justify-between items-baseline">
                 <span className="text-sm font-bold text-primary">Estimated Total</span>
                 <div className="text-right">
                   <span className="text-xl font-sans font-black text-primary">
-                    ₹{(subtotal + (isFreeShipping ? 0 : 50)).toLocaleString()}
+                    ₹{(subtotal + shippingCharge).toLocaleString()}
                   </span>
                   <p className="text-[10px] text-gray-500">Taxes & GST included</p>
                 </div>
@@ -107,7 +110,9 @@ const CartDrawer = () => {
           <div className="flex items-center justify-between mb-1.5 font-medium">
             <span className="flex items-center gap-1.5 text-secondary font-bold">
               <Truck size={14} />
-              {isFreeShipping ? 'FREE Shipping Unlocked!' : `₹${amountNeeded.toLocaleString()} away from Free Shipping`}
+              {isFreeShipping 
+                ? (hasThreshold ? 'FREE Shipping Unlocked!' : '🎉 FREE Delivery on All Orders!')
+                : `₹${amountNeeded.toLocaleString()} away from Free Shipping`}
             </span>
             <span className="text-[11px] opacity-80">{progressPercent}%</span>
           </div>

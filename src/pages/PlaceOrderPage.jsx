@@ -6,7 +6,7 @@ import { useAuth } from '../context/AuthContext';
 import api from '../utils/api';
 
 const PlaceOrderPage = () => {
-    const { cart, clearCart } = useCart();
+    const { cart, clearCart, calculateShipping, calculateCodFee } = useCart();
     const { user } = useAuth();
     const navigate = useNavigate();
     const [shippingAddress, setShippingAddress] = useState({});
@@ -30,8 +30,8 @@ const PlaceOrderPage = () => {
     const itemsPrice = addDecimals(
         cartItems.reduce((acc, item) => acc + item.price * item.qty, 0)
     );
-    const shippingPrice = addDecimals(itemsPrice >= 999 ? 0 : 50);
-    const codPrice = addDecimals(paymentMethod === 'COD' ? 50 : 0);
+    const shippingPrice = addDecimals(calculateShipping ? calculateShipping(Number(itemsPrice)) : 0);
+    const codPrice = addDecimals(calculateCodFee ? calculateCodFee(paymentMethod) : 0);
     const taxPrice = addDecimals(
         cartItems.reduce((acc, item) => acc + (item.price * item.qty * (item.gst || 0) / 100), 0)
     );
@@ -138,7 +138,7 @@ const PlaceOrderPage = () => {
                             <span>Shipping</span>
                             <span>₹{shippingPrice}</span>
                         </div>
-                        {paymentMethod === 'COD' && (
+                        {paymentMethod === 'COD' && Number(codPrice) > 0 && (
                             <div className="flex justify-between mb-2 text-primary font-bold">
                                 <span>COD Fee</span>
                                 <span>₹{codPrice}</span>

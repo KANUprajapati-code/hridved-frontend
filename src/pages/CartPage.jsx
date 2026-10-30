@@ -19,7 +19,7 @@ import { trackLeadEvent } from '../utils/tracking';
 import { trackWebsiteEvent } from '../utils/websiteAnalytics';
 
 const CartPage = () => {
-    const { cart, removeFromCart, updateCartItemQuantity, clearCart } = useCart();
+    const { cart, removeFromCart, updateCartItemQuantity, clearCart, calculateShipping, calculateCodFee, shippingConfig } = useCart();
     const { user, openAuthModal } = useAuth();
     const { checkoutData, applyCoupon, updateAddress } = useCheckout();
     const navigate = useNavigate();
@@ -113,9 +113,12 @@ const CartPage = () => {
     }
 
     const discountedSubtotal = Math.max(0, subtotal - discount);
-    const freeShippingThreshold = 999;
-    const isFreeShipping = discountedSubtotal >= freeShippingThreshold;
-    const shipping = isFreeShipping ? 0 : 50;
+    const shipping = calculateShipping ? calculateShipping(discountedSubtotal) : 0;
+    const isFreeShipping = shipping === 0;
+    const threshold = Number(shippingConfig?.freeShippingThreshold) || 0;
+    const hasThreshold = !shippingConfig?.isFreeShipping && threshold > 0 && Number(shippingConfig?.shippingFee) > 0;
+    const amountNeeded = hasThreshold ? Math.max(0, threshold - discountedSubtotal) : 0;
+    const progressPercent = hasThreshold ? Math.min(100, Math.round((discountedSubtotal / threshold) * 100)) : 100;
 
     // Per-item statutory GST calculation
     const tax = cartItems.reduce((acc, item) => {
@@ -123,7 +126,7 @@ const CartPage = () => {
         return acc + ((item.price * item.qty * itemGst) / 100);
     }, 0);
 
-    const codCharge = paymentMethod === 'COD' ? 50 : 0;
+    const codCharge = calculateCodFee ? calculateCodFee(paymentMethod) : 0;
     const grandTotal = discountedSubtotal + shipping + tax + codCharge;
 
     useEffect(() => {
@@ -318,17 +321,19 @@ const CartPage = () => {
                             <div className="flex items-center justify-between text-xs font-medium mb-1.5">
                                 <span className="flex items-center gap-1.5 text-secondary font-bold">
                                     <Truck size={15} />
-                                    {isFreeShipping ? '🎉 FREE SHIPPING UNLOCKED!' : `Add ₹${(freeShippingThreshold - discountedSubtotal).toLocaleString()} more to unlock FREE delivery`}
+                                    {isFreeShipping 
+                                        ? (hasThreshold ? '🎉 FREE SHIPPING UNLOCKED!' : '🎉 FREE DELIVERY ON ALL ORDERS!')
+                                        : `Add ₹${amountNeeded.toLocaleString()} more to unlock FREE delivery`}
                                 </span>
                                 <span className="text-[11px] opacity-80 font-mono">
-                                    {Math.min(100, Math.round((discountedSubtotal / freeShippingThreshold) * 100))}%
+                                    {progressPercent}%
                                 </span>
                             </div>
                             <div className="h-2 bg-white/20 rounded-full overflow-hidden">
                                 <motion.div 
                                     className="h-full bg-secondary shadow-[0_0_12px_rgba(212,175,55,0.6)]"
                                     initial={{ width: 0 }}
-                                    animate={{ width: `${Math.min(100, (discountedSubtotal / freeShippingThreshold) * 100)}%` }}
+                                    animate={{ width: `${progressPercent}%` }}
                                     transition={{ duration: 0.8, ease: "easeOut" }}
                                 />
                             </div>
@@ -488,7 +493,7 @@ const CartPage = () => {
                                         <span className="font-bold text-gray-900">₹{tax.toFixed(2)}</span>
                                     </div>
 
-                                    {paymentMethod === 'COD' && (
+                                    {paymentMethod === 'COD' && codCharge > 0 && (
                                         <div className="flex justify-between text-gray-600">
                                             <span>Cash on Delivery Convenience Fee</span>
                                             <span className="font-bold text-gray-900">₹{codCharge}</span>

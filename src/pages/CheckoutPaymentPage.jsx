@@ -15,7 +15,7 @@ import { trackWebsiteEvent } from '../utils/websiteAnalytics';
 export default function CheckoutPaymentPage() {
     const navigate = useNavigate();
     const { user } = useAuth();
-    const { cart, clearCart } = useCart();
+    const { cart, clearCart, calculateCodFee } = useCart();
     const { checkoutData, updateStep, setErrorMessage, clearError, setOrderId, error } = useCheckout();
 
     const [loading] = useState(false);
@@ -83,7 +83,7 @@ export default function CheckoutPaymentPage() {
         const taxPrice = cartItems.reduce((total, item) => total + (item.price * item.qty * (item.gst || 0) / 100), 0);
         const shippingPrice = checkoutData.shippingCost || 0;
         const discountPrice = checkoutData.discount || 0;
-        const codPrice = paymentMethod === 'COD' ? 50 : 0;
+        const codPrice = calculateCodFee ? calculateCodFee(paymentMethod) : 0;
         const totalPrice = Math.max(0, itemsPrice + taxPrice + shippingPrice + codPrice - discountPrice);
 
         return { itemsPrice, taxPrice, shippingPrice, codPrice, totalPrice, discountPrice };
@@ -164,7 +164,7 @@ export default function CheckoutPaymentPage() {
                 taxPrice,
                 shippingPrice,
                 discountAmount: discountPrice,
-                codPrice: 50,
+                codPrice,
                 totalPrice,
                 paymentMethod: 'COD',
                 shippingProvider: checkoutData.shippingProvider || 'Vamaship',
@@ -242,10 +242,10 @@ export default function CheckoutPaymentPage() {
                                                 <span>Shipping</span>
                                                 <span className="font-bold text-emerald-700">{shippingPrice === 0 ? 'FREE' : `₹${shippingPrice}`}</span>
                                             </div>
-                                            {paymentMethod === 'COD' && (
+                                            {paymentMethod === 'COD' && codPrice > 0 && (
                                                 <div className="flex justify-between text-amber-800 font-bold">
                                                     <span>COD Convenience Fee</span>
-                                                    <span>₹50</span>
+                                                    <span>₹{codPrice}</span>
                                                 </div>
                                             )}
                                             <div className="flex justify-between text-gray-600">

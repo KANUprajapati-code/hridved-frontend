@@ -19,6 +19,30 @@ const HomePageEdit = () => {
     const [uploading, setUploading] = useState(false);
     const [previewReelIndex, setPreviewReelIndex] = useState(null);
 
+    // Shipping editable settings inside Content editor
+    const [shippingConfig, setShippingConfig] = useState({
+        isFreeShipping: true,
+        shippingFee: 0,
+        freeShippingThreshold: 0
+    });
+    const [savingShipping, setSavingShipping] = useState(false);
+    const [shippingSavedMsg, setShippingSavedMsg] = useState('');
+
+    const saveShippingSettings = async (e) => {
+        if (e) e.preventDefault();
+        setSavingShipping(true);
+        setShippingSavedMsg('');
+        try {
+            await api.put('/config/shipping', shippingConfig);
+            setShippingSavedMsg('Shipping settings saved successfully! Live at customer checkout.');
+            setTimeout(() => setShippingSavedMsg(''), 4000);
+        } catch (err) {
+            alert('Failed to save shipping settings: ' + (err.response?.data?.message || err.message));
+        } finally {
+            setSavingShipping(false);
+        }
+    };
+
     const sanitizeReelUrl = (input) => {
         if (!input) return '';
         const iframeMatch = input.match(/src=["']([^"']+)["']/);
@@ -55,6 +79,21 @@ const HomePageEdit = () => {
                         ]
                     });
                 }
+                
+                // Fetch shipping settings
+                try {
+                    const { data: shipData } = await api.get('/config/shipping');
+                    if (shipData.success && shipData.data) {
+                        setShippingConfig({
+                            isFreeShipping: shipData.data.isFreeShipping ?? true,
+                            shippingFee: shipData.data.shippingFee ?? 0,
+                            freeShippingThreshold: shipData.data.freeShippingThreshold ?? 0
+                        });
+                    }
+                } catch (shipErr) {
+                    console.warn('[CONTENT-ADMIN] Could not fetch shipping config:', shipErr.message);
+                }
+
                 setLoading(false);
             } catch (error) {
                 console.error("Error fetching content", error);
@@ -459,7 +498,105 @@ const HomePageEdit = () => {
             <Link to="/admin" className="flex items-center gap-2 text-gray-600 hover:text-primary mb-6 transition-colors">
                 <ArrowLeft size={20} /> Back to Dashboard
             </Link>
-            <h1 className="text-3xl font-bold font-serif text-primary mb-8">Edit Home Page Content</h1>
+            <h1 className="text-3xl font-bold font-serif text-primary mb-6">Edit Home Page Content</h1>
+
+            {/* Quick Shipping Rates & Free Delivery Manager */}
+            <div className="mb-8 bg-white rounded-2xl shadow-sm border border-emerald-100 p-6 overflow-hidden">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-gray-100">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center font-bold">
+                            <Truck size={22} />
+                        </div>
+                        <div>
+                            <h2 className="text-lg font-bold text-gray-800">Checkout Shipping Charges (डिलीवरी शुल्क नियंत्रण)</h2>
+                            <p className="text-xs text-gray-500">Enable Free Delivery or charge shipping fee at checkout</p>
+                        </div>
+                    </div>
+                    <Link
+                        to="/admin/shipping"
+                        className="flex items-center gap-1.5 text-xs font-bold text-primary hover:underline bg-primary/5 px-3 py-1.5 rounded-lg border border-primary/20 w-fit"
+                    >
+                        <span>Full Shipping Settings</span>
+                        <ExternalLink size={13} />
+                    </Link>
+                </div>
+
+                {shippingSavedMsg && (
+                    <div className="mt-4 p-3 bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-xl text-xs font-bold flex items-center gap-2">
+                        <CheckCircle size={16} className="text-emerald-600 shrink-0" />
+                        <span>{shippingSavedMsg}</span>
+                    </div>
+                )}
+
+                <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+                    {/* Free Delivery Master Toggle */}
+                    <div className="p-3 bg-gray-50 rounded-xl border border-gray-200 flex items-center justify-between">
+                        <div>
+                            <p className="text-xs font-bold text-gray-800">Free Delivery</p>
+                            <p className="text-[10px] text-gray-500">All orders get ₹0 shipping</p>
+                        </div>
+                        <label className="relative inline-flex items-center cursor-pointer shrink-0">
+                            <input
+                                type="checkbox"
+                                className="sr-only peer"
+                                checked={shippingConfig.isFreeShipping}
+                                onChange={(e) => setShippingConfig({ ...shippingConfig, isFreeShipping: e.target.checked })}
+                            />
+                            <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+                        </label>
+                    </div>
+
+                    {/* Standard Shipping Fee Input */}
+                    <div className="p-3 bg-gray-50 rounded-xl border border-gray-200">
+                        <label className="block text-xs font-bold text-gray-800 mb-1">
+                            Shipping Fee (₹)
+                        </label>
+                        <div className="relative">
+                            <span className="absolute inset-y-0 left-0 pl-2.5 flex items-center text-xs text-gray-500 font-bold">₹</span>
+                            <input
+                                type="number"
+                                min="0"
+                                disabled={shippingConfig.isFreeShipping}
+                                className="w-full pl-6 pr-3 py-1.5 bg-white border border-gray-300 rounded-lg text-xs font-bold text-gray-900 disabled:opacity-50 disabled:bg-gray-100"
+                                value={shippingConfig.shippingFee}
+                                onChange={(e) => setShippingConfig({ ...shippingConfig, shippingFee: Math.max(0, Number(e.target.value) || 0) })}
+                                placeholder="0"
+                            />
+                        </div>
+                    </div>
+
+                    {/* Free Delivery Order Threshold */}
+                    <div className="p-3 bg-gray-50 rounded-xl border border-gray-200">
+                        <label className="block text-xs font-bold text-gray-800 mb-1">
+                            Free Above (₹)
+                        </label>
+                        <div className="relative">
+                            <span className="absolute inset-y-0 left-0 pl-2.5 flex items-center text-xs text-gray-500 font-bold">₹</span>
+                            <input
+                                type="number"
+                                min="0"
+                                disabled={shippingConfig.isFreeShipping}
+                                className="w-full pl-6 pr-3 py-1.5 bg-white border border-gray-300 rounded-lg text-xs font-bold text-gray-900 disabled:opacity-50 disabled:bg-gray-100"
+                                value={shippingConfig.freeShippingThreshold}
+                                onChange={(e) => setShippingConfig({ ...shippingConfig, freeShippingThreshold: Math.max(0, Number(e.target.value) || 0) })}
+                                placeholder="0 = All orders free"
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <div className="mt-4 flex justify-end">
+                    <button
+                        type="button"
+                        onClick={saveShippingSettings}
+                        disabled={savingShipping}
+                        className="flex items-center gap-2 bg-emerald-700 text-white px-5 py-2 rounded-xl text-xs font-bold hover:bg-emerald-800 transition disabled:opacity-50 cursor-pointer shadow-sm"
+                    >
+                        <Save size={15} />
+                        {savingShipping ? 'Saving...' : 'Update Shipping Charges'}
+                    </button>
+                </div>
+            </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {/* Hero Editor */}
