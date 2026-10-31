@@ -1,12 +1,8 @@
-
 import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import api from '../utils/api';
 import { useAuth } from '../context/AuthContext';
-
-
-import { Truck } from 'lucide-react';
-
+import { Truck, CheckCircle2, Copy, Check, ExternalLink, Package, MapPin, CreditCard, ShieldCheck } from 'lucide-react';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js';
 
@@ -18,7 +14,6 @@ const CheckoutForm = ({ orderId, amount, onSuccess }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
         if (!stripe || !elements) return;
 
         setIsProcessing(true);
@@ -35,7 +30,6 @@ const CheckoutForm = ({ orderId, amount, onSuccess }) => {
             setMessage(error.message);
             setIsProcessing(false);
         } else {
-            // Re-fetch order status to confirm
             setMessage('Payment Processed');
             onSuccess();
             setIsProcessing(false);
@@ -49,7 +43,7 @@ const CheckoutForm = ({ orderId, amount, onSuccess }) => {
             <button
                 disabled={isProcessing || !stripe || !elements}
                 id="submit"
-                className="w-full bg-primary text-white py-3 rounded mt-4 hover:bg-opacity-90 transition font-bold disabled:opacity-50"
+                className="w-full bg-[#053807] text-white py-3 rounded-xl mt-4 hover:bg-[#074609] transition font-bold disabled:opacity-50"
             >
                 <span id="button-text">
                     {isProcessing ? "Processing ... " : "Pay Now"}
@@ -61,9 +55,13 @@ const CheckoutForm = ({ orderId, amount, onSuccess }) => {
 
 const OrderPage = () => {
     const { id } = useParams();
+    const navigate = useNavigate();
     const [order, setOrder] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [errorMsg, setErrorMsg] = useState('');
     const { user } = useAuth();
+    const [copiedAwb, setCopiedAwb] = useState(false);
+    const [bookingLoading, setBookingLoading] = useState(false);
 
     // Stripe State
     const [stripePromise, setStripePromise] = useState(null);
@@ -74,58 +72,88 @@ const OrderPage = () => {
     const [courierInput, setCourierInput] = useState('');
 
     useEffect(() => {
-        if (!user || !user.isAdmin) {
-            navigate('/profile');
-            return;
-        }
-
         const fetchOrder = async () => {
             try {
-                const { data } = await api.get(`/orders/${id}`);
-                setOrder(data);
-
-                // If order is not paid and method is Stripe, setup Stripe
-                if (!data.isPaid && data.paymentMethod === 'Stripe') {
-                    // Get Publishable Key
-                    const { data: publishableKey } = await api.get('/config/stripe');
-                    setStripePromise(loadStripe(publishableKey));
-
-                    // Create Payment Intent
-                    const { data: intentData } = await api.post('/payment/create-payment-intent', {
-                        amount: Math.round(data.totalPrice * 100), // Amount in smallest currency unit
-                        currency: 'inr'
-                    });
-                    setClientSecret(intentData.clientSecret);
+                setLoading(true);
+                // Attempt fetching through checkout order endpoint (supports guest / public / auth)
+                try {
+                    const { data: res } = await api.get(`/checkout/order/${id}`);
+                    if (res && res.success && res.data) {
+                        setOrder(res.data);
+                        initStripeIfRequired(res.data);
+                        return;
+                    }
+                } catch (checkoutErr) {
+                    // Fallback to standard order endpoint
                 }
 
+                const { data } = await api.get(`/orders/${id}`);
+                setOrder(data);
+                initStripeIfRequired(data);
             } catch (error) {
-                console.error(error);
+                console.error('Error fetching order:', error);
+                setErrorMsg('Could not find or load this order. Please check the order reference.');
             } finally {
                 setLoading(false);
             }
         };
+
+        const initStripeIfRequired = async (data) => {
+            if (!data.isPaid && data.paymentMethod === 'Stripe') {
+                try {
+                    const { data: publishableKey } = await api.get('/config/stripe');
+                    setStripePromise(loadStripe(publishableKey));
+
+                    const { data: intentData } = await api.post('/payment/create-payment-intent', {
+                        amount: Math.round(data.totalPrice * 100),
+                        currency: 'inr'
+                    });
+                    setClientSecret(intentData.clientSecret);
+                } catch (stErr) {
+                    console.error('Stripe init error:', stErr);
+                }
+            }
+        };
+
         fetchOrder();
     }, [id]);
+
+    const copyToClipboard = (text) => {
+        navigator.clipboard?.writeText(text);
+        setCopiedAwb(true);
+        setTimeout(() => setCopiedAwb(false), 2000);
+    };
 
     const handlePaymentSuccess = async () => {
         try {
             await api.put(`/orders/${order._id}/pay`, {});
             setOrder({ ...order, isPaid: true, paidAt: new Date().toISOString() });
-            alert('Payment Successful');
+            alert('Payment Successful! Thank you.');
         } catch (error) {
             console.error(error);
             alert('Error updating order status');
         }
     };
 
-    const deliverHandler = async () => {
+    const handleBookWayuvegaShipment = async () => {
         try {
-            await api.put(`/orders/${order._id}/deliver`);
-            setOrder({ ...order, isDelivered: true, deliveredAt: new Date().toISOString() });
-            alert('Order Delivered');
-        } catch (error) {
-            console.error(error);
-            alert('Error updating order');
+            setBookingLoading(true);
+            const { data } = await api.post('/shipping/create-shipment', { orderId: order._id });
+            if (data.success) {
+                alert(`Wayuvega Courier Booked Successfully!\nAWB: ${data.waybill}\nCourier: ${data.courierName || 'Delhivery Surface'}`);
+                setOrder(prev => ({
+                    ...prev,
+                    waybill: data.waybill,
+                    courierName: data.courierName || 'Delhivery Surface',
+                    shippingStatus: 'Shipped'
+                }));
+            } else {
+                alert('Booking note: ' + (data.message || 'Check Wayuvega dashboard'));
+            }
+        } catch (err) {
+            alert('Booking failed: ' + (err.response?.data?.message || err.message));
+        } finally {
+            setBookingLoading(false);
         }
     };
 
@@ -133,7 +161,7 @@ const OrderPage = () => {
         try {
             const { data } = await api.put(`/orders/${order._id}/tracking`, {
                 trackingId: trackingInput,
-                courierName: courierInput || 'Standard Courier'
+                courierName: courierInput || 'Delhivery Surface'
             });
             setOrder(data);
             alert('Tracking Updated Successfully');
@@ -145,215 +173,355 @@ const OrderPage = () => {
         }
     };
 
-    if (loading) return <div className="text-center py-20">Loading...</div>;
-    if (!order) return <div className="text-center py-20">Order not found</div>;
+    if (loading) {
+        return (
+            <div className="min-h-[70vh] flex flex-col items-center justify-center p-6 bg-emerald-50/30">
+                <div className="w-12 h-12 border-3 border-emerald-700/20 border-t-emerald-700 rounded-full animate-spin mb-4" />
+                <p className="text-stone-600 font-medium font-serif">Loading order details...</p>
+            </div>
+        );
+    }
+
+    if (errorMsg || !order) {
+        return (
+            <div className="min-h-[70vh] flex flex-col items-center justify-center p-6 text-center">
+                <div className="w-16 h-16 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center mb-4">
+                    <Package size={32} />
+                </div>
+                <h2 className="text-2xl font-serif font-bold text-stone-900 mb-2">Order Not Found</h2>
+                <p className="text-stone-500 max-w-md mb-6">{errorMsg || 'We could not find the requested order.'}</p>
+                <button
+                    onClick={() => navigate('/')}
+                    className="px-6 py-2.5 bg-[#053807] text-white rounded-xl font-bold hover:bg-[#074609] transition"
+                >
+                    Return to Home
+                </button>
+            </div>
+        );
+    }
 
     const appearance = {
         theme: 'stripe',
-        variables: {
-            colorPrimary: '#053807',
-        },
+        variables: { colorPrimary: '#053807' },
     };
-    const options = {
-        clientSecret,
-        appearance,
-    };
+    const options = { clientSecret, appearance };
+
+    const activeAwb = order.waybill || order.trackingId;
 
     return (
-        <div className="container mx-auto px-4 py-8">
-            <h1 className="text-3xl font-serif font-bold text-primary mb-4">Order {order._id}</h1>
-            <div className="flex flex-col md:flex-row gap-8">
-                <div className="md:w-2/3 space-y-8">
-                    <div className="bg-white p-6 rounded shadow-sm border">
-                        <h2 className="text-xl font-bold mb-4">Shipping</h2>
-                        <p className="mb-2"><strong>Name: </strong> {order.user?.name || order.shippingAddress?.fullName || 'Guest User'}</p>
-                        <p className="mb-2"><strong>Mobile: </strong> {order.shippingAddress?.mobileNumber}</p>
-                        <p className="mb-2"><strong>Email: </strong> {order.user?.email || order.email ? <a href={`mailto:${order.user?.email || order.email}`} className="text-secondary">{order.user?.email || order.email}</a> : 'N/A'}</p>
-                        <p className="mb-4">
-                            <strong>Address: </strong>
-                            {order.shippingAddress.houseNumber}, {order.shippingAddress.landmark ? `${order.shippingAddress.landmark}, ` : ''}
-                            {order.shippingAddress.city}, {order.shippingAddress.state} - {order.shippingAddress.pincode}
-                        </p>
-                        <p className="mb-2"><strong>Provider: </strong> {order.shippingProvider || 'Fship'}</p>
-                        {order.waybill && (
-                            <p className="mb-4 text-primary"><strong>Waybill: </strong> <span className="font-mono font-bold">{order.waybill}</span></p>
-                        )}
-                        {order.shippingStatus && (
-                            <p className="mb-4"><strong>Status: </strong> <span className="px-2 py-0.5 bg-blue-50 text-blue-700 rounded text-xs font-bold uppercase">{order.shippingStatus}</span></p>
-                        )}
-                        {order.isDelivered ? (
-                            <div className="bg-green-100 text-green-700 p-2 rounded">Delivered on {order.deliveredAt.substring(0, 10)}</div>
-                        ) : (
-                            <div className="bg-red-100 text-red-700 p-2 rounded">Not Delivered</div>
-                        )}
+        <div className="bg-[#FAF8F5] min-h-screen py-10">
+            <div className="container mx-auto px-4 max-w-6xl">
+                {/* Header Bar */}
+                <div className="flex flex-col md:flex-row md:items-center justify-between pb-6 mb-8 border-b border-stone-200/80 gap-4">
+                    <div>
+                        <div className="flex items-center gap-2 mb-1">
+                            <span className="text-xs uppercase tracking-widest font-bold text-emerald-800 bg-emerald-100/80 px-2.5 py-0.5 rounded-full">
+                                Verified Order
+                            </span>
+                            <span className="text-xs text-stone-400">
+                                {new Date(order.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                            </span>
+                        </div>
+                        <h1 className="text-2xl sm:text-3xl font-serif font-bold text-stone-900">
+                            Order #{String(order._id).slice(-8).toUpperCase()}
+                        </h1>
+                        <p className="text-xs font-mono text-stone-400 mt-0.5">Ref: {order._id}</p>
                     </div>
 
-                    <div className="bg-white p-6 rounded shadow-sm border">
-                        <h2 className="text-xl font-bold mb-4">Payment Method</h2>
-                        <p className="mb-4"><strong>Method: </strong> {order.paymentMethod}</p>
-                        {order.isPaid ? (
-                            <div className="bg-green-100 text-green-700 p-2 rounded">Paid on {order.paidAt.substring(0, 10)}</div>
-                        ) : (
-                            <div className="bg-red-100 text-red-700 p-2 rounded">Not Paid</div>
+                    <div className="flex flex-wrap items-center gap-3">
+                        {activeAwb && (
+                            <Link
+                                to={`/track-order?q=${activeAwb}`}
+                                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-800 to-teal-900 text-white font-bold text-xs uppercase tracking-wider shadow-md hover:shadow-lg hover:scale-[1.02] transition"
+                            >
+                                <Truck size={16} /> Track Live Order
+                            </Link>
                         )}
+                        <Link
+                            to="/shop"
+                            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white text-stone-700 border border-stone-300 font-bold text-xs uppercase tracking-wider hover:bg-stone-50 transition"
+                        >
+                            Continue Shopping
+                        </Link>
                     </div>
+                </div>
 
-                    <div className="bg-white p-6 rounded shadow-sm border">
-                        <h2 className="text-xl font-bold mb-4">Order Items</h2>
-                        {order.orderItems.length === 0 ? <p>Order is empty</p> : (
-                            <div className="space-y-4">
-                                {order.orderItems.map((item, index) => (
-                                    <div key={index} className="flex items-center gap-4 border-b last:border-0 pb-4 last:pb-0">
-                                        <img src={item.image} alt={item.name} className="w-12 h-12 rounded object-cover" />
-                                        <Link to={`/product/${item.product}`} className="flex-1 hover:text-primary">{item.name}</Link>
-                                        <div className="text-gray-600">
-                                            {item.qty} x ₹{item.price} = <span className="font-bold text-gray-900">₹{item.qty * item.price}</span>
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    {/* Left: 2 Columns */}
+                    <div className="lg:col-span-2 space-y-6">
+
+                        {/* Wayuvega Courier Card */}
+                        <div className="bg-gradient-to-br from-emerald-900 via-[#053807] to-teal-950 text-white p-6 sm:p-7 rounded-2xl shadow-xl relative overflow-hidden border border-emerald-500/20">
+                            <div className="absolute top-0 right-0 w-56 h-56 bg-emerald-400/10 rounded-full blur-3xl pointer-events-none" />
+
+                            <div className="relative z-10">
+                                <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center text-emerald-300">
+                                            <Truck size={20} />
+                                        </div>
+                                        <div>
+                                            <span className="text-[10px] tracking-widest uppercase font-mono text-emerald-300 block">
+                                                Courier Partner
+                                            </span>
+                                            <h3 className="text-base font-bold text-white tracking-wide">
+                                                {order.courierName || 'DELHIVERY SURFACE (Wayuvega)'}
+                                            </h3>
+                                        </div>
+                                    </div>
+
+                                    <span className="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-emerald-400/20 text-emerald-200 border border-emerald-400/30 flex items-center gap-1.5">
+                                        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+                                        {order.shippingStatus || 'Dispatch Ready'}
+                                    </span>
+                                </div>
+
+                                {activeAwb ? (
+                                    <div className="bg-black/30 backdrop-blur-md rounded-xl p-4 border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                                        <div>
+                                            <span className="text-[11px] text-white/60 uppercase font-mono tracking-wider block">
+                                                Wayuvega Tracking / Waybill (AWB)
+                                            </span>
+                                            <span className="text-lg font-mono font-bold text-emerald-300 tracking-wider">
+                                                {activeAwb}
+                                            </span>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <button
+                                                onClick={() => copyToClipboard(activeAwb)}
+                                                className="px-3.5 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white text-xs font-semibold flex items-center gap-1.5 transition"
+                                            >
+                                                {copiedAwb ? <Check size={14} className="text-emerald-400" /> : <Copy size={14} />}
+                                                <span>{copiedAwb ? 'Copied' : 'Copy AWB'}</span>
+                                            </button>
+                                            <Link
+                                                to={`/track-order?q=${activeAwb}`}
+                                                className="px-4 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-stone-950 text-xs font-bold flex items-center gap-1.5 transition shadow"
+                                            >
+                                                <span>Live Tracking</span>
+                                                <ExternalLink size={13} />
+                                            </Link>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className="bg-white/5 rounded-xl p-4 border border-white/10 text-xs text-white/70">
+                                        Shipment is queued for Wayuvega manifest generation. Your courier waybill will appear here once booked.
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Order Items */}
+                        <div className="bg-white rounded-2xl shadow-sm border border-stone-200/80 p-6">
+                            <h2 className="text-lg font-serif font-bold text-stone-900 mb-4 pb-3 border-b border-stone-100 flex items-center gap-2">
+                                <Package size={18} className="text-emerald-800" />
+                                <span>Order Formulations ({order.orderItems?.length || 0})</span>
+                            </h2>
+
+                            <div className="divide-y divide-stone-100">
+                                {order.orderItems?.map((item, idx) => (
+                                    <div key={idx} className="py-4 first:pt-0 last:pb-0 flex items-center gap-4">
+                                        <img
+                                            src={item.image || '/logo-modified.png'}
+                                            alt={item.name}
+                                            className="w-16 h-16 rounded-xl object-cover bg-stone-50 border border-stone-200/60"
+                                            onError={(e) => { e.target.src = '/logo-modified.png'; }}
+                                        />
+                                        <div className="flex-1 min-w-0">
+                                            <Link
+                                                to={item.product ? `/product/${item.product}` : '#'}
+                                                className="font-medium text-stone-900 hover:text-emerald-800 transition line-clamp-1 text-sm sm:text-base"
+                                            >
+                                                {item.name}
+                                            </Link>
+                                            <div className="text-xs text-stone-400 mt-0.5">
+                                                Qty: <span className="font-bold text-stone-700">{item.qty}</span>
+                                                {item.weight ? ` • ${item.weight * 1000 >= 1000 ? `${item.weight} kg` : `${Math.round(item.weight * 1000)}g`}` : ' • 500g'}
+                                            </div>
+                                        </div>
+                                        <div className="text-right">
+                                            <div className="font-bold text-stone-900 text-sm sm:text-base">
+                                                ₹{(item.price * item.qty).toLocaleString('en-IN')}
+                                            </div>
+                                            <div className="text-xs text-stone-400">₹{item.price} each</div>
                                         </div>
                                     </div>
                                 ))}
                             </div>
-                        )}
-                    </div>
-                </div>
-
-                <div className="md:w-1/3">
-                    <div className="bg-white p-6 rounded shadow-md border">
-                        <h2 className="text-xl font-bold mb-4 border-b pb-2">Order Summary</h2>
-                        <div className="flex justify-between mb-2">
-                            <span>Items</span>
-                            <span>₹{order.itemsPrice}</span>
-                        </div>
-                        <div className="flex justify-between mb-2">
-                            <span>Shipping</span>
-                            <span>₹{order.shippingPrice}</span>
-                        </div>
-                        <div className="flex justify-between mt-4 pt-4 border-t font-bold text-xl text-primary mb-4">
-                            <span>Total</span>
-                            <span>₹{order.totalPrice}</span>
                         </div>
 
-                        {!order.isPaid && order.paymentMethod === 'Stripe' && clientSecret && (
-                            <div className="border-t pt-4">
-                                <Elements options={options} stripe={stripePromise}>
-                                    <CheckoutForm orderId={order._id} amount={order.totalPrice} onSuccess={handlePaymentSuccess} />
-                                </Elements>
-                            </div>
-                        )}
-                        {!order.isPaid && order.paymentMethod === 'COD' && (
-                            <div className="bg-yellow-100 text-yellow-800 p-3 rounded text-center font-bold">
-                                Cash on Delivery
-                            </div>
-                        )}
-                        {!order.isPaid && (
-                            <div className="bg-red-100 p-4 rounded text-red-700 font-bold mb-4">
-                                Not Paid
-                            </div>
-                        )}
-
-                        {order.trackingId && (
-                            <div className="bg-blue-50 p-4 rounded border border-blue-200 mb-4">
-                                <h3 className="font-bold text-blue-800 mb-2">Shipment Tracking</h3>
-                                <p className="text-sm text-gray-700">Courier: <strong>{order.courierName}</strong></p>
-                                <p className="text-sm text-gray-700">AWB: <strong>{order.trackingId}</strong></p>
-                                <button
-                                    onClick={() => window.open(`/track-order?orderId=${order._id}`, '_blank')}
-                                    className="mt-2 text-sm bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 flex items-center gap-2 w-fit"
-                                >
-                                    <Truck size={14} /> Track Shipment
-                                </button>
-                            </div>
-                        )}
-                    </div>
-
-                    {user && user.isAdmin && (
-                        <div className="bg-white p-6 rounded shadow-md border mt-8">
-                            <h2 className="text-xl font-bold mb-6 border-b pb-4 flex items-center gap-2 text-primary">
-                                <Truck size={24} /> Admin Shipping Controls
+                        {/* Delivery Address & Contact */}
+                        <div className="bg-white rounded-2xl shadow-sm border border-stone-200/80 p-6">
+                            <h2 className="text-lg font-serif font-bold text-stone-900 mb-4 pb-3 border-b border-stone-100 flex items-center gap-2">
+                                <MapPin size={18} className="text-emerald-800" />
+                                <span>Delivery Address</span>
                             </h2>
 
-                            <div className="space-y-6">
-                                {/* Manual Tracking Update */}
-                                <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                                    <h3 className="font-bold text-gray-800 mb-3 text-sm uppercase tracking-wider">Manual Tracking Update</h3>
-                                    <div className="flex flex-col gap-3">
-                                        <input 
-                                            type="text" 
-                                            placeholder="Courier Name (e.g., BlueDart)" 
-                                            value={courierInput}
-                                            onChange={(e) => setCourierInput(e.target.value)}
-                                            className="px-4 py-2 border border-gray-300 rounded focus:outline-none focus:border-primary"
-                                        />
-                                        <input 
-                                            type="text" 
-                                            placeholder="AWB / Tracking ID" 
-                                            value={trackingInput}
-                                            onChange={(e) => setTrackingInput(e.target.value)}
-                                            className="px-4 py-2 border border-gray-300 rounded focus:outline-none focus:border-primary"
-                                        />
-                                        <button 
-                                            onClick={trackingUpdateHandler}
-                                            disabled={!trackingInput}
-                                            className="bg-primary text-white py-2 rounded hover:bg-opacity-90 transition font-bold disabled:opacity-50"
+                            {order.shippingAddress ? (
+                                <div className="space-y-1.5 text-stone-600 text-sm">
+                                    <div className="font-bold text-stone-900 text-base mb-1">
+                                        {order.shippingAddress.fullName || order.user?.name || 'Customer'}
+                                    </div>
+                                    <p className="leading-relaxed">
+                                        {order.shippingAddress.houseNumber}
+                                        {order.shippingAddress.landmark ? `, Near ${order.shippingAddress.landmark}` : ''}
+                                    </p>
+                                    <p>
+                                        {order.shippingAddress.city}, {order.shippingAddress.state} -{' '}
+                                        <span className="font-bold text-stone-900">{order.shippingAddress.pincode}</span>
+                                    </p>
+                                    <p className="pt-2 text-stone-700">
+                                        <strong>Phone:</strong> +91 {order.shippingAddress.mobileNumber}
+                                    </p>
+                                    {(order.email || order.user?.email) && (
+                                        <p className="text-stone-700">
+                                            <strong>Email:</strong> {order.email || order.user?.email}
+                                        </p>
+                                    )}
+                                </div>
+                            ) : (
+                                <p className="text-sm text-stone-400">Address details unavailable</p>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Right: Summary & Admin Side */}
+                    <div className="space-y-6">
+
+                        {/* Pricing Summary */}
+                        <div className="bg-white rounded-2xl shadow-sm border border-stone-200/80 p-6">
+                            <h2 className="text-lg font-serif font-bold text-stone-900 mb-4 pb-3 border-b border-stone-100 flex items-center gap-2">
+                                <CreditCard size={18} className="text-emerald-800" />
+                                <span>Price Breakdown</span>
+                            </h2>
+
+                            <div className="space-y-3 text-sm text-stone-600">
+                                <div className="flex justify-between">
+                                    <span>Formulations Subtotal</span>
+                                    <span className="font-medium text-stone-900">₹{Number(order.itemsPrice || 0).toLocaleString('en-IN')}</span>
+                                </div>
+
+                                {Number(order.taxPrice) > 0 && (
+                                    <div className="flex justify-between">
+                                        <span>GST (Taxes)</span>
+                                        <span className="font-medium text-stone-900">₹{Number(order.taxPrice).toLocaleString('en-IN')}</span>
+                                    </div>
+                                )}
+
+                                <div className="flex justify-between">
+                                    <span>Wayuvega Express Delivery</span>
+                                    <span className="font-medium text-stone-900">
+                                        {Number(order.shippingPrice) === 0 ? (
+                                            <span className="text-emerald-700 font-bold">FREE</span>
+                                        ) : (
+                                            `₹${Number(order.shippingPrice).toLocaleString('en-IN')}`
+                                        )}
+                                    </span>
+                                </div>
+
+                                {Number(order.codPrice) > 0 && (
+                                    <div className="flex justify-between">
+                                        <span>COD Convenience Fee</span>
+                                        <span className="font-medium text-stone-900">₹{Number(order.codPrice).toLocaleString('en-IN')}</span>
+                                    </div>
+                                )}
+
+                                {Number(order.discountAmount) > 0 && (
+                                    <div className="flex justify-between text-emerald-700 font-medium">
+                                        <span>Ayurvedic Coupon Discount</span>
+                                        <span>-₹{Number(order.discountAmount).toLocaleString('en-IN')}</span>
+                                    </div>
+                                )}
+
+                                <div className="pt-3 border-t border-stone-200 flex justify-between items-baseline">
+                                    <span className="text-base font-bold text-stone-900">Total Amount</span>
+                                    <span className="text-2xl font-serif font-bold text-[#053807]">
+                                        ₹{Number(order.totalPrice || 0).toLocaleString('en-IN')}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div className="mt-5 pt-4 border-t border-stone-100">
+                                <div className="flex items-center justify-between">
+                                    <span className="text-xs uppercase tracking-wider font-semibold text-stone-400">Payment Mode</span>
+                                    <span className="text-xs font-bold text-stone-800 bg-stone-100 px-2.5 py-1 rounded-md">
+                                        {order.paymentMethod === 'COD' ? 'Cash On Delivery (COD)' : order.paymentMethod}
+                                    </span>
+                                </div>
+                                <div className="flex items-center justify-between mt-2">
+                                    <span className="text-xs uppercase tracking-wider font-semibold text-stone-400">Payment Status</span>
+                                    <span className={`text-xs font-bold px-2.5 py-1 rounded-md ${order.isPaid ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}`}>
+                                        {order.isPaid ? 'PAID' : 'PENDING'}
+                                    </span>
+                                </div>
+                            </div>
+
+                            {!order.isPaid && order.paymentMethod === 'Stripe' && clientSecret && (
+                                <div className="mt-6 pt-4 border-t">
+                                    <Elements options={options} stripe={stripePromise}>
+                                        <CheckoutForm orderId={order._id} amount={order.totalPrice} onSuccess={handlePaymentSuccess} />
+                                    </Elements>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Admin Controls */}
+                        {user && user.isAdmin && (
+                            <div className="bg-white rounded-2xl shadow-sm border border-stone-300 p-6">
+                                <div className="flex items-center gap-2 mb-4 pb-3 border-b border-stone-100 text-[#053807]">
+                                    <ShieldCheck size={20} />
+                                    <h3 className="font-bold text-sm uppercase tracking-wider">Admin Courier Controls</h3>
+                                </div>
+
+                                <div className="space-y-4">
+                                    {!activeAwb ? (
+                                        <button
+                                            onClick={handleBookWayuvegaShipment}
+                                            disabled={bookingLoading}
+                                            className="w-full bg-[#053807] hover:bg-[#074609] text-white py-3 px-4 rounded-xl font-bold text-xs uppercase tracking-wider shadow transition disabled:opacity-50"
                                         >
-                                            Update Tracking
+                                            {bookingLoading ? 'Booking Wayuvega...' : 'Book Wayuvega Courier Shipment'}
                                         </button>
+                                    ) : (
+                                        <div className="p-3 bg-emerald-50 rounded-xl border border-emerald-200 text-xs text-emerald-800 font-medium">
+                                            Shipment is successfully registered with Wayuvega under AWB: <strong>{activeAwb}</strong>
+                                        </div>
+                                    )}
+
+                                    {/* Manual Tracking Override */}
+                                    <div className="pt-4 border-t border-stone-100">
+                                        <h4 className="text-xs font-bold uppercase tracking-wider text-stone-600 mb-2">
+                                            Manual Tracking Override
+                                        </h4>
+                                        <div className="space-y-2">
+                                            <input
+                                                type="text"
+                                                placeholder="Courier (e.g. Delhivery)"
+                                                value={courierInput}
+                                                onChange={(e) => setCourierInput(e.target.value)}
+                                                className="w-full text-xs px-3 py-2 border border-stone-300 rounded-lg focus:outline-none focus:border-emerald-700"
+                                            />
+                                            <input
+                                                type="text"
+                                                placeholder="AWB / Waybill Number"
+                                                value={trackingInput}
+                                                onChange={(e) => setTrackingInput(e.target.value)}
+                                                className="w-full text-xs px-3 py-2 border border-stone-300 rounded-lg focus:outline-none focus:border-emerald-700"
+                                            />
+                                            <button
+                                                onClick={trackingUpdateHandler}
+                                                disabled={!trackingInput}
+                                                className="w-full bg-stone-800 hover:bg-stone-900 text-white py-2 rounded-lg text-xs font-bold transition disabled:opacity-40"
+                                            >
+                                                Save Tracking Info
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+                        )}
 
-                            <div className="space-y-4 mt-6">
-                                {/* Row 1: Create & Pickup */}
-                                <div className="grid grid-cols-2 gap-4">
-                                    <button
-                                        onClick={async () => {
-                                            if (window.confirm('Create Vamaship Shipment?')) {
-                                                try {
-                                                    const { data } = await api.post('/shipping/create-shipment', { orderId: order._id });
-                                                    alert('Shipment Created: ' + data.waybill);
-                                                    window.location.reload();
-                                                } catch (err) {
-                                                    alert('Error: ' + (err.response?.data?.message || err.message));
-                                                }
-                                            }
-                                        }}
-                                        disabled={order.waybill}
-                                        className={`px-4 py-3 rounded-lg font-bold transition-all ${order.waybill ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-primary text-white hover:bg-opacity-90 shadow-md'}`}
-                                    >
-                                        Create Shipment
-                                    </button>
-
-                                    <button
-                                        onClick={async () => {
-                                            if (window.confirm('Create Reverse Order?')) {
-                                                try {
-                                                    const { data } = await api.post('/shipping/reverse-order', { waybill: order.waybill });
-                                                    alert('Reverse Order Created!');
-                                                } catch (err) {
-                                                    alert('Error: ' + (err.response?.data?.message || err.message));
-                                                }
-                                            }
-                                        }}
-                                        disabled={!order.waybill}
-                                        className={`px-4 py-3 rounded-lg font-bold transition-all ${!order.waybill ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-red-600 text-white hover:bg-red-700 shadow-md'}`}
-                                    >
-                                        Reverse Order
-                                    </button>
-                                </div>
-
-                                {/* Status Mark */}
-                                <div className="pt-4 border-t border-gray-100">
-                                    <button
-                                        onClick={deliverHandler}
-                                        className={`w-full px-4 py-3 rounded-lg font-bold transition-all ${order.isDelivered ? 'bg-green-100 text-green-700' : 'bg-gray-800 text-white hover:bg-black'}`}
-                                        disabled={order.isDelivered}
-                                    >
-                                        {order.isDelivered ? 'Order Delivered' : 'Manual Mark as Delivered'}
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    )}
-
+                    </div>
                 </div>
             </div>
         </div>

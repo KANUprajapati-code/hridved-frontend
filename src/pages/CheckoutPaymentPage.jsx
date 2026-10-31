@@ -117,7 +117,7 @@ export default function CheckoutPaymentPage() {
                 discountAmount: discountPrice,
                 totalPrice,
                 paymentMethod: 'razorpay',
-                shippingProvider: checkoutData.shippingProvider || 'Vamaship',
+                shippingProvider: checkoutData.shippingProvider || 'Wayuvega',
                 email: user?.email || checkoutData.address?.email || '',
             });
 
@@ -167,7 +167,7 @@ export default function CheckoutPaymentPage() {
                 codPrice,
                 totalPrice,
                 paymentMethod: 'COD',
-                shippingProvider: checkoutData.shippingProvider || 'Vamaship',
+                shippingProvider: checkoutData.shippingProvider || 'Wayuvega',
                 email: user?.email || checkoutData.address?.email || '',
             });
 

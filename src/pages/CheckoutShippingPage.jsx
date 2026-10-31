@@ -90,7 +90,7 @@ export default function CheckoutShippingPage() {
                 trackWebsiteEvent('add_shipping_info', {
                     shippingMethod: selectedMethod,
                 });
-                updateShippingMethod(selectedMethod, selectedShipping.charge, selectedShipping.provider || 'Vamaship');
+                updateShippingMethod(selectedMethod, selectedShipping.charge, selectedShipping.provider || 'Wayuvega');
                 updateStep(3);
                 navigate('/checkout/payment');
             }
