@@ -7,7 +7,9 @@ import {
     User, Package, LogOut, MapPin, AlertCircle, Mail, Phone, 
     Home, Building2, Globe, Lock, Stethoscope, Video, 
     Calendar, Clock, ChevronRight, LayoutDashboard, 
-    Settings, ShoppingBag, CreditCard, Bell, Heart
+    Settings, ShoppingBag, CreditCard, Bell, Heart,
+    Truck, CheckCircle2, Box, Navigation, Copy, Check,
+    AlertTriangle, MessageCircle, ExternalLink, RefreshCw, Sparkles
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useWishlist } from '../context/WishlistContext';
@@ -465,67 +467,319 @@ const ConsultationsList = ({ consultations, loading }) => (
     </div>
 );
 
-const TrackingView = ({ orderId, setOrderId, data, loading, error, onTrack }) => (
-    <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
-        <h2 className="text-2xl font-serif font-bold text-primary mb-8">Track Shipment</h2>
-        <form onSubmit={onTrack} className="flex gap-4 mb-10">
-            <div className="flex-1 relative group">
-                <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-primary transition-colors" size={20} />
-                <input 
-                    type="text" 
-                    placeholder="Enter Order ID or Waybill Number" 
-                    value={orderId}
-                    onChange={(e) => setOrderId(e.target.value)}
-                    className="w-full pl-12 pr-4 py-4 rounded-2xl border border-gray-200 focus:outline-none focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all font-bold text-sm tracking-wide"
-                />
-            </div>
-            <button className="bg-primary text-white px-8 rounded-2xl font-black uppercase text-xs tracking-[0.2em] shadow-lg shadow-primary/20 hover:bg-secondary hover:text-primary transition-all active:scale-95">
-                {loading ? 'Locating...' : 'Track'}
-            </button>
-        </form>
+const TrackingView = ({ orderId, setOrderId, data, loading, error, onTrack }) => {
+    const [copied, setCopied] = useState(false);
 
-        {error && (
-            <div className="p-6 bg-red-50 rounded-2xl border border-red-100 text-red-600 flex items-center gap-4 animate-fade-in shadow-sm">
-                <AlertCircle className="shrink-0" size={24} />
-                <p className="font-bold text-sm uppercase tracking-wide">{error}</p>
-            </div>
-        )}
+    const handleCopy = (text) => {
+        if (!text) return;
+        navigator.clipboard.writeText(text);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2500);
+    };
 
-        {data ? (
-            <div className="animate-fade-in">
-                <div className="p-6 bg-primary/5 rounded-3xl border border-primary/10 mb-8 border-dashed">
-                    <div className="flex justify-between items-center mb-4">
-                        <span className="text-[10px] font-black text-primary uppercase tracking-[0.2em]">Live Tracking</span>
-                        <span className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Waybill: {data.waybill}</span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <p className="text-3xl font-serif font-black text-gray-900">{data.status || 'In Transit'}</p>
-                            <p className="text-sm font-bold text-gray-500 mt-1">{data.location || 'Processing Hub'}</p>
-                        </div>
-                        <div className="p-4 bg-white rounded-2xl shadow-md border border-gray-50">
-                            <Truck size={32} className="text-primary" />
-                        </div>
-                    </div>
+    const steps = [
+        { label: 'Order Confirmed', desc: 'Manifested & Verified', icon: <Package size={16} /> },
+        { label: 'Packed & Ready', desc: 'Formulated & Boxed', icon: <Box size={16} /> },
+        { label: 'Shipped & In Transit', desc: 'Courier Hub Movement', icon: <Truck size={16} /> },
+        { label: 'Out for Delivery', desc: 'With Delivery Agent', icon: <Navigation size={16} /> },
+        { label: 'Delivered', desc: 'Delivered to Doorstep', icon: <CheckCircle2 size={16} /> },
+    ];
+
+    const currentStep = data?.currentStep !== undefined ? Math.min(Math.max(data.currentStep, 0), 4) : 0;
+    const isDelivered = currentStep === 4 || data?.isDelivered;
+    const isNDR = String(data?.statusCode) === '110';
+
+    const formatTime = (ts) => {
+        if (!ts) return '';
+        try {
+            return new Date(ts).toLocaleString('en-IN', {
+                day: 'numeric',
+                month: 'short',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true
+            });
+        } catch {
+            return String(ts);
+        }
+    };
+
+    const handleWhatsApp = () => {
+        const ref = data?.orderId ? `#${String(data.orderId).slice(-8).toUpperCase()}` : (orderId || '');
+        const awb = data?.waybill || '';
+        const msg = `Namaste Hridved Support, I am tracking Order ${ref} (AWB: ${awb}). Could you please share the current dispatch status?`;
+        window.open(`https://wa.me/917990934095?text=${encodeURIComponent(msg)}`, '_blank');
+    };
+
+    return (
+        <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-gray-100">
+            {/* Header */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 pb-4 border-b border-gray-100">
+                <div>
+                    <h2 className="text-2xl font-serif font-bold text-primary">Live Shipment Tracker</h2>
+                    <p className="text-xs text-gray-500 mt-0.5">Real-time carrier updates powered by Wayuvega Logistics</p>
                 </div>
-                
-                {/* Visual Timeline will go here in next version or keep simple for data view */}
-                <div className="space-y-4">
-                    <TrackingRow label="Last Update" value={data.lastscanned || 'N/A'} />
-                    <TrackingRow label="Courier Partner" value={data.fulfillment_partner || data.fulfilledby || 'Vamaship'} />
-                    {data.remark && <TrackingRow label="Latest Activity" value={data.remark} italic />}
-                </div>
+                <button
+                    type="button"
+                    onClick={handleWhatsApp}
+                    className="self-start sm:self-auto inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#25D366]/10 text-[#128C7E] hover:bg-[#25D366]/20 text-xs font-bold transition-colors"
+                >
+                    <MessageCircle size={15} className="text-[#25D366]" />
+                    <span>WhatsApp Support</span>
+                </button>
             </div>
-        ) : !loading && (
-            <div className="text-center py-20 bg-gray-50/50 rounded-[40px] border border-dashed border-gray-200">
-                <div className="w-20 h-20 bg-white rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-xl shadow-gray-200/50">
-                    <MapPin size={32} className="text-gray-200" />
+
+            {/* Tracking Search Input */}
+            <form onSubmit={onTrack} className="flex gap-3 mb-8">
+                <div className="flex-1 relative group">
+                    <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-primary transition-colors" size={18} />
+                    <input 
+                        type="text" 
+                        placeholder="Enter Order ID or Waybill Number (AWB)" 
+                        value={orderId}
+                        onChange={(e) => setOrderId(e.target.value)}
+                        className="w-full pl-11 pr-4 py-3.5 rounded-2xl bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-white transition-all font-bold text-sm text-gray-800"
+                    />
                 </div>
-                <p className="text-gray-400 font-bold uppercase tracking-widest text-xs">Tracking details will appear here</p>
-            </div>
-        )}
-    </div>
-);
+                <button 
+                    disabled={loading || !orderId?.trim()}
+                    className="bg-primary hover:bg-[#07470a] text-white px-7 rounded-2xl font-bold uppercase text-xs tracking-wider shadow-md hover:shadow-lg transition-all active:scale-95 disabled:opacity-50 flex items-center gap-2"
+                >
+                    {loading ? (
+                        <>
+                            <RefreshCw size={14} className="animate-spin" />
+                            <span>Locating...</span>
+                        </>
+                    ) : (
+                        <span>Track Live</span>
+                    )}
+                </button>
+            </form>
+
+            {/* Error Banner */}
+            {error && (
+                <div className="p-5 bg-red-50 rounded-2xl border border-red-100 text-red-700 flex items-center gap-3 mb-6 animate-fade-in text-xs font-bold">
+                    <AlertCircle className="shrink-0 text-red-600" size={20} />
+                    <span>{error}</span>
+                </div>
+            )}
+
+            {/* NDR Alert Banner */}
+            {isNDR && (
+                <div className="p-4 bg-amber-50 rounded-2xl border border-amber-200 text-amber-900 flex items-start gap-3 mb-6">
+                    <AlertTriangle className="shrink-0 text-amber-600 mt-0.5" size={20} />
+                    <div className="text-xs">
+                        <p className="font-bold">Delivery Reattempt Scheduled</p>
+                        <p className="mt-0.5 text-amber-800">The courier partner reported consignee unavailable. A delivery reattempt is automatically scheduled.</p>
+                    </div>
+                </div>
+            )}
+
+            {/* Tracking Result Card */}
+            {data ? (
+                <div className="space-y-6 animate-fade-in">
+                    {/* Status Highlights Banner */}
+                    <div className="bg-gradient-to-br from-primary/5 via-white to-secondary/5 rounded-3xl p-6 border border-primary/10 shadow-sm">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-gray-100">
+                            <div>
+                                <div className="flex items-center gap-2 mb-1">
+                                    <span className="relative flex h-2 w-2">
+                                        <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${isDelivered ? 'bg-emerald-400' : 'bg-secondary'}`}></span>
+                                        <span className={`relative inline-flex rounded-full h-2 w-2 ${isDelivered ? 'bg-emerald-500' : 'bg-secondary'}`}></span>
+                                    </span>
+                                    <span className="text-[10px] font-black uppercase tracking-widest text-secondary">
+                                        {isDelivered ? 'Delivered' : 'Live Status'}
+                                    </span>
+                                </div>
+                                <h3 className="text-2xl font-serif font-black text-gray-900">
+                                    {data.trackingStatus || data.shippingStatus || 'In Transit'}
+                                </h3>
+                                <p className="text-xs text-gray-500 mt-0.5">
+                                    Order #{String(data.orderId || orderId).slice(-8).toUpperCase()}
+                                </p>
+                            </div>
+
+                            <div className="flex flex-wrap items-center gap-2">
+                                {data.waybill && (
+                                    <button
+                                        type="button"
+                                        onClick={() => handleCopy(data.waybill)}
+                                        className="bg-white hover:bg-gray-50 text-gray-700 border border-gray-200 px-3 py-1.5 rounded-xl text-xs font-mono font-bold flex items-center gap-1.5 transition-colors shadow-sm"
+                                        title="Click to copy AWB"
+                                    >
+                                        <span>AWB: {data.waybill}</span>
+                                        {copied ? <Check size={13} className="text-emerald-600" /> : <Copy size={13} className="text-gray-400" />}
+                                    </button>
+                                )}
+                                <span className="bg-primary/10 text-primary border border-primary/20 px-3 py-1.5 rounded-xl text-xs font-bold">
+                                    {data.courierName || 'DELHIVERY SURFACE'}
+                                </span>
+                            </div>
+                        </div>
+
+                        {/* 5-Step Visual Stepper (Amazon / Meesho / Flipkart) */}
+                        <div className="py-6">
+                            <div className="relative">
+                                {/* Connector Line */}
+                                <div className="hidden sm:block absolute top-5 left-8 right-8 h-1 bg-gray-200 -z-0">
+                                    <div 
+                                        className="h-full bg-primary transition-all duration-700 ease-out"
+                                        style={{ width: `${(currentStep / (steps.length - 1)) * 100}%` }}
+                                    />
+                                </div>
+
+                                <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 relative z-10">
+                                    {steps.map((s, idx) => {
+                                        const isDone = idx <= currentStep;
+                                        const isCurrent = idx === currentStep;
+
+                                        return (
+                                            <div key={idx} className="flex flex-col items-center text-center">
+                                                <div 
+                                                    className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${
+                                                        isDone 
+                                                            ? 'bg-primary text-white shadow-md' 
+                                                            : 'bg-gray-100 text-gray-400'
+                                                    } ${isCurrent ? 'ring-4 ring-secondary/40 scale-105' : ''}`}
+                                                >
+                                                    {isDone && idx < currentStep ? <CheckCircle2 size={16} /> : s.icon}
+                                                </div>
+                                                <h5 className={`text-[11px] font-bold mt-2 ${isDone ? 'text-gray-900 font-extrabold' : 'text-gray-400'}`}>
+                                                    {s.label}
+                                                </h5>
+                                                <p className="text-[9px] text-gray-400 line-clamp-1 mt-0.5">
+                                                    {s.desc}
+                                                </p>
+                                                {isCurrent && (
+                                                    <span className="mt-1 px-1.5 py-0.2 bg-secondary/20 text-primary text-[8px] font-black uppercase rounded-full">
+                                                        Active
+                                                    </span>
+                                                )}
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Meta Grid */}
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-4 border-t border-gray-100 text-xs">
+                            <div className="bg-white/80 p-3 rounded-xl border border-gray-100">
+                                <span className="text-[10px] uppercase font-bold text-gray-400 flex items-center gap-1">
+                                    <MapPin size={11} className="text-secondary" /> Current Hub
+                                </span>
+                                <p className="font-bold text-gray-800 mt-0.5 truncate">
+                                    {data.location || 'Central Sorting Hub'}
+                                </p>
+                            </div>
+
+                            <div className="bg-white/80 p-3 rounded-xl border border-gray-100">
+                                <span className="text-[10px] uppercase font-bold text-gray-400 flex items-center gap-1">
+                                    <Clock size={11} className="text-secondary" /> Expected Delivery
+                                </span>
+                                <p className="font-bold text-primary mt-0.5">
+                                    {data.expectedDelivery 
+                                        ? new Date(data.expectedDelivery).toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short' })
+                                        : `${data.expectedDeliveryDays || '3-5'} Days`}
+                                </p>
+                            </div>
+
+                            <div className="bg-white/80 p-3 rounded-xl border border-gray-100">
+                                <span className="text-[10px] uppercase font-bold text-gray-400 flex items-center gap-1">
+                                    <Truck size={11} className="text-secondary" /> Destination
+                                </span>
+                                <p className="font-bold text-gray-800 mt-0.5">
+                                    {data.destinationCity || 'India'} {data.destinationPincodeMasked ? `(${data.destinationPincodeMasked})` : ''}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Timeline Checkpoints (Amazon/Flipkart Hub Scan Feed) */}
+                    {data.timeline && data.timeline.length > 0 && (
+                        <div className="bg-gray-50/60 rounded-3xl p-6 border border-gray-100">
+                            <div className="flex items-center justify-between mb-4 pb-2 border-b border-gray-200/60">
+                                <h4 className="text-sm font-bold text-gray-900 flex items-center gap-2">
+                                    <MapPin size={16} className="text-primary" />
+                                    <span>Carrier Scan History ({data.timeline.length} updates)</span>
+                                </h4>
+                                <span className="text-[10px] font-mono font-bold text-gray-400">
+                                    Updated Just Now
+                                </span>
+                            </div>
+
+                            <div className="relative pl-6 space-y-4 before:absolute before:left-2 before:top-2 before:bottom-2 before:w-0.5 before:bg-gray-200">
+                                {data.timeline.map((entry, idx) => {
+                                    const isLatest = idx === data.timeline.length - 1;
+                                    return (
+                                        <div key={idx} className="relative">
+                                            <div 
+                                                className={`absolute -left-6 top-1 w-4 h-4 rounded-full border-2 border-white ${
+                                                    isLatest ? 'bg-secondary ring-2 ring-secondary/40' : 'bg-primary'
+                                                }`} 
+                                            />
+                                            <div>
+                                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                                                    <span className="text-xs font-bold text-gray-900">{entry.status}</span>
+                                                    <span className="text-[10px] text-gray-400 font-mono">{formatTime(entry.timestamp)}</span>
+                                                </div>
+                                                <p className="text-xs text-gray-600 mt-0.5">{entry.description}</p>
+                                                {entry.location && (
+                                                    <span className="inline-block text-[10px] text-gray-500 bg-white px-2 py-0.5 rounded border border-gray-100 mt-1">
+                                                        📍 {entry.location}
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Order Items Preview */}
+                    {data.orderItems && data.orderItems.length > 0 && (
+                        <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
+                            <h5 className="text-xs font-bold text-gray-700 uppercase tracking-wider mb-3">
+                                Items in Shipment ({data.orderItems.length})
+                            </h5>
+                            <div className="space-y-2">
+                                {data.orderItems.map((item, i) => (
+                                    <div key={i} className="flex items-center justify-between text-xs py-1.5 border-b border-gray-50 last:border-0">
+                                        <div className="flex items-center gap-2.5">
+                                            <img
+                                                src={item.image || '/placeholder.png'}
+                                                alt={item.name}
+                                                className="w-9 h-9 rounded-lg object-cover border border-gray-100"
+                                                onError={(e) => {
+                                                    e.target.onerror = null;
+                                                    e.target.src = 'https://images.unsplash.com/photo-1608248597359-2e061807353f?auto=format&fit=crop&q=80&w=200';
+                                                }}
+                                            />
+                                            <span className="font-bold text-gray-800 line-clamp-1">{item.name}</span>
+                                        </div>
+                                        <span className="text-gray-500 font-mono font-bold shrink-0">Qty: {item.qty}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                </div>
+            ) : !loading && (
+                <div className="text-center py-16 bg-gray-50/50 rounded-3xl border border-dashed border-gray-200">
+                    <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-md border border-gray-100">
+                        <Truck size={28} className="text-gray-300" />
+                    </div>
+                    <h4 className="text-sm font-bold text-gray-700">Enter a Tracking Number or Select an Order</h4>
+                    <p className="text-xs text-gray-400 mt-1 max-w-sm mx-auto">
+                        Go to "My Orders" and click "Track" on any order to see live courier scans and milestone updates.
+                    </p>
+                </div>
+            )}
+        </div>
+    );
+};
+
 
 const SettingsForm = ({ formData, setters, onSubmit, message, messageType }) => (
     <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
