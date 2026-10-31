@@ -504,6 +504,14 @@ const TrackingView = ({ orderId, setOrderId, data, loading, error, onTrack }) =>
         }
     };
 
+    const latestScan = data?.timeline && data.timeline.length > 0
+        ? data.timeline[data.timeline.length - 1]
+        : null;
+    const currentHub = latestScan?.location || data?.location || `${data?.destinationCity || 'Central'} Sorting Hub`;
+    const latestActivity = latestScan?.status || data?.trackingStatus || data?.shippingStatus || 'In Transit';
+    const latestRemarks = latestScan?.description || 'Parcel is progressing through courier logistics network';
+    const latestScanTime = latestScan?.timestamp || new Date();
+
     const handleWhatsApp = () => {
         const ref = data?.orderId ? `#${String(data.orderId).slice(-8).toUpperCase()}` : (orderId || '');
         const awb = data?.waybill || '';
@@ -666,10 +674,13 @@ const TrackingView = ({ orderId, setOrderId, data, loading, error, onTrack }) =>
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-4 border-t border-gray-100 text-xs">
                             <div className="bg-white/80 p-3 rounded-xl border border-gray-100">
                                 <span className="text-[10px] uppercase font-bold text-gray-400 flex items-center gap-1">
-                                    <MapPin size={11} className="text-secondary" /> Current Hub
+                                    <MapPin size={11} className="text-secondary" /> Current Transit Hub
                                 </span>
-                                <p className="font-bold text-gray-800 mt-0.5 truncate">
-                                    {data.location || 'Central Sorting Hub'}
+                                <p className="font-bold text-gray-800 mt-0.5 truncate" title={currentHub}>
+                                    {currentHub}
+                                </p>
+                                <p className="text-[10px] text-gray-500 truncate mt-0.5">
+                                    Status: {latestActivity}
                                 </p>
                             </div>
 
@@ -682,6 +693,9 @@ const TrackingView = ({ orderId, setOrderId, data, loading, error, onTrack }) =>
                                         ? new Date(data.expectedDelivery).toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short' })
                                         : `${data.expectedDeliveryDays || '3-5'} Days`}
                                 </p>
+                                <p className="text-[10px] text-gray-500 truncate mt-0.5">
+                                    Speed: {data.deliveryOption || 'Surface Express'}
+                                </p>
                             </div>
 
                             <div className="bg-white/80 p-3 rounded-xl border border-gray-100">
@@ -691,6 +705,99 @@ const TrackingView = ({ orderId, setOrderId, data, loading, error, onTrack }) =>
                                 <p className="font-bold text-gray-800 mt-0.5">
                                     {data.destinationCity || 'India'} {data.destinationPincodeMasked ? `(${data.destinationPincodeMasked})` : ''}
                                 </p>
+                                <p className="text-[10px] text-gray-500 truncate mt-0.5">
+                                    Recipient: {data.recipientMasked || 'Verified Customer'}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Dedicated Live Current Hub & Transit Center Card */}
+                    <div className="bg-gradient-to-br from-emerald-950 via-[#0a3a14] to-primary text-white rounded-3xl p-6 shadow-xl relative overflow-hidden border border-emerald-500/20">
+                        {/* Background Radar Rings */}
+                        <div className="absolute -right-8 -bottom-8 w-40 h-40 rounded-full border border-emerald-400/10 pointer-events-none" />
+                        <div className="absolute -right-16 -bottom-16 w-56 h-56 rounded-full border border-emerald-400/10 pointer-events-none" />
+
+                        <div className="relative z-10">
+                            {/* Top Bar with Radar Pulse */}
+                            <div className="flex flex-wrap items-center justify-between gap-3 mb-4 pb-3 border-b border-white/10">
+                                <div className="flex items-center gap-2">
+                                    <span className="relative flex h-2.5 w-2.5">
+                                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                        <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-400"></span>
+                                    </span>
+                                    <span className="text-xs font-black uppercase tracking-widest text-emerald-300">
+                                        Live Courier Hub Radar
+                                    </span>
+                                </div>
+                                <div className="flex items-center gap-1.5 text-[10px] font-mono text-emerald-200/90 bg-white/10 px-3 py-1 rounded-full border border-white/10">
+                                    <Clock size={11} className="text-emerald-400" />
+                                    <span>Last Scan: {formatTime(latestScanTime)}</span>
+                                </div>
+                            </div>
+
+                            {/* Active Hub Details */}
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                <div>
+                                    <span className="text-[10px] uppercase font-bold text-emerald-300/80 tracking-widest flex items-center gap-1">
+                                        <MapPin size={11} className="text-secondary" /> Active Sorting Facility / Hub
+                                    </span>
+                                    <h4 className="text-xl font-serif font-black text-white mt-0.5">
+                                        {currentHub}
+                                    </h4>
+                                    <div className="text-xs text-emerald-100/90 mt-1.5 flex flex-wrap items-center gap-2">
+                                        <span className="inline-block w-2 h-2 rounded-full bg-secondary"></span>
+                                        <span className="font-bold text-white">{latestActivity}:</span>
+                                        <span className="text-emerald-200">{latestRemarks}</span>
+                                    </div>
+                                </div>
+
+                                <div className="sm:text-right shrink-0">
+                                    <span className="text-[10px] uppercase font-bold text-emerald-300/80 tracking-widest">
+                                        Carrier
+                                    </span>
+                                    <p className="text-sm font-bold text-white mt-0.5 flex items-center sm:justify-end gap-1.5">
+                                        <Truck size={13} className="text-secondary" />
+                                        <span>{data.courierName || 'DELHIVERY SURFACE'}</span>
+                                    </p>
+                                    <p className="text-[10px] text-emerald-200/80 font-mono">
+                                        AWB: {data.waybill}
+                                    </p>
+                                </div>
+                            </div>
+
+                            {/* 3-Point Visual Route Flow (Origin -> Current Hub -> Destination) */}
+                            <div className="mt-5 pt-4 border-t border-white/10">
+                                <div className="grid grid-cols-3 gap-2 text-center text-xs relative">
+                                    <div className="hidden sm:block absolute top-3.5 left-[18%] right-[18%] h-0.5 bg-white/20 -z-0" />
+
+                                    {/* Origin */}
+                                    <div className="flex flex-col items-center">
+                                        <div className="w-6 h-6 rounded-full bg-white/20 text-white flex items-center justify-center text-[10px] font-bold mb-1 relative z-10 border border-white/40">
+                                            1
+                                        </div>
+                                        <span className="text-[9px] font-bold text-emerald-300 uppercase tracking-wider">Origin Hub</span>
+                                        <span className="text-[10px] text-white/90 font-medium truncate max-w-[100px]">Ahmedabad Herbarium</span>
+                                    </div>
+
+                                    {/* Current Hub */}
+                                    <div className="flex flex-col items-center">
+                                        <div className="w-6 h-6 rounded-full bg-secondary text-primary flex items-center justify-center text-[11px] font-black mb-1 relative z-10 ring-4 ring-secondary/30 shadow-md">
+                                            📍
+                                        </div>
+                                        <span className="text-[9px] font-bold text-secondary uppercase tracking-wider animate-pulse">Current Hub</span>
+                                        <span className="text-[10px] text-white font-bold truncate max-w-[110px]">{currentHub}</span>
+                                    </div>
+
+                                    {/* Destination */}
+                                    <div className="flex flex-col items-center">
+                                        <div className="w-6 h-6 rounded-full bg-white/20 text-white flex items-center justify-center text-[10px] font-bold mb-1 relative z-10 border border-white/40">
+                                            3
+                                        </div>
+                                        <span className="text-[9px] font-bold text-emerald-300 uppercase tracking-wider">Destination</span>
+                                        <span className="text-[10px] text-white/90 font-medium truncate max-w-[100px]">{data.destinationCity || 'Customer City'}</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

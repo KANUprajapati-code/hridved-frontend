@@ -137,6 +137,14 @@ const TrackOrderPage = () => {
     const isNDR = String(activeOrder?.statusCode) === '110';
     const isDelivered = getCurrentStep() === 4 || activeOrder?.isDelivered;
 
+    const latestScan = activeOrder?.timeline && activeOrder.timeline.length > 0 
+        ? activeOrder.timeline[activeOrder.timeline.length - 1] 
+        : null;
+    const currentHub = latestScan?.location || activeOrder?.location || `${activeOrder?.destinationCity || 'Central'} Sorting Hub`;
+    const latestActivity = latestScan?.status || activeOrder?.trackingStatus || activeOrder?.shippingStatus || 'In Transit';
+    const latestRemarks = latestScan?.description || 'Parcel is moving through the courier logistics network';
+    const latestScanTime = latestScan?.timestamp || activeOrder?.createdAt;
+
     return (
         <div className="min-h-screen bg-[#FDFBF7] py-8 sm:py-14">
             <SEO
@@ -410,13 +418,13 @@ const TrackOrderPage = () => {
 
                                 <div className="bg-[#FDFBF7] p-4 rounded-2xl border border-gray-100">
                                     <span className="text-[10px] uppercase font-bold text-gray-400 flex items-center gap-1">
-                                        <MapPin size={12} className="text-secondary" /> Current Location
+                                        <MapPin size={12} className="text-secondary" /> Current Transit Hub
                                     </span>
-                                    <p className="text-sm font-bold text-gray-800 mt-1 truncate">
-                                        {activeOrder.location || `${activeOrder.destinationCity || 'Destination'} Hub`}
+                                    <p className="text-sm font-bold text-gray-800 mt-1 truncate" title={currentHub}>
+                                        {currentHub}
                                     </p>
-                                    <p className="text-[11px] text-gray-500">
-                                        To: {activeOrder.destinationCity}, {activeOrder.destinationPincodeMasked}
+                                    <p className="text-[11px] text-gray-500 truncate">
+                                        Status: {latestActivity}
                                     </p>
                                 </div>
 
@@ -430,8 +438,99 @@ const TrackOrderPage = () => {
                                             : `${activeOrder.estimatedDeliveryDays || '3-5'} Business Days`}
                                     </p>
                                     <p className="text-[11px] text-gray-500">
-                                        Recipient: {activeOrder.recipientMasked || 'Customer'}
+                                        Destination: {activeOrder.destinationCity || 'India'}
                                     </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Dedicated Live Current Hub & Transit Center Card */}
+                        <div className="bg-gradient-to-br from-emerald-950 via-[#0a3a14] to-primary text-white rounded-3xl p-6 sm:p-8 shadow-xl relative overflow-hidden border border-emerald-500/20">
+                            {/* Background Radar Rings */}
+                            <div className="absolute -right-8 -bottom-8 w-44 h-44 rounded-full border border-emerald-400/10 pointer-events-none" />
+                            <div className="absolute -right-16 -bottom-16 w-60 h-60 rounded-full border border-emerald-400/10 pointer-events-none" />
+
+                            <div className="relative z-10">
+                                {/* Top Bar with Radar Pulse */}
+                                <div className="flex flex-wrap items-center justify-between gap-3 mb-5 pb-3 border-b border-white/10">
+                                    <div className="flex items-center gap-2">
+                                        <span className="relative flex h-3 w-3">
+                                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                            <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-400"></span>
+                                        </span>
+                                        <span className="text-xs font-black uppercase tracking-widest text-emerald-300">
+                                            Live Courier Hub Radar
+                                        </span>
+                                    </div>
+                                    <div className="flex items-center gap-1.5 text-[11px] font-mono text-emerald-200/90 bg-white/10 px-3 py-1 rounded-full border border-white/10">
+                                        <Clock size={12} className="text-emerald-400" />
+                                        <span>Last Hub Scan: {formatTimestamp(latestScanTime)}</span>
+                                    </div>
+                                </div>
+
+                                {/* Active Hub Details */}
+                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                    <div>
+                                        <span className="text-[10px] uppercase font-bold text-emerald-300/80 tracking-widest flex items-center gap-1">
+                                            <MapPin size={12} className="text-secondary" /> Active Sorting Facility / Hub
+                                        </span>
+                                        <h3 className="text-xl sm:text-2xl font-serif font-black text-white mt-0.5">
+                                            {currentHub}
+                                        </h3>
+                                        <div className="text-xs text-emerald-100/90 mt-2 flex flex-wrap items-center gap-2">
+                                            <span className="inline-block w-2 h-2 rounded-full bg-secondary"></span>
+                                            <span className="font-bold text-white">{latestActivity}:</span>
+                                            <span className="text-emerald-200">{latestRemarks}</span>
+                                        </div>
+                                    </div>
+
+                                    <div className="sm:text-right shrink-0">
+                                        <span className="text-[10px] uppercase font-bold text-emerald-300/80 tracking-widest">
+                                            Courier Partner
+                                        </span>
+                                        <p className="text-sm font-bold text-white mt-0.5 flex items-center sm:justify-end gap-1.5">
+                                            <Truck size={14} className="text-secondary" />
+                                            <span>{activeOrder.courierName || 'DELHIVERY SURFACE'}</span>
+                                        </p>
+                                        <p className="text-[11px] text-emerald-200/80 font-mono mt-0.5">
+                                            AWB: {activeOrder.waybill}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                {/* 3-Point Visual Route Flow (Origin -> Current Hub -> Destination) */}
+                                <div className="mt-6 pt-5 border-t border-white/10">
+                                    <div className="grid grid-cols-3 gap-2 text-center text-xs relative">
+                                        {/* Track connecting line */}
+                                        <div className="hidden sm:block absolute top-3.5 left-[18%] right-[18%] h-0.5 bg-white/20 -z-0" />
+
+                                        {/* Origin */}
+                                        <div className="flex flex-col items-center">
+                                            <div className="w-7 h-7 rounded-full bg-white/20 text-white flex items-center justify-center text-[10px] font-bold mb-1.5 relative z-10 border border-white/40">
+                                                1
+                                            </div>
+                                            <span className="text-[10px] font-bold text-emerald-300 uppercase tracking-wider">Origin Hub</span>
+                                            <span className="text-[11px] text-white/90 font-medium truncate max-w-[120px]">Ahmedabad Herbarium</span>
+                                        </div>
+
+                                        {/* Current Hub */}
+                                        <div className="flex flex-col items-center">
+                                            <div className="w-7 h-7 rounded-full bg-secondary text-primary flex items-center justify-center text-xs font-black mb-1.5 relative z-10 ring-4 ring-secondary/30 shadow-md">
+                                                📍
+                                            </div>
+                                            <span className="text-[10px] font-bold text-secondary uppercase tracking-wider animate-pulse">Current Hub</span>
+                                            <span className="text-[11px] text-white font-bold truncate max-w-[130px]">{currentHub}</span>
+                                        </div>
+
+                                        {/* Destination */}
+                                        <div className="flex flex-col items-center">
+                                            <div className="w-7 h-7 rounded-full bg-white/20 text-white flex items-center justify-center text-[10px] font-bold mb-1.5 relative z-10 border border-white/40">
+                                                3
+                                            </div>
+                                            <span className="text-[10px] font-bold text-emerald-300 uppercase tracking-wider">Destination</span>
+                                            <span className="text-[11px] text-white/90 font-medium truncate max-w-[120px]">{activeOrder.destinationCity || 'Customer City'}</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
