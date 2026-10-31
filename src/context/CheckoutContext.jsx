@@ -29,7 +29,8 @@ export const CheckoutProvider = ({ children }) => {
         if (savedData) {
             try {
                 const parsed = JSON.parse(savedData);
-                return { ...initial, ...parsed };
+                // Ensure orderId and orderDetails are always null on fresh initialization
+                return { ...initial, ...parsed, orderId: null, orderDetails: null };
             } catch (e) {
                 return initial;
             }
@@ -37,9 +38,10 @@ export const CheckoutProvider = ({ children }) => {
         return initial;
     });
 
-    // Save to localStorage whenever checkoutData changes
+    // Save to localStorage whenever checkoutData changes, stripping transient orderId
     React.useEffect(() => {
-        localStorage.setItem('checkoutData', JSON.stringify(checkoutData));
+        const dataToSave = { ...checkoutData, orderId: null, orderDetails: null };
+        localStorage.setItem('checkoutData', JSON.stringify(dataToSave));
     }, [checkoutData]);
 
     const [loading, setLoading] = useState(false);

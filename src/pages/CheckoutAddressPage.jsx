@@ -15,7 +15,7 @@ export default function CheckoutAddressPage() {
     const navigate = useNavigate();
     const { user, openAuthModal } = useAuth();
     const { cart } = useCart();
-    const { updateAddress, updateStep, setErrorMessage, clearError, checkoutData } = useCheckout();
+    const { updateAddress, updateStep, setErrorMessage, clearError, checkoutData, setOrderId } = useCheckout();
 
     const [addresses, setAddresses] = useState([]);
     const [selectedAddressId, setSelectedAddressId] = useState(null);
@@ -36,7 +36,12 @@ export default function CheckoutAddressPage() {
 
     const [formErrors, setFormErrors] = useState({});
 
-    useEffect(() => { trackWebsiteEvent('begin_checkout'); }, []);
+    useEffect(() => { 
+        trackWebsiteEvent('begin_checkout');
+        if (checkoutData.orderId) {
+            setOrderId(null, null);
+        }
+    }, []);
 
     // Stabilized address fetching (Only runs on initial mount or when login status changes)
     useEffect(() => {

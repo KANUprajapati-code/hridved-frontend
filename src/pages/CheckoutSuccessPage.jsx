@@ -92,6 +92,7 @@ export default function CheckoutSuccessPage() {
                 items: orderDetails.orderItems || []
             });
             if (clearCart) clearCart();
+            if (resetCheckout) resetCheckout();
         }
     }, [orderDetails?._id, orderDetails?.isPaid, orderDetails?.paymentMethod]);
 
