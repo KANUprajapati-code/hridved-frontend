@@ -85,8 +85,12 @@ export const AuthProvider = ({ children }) => {
                 setConfirmationResult(result);
                 return { success: true, method: 'firebase', phone: cleanPhone };
             } catch (firebaseErr) {
-                const msg = serverErr?.response?.data?.message || firebaseErr.message || 'Failed to send OTP code';
-                throw new Error(msg);
+                console.error('All SMS gateways failed:', { serverErr: serverErr?.response?.data, firebaseErr });
+                let friendlyMsg = serverErr?.response?.data?.message || firebaseErr.message || 'Failed to send OTP code';
+                if (firebaseErr?.code === 'auth/operation-not-allowed' || firebaseErr?.message?.includes('region enabled')) {
+                    friendlyMsg = 'SMS Service Notice: Firebase SMS region policy needs India (+91) enabled in Firebase Console, or complete Fast2SMS KYC.';
+                }
+                throw new Error(friendlyMsg);
             }
         }
     };
