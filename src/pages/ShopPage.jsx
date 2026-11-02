@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useLocation, Link, useNavigate } from 'react-router-dom';
 import api from '../utils/api';
 import ProductCard from '../components/ProductCard';
@@ -15,9 +15,48 @@ import { trackWebsiteEvent } from '../utils/websiteAnalytics';
 
 const ShopPage = () => {
     const navigate = useNavigate();
-    const [products, setProducts] = useState([]);
-    const [categories, setCategories] = useState([]);
-    const [loading, setLoading] = useState(true);
+    
+    // Fast in-memory cache for 0ms filter click responses
+    const queryCache = useRef(new Map());
+
+    // Hydrate initial products immediately from localStorage to ensure 0ms cold load
+    const [products, setProducts] = useState(() => {
+        if (typeof window !== 'undefined' && !window.location.search) {
+            try {
+                const cached = localStorage.getItem('hridved_cached_shop_products');
+                if (cached) {
+                    const parsed = JSON.parse(cached);
+                    if (parsed.products && parsed.products.length > 0) return parsed.products;
+                }
+            } catch (e) {}
+        }
+        return [];
+    });
+
+    const [categories, setCategories] = useState(() => {
+        if (typeof window !== 'undefined') {
+            try {
+                const cached = localStorage.getItem('hridved_cached_categories');
+                if (cached) return JSON.parse(cached);
+            } catch (e) {}
+        }
+        return [];
+    });
+
+    const [loading, setLoading] = useState(() => {
+        if (typeof window !== 'undefined' && !window.location.search) {
+            try {
+                const cached = localStorage.getItem('hridved_cached_shop_products');
+                if (cached) {
+                    const parsed = JSON.parse(cached);
+                    if (parsed.products && parsed.products.length > 0) return false;
+                }
+            } catch (e) {}
+        }
+        return true;
+    });
+
+    const [isRefetching, setIsRefetching] = useState(false);
     const [selectedCategories, setSelectedCategories] = useState([]);
     const [minPrice, setMinPrice] = useState(0);
     const [maxPrice, setMaxPrice] = useState(10000);
@@ -30,9 +69,16 @@ const ShopPage = () => {
     const [isQuickViewOpen, setIsQuickViewOpen] = useState(false);
     const [isBulkModalOpen, setIsBulkModalOpen] = useState(false);
     const [showMobileFilters, setShowMobileFilters] = useState(false);
-    const [shopContent, setShopContent] = useState(null);
+    const [shopContent, setShopContent] = useState(() => {
+        if (typeof window !== 'undefined') {
+            try {
+                const cached = localStorage.getItem('hridved_cached_content');
+                if (cached) return JSON.parse(cached);
+            } catch (e) {}
+        }
+        return null;
+    });
     const [searchTerm, setSearchTerm] = useState('');
-
 
     // Accordion states
     const [openSections, setOpenSections] = useState({
@@ -46,10 +92,7 @@ const ShopPage = () => {
         setOpenSections(prev => ({ ...prev, [section]: !prev[section] }));
     };
 
-
     const [inStockOnly, setInStockOnly] = useState(false);
-
-    // Category counts logic removed as requested for dynamic sync
 
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
@@ -124,67 +167,115 @@ const ShopPage = () => {
         navigate({ search: params.toString() });
     };
 
-    // Hydrate categories from localStorage and fetch from MongoDB
+    // Pre-fetch categories and static content once on mount (with caching)
     useEffect(() => {
-        try {
-            const cachedCat = localStorage.getItem('hridved_cached_categories');
-            if (cachedCat) setCategories(JSON.parse(cachedCat));
-        } catch (e) {}
+        let isCancelled = false;
 
-        const fetchCategories = async () => {
+        const fetchInitialData = async () => {
             try {
-                const { data } = await api.get('/categories');
-                if (data) {
-                    setCategories(data);
-                    try { localStorage.setItem('hridved_cached_categories', JSON.stringify(data)); } catch (e) {}
-                }
+                // Fetch categories
+                api.get('/categories').then(({ data }) => {
+                    if (!isCancelled && data && Array.isArray(data)) {
+                        setCategories(data);
+                        try { localStorage.setItem('hridved_cached_categories', JSON.stringify(data)); } catch (e) {}
+                    }
+                }).catch(() => {});
+
+                // Fetch shop content
+                api.get('/content').then(({ data }) => {
+                    if (!isCancelled && data) {
+                        setShopContent(data);
+                        try { localStorage.setItem('hridved_cached_content', JSON.stringify(data)); } catch (e) {}
+                    }
+                }).catch(() => {});
             } catch (err) {
-                console.error("Error loading categories", err);
+                console.error("Error loading initial data", err);
             }
         };
-        fetchCategories();
+
+        fetchInitialData();
+
+        return () => {
+            isCancelled = true;
+        };
     }, []);
 
+    // Instant-response product fetching with in-memory caching and zero-flicker revalidation
     useEffect(() => {
-        // Hydrate initial products from localStorage if browsing default shop
-        if (!location.search) {
-            try {
-                const cached = localStorage.getItem('hridved_cached_shop_products');
-                if (cached) {
-                    const parsed = JSON.parse(cached);
-                    if (parsed.products && parsed.products.length > 0) {
-                        setProducts(parsed.products);
-                        setTotalPages(parsed.pages || 1);
-                        setTotalCount(parsed.count || 0);
-                        setLoading(false);
-                    }
-                }
-            } catch (e) {}
+        const cacheKey = location.search || '';
+
+        // Check in-memory cache for instant 0ms response
+        if (queryCache.current.has(cacheKey)) {
+            const cached = queryCache.current.get(cacheKey);
+            setProducts(cached.products || []);
+            setTotalPages(cached.pages || 1);
+            setTotalCount(cached.count || 0);
+            setPage(cached.page || 1);
+            setLoading(false);
+            setIsRefetching(false);
+            return;
         }
 
+        let isCancelled = false;
+
         const fetchProducts = async () => {
-            setLoading(true);
+            // Keep existing products on screen instead of tearing down DOM with skeletons!
+            setProducts(prev => {
+                if (prev.length > 0) {
+                    setIsRefetching(true);
+                } else {
+                    setLoading(true);
+                }
+                return prev;
+            });
+
             try {
-                // Fetch directly from URL params to ensure sync
                 const { data } = await api.get(`/products${location.search || '?'}`);
-                setProducts(data.products);
-                setTotalPages(data.pages);
-                setTotalCount(data.count);
-                // Sync page state in case it changed server-side or via URL
-                setPage(data.page);
+                if (isCancelled) return;
+
+                // Save to memory cache
+                queryCache.current.set(cacheKey, data);
+
+                setProducts(data.products || []);
+                setTotalPages(data.pages || 1);
+                setTotalCount(data.count || 0);
+                setPage(data.page || 1);
+
                 if (!location.search) {
                     try { localStorage.setItem('hridved_cached_shop_products', JSON.stringify(data)); } catch (e) {}
                 }
             } catch (error) {
-                console.error("Error fetching products", error);
+                if (!isCancelled) {
+                    console.error("Error fetching products", error);
+                }
             } finally {
-                setLoading(false);
-                setShowMobileFilters(false);
+                if (!isCancelled) {
+                    setLoading(false);
+                    setIsRefetching(false);
+                    setShowMobileFilters(false);
+                }
             }
         };
 
         fetchProducts();
+
+        return () => {
+            isCancelled = true;
+        };
     }, [location.search]);
+
+    // Hover prefetch for categories
+    const prefetchCategory = (categoryName) => {
+        const params = new URLSearchParams(location.search);
+        params.set('category', categoryName);
+        params.delete('pageNumber');
+        const key = `?${params.toString()}`;
+        if (!queryCache.current.has(key)) {
+            api.get(`/products${key}`).then(({ data }) => {
+                queryCache.current.set(key, data);
+            }).catch(() => {});
+        }
+    };
 
     const handleCategoryToggle = (categoryName) => {
         const newCategories = selectedCategories.includes(categoryName)
@@ -224,29 +315,6 @@ const ShopPage = () => {
         setQuickViewProduct(product);
         setIsQuickViewOpen(true);
     };
-
-    useEffect(() => {
-        const fetchCategories = async () => {
-            try {
-                const { data } = await api.get('/categories');
-                setCategories(data);
-            } catch (error) {
-                console.error("Error fetching categories", error);
-            }
-        };
-        fetchCategories();
-
-        const fetchShopContent = async () => {
-            try {
-                const { data } = await api.get('/content');
-                setShopContent(data);
-            } catch (error) {
-                console.error("Error fetching shop content", error);
-            }
-        };
-        fetchShopContent();
-    }, []);
-
 
     const handleSortChange = (e) => {
         updateFilters({ sort: e.target.value });
@@ -327,6 +395,7 @@ const ShopPage = () => {
                                         key={cat._id || cat.name}
                                         type="button"
                                         onClick={() => handleCategoryToggle(cat.name)}
+                                        onMouseEnter={() => prefetchCategory(cat.name)}
                                         className={`px-4 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider shrink-0 transition-all cursor-pointer flex items-center gap-1.5 ${
                                             isSelected
                                                 ? 'bg-primary text-white shadow-sm'
@@ -623,7 +692,14 @@ const ShopPage = () => {
                                 </div>
                             )}
 
-                            {loading ? (
+                            {/* Thin sleek loading bar during filter refetching */}
+                            {isRefetching && (
+                                <div className="w-full h-1 bg-primary/15 overflow-hidden rounded-full mb-4">
+                                    <div className="h-full bg-primary/80 rounded-full animate-pulse w-full"></div>
+                                </div>
+                            )}
+
+                            {loading && products.length === 0 ? (
                                 <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
                                     <ProductCardSkeleton count={6} />
                                 </div>
@@ -644,11 +720,11 @@ const ShopPage = () => {
                                     </button>
                                 </div>
                             ) : (
-                                <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
-                                    {products.map((product, index) => (
-                                        <ScrollReveal key={product._id} delay={index * 0.05} className="h-full">
+                                <div className={`grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 transition-opacity duration-150 ${isRefetching ? 'opacity-60' : 'opacity-100'}`}>
+                                    {products.map((product) => (
+                                        <div key={product._id} className="h-full">
                                             <ProductCard product={product} onQuickView={handleQuickView} />
-                                        </ScrollReveal>
+                                        </div>
                                     ))}
                                 </div>
                             )}
