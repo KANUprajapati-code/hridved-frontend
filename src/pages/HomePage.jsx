@@ -5,7 +5,8 @@ import {
     ArrowRight, Star, Truck, ShieldCheck, Leaf, Users, Award, Heart, History, 
     CheckCircle, Droplets, Sun, Sparkles, Play, VolumeX, ChevronLeft, ChevronRight, 
     X, Instagram, ExternalLink, MessageCircle, ChevronDown, ChevronUp, Mail, 
-    Compass, HelpCircle, Send, Check, ShoppingCart, Zap, Flame, Shield, CheckCheck
+    Compass, HelpCircle, Send, Check, ShoppingCart, Zap, Flame, Shield, CheckCheck,
+    ShoppingBag
 } from 'lucide-react';
 import api, { getImageUrl } from '../utils/api';
 import AnimatedPage from '../components/AnimatedPage';
@@ -359,13 +360,7 @@ const HomePage = () => {
     const handleHeroBuyNow = (e) => {
         e.preventDefault();
         addToCart(heroCartPayload, 1);
-        navigate('/cart');
-    };
-
-    const handleHeroWhatsApp = (e) => {
-        e.preventDefault();
-        const text = `Namaste Hridved Team! I would like to order ${heroProduct.name} - ${currentPack.title} for ₹${currentPack.price}. Please guide me on dispatch and how to use it for best results.`;
-        window.open(`https://wa.me/917990934095?text=${encodeURIComponent(text)}`, '_blank');
+        navigate('/checkout/address');
     };
 
     const getIcon = (iconName, size = 32) => {
@@ -452,7 +447,7 @@ const HomePage = () => {
         },
         {
             question: "Can I speak with an Ayurvedic Vaidya before purchasing?",
-            answer: "Yes! We provide direct WhatsApp guidance with certified Ayurvedic doctors who will review your lifestyle, assess your balance, and advise the most suitable formulation free of charge."
+            answer: "Yes! We provide direct consultations with certified Ayurvedic doctors who will review your lifestyle, assess your balance, and advise the most suitable formulation free of charge."
         },
         {
             question: "What are your shipping timelines and charges across India?",
@@ -847,15 +842,6 @@ const HomePage = () => {
                                                     <Zap size={16} className="fill-current shrink-0" />
                                                     <span>Instant Buy Now</span>
                                                 </button>
-
-                                                <button
-                                                    onClick={handleHeroWhatsApp}
-                                                    title="Order / Consult on WhatsApp"
-                                                    className="bg-[#25D366] hover:bg-[#1fa851] text-white px-5 py-3.5 sm:py-4 rounded-full font-bold text-xs transition-all duration-300 shadow-lg hover:scale-105 active:scale-95 flex items-center justify-center gap-2 cursor-pointer border-none text-center"
-                                                >
-                                                    <MessageCircle size={16} className="shrink-0" />
-                                                    <span>WhatsApp</span>
-                                                </button>
                                             </div>
 
                                             {/* Trust Assurance Strip */}
@@ -1181,34 +1167,32 @@ const HomePage = () => {
                                     <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8 text-center md:text-left">
                                         <div className="max-w-xl">
                                             <div className="inline-flex items-center gap-2 bg-secondary/20 text-secondary border border-secondary/40 px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">
-                                                <MessageCircle className="w-4 h-4 text-secondary" />
-                                                Free Ayurvedic Consultation
+                                                <Award className="w-4 h-4 text-secondary" />
+                                                Pure Classical Formulations
                                             </div>
                                             <h2 className="text-2xl sm:text-3xl md:text-4xl font-display font-bold text-white leading-tight mb-4">
-                                                Confused Which Formulation Is Right For You?
+                                                Discover Authentic Ayurvedic Healing
                                             </h2>
                                             <p className="text-gray-200 text-sm sm:text-base font-body leading-relaxed mb-6">
-                                                Connect directly with our certified Ayurvedic Vaidyas on WhatsApp. Get personalized advice on dosha balance, herbal dosages, and lifestyle rituals with zero consultation fees.
+                                                Formulated strictly according to authentic Ayurvedic classical texts. Certified pure, lab-tested, and delivered straight from our Gujarat pharmacy to your doorstep.
                                             </p>
                                             <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 text-xs text-gray-300">
-                                                <span className="flex items-center gap-1.5"><ShieldCheck className="w-4 h-4 text-secondary" /> 100% Confidential</span>
+                                                <span className="flex items-center gap-1.5"><ShieldCheck className="w-4 h-4 text-secondary" /> 100% Ayush Certified</span>
                                                 <span>•</span>
-                                                <span className="flex items-center gap-1.5"><Award className="w-4 h-4 text-secondary" /> Qualified Vaidyas</span>
+                                                <span className="flex items-center gap-1.5"><Award className="w-4 h-4 text-secondary" /> Triple-Filtered Herbs</span>
                                                 <span>•</span>
-                                                <span className="flex items-center gap-1.5"><CheckCircle className="w-4 h-4 text-secondary" /> Instant Response</span>
+                                                <span className="flex items-center gap-1.5"><CheckCircle className="w-4 h-4 text-secondary" /> Express Dispatch</span>
                                             </div>
                                         </div>
 
                                         <div className="shrink-0 flex flex-col sm:flex-row gap-4">
-                                            <a
-                                                href="https://wa.me/918980411390?text=Hello%20Hridved%2C%20I%20would%20like%20a%20free%20Ayurvedic%20doctor%20consultation."
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="inline-flex items-center justify-center gap-3 bg-secondary text-primary hover:bg-white hover:text-primary px-8 py-4 rounded-full font-bold text-xs uppercase tracking-widest transition-all duration-300 shadow-xl hover:scale-105 active:scale-95"
+                                            <Link
+                                                to="/shop"
+                                                className="inline-flex items-center justify-center gap-3 bg-secondary text-primary hover:bg-white hover:text-primary px-8 py-4 rounded-full font-bold text-xs uppercase tracking-widest transition-all duration-300 shadow-xl hover:scale-105 active:scale-95 cursor-pointer"
                                             >
-                                                <MessageCircle className="w-5 h-5 text-primary" />
-                                                <span>Chat On WhatsApp</span>
-                                            </a>
+                                                <ShoppingBag className="w-5 h-5 text-primary" />
+                                                <span>Shop Formulations</span>
+                                            </Link>
                                         </div>
                                     </div>
                                 </div>

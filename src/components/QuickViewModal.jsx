@@ -1,37 +1,27 @@
 import { useState } from 'react';
-import { X, Star, MessageCircle, Heart } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { X, Star, Heart, Zap, ShoppingCart } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { useWishlist } from '../context/WishlistContext';
 import ProductImage from './ProductImage';
-import WhatsAppOrderModal from './WhatsAppOrderModal';
 import { trackLeadEvent } from '../utils/tracking';
 
 const QuickViewModal = ({ product, isOpen, onClose }) => {
+    const navigate = useNavigate();
     const { addToCart } = useCart();
     const { user, openAuthModal } = useAuth();
     const { isInWishlist, toggleWishlist } = useWishlist();
     const [quantity, setQuantity] = useState(1);
     const isWishlisted = isInWishlist(product?._id);
-    const [isWhatsAppModalOpen, setIsWhatsAppModalOpen] = useState(false);
 
     if (!isOpen || !product) return null;
 
-    const handleWhatsAppOrder = () => {
-        if (!user) {
-            openAuthModal({
-                title: 'Login to Order on WhatsApp',
-                description: `Please verify your phone to order ${product.name} on WhatsApp`,
-                onSuccess: () => {
-                    setIsWhatsAppModalOpen(true);
-                    trackLeadEvent({ actionType: 'whatsapp_click', product });
-                },
-            });
-            return;
-        }
-        setIsWhatsAppModalOpen(true);
-        trackLeadEvent({ actionType: 'whatsapp_click', product });
+    const handleBuyNow = () => {
+        addToCart(product, quantity);
+        trackLeadEvent({ actionType: 'buy_now', product });
+        onClose();
+        navigate('/checkout/address');
     };
 
     const handleAddToCart = () => {
@@ -183,17 +173,18 @@ const QuickViewModal = ({ product, isOpen, onClose }) => {
                                     <button
                                         onClick={handleAddToCart}
                                         disabled={product.countInStock === 0}
-                                        className="w-full bg-primary text-white py-3 rounded-lg font-semibold hover:bg-opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm"
+                                        className="w-full bg-primary text-white py-3 rounded-lg font-semibold hover:bg-opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm cursor-pointer"
                                     >
+                                        <ShoppingCart size={16} />
                                         Add to Cart
                                     </button>
                                     <button
-                                        onClick={handleWhatsAppOrder}
+                                        onClick={handleBuyNow}
                                         disabled={product.countInStock === 0}
-                                        className="w-full bg-[#25D366] text-white py-3 rounded-lg font-semibold hover:bg-[#1da851] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm"
+                                        className="w-full bg-gradient-to-r from-secondary to-[#c59e2b] text-primary py-3 rounded-lg font-bold hover:brightness-105 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm shadow-sm cursor-pointer"
                                     >
-                                        <MessageCircle size={18} />
-                                        WhatsApp
+                                        <Zap size={16} className="fill-current" />
+                                        Buy Now
                                     </button>
                                 </div>
 
@@ -209,12 +200,6 @@ const QuickViewModal = ({ product, isOpen, onClose }) => {
                     </div>
                 </div>
             </div>
-
-            <WhatsAppOrderModal 
-                product={product} 
-                isOpen={isWhatsAppModalOpen} 
-                onClose={() => setIsWhatsAppModalOpen(false)} 
-            />
         </div>
     );
 };
