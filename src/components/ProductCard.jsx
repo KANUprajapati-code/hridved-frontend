@@ -88,16 +88,16 @@ const ProductCard = ({ product, onQuickView }) => {
             </div>
 
             {/* Info Section */}
-            <div className="p-4 flex flex-col flex-grow bg-white">
+            <div className="p-2.5 sm:p-4 flex flex-col flex-grow bg-white">
                 {/* Product Name in a modern rounded pill box */}
-                <Link to={`/product/${product._id}`} className="block mb-3">
-                    <div className="bg-accent/10 group-hover:bg-primary/5 transition-all text-primary font-bold text-center py-2.5 px-4 rounded-full text-xs uppercase tracking-wider line-clamp-2 min-h-[44px] flex items-center justify-center leading-tight">
+                <Link to={`/product/${product._id}`} className="block mb-2 sm:mb-3">
+                    <div className="bg-accent/10 group-hover:bg-primary/5 transition-all text-primary font-bold text-center py-2 px-2.5 sm:px-4 rounded-full text-[11px] sm:text-xs uppercase tracking-wider line-clamp-2 min-h-[38px] sm:min-h-[44px] flex items-center justify-center leading-tight">
                         {product.name}
                     </div>
                 </Link>
 
                 {/* Heart wishlist and slider dots indicator container */}
-                <div className="flex items-center justify-between px-1 mb-3">
+                <div className="flex items-center justify-between px-1 mb-2 sm:mb-3">
                     <button
                         onClick={(e) => {
                             e.preventDefault();
@@ -108,37 +108,37 @@ const ProductCard = ({ product, onQuickView }) => {
                         title={isWishlisted ? "Remove from Wishlist" : "Save to Wishlist"}
                     >
                         <Heart
-                            size={18}
+                            size={17}
                             fill={isWishlisted ? "#ef4444" : "none"}
                             className={isWishlisted ? "text-red-500" : "text-gray-400"}
                         />
                     </button>
                     <div className="flex gap-1.5 items-center">
-                        <span className="w-6 h-1 bg-secondary rounded-full"></span>
+                        <span className="w-5 sm:w-6 h-1 bg-secondary rounded-full"></span>
                         <span className="w-1.5 h-1.5 bg-gray-200 rounded-full"></span>
                         <span className="w-1.5 h-1.5 bg-gray-200 rounded-full"></span>
                     </div>
                 </div>
 
                 {/* Pricing Badges Grid */}
-                <div className="flex items-baseline justify-center gap-2 mb-3 min-h-[28px] text-center px-1">
-                    <span className="text-sm font-black text-primary font-sans">
+                <div className="flex items-baseline justify-center gap-1.5 sm:gap-2 mb-2 sm:mb-3 min-h-[26px] sm:min-h-[28px] text-center px-1">
+                    <span className="text-xs sm:text-sm font-black text-primary font-sans">
                         ₹{product.price}
                     </span>
                     {product.mrp > product.price && (
-                        <span className="text-xs text-gray-400 line-through font-medium">
+                        <span className="text-[11px] sm:text-xs text-gray-400 line-through font-medium">
                             ₹{product.mrp}
                         </span>
                     )}
                     {product.mrp > product.price && (
-                        <span className="bg-emerald-50 text-emerald-800 text-[10px] font-bold px-1.5 py-0.5 rounded-md border border-emerald-100">
+                        <span className="bg-emerald-50 text-emerald-800 text-[9px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded-md border border-emerald-100">
                             Save ₹{product.mrp - product.price}
                         </span>
                     )}
                 </div>
 
-                {/* Bottom Actions - Add to Cart and Buy Now side-by-side in equal grid */}
-                <div className="grid grid-cols-2 gap-1.5 mt-auto pt-1">
+                {/* Bottom Actions - Stacked on Mobile, Side-by-Side on Desktop */}
+                <div className="flex flex-col sm:grid sm:grid-cols-2 gap-1.5 mt-auto pt-1 w-full">
                     <button
                         onClick={(e) => {
                             e.preventDefault();
@@ -162,7 +162,7 @@ const ProductCard = ({ product, onQuickView }) => {
                             addToCart(product, 1);
                             trackLeadEvent({ actionType: 'add_to_cart', product });
                         }}
-                        className={`w-full h-10 rounded-xl transition-all duration-300 flex items-center justify-center gap-1 font-black text-[10px] uppercase tracking-wider active:scale-[0.98] disabled:opacity-50 text-center cursor-pointer ${
+                        className={`w-full h-8 sm:h-9.5 rounded-xl transition-all duration-300 flex items-center justify-center gap-1.5 font-bold text-[10px] sm:text-[11px] uppercase tracking-wider active:scale-[0.98] disabled:opacity-50 text-center cursor-pointer ${
                             cardAdded
                                 ? 'bg-emerald-700 text-white shadow-sm'
                                 : 'bg-primary text-white hover:bg-opacity-95 hover:shadow-md'
@@ -172,12 +172,12 @@ const ProductCard = ({ product, onQuickView }) => {
                         {cardAdded ? (
                             <>
                                 <span className="text-secondary font-bold">✓</span>
-                                <span className="truncate">Added</span>
+                                <span>Added</span>
                             </>
                         ) : (
                             <>
                                 <ShoppingCart size={13} className="shrink-0" />
-                                <span className="truncate">Add to Cart</span>
+                                <span>Add to Cart</span>
                             </>
                         )}
                     </button>
@@ -190,11 +190,11 @@ const ProductCard = ({ product, onQuickView }) => {
                             navigate('/checkout/address');
                         }}
                         disabled={product.countInStock === 0}
-                        className="w-full h-10 bg-gradient-to-r from-secondary to-[#c59e2b] text-primary rounded-xl hover:brightness-105 hover:shadow-md transition-all duration-300 flex items-center justify-center gap-1 font-black text-[10px] uppercase tracking-wider active:scale-[0.98] disabled:opacity-50 text-center cursor-pointer shadow-sm"
+                        className="w-full h-8 sm:h-9.5 bg-gradient-to-r from-secondary to-[#c59e2b] text-primary rounded-xl hover:brightness-105 hover:shadow-md transition-all duration-300 flex items-center justify-center gap-1.5 font-bold text-[10px] sm:text-[11px] uppercase tracking-wider active:scale-[0.98] disabled:opacity-50 text-center cursor-pointer shadow-sm"
                         title={`Buy ${product.name} Now`}
                     >
                         <Zap size={13} className="shrink-0 fill-current" />
-                        <span className="truncate">Buy Now</span>
+                        <span>Buy Now</span>
                     </button>
                 </div>
             </div>

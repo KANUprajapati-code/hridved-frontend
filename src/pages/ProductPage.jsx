@@ -559,13 +559,13 @@ const ProductPage = () => {
                                             </div>
 
                                             {/* Action Buttons: Add To Cart & Buy Now side-by-side */}
-                                            <div className="grid grid-cols-2 gap-2 flex-1 min-w-0">
+                                            <div className="grid grid-cols-2 gap-2 sm:gap-3 flex-1 min-w-0">
                                                 {/* Add To Cart */}
                                                 <button
                                                     type="button"
                                                     onClick={handleAddToCart}
                                                     disabled={isOutOfStock}
-                                                    className={`h-11 flex-1 min-w-0 rounded-xl font-bold transition-all shadow-xs flex items-center justify-center gap-1.5 text-xs sm:text-sm px-2 sm:px-3 cursor-pointer text-center ${
+                                                    className={`h-12 flex-1 min-w-0 rounded-2xl font-bold transition-all shadow-xs flex items-center justify-center gap-1.5 text-xs sm:text-sm px-2 sm:px-4 cursor-pointer text-center ${
                                                         isAddedState
                                                             ? 'bg-emerald-700 text-white border-2 border-emerald-700'
                                                             : 'bg-white text-primary border-2 border-primary hover:bg-primary hover:text-white'
@@ -589,24 +589,13 @@ const ProductPage = () => {
                                                     type="button"
                                                     onClick={handleBuyNow}
                                                     disabled={isOutOfStock}
-                                                    className="h-11 flex-1 min-w-0 bg-primary text-white border-2 border-primary rounded-xl font-bold hover:bg-primary/90 transition-all shadow-md flex items-center justify-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed text-xs sm:text-sm px-2 sm:px-3 cursor-pointer text-center"
+                                                    className="h-12 flex-1 min-w-0 bg-gradient-to-r from-secondary to-[#c59e2b] text-primary rounded-2xl font-bold hover:brightness-105 transition-all shadow-md flex items-center justify-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed text-xs sm:text-sm px-2 sm:px-4 cursor-pointer text-center"
                                                 >
-                                                    <Zap size={16} className="text-secondary shrink-0 fill-current" />
+                                                    <Zap size={16} className="shrink-0 fill-current" />
                                                     <span className="truncate">Buy Now</span>
                                                 </button>
                                             </div>
                                         </div>
-
-                                        {/* Order on WhatsApp Quick Button */}
-                                        <button
-                                            type="button"
-                                            onClick={handleWhatsAppOrder}
-                                            disabled={isOutOfStock}
-                                            className="w-full min-h-[44px] py-2.5 px-4 bg-[#25D366] text-white rounded-2xl font-bold hover:bg-[#1da851] transition-all shadow-sm flex items-center justify-center gap-2 text-xs sm:text-sm cursor-pointer disabled:opacity-50 text-center"
-                                        >
-                                            <MessageCircle size={18} className="shrink-0" />
-                                            <span>Order Instantly on WhatsApp</span>
-                                        </button>
                                     </div>
 
                                     {/* Vaidya WhatsApp Consultation Prompt */}
