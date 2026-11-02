@@ -225,7 +225,9 @@ export const CartProvider = ({ children }) => {
                     setCart(data);
                     saveToLocalStorage(data);
                 } catch (error) {
-                    console.error('Error clearing cart on server', error);
+                    if (error.response?.status !== 404) {
+                        console.warn('Cart already empty or cleared on server');
+                    }
                     // Fallback to local storage
                     setCart({ cartItems: [] });
                     saveToLocalStorage({ cartItems: [] });
