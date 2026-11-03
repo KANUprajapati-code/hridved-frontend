@@ -64,7 +64,7 @@ const LoginPage = () => {
         setLoading(true);
 
         try {
-            const data = await sendOtp(cleanPhone, 'login-page-recaptcha-container');
+            const data = await sendOtp(cleanPhone);
             setOtpStep(2);
             setCountdown(60);
             if (data.devOtp) {
@@ -254,9 +254,6 @@ const LoginPage = () => {
                                         Instant OTP code will be sent to your phone
                                     </p>
                                 </div>
-
-                                {/* Firebase Invisible reCAPTCHA container */}
-                                <div id="login-page-recaptcha-container"></div>
 
                                 <button
                                     type="submit"

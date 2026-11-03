@@ -69,7 +69,7 @@ const LoginModal = () => {
         setLoading(true);
 
         try {
-            const data = await sendOtp(cleanPhone, 'modal-recaptcha-container');
+            const data = await sendOtp(cleanPhone);
             setStep(2);
             setCountdown(60);
             if (data.devOtp) {
@@ -295,9 +295,6 @@ const LoginModal = () => {
                                                 We will send a 6-digit verification code via SMS
                                             </p>
                                         </div>
-
-                                        {/* Firebase Invisible reCAPTCHA container */}
-                                        <div id="modal-recaptcha-container"></div>
 
                                         <button
                                             type="submit"

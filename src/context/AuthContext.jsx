@@ -1,6 +1,5 @@
 import { createContext, useState, useEffect, useContext } from 'react';
 import api from '../utils/api';
-import { auth, signInWithPhoneNumber, setupRecaptcha } from '../config/firebase';
 
 const AuthContext = createContext();
 
@@ -9,7 +8,6 @@ export const useAuth = () => useContext(AuthContext);
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [confirmationResult, setConfirmationResult] = useState(null);
 
     // Auth Modal State for gating actions (Add to Cart, WhatsApp Order, etc.)
     const [authModalOpen, setAuthModalOpen] = useState(false);
@@ -63,96 +61,27 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    // ================= OTP LOGIN / SEND VIA DIRECT FAST2SMS / SMS GATEWAY =================
-    const sendOtp = async (phone, containerId = 'recaptcha-container') => {
+    // ================= OTP LOGIN / SEND VIA DIRECT APITXT SMS GATEWAY =================
+    const sendOtp = async (phone) => {
         const cleanPhone = phone.toString().replace(/\D/g, '').slice(-10);
         if (cleanPhone.length !== 10) {
             throw new Error('Please enter a valid 10-digit mobile number');
         }
 
         try {
-            // 1. Direct Server OTP dispatch (Fast2SMS / Live SMS Gateway)
             const { data } = await api.post('/users/otp/send', { phone: cleanPhone });
-            return { ...data, method: 'server', phone: cleanPhone };
+            return { ...data, phone: cleanPhone };
         } catch (serverErr) {
-            console.warn('Server sendOtp notice, attempting Firebase fallback:', serverErr?.response?.data || serverErr.message);
-            // 2. Firebase fallback if server is unreachable
-            try {
-                const appVerifier = setupRecaptcha(containerId);
-                const formattedPhone = `+91${cleanPhone}`;
-                const result = await signInWithPhoneNumber(auth, formattedPhone, appVerifier);
-                window.confirmationResult = result;
-                setConfirmationResult(result);
-                return { success: true, method: 'firebase', phone: cleanPhone };
-            } catch (firebaseErr) {
-                console.error('All SMS gateways failed:', { serverErr: serverErr?.response?.data, firebaseErr });
-                let friendlyMsg = serverErr?.response?.data?.message || firebaseErr.message || 'Failed to send OTP code';
-                if (firebaseErr?.code === 'auth/operation-not-allowed' || firebaseErr?.message?.includes('region enabled')) {
-                    friendlyMsg = 'SMS Service Notice: Firebase SMS region policy needs India (+91) enabled in Firebase Console, or complete Fast2SMS KYC.';
-                }
-                throw new Error(friendlyMsg);
-            }
+            const errorMsg = serverErr?.response?.data?.message || serverErr.message || 'Failed to send OTP code';
+            throw new Error(errorMsg);
         }
     };
 
-    // ================= OTP VERIFY & LOGIN VIA FIREBASE =================
+    // ================= OTP VERIFY & LOGIN =================
     const verifyOtp = async (phone, otp, name) => {
         const cleanPhone = phone.toString().replace(/\D/g, '').slice(-10);
         const enteredOtp = otp.toString().trim();
 
-        // 1. Check if Firebase confirmationResult is active
-        const activeConfirmation = window.confirmationResult || confirmationResult;
-        if (activeConfirmation) {
-            try {
-                const userCredential = await activeConfirmation.confirm(enteredOtp);
-                const firebaseUser = userCredential.user;
-                const idToken = await firebaseUser.getIdToken();
-
-                const { data } = await api.post(
-                    '/users/firebase-login',
-                    {
-                        phone: firebaseUser.phoneNumber || `+91${cleanPhone}`,
-                        idToken,
-                        uid: firebaseUser.uid,
-                        name: name || undefined,
-                    },
-                    { withCredentials: true }
-                );
-
-                if (data.token) {
-                    localStorage.setItem('jwtToken', data.token);
-                }
-
-                window.confirmationResult = null;
-                setConfirmationResult(null);
-
-                const freshUser = await checkUserLoggedIn();
-                return freshUser || data;
-            } catch (fbConfirmErr) {
-                console.warn('Firebase confirmation failed, trying server verify:', fbConfirmErr);
-                if (fbConfirmErr.code === 'auth/invalid-verification-code') {
-                    throw new Error('Invalid OTP code. Please enter the correct 6-digit code.');
-                }
-                if (fbConfirmErr.code === 'auth/code-expired') {
-                    throw new Error('OTP expired. Please request a new code.');
-                }
-                // Try server OTP fallback
-                try {
-                    const { data } = await api.post(
-                        '/users/otp/verify',
-                        { phone: cleanPhone, otp: enteredOtp, name },
-                        { withCredentials: true }
-                    );
-                    if (data.token) localStorage.setItem('jwtToken', data.token);
-                    const freshUser = await checkUserLoggedIn();
-                    return freshUser || data;
-                } catch (e) {
-                    throw fbConfirmErr;
-                }
-            }
-        }
-
-        // 2. Standard server OTP verification
         const { data } = await api.post(
             '/users/otp/verify',
             { phone: cleanPhone, otp: enteredOtp, name },
