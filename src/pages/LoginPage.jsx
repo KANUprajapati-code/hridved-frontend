@@ -281,12 +281,31 @@ const LoginPage = () => {
                                     </p>
                                     <button
                                         type="button"
-                                        onClick={() => { setOtpStep(1); setOtp(['', '', '', '', '', '']); }}
+                                        onClick={() => { setOtpStep(1); setOtp(['', '', '', '', '', '']); setDevOtp(''); }}
                                         className="text-xs text-primary font-bold hover:underline mt-0.5"
                                     >
                                         Change Phone Number
                                     </button>
                                 </div>
+
+                                {devOtp && (
+                                    <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-center shadow-xs">
+                                        <p className="text-[11px] text-emerald-800 font-semibold uppercase tracking-wider">Verification Code</p>
+                                        <p className="text-xl font-black text-emerald-900 tracking-widest my-0.5">{devOtp}</p>
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                const chars = devOtp.split('').slice(0, 6);
+                                                const updated = [...otp];
+                                                chars.forEach((c, i) => { updated[i] = c; });
+                                                setOtp(updated);
+                                            }}
+                                            className="text-[11px] text-emerald-700 font-bold hover:underline"
+                                        >
+                                            Auto-fill Code
+                                        </button>
+                                    </div>
+                                )}
 
                                 <div className="flex justify-between gap-2" onPaste={handleOtpPaste}>
                                     {otp.map((digit, idx) => (
