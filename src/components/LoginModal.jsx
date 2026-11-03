@@ -25,7 +25,6 @@ const LoginModal = () => {
     const [step, setStep] = useState(1); // 1 = Enter Phone, 2 = Enter OTP
     const [loading, setLoading] = useState(false);
     const [countdown, setCountdown] = useState(0);
-    const [devOtp, setDevOtp] = useState('');
     const [error, setError] = useState('');
 
     // Email Flow State
@@ -41,7 +40,6 @@ const LoginModal = () => {
             setPhone('');
             setOtp(['', '', '', '', '', '']);
             setError('');
-            setDevOtp('');
             setLoading(false);
         }
     }, [authModalOpen]);
@@ -69,12 +67,9 @@ const LoginModal = () => {
         setLoading(true);
 
         try {
-            const data = await sendOtp(cleanPhone);
+            await sendOtp(cleanPhone);
             setStep(2);
             setCountdown(60);
-            if (data.devOtp) {
-                setDevOtp(data.devOtp);
-            }
             if (addToast) addToast(`OTP sent to +91 ${cleanPhone}`, 'info');
             setTimeout(() => {
                 if (otpInputRefs.current[0]) otpInputRefs.current[0].focus();
@@ -320,31 +315,12 @@ const LoginModal = () => {
                                             </p>
                                             <button
                                                 type="button"
-                                                onClick={() => { setStep(1); setOtp(['', '', '', '', '', '']); setDevOtp(''); }}
+                                                onClick={() => { setStep(1); setOtp(['', '', '', '', '', '']); }}
                                                 className="text-xs text-primary font-bold hover:underline mt-0.5"
                                             >
                                                 Edit Number
                                             </button>
                                         </div>
-
-                                        {devOtp && (
-                                            <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-center shadow-xs">
-                                                <p className="text-[11px] text-emerald-800 font-semibold uppercase tracking-wider">Verification Code</p>
-                                                <p className="text-xl font-black text-emerald-900 tracking-widest my-0.5">{devOtp}</p>
-                                                <button
-                                                    type="button"
-                                                    onClick={() => {
-                                                        const chars = devOtp.split('').slice(0, 6);
-                                                        const updated = [...otp];
-                                                        chars.forEach((c, i) => { updated[i] = c; });
-                                                        setOtp(updated);
-                                                    }}
-                                                    className="text-[11px] text-emerald-700 font-bold hover:underline"
-                                                >
-                                                    Auto-fill Code
-                                                </button>
-                                            </div>
-                                        )}
 
                                         {/* OTP Boxes */}
                                         <div className="flex justify-between gap-2" onPaste={handleOtpPaste}>
