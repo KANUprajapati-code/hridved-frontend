@@ -16,6 +16,7 @@ import AnimatedButton from '../components/AnimatedButton';
 import SEO from '../components/SEO';
 import ProductCard from '../components/ProductCard';
 import Badge from '../components/Badge';
+import DiwaliMahasaleBanner from '../components/DiwaliMahasaleBanner';
 import { useCart } from '../context/CartContext';
 import { useFlyingElement } from '../hooks/useFlyingElement';
 import { useAuth } from '../context/AuthContext';
@@ -623,6 +624,9 @@ const HomePage = () => {
                             </div>
                         </div>
                     </div>
+
+                    {/* Shubh Deepavali Ayurvedic Mahasale Showcase Section */}
+                    <DiwaliMahasaleBanner />
 
                     {/* Flagship Hero Product Spotlight Section - High-Conversion CRO Showcase */}
                     <section className="py-16 md:py-24 bg-gradient-to-b from-[#FDFBF7] via-white to-[#FDFBF7] border-b border-gray-100 relative overflow-hidden">

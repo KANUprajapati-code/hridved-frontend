@@ -62,9 +62,11 @@ const Header = () => {
             animate={isVisible ? 'visible' : 'hidden'}
             className={`sticky top-0 z-50 transition-all duration-300 bg-primary text-white p-0`}
         >
-            {/* Row 1: Announcement Bar */}
-            <div className="bg-black/90 text-white py-2 text-center text-[10px] sm:text-xs font-black tracking-widest uppercase border-b border-white/5 px-4">
-                Get 10% Off Your First Purchase. Use Code: <span className="text-secondary">WELCOME10</span>
+            {/* Row 1: Festive Diwali Announcement Bar */}
+            <div className="bg-gradient-to-r from-amber-950 via-yellow-900 to-amber-950 text-amber-200 py-2 text-center text-[11px] sm:text-xs font-black tracking-wider uppercase border-b border-amber-400/30 px-4 flex items-center justify-center gap-2 shadow-inner">
+                <span className="animate-pulse">🪔</span>
+                <span>Shubh Deepavali Mahotsav: <span className="text-white">Flat 25% OFF</span> with Code: <span className="bg-amber-400 text-gray-950 px-2 py-0.5 rounded font-black tracking-widest">DIWALI25</span> | Free Festive Gift on Orders Above ₹799! 🎁</span>
+                <span className="animate-pulse">🪔</span>
             </div>
 
             {/* Row 2: Location and Socials - Desktop only */}

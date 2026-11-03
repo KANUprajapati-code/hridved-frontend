@@ -357,3 +357,61 @@ a:focus-visible {
 .animate-cart-bounce {
   animation: cartBounce 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
 }
+
+/* Diwali Festive Animations */
+@keyframes diyaFlame {
+  0%, 100% {
+    transform: translateX(-50%) scale(1) rotate(-1deg);
+    opacity: 0.95;
+    filter: drop-shadow(0 0 6px #f59e0b);
+  }
+  25% {
+    transform: translateX(-50%) scale(1.12, 1.2) rotate(2deg);
+    opacity: 1;
+    filter: drop-shadow(0 0 10px #fbbf24);
+  }
+  50% {
+    transform: translateX(-50%) scale(0.95, 0.9) rotate(-2deg);
+    opacity: 0.9;
+    filter: drop-shadow(0 0 7px #ea580c);
+  }
+  75% {
+    transform: translateX(-50%) scale(1.08, 1.15) rotate(1deg);
+    opacity: 1;
+    filter: drop-shadow(0 0 12px #f59e0b);
+  }
+}
+
+.animate-diya-flame {
+  animation: diyaFlame 1.2s ease-in-out infinite alternate;
+  transform-origin: bottom center;
+}
+
+@keyframes toranSwing {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(3deg);
+  }
+}
+
+.animate-toran-swing {
+  animation: toranSwing 3.5s ease-in-out infinite alternate;
+  transform-origin: top center;
+}
+
+@keyframes diwaliConfetti {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(105vh) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+.animate-diwali-confetti {
+  animation: diwaliConfetti 2.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
