@@ -777,7 +777,7 @@ const TrackingView = ({ orderId, setOrderId, data, loading, error, onTrack }) =>
                                             1
                                         </div>
                                         <span className="text-[9px] font-bold text-emerald-300 uppercase tracking-wider">Origin Hub</span>
-                                        <span className="text-[10px] text-white/90 font-medium truncate max-w-[100px]">Ahmedabad Herbarium</span>
+                                        <span className="text-[10px] text-white/90 font-medium truncate max-w-[100px]">Bayad Facility</span>
                                     </div>
 
                                     {/* Current Hub */}

@@ -510,7 +510,7 @@ const TrackOrderPage = () => {
                                                 1
                                             </div>
                                             <span className="text-[10px] font-bold text-emerald-300 uppercase tracking-wider">Origin Hub</span>
-                                            <span className="text-[11px] text-white/90 font-medium truncate max-w-[120px]">Ahmedabad Herbarium</span>
+                                            <span className="text-[11px] text-white/90 font-medium truncate max-w-[120px]">Bayad Facility</span>
                                         </div>
 
                                         {/* Current Hub */}
