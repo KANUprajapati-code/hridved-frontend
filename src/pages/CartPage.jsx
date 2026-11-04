@@ -274,7 +274,11 @@ const CartPage = () => {
             if (addToast) addToast('Order generated! Opening WhatsApp...', 'success');
             
             // Clear items and redirect to shop
-            cartItems.forEach(item => removeFromCart(item.product || item._id));
+            if (typeof clearCart === 'function') {
+                clearCart();
+            } else {
+                cartItems.forEach(item => removeFromCart(item.product || item._id));
+            }
             setTimeout(() => navigate('/shop'), 2000);
         } catch (error) {
             console.error('WhatsApp Checkout Error:', error);
