@@ -15,6 +15,24 @@ import {
 } from '../data/groundedFaqKnowledge';
 import { trackWebsiteEvent } from '../utils/websiteAnalytics';
 
+const renderFormattedText = (text) => {
+    if (!text) return null;
+    const lines = text.split('\n');
+    return lines.map((line, lIdx) => {
+        const parts = line.split(/(\*\*[^*]+\*\*)/g);
+        return (
+            <span key={lIdx} className="block min-h-[1.25em]">
+                {parts.map((part, pIdx) => {
+                    if (part.startsWith('**') && part.endsWith('**')) {
+                        return <strong key={pIdx} className="font-bold text-gray-900">{part.slice(2, -2)}</strong>;
+                    }
+                    return part;
+                })}
+            </span>
+        );
+    });
+};
+
 const AIAssistantModal = () => {
     const navigate = useNavigate();
     const [isOpen, setIsOpen] = useState(false);
@@ -24,7 +42,7 @@ const AIAssistantModal = () => {
         {
             id: 'welcome',
             sender: 'assistant',
-            text: 'Namaste! I am your Hridved Herbal Guide. How may I support your wellness journey or answer your order questions today?',
+            text: '🙏 Namaste! Main aapka Hridved AI Vaidya Guide hoon.\n\nMain aapke swasthya, Ayurvedic formulations (Suvarnaprashan, Hair Oil, A2 Ghee, Kumkumadi), order tracking aur Diwali offers se jude har sawal ka javab dene ke liye yahan hoon. Aap mujhse koi bhi sawal poochh sakte hain!',
             time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
             status: 'grounded'
         }
@@ -54,7 +72,7 @@ const AIAssistantModal = () => {
         }
     }, [isOpen, messages, isTyping, showContactForm]);
 
-    const handleSendMessage = (textToSend) => {
+    const handleSendMessage = async (textToSend) => {
         const query = (textToSend || inputText).trim();
         if (!query) return;
 
@@ -65,14 +83,42 @@ const AIAssistantModal = () => {
             time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         };
 
-        setMessages(prev => [...prev, userMsg]);
+        const updatedMessages = [...messages, userMsg];
+        setMessages(updatedMessages);
         setInputText('');
         setIsTyping(true);
 
-        // Track query event (without sensitive health details)
+        // Track query event
         trackWebsiteEvent('assistant_query', { queryLength: query.length });
 
-        // Simulate thoughtful Ayurvedic knowledge retrieval
+        try {
+            // 1. First attempt to call the AI Vaidya Assistant API endpoint
+            const response = await api.post('/assistant/chat', {
+                message: query,
+                history: updatedMessages.slice(-6).map(m => ({ sender: m.sender, text: m.text }))
+            }, { timeout: 9000 });
+
+            if (response?.data?.success && response?.data?.message) {
+                const assistantMsg = {
+                    id: `assistant_${Date.now()}`,
+                    sender: 'assistant',
+                    text: response.data.message,
+                    status: response.data.status || 'grounded',
+                    isMedicalDisclaimer: response.data.isMedicalDisclaimer || false,
+                    canEscalate: true,
+                    category: response.data.category || selectedCategory || 'general',
+                    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                };
+
+                setMessages(prev => [...prev, assistantMsg]);
+                setIsTyping(false);
+                return;
+            }
+        } catch (apiError) {
+            console.warn('[AI Assistant] Backend API unavailable or timed out, utilizing local knowledge engine:', apiError?.message);
+        }
+
+        // 2. Client-side Grounded Ayurvedic Engine Fallback
         setTimeout(() => {
             const result = getGroundedAnswer(query);
 
@@ -83,13 +129,13 @@ const AIAssistantModal = () => {
                 status: result.status,
                 isMedicalDisclaimer: result.isMedicalDisclaimer,
                 canEscalate: result.canEscalate,
-                category: result.category,
+                category: result.category || selectedCategory || 'general',
                 time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
             };
 
             setMessages(prev => [...prev, assistantMsg]);
             setIsTyping(false);
-        }, 600);
+        }, 400);
     };
 
     const handleSelectCategory = (cat) => {
@@ -288,7 +334,9 @@ const AIAssistantModal = () => {
                                             </div>
                                         )}
 
-                                        <p className="whitespace-pre-line">{m.text}</p>
+                                        <div className="text-[12px] leading-relaxed space-y-1">
+                                            {renderFormattedText(m.text)}
+                                        </div>
 
                                         {/* Quick Questions Attached to message */}
                                         {m.quickQuestions && (
@@ -454,7 +502,7 @@ const AIAssistantModal = () => {
                                     onClick={() => handleWhatsAppEscalate()} 
                                     className="text-emerald-700 font-bold hover:underline flex items-center gap-1 cursor-pointer"
                                 >
-                                    <MessageCircle size={10} /> +91 89804 11390
+                                    <MessageCircle size={10} /> +91 79909 34095
                                 </button>
                             </div>
                         </div>
