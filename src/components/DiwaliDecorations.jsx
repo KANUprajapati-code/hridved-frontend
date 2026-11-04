@@ -66,7 +66,7 @@ const DiwaliDecorations = () => {
             >
                 <div className="hidden sm:block text-right pl-1">
                     <p className="text-[10px] font-black uppercase tracking-wider text-amber-300">Diwali Mahasale</p>
-                    <p className="text-[9px] text-amber-100/90 font-medium">Free Gift with Orders 🎁</p>
+                    <p className="text-[9px] text-amber-100/90 font-medium">Free Gift on Orders ₹999+ 🎁</p>
                 </div>
                 {/* SVG Animated Diya */}
                 <div className="relative w-7 h-7 flex-shrink-0">

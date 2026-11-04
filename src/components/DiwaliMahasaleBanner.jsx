@@ -91,7 +91,7 @@ const DiwaliMahasaleBanner = () => {
                         </h2>
 
                         <p className="text-sm sm:text-base text-emerald-100/90 max-w-xl font-normal leading-relaxed">
-                            This Diwali, gift your family authentic wellness. Get up to <span className="text-amber-300 font-bold">40% OFF</span> on clinically-backed ayurvedic formulations + <span className="text-amber-300 font-bold">Free Ayurvedic Gift</span> with every order!
+                            This Diwali, gift your family authentic wellness. Get up to <span className="text-amber-300 font-bold">40% OFF</span> on clinically-backed ayurvedic formulations + <span className="text-amber-300 font-bold">Free Ayurvedic Gift</span> on orders above ₹999!
                         </p>
 
                         {/* 4 Trust Festive Badges */}
@@ -173,7 +173,7 @@ const DiwaliMahasaleBanner = () => {
                                         <span className="font-mono text-base font-black text-emerald-300 tracking-wider">SHUBH100</span>
                                         <span className="bg-emerald-400 text-gray-950 text-[9px] font-black px-1.5 py-0.5 rounded uppercase">₹100 OFF</span>
                                     </div>
-                                    <p className="text-[11px] text-gray-300 mt-0.5">Flat ₹100 instant discount on orders above ₹499</p>
+                                    <p className="text-[11px] text-gray-300 mt-0.5">Flat ₹100 instant discount on orders above ₹999</p>
                                 </div>
                                 <button className="flex-shrink-0 flex items-center gap-1 bg-emerald-400/20 hover:bg-emerald-400/30 text-emerald-300 border border-emerald-400/40 px-3 py-1.5 rounded-lg text-xs font-bold transition">
                                     {copiedCode === 'SHUBH100' ? (
@@ -191,7 +191,7 @@ const DiwaliMahasaleBanner = () => {
                         {/* Special Perk Note */}
                         <div className="flex items-center gap-2 bg-amber-400/10 border border-amber-400/20 rounded-xl p-2.5 text-[11px] text-amber-200">
                             <Gift size={15} className="text-amber-400 flex-shrink-0 animate-bounce" />
-                            <span>Surprise Festive Ayurvedic Immunity Booster gift included with every order!</span>
+                            <span>Surprise Festive Ayurvedic Immunity Booster gift included with orders above ₹999!</span>
                         </div>
                     </div>
 
