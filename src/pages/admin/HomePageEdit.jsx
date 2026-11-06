@@ -18,6 +18,22 @@ const HomePageEdit = () => {
     const [trustBar, setTrustBar] = useState({ items: [] });
     const [uploading, setUploading] = useState(false);
     const [previewReelIndex, setPreviewReelIndex] = useState(null);
+    const [sectionVisibility, setSectionVisibility] = useState({
+        hero: true,
+        slogan: true,
+        trustBar: true,
+        diwaliBanner: true,
+        flagship: true,
+        categoriesSection: true,
+        bestsellersSection: true,
+        ritual: true,
+        videos: true,
+        purity: true,
+        consultation: true,
+        faqs: true,
+        newsletter: true
+    });
+    const [savingVisibility, setSavingVisibility] = useState(false);
 
     // Shipping editable settings inside Content editor
     const [shippingConfig, setShippingConfig] = useState({
@@ -27,6 +43,18 @@ const HomePageEdit = () => {
     });
     const [savingShipping, setSavingShipping] = useState(false);
     const [shippingSavedMsg, setShippingSavedMsg] = useState('');
+
+    const toggleSectionVisibility = async (sectionKey) => {
+        const nextVal = !sectionVisibility[sectionKey];
+        setSectionVisibility(prev => ({ ...prev, [sectionKey]: nextVal }));
+        try {
+            await api.put(`/content/${sectionKey}`, { isVisible: nextVal });
+        } catch (err) {
+            console.error('Failed to update section visibility:', err);
+            // Revert on error
+            setSectionVisibility(prev => ({ ...prev, [sectionKey]: !nextVal }));
+        }
+    };
 
     const saveShippingSettings = async (e) => {
         if (e) e.preventDefault();
@@ -68,6 +96,21 @@ const HomePageEdit = () => {
                 if (data.promise) setPromise(data.promise);
                 if (data.purity) setPurity(data.purity);
                 if (data.trustBar) setTrustBar(data.trustBar);
+                setSectionVisibility({
+                    hero: data.hero?.isVisible !== false,
+                    slogan: data.slogan?.isVisible !== false,
+                    trustBar: data.trustBar?.isVisible !== false,
+                    diwaliBanner: data.diwaliBanner?.isVisible !== false,
+                    flagship: data.flagship?.isVisible !== false,
+                    categoriesSection: data.categoriesSection?.isVisible !== false,
+                    bestsellersSection: data.bestsellersSection?.isVisible !== false,
+                    ritual: data.ritual?.isVisible !== false,
+                    videos: data.videos?.isVisible !== false,
+                    purity: data.purity?.isVisible !== false,
+                    consultation: data.consultation?.isVisible !== false,
+                    faqs: data.faqs?.isVisible !== false,
+                    newsletter: data.newsletter?.isVisible !== false,
+                });
                 if (data.videos) {
                     setVideos(data.videos);
                 } else {
@@ -499,6 +542,55 @@ const HomePageEdit = () => {
                 <ArrowLeft size={20} /> Back to Dashboard
             </Link>
             <h1 className="text-3xl font-bold font-serif text-primary mb-6">Edit Home Page Content</h1>
+
+            {/* Homepage Sections Visibility & CMS Controls */}
+            <div className="mb-8 bg-white rounded-2xl shadow-sm border border-secondary/30 p-6 overflow-hidden">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-gray-100">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-secondary/15 text-primary flex items-center justify-center font-bold">
+                            <Eye size={22} className="text-secondary" />
+                        </div>
+                        <div>
+                            <h2 className="text-lg font-bold text-gray-800">Homepage Sections Control (होमपेज सेक्शन दृश्यता)</h2>
+                            <p className="text-xs text-gray-500">Toggle section visibility on the live store in real time</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+                    {[
+                        { key: 'hero', label: '1. Hero Carousel Banner', desc: 'Main Vedic hero showcase' },
+                        { key: 'slogan', label: '2. Vedic Slogan Intro', desc: 'Ayurveda Simplified slogan' },
+                        { key: 'trustBar', label: '3. Brand Trust Bar', desc: 'Organic, GMP, Ayush badges' },
+                        { key: 'diwaliBanner', label: '4. Diwali Mahasale Banner', desc: 'Seasonal festive offer' },
+                        { key: 'flagship', label: '5. Flagship Product Spotlight', desc: 'Suvarnaprashan pack selector' },
+                        { key: 'categoriesSection', label: '6. Shop by Category Grid', desc: 'Circular categories showcase' },
+                        { key: 'bestsellersSection', label: '7. Bestsellers Collection', desc: 'ProSeries bestsellers grid' },
+                        { key: 'ritual', label: '8. 3-Step Ayurvedic Ritual', desc: 'How it works daily guide' },
+                        { key: 'videos', label: '9. Video Reviews & Reels', desc: 'Instagram reels & video player' },
+                        { key: 'purity', label: '10. Quality & Purity Standards', desc: 'At Hridved Wellness badges' },
+                        { key: 'consultation', label: '11. Doctor Consultation CTA', desc: 'Vaidya guidance & WhatsApp CTA' },
+                        { key: 'faqs', label: '12. FAQ Accordion', desc: 'Frequently asked questions' },
+                        { key: 'newsletter', label: '13. Wellness Circle Newsletter', desc: '10% discount email signup' },
+                    ].map((sec) => (
+                        <div key={sec.key} className="p-3 bg-gray-50/80 rounded-xl border border-gray-200 flex items-center justify-between gap-2 hover:bg-gray-100/80 transition">
+                            <div className="overflow-hidden">
+                                <p className="text-xs font-bold text-gray-800 truncate">{sec.label}</p>
+                                <p className="text-[10px] text-gray-500 truncate">{sec.desc}</p>
+                            </div>
+                            <label className="relative inline-flex items-center cursor-pointer shrink-0">
+                                <input
+                                    type="checkbox"
+                                    className="sr-only peer"
+                                    checked={sectionVisibility[sec.key] !== false}
+                                    onChange={() => toggleSectionVisibility(sec.key)}
+                                />
+                                <div className="w-9 h-5 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary"></div>
+                            </label>
+                        </div>
+                    ))}
+                </div>
+            </div>
 
             {/* Quick Shipping Rates & Free Delivery Manager */}
             <div className="mb-8 bg-white rounded-2xl shadow-sm border border-emerald-100 p-6 overflow-hidden">

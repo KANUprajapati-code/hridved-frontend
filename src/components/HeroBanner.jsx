@@ -246,3 +246,4 @@ const HeroBanner = ({ content }) => {
 };
 
 export default HeroBanner;
+

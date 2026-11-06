@@ -418,36 +418,40 @@ const HomePage = () => {
                     description="Hridved brings you pure Ayurvedic formulations handcrafted with wisdom from ancient texts, slow-infused for 72 hours in copper vessels, and tested against 140+ purity parameters."
                     includeOrganization={true}
                     includeSearchAction={true}
-                    faqs={faqs}
+                    faqs={displayFaqs}
                 />
 
                 <div className="min-h-screen bg-background">
 
                     {/* Section 1: Hero Banner (Redesigned in Prompt 03) */}
-                    <HeroBanner content={content} />
+                    {content?.hero?.isVisible !== false && (
+                        <HeroBanner content={content} />
+                    )}
 
                     {/* Slogan Intro Section - "Ayurveda. Simplified. Wellness That Works." format */}
-                    <section className="py-16 md:py-24 text-center max-w-4xl mx-auto px-4">
-                        <span className="text-secondary font-black uppercase tracking-[0.3em] text-[10px] md:text-xs mb-3 block">
-                            Authentic Formulations
-                        </span>
-                        <h2 className="text-3xl md:text-5xl font-sans font-black text-primary leading-tight">
-                            Ayurveda. Simplified.<br />
-                            <span className="text-secondary">Wellness That Works.</span>
-                        </h2>
+                    {content?.slogan?.isVisible !== false && (
+                        <section className="py-16 md:py-24 text-center max-w-4xl mx-auto px-4">
+                            <span className="text-secondary font-black uppercase tracking-[0.3em] text-[10px] md:text-xs mb-3 block">
+                                {content?.slogan?.badge || "Authentic Formulations"}
+                            </span>
+                            <h2 className="text-3xl md:text-5xl font-sans font-black text-primary leading-tight">
+                                {content?.slogan?.title || "Ayurveda. Simplified."}<br />
+                                <span className="text-secondary">{content?.slogan?.subtitle || "Wellness That Works."}</span>
+                            </h2>
 
-                        <div className="w-20 h-1.5 bg-primary mx-auto rounded-full mt-6 mb-8"></div>
+                            <div className="w-20 h-1.5 bg-primary mx-auto rounded-full mt-6 mb-8"></div>
 
-                        <p className="text-gray-500 font-light text-base md:text-lg leading-relaxed max-w-2xl mx-auto mb-10">
-                            Thoughtfully made Ayurvedic solutions to energize, restore, and support your natural balance. Handcrafted in small batches with pristine sourcing, ensuring the ultimate standard of wellness you deserve.
-                        </p>
+                            <p className="text-gray-500 font-light text-base md:text-lg leading-relaxed max-w-2xl mx-auto mb-10">
+                                {content?.slogan?.description || "Thoughtfully made Ayurvedic solutions to energize, restore, and support your natural balance. Handcrafted in small batches with pristine sourcing, ensuring the ultimate standard of wellness you deserve."}
+                            </p>
 
-                        <Link to="/shop">
-                            <button className="bg-primary text-white hover:bg-secondary hover:text-primary px-10 py-4 rounded-full font-black text-xs uppercase tracking-[0.2em] transition-all duration-300 shadow-xl hover:scale-105 active:scale-95 border-none">
-                                Shop Collection →
-                            </button>
-                        </Link>
-                    </section>
+                            <Link to={content?.slogan?.ctaLink || "/shop"}>
+                                <button className="bg-primary text-white hover:bg-secondary hover:text-primary px-10 py-4 rounded-full font-black text-xs uppercase tracking-[0.2em] transition-all duration-300 shadow-xl hover:scale-105 active:scale-95 border-none cursor-pointer">
+                                    {content?.slogan?.ctaText || "Shop Collection →"}
+                                </button>
+                            </Link>
+                        </section>
+                    )}
 
                     {/* Brand Trust Bar */}
                     <div className="bg-white border-y border-gray-100 overflow-hidden py-6 md:py-8 shadow-sm">
@@ -471,7 +475,9 @@ const HomePage = () => {
                     </div>
 
                     {/* Shubh Deepavali Ayurvedic Mahasale Showcase Section */}
-                    <DiwaliMahasaleBanner />
+                    {content?.diwaliBanner?.isVisible !== false && (
+                        <DiwaliMahasaleBanner />
+                    )}
 
                     {/* Flagship Hero Product Spotlight Section - High-Conversion CRO Showcase */}
                     <section className="py-16 md:py-24 bg-gradient-to-b from-[#FDFBF7] via-white to-[#FDFBF7] border-b border-gray-100 relative overflow-hidden">
@@ -791,9 +797,11 @@ const HomePage = () => {
                                             <ProductCard key={product._id} product={product} />
                                         ))
                                     ) : (
-                                        [...Array(4)].map((_, i) => (
-                                            <div key={i} className="h-110 bg-gray-50 border border-gray-100 rounded-[2rem] animate-pulse"></div>
-                                        ))
+                                        <div className="col-span-full py-12 text-center">
+                                            <Sparkles className="w-10 h-10 text-secondary mx-auto mb-3" />
+                                            <p className="text-gray-700 font-medium text-sm">New handcrafted Ayurvedic batches are being prepared.</p>
+                                            <Link to="/shop" className="text-xs uppercase tracking-widest text-primary font-bold hover:underline mt-2 inline-block">Browse all available formulations →</Link>
+                                        </div>
                                     )}
                                 </div>
 
@@ -1025,6 +1033,9 @@ const HomePage = () => {
                                             <p className="text-gray-200 text-sm sm:text-base font-body leading-relaxed mb-6">
                                                 Formulated strictly according to authentic Ayurvedic classical texts. Certified pure, lab-tested, and delivered straight from our Gujarat pharmacy to your doorstep.
                                             </p>
+                                            <p className="text-[11px] text-gray-300/80 mb-4 italic">
+                                                Non-diagnostic disclaimer: Consultations & guidance provided are for holistic wellness and educational purposes only, and are not intended to replace personalized clinical diagnosis or emergency medical care.
+                                            </p>
                                             <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 text-xs text-gray-300">
                                                 <span className="flex items-center gap-1.5"><ShieldCheck className="w-4 h-4 text-secondary" /> 100% Ayush Certified</span>
                                                 <span>•</span>
@@ -1067,7 +1078,7 @@ const HomePage = () => {
                                 </div>
 
                                 <div className="space-y-4">
-                                    {faqs.map((faq, idx) => {
+                                    {displayFaqs.map((faq, idx) => {
                                         const isOpen = openFaqIndex === idx;
                                         return (
                                             <div
