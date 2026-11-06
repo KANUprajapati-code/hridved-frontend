@@ -410,6 +410,8 @@ const HomePage = () => {
         }
     ];
 
+    const displayFaqs = (content?.faqs?.items?.length > 0) ? content.faqs.items : faqs;
+
     return (
         <>
             <AnimatedPage>
