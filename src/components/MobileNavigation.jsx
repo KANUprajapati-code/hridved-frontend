@@ -61,6 +61,7 @@ const MobileNavigation = () => {
                 initial={{ y: 80, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+                aria-label="Mobile Navigation"
                 className="max-w-md mx-auto h-16 pointer-events-auto flex items-center justify-around bg-white/80 backdrop-blur-xl border border-white/20 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.15)] luxury-shadow px-2"
             >
                 {navItems.map((item) => {
@@ -71,7 +72,9 @@ const MobileNavigation = () => {
                         <Link 
                             key={item.label} 
                             to={item.path} 
-                            className="relative flex flex-col items-center justify-center flex-1 h-full py-1 group outline-none"
+                            aria-label={item.label}
+                            aria-current={active ? 'page' : undefined}
+                            className="relative flex flex-col items-center justify-center flex-1 h-full py-1 group outline-none focus:outline-none focus:ring-1 focus:ring-primary/20 rounded-xl"
                         >
                             <motion.div 
                                 whileTap={{ scale: 0.9 }}

@@ -1,4 +1,3 @@
-
 import { Facebook, Instagram, Twitter, Mail, Phone, MapPin } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -15,9 +14,33 @@ const Footer = () => {
                         Bringing the wisdom of Ayurveda to the modern world.
                     </p>
                     <div className="flex space-x-3 pt-2">
-                        <a href="https://facebook.com" target="_blank" rel="noreferrer" className="w-10 h-10 bg-black/20 hover:bg-black/40 text-white rounded-xl flex items-center justify-center transition-colors"><Facebook size={18} /></a>
-                        <a href="https://instagram.com" target="_blank" rel="noreferrer" className="w-10 h-10 bg-black/20 hover:bg-black/40 text-white rounded-xl flex items-center justify-center transition-colors"><Instagram size={18} /></a>
-                        <a href="https://twitter.com" target="_blank" rel="noreferrer" className="w-10 h-10 bg-black/20 hover:bg-black/40 text-white rounded-xl flex items-center justify-center transition-colors"><Twitter size={18} /></a>
+                        <a 
+                            href="https://facebook.com" 
+                            target="_blank" 
+                            rel="noreferrer" 
+                            aria-label="HRIDVED on Facebook"
+                            className="w-10 h-10 bg-black/20 hover:bg-black/40 text-white rounded-xl flex items-center justify-center transition-colors focus:outline-none focus:ring-2 focus:ring-secondary"
+                        >
+                            <Facebook size={18} />
+                        </a>
+                        <a 
+                            href="https://instagram.com" 
+                            target="_blank" 
+                            rel="noreferrer" 
+                            aria-label="HRIDVED on Instagram"
+                            className="w-10 h-10 bg-black/20 hover:bg-black/40 text-white rounded-xl flex items-center justify-center transition-colors focus:outline-none focus:ring-2 focus:ring-secondary"
+                        >
+                            <Instagram size={18} />
+                        </a>
+                        <a 
+                            href="https://twitter.com" 
+                            target="_blank" 
+                            rel="noreferrer" 
+                            aria-label="HRIDVED on Twitter"
+                            className="w-10 h-10 bg-black/20 hover:bg-black/40 text-white rounded-xl flex items-center justify-center transition-colors focus:outline-none focus:ring-2 focus:ring-secondary"
+                        >
+                            <Twitter size={18} />
+                        </a>
                     </div>
                 </div>
 
@@ -27,24 +50,26 @@ const Footer = () => {
                         Quick Links
                         <span className="absolute bottom-[-8px] left-0 w-8 h-0.5 bg-secondary"></span>
                     </h3>
-                    <ul className="space-y-3 text-sm">
-                        <li className="flex items-center gap-2">
-                            <span className="w-1.5 h-1.5 bg-gray-500 rounded-full"></span>
-                            <Link to="/" className="text-gray-300 hover:text-secondary">Home</Link>
-                        </li>
-                        <li className="flex items-center gap-2">
-                            <span className="w-1.5 h-1.5 bg-gray-500 rounded-full"></span>
-                            <Link to="/shop" className="text-gray-300 hover:text-secondary">Shop</Link>
-                        </li>
-                        <li className="flex items-center gap-2">
-                            <span className="w-1.5 h-1.5 bg-gray-500 rounded-full"></span>
-                            <Link to="/blogs" className="text-gray-300 hover:text-secondary">Blog</Link>
-                        </li>
-                        <li className="flex items-center gap-2">
-                            <span className="w-1.5 h-1.5 bg-gray-500 rounded-full"></span>
-                            <Link to="/about" className="text-gray-300 hover:text-secondary">About us</Link>
-                        </li>
-                    </ul>
+                    <nav aria-label="Footer Quick Links">
+                        <ul className="space-y-3 text-sm">
+                            <li className="flex items-center gap-2">
+                                <span className="w-1.5 h-1.5 bg-gray-500 rounded-full" aria-hidden="true"></span>
+                                <Link to="/" className="text-gray-300 hover:text-secondary transition-colors">Home</Link>
+                            </li>
+                            <li className="flex items-center gap-2">
+                                <span className="w-1.5 h-1.5 bg-gray-500 rounded-full" aria-hidden="true"></span>
+                                <Link to="/shop" className="text-gray-300 hover:text-secondary transition-colors">Shop</Link>
+                            </li>
+                            <li className="flex items-center gap-2">
+                                <span className="w-1.5 h-1.5 bg-gray-500 rounded-full" aria-hidden="true"></span>
+                                <Link to="/blogs" className="text-gray-300 hover:text-secondary transition-colors">Blog</Link>
+                            </li>
+                            <li className="flex items-center gap-2">
+                                <span className="w-1.5 h-1.5 bg-gray-500 rounded-full" aria-hidden="true"></span>
+                                <Link to="/about" className="text-gray-300 hover:text-secondary transition-colors">About us</Link>
+                            </li>
+                        </ul>
+                    </nav>
                 </div>
 
                 {/* Support & Legal Links */}
@@ -53,36 +78,38 @@ const Footer = () => {
                         Support & Legal
                         <span className="absolute bottom-[-8px] left-0 w-8 h-0.5 bg-secondary"></span>
                     </h3>
-                    <ul className="space-y-3 text-sm">
-                        <li className="flex items-center gap-2">
-                            <span className="w-1.5 h-1.5 bg-gray-500 rounded-full"></span>
-                            <Link to="/contact" className="text-gray-300 hover:text-secondary">Contact Us</Link>
-                        </li>
-                        <li className="flex items-center gap-2">
-                            <span className="w-1.5 h-1.5 bg-gray-500 rounded-full"></span>
-                            <Link to="/privacy" className="text-gray-300 hover:text-secondary">Privacy Policy</Link>
-                        </li>
-                        <li className="flex items-center gap-2">
-                            <span className="w-1.5 h-1.5 bg-gray-500 rounded-full"></span>
-                            <Link to="/terms" className="text-gray-300 hover:text-secondary">Terms & Conditions</Link>
-                        </li>
-                        <li className="flex items-center gap-2">
-                            <span className="w-1.5 h-1.5 bg-gray-500 rounded-full"></span>
-                            <Link to="/return-policy" className="text-gray-300 hover:text-secondary">Returns & Refunds</Link>
-                        </li>
-                        <li className="flex items-center gap-2">
-                            <span className="w-1.5 h-1.5 bg-gray-500 rounded-full"></span>
-                            <Link to="/shipping-policy" className="text-gray-300 hover:text-secondary">Shipping Policy</Link>
-                        </li>
-                        <li className="flex items-center gap-2">
-                            <span className="w-1.5 h-1.5 bg-gray-500 rounded-full"></span>
-                            <Link to="/track-order" className="text-gray-300 hover:text-secondary">Track Order</Link>
-                        </li>
-                        <li className="flex items-center gap-2">
-                            <span className="w-1.5 h-1.5 bg-gray-500 rounded-full"></span>
-                            <Link to="/opt-out" className="text-gray-300 hover:text-secondary">Communication Preferences</Link>
-                        </li>
-                    </ul>
+                    <nav aria-label="Footer Support and Legal Links">
+                        <ul className="space-y-3 text-sm">
+                            <li className="flex items-center gap-2">
+                                <span className="w-1.5 h-1.5 bg-gray-500 rounded-full" aria-hidden="true"></span>
+                                <Link to="/contact" className="text-gray-300 hover:text-secondary transition-colors">Contact Us</Link>
+                            </li>
+                            <li className="flex items-center gap-2">
+                                <span className="w-1.5 h-1.5 bg-gray-500 rounded-full" aria-hidden="true"></span>
+                                <Link to="/privacy" className="text-gray-300 hover:text-secondary transition-colors">Privacy Policy</Link>
+                            </li>
+                            <li className="flex items-center gap-2">
+                                <span className="w-1.5 h-1.5 bg-gray-500 rounded-full" aria-hidden="true"></span>
+                                <Link to="/terms" className="text-gray-300 hover:text-secondary transition-colors">Terms & Conditions</Link>
+                            </li>
+                            <li className="flex items-center gap-2">
+                                <span className="w-1.5 h-1.5 bg-gray-500 rounded-full" aria-hidden="true"></span>
+                                <Link to="/return-policy" className="text-gray-300 hover:text-secondary transition-colors">Returns & Refunds</Link>
+                            </li>
+                            <li className="flex items-center gap-2">
+                                <span className="w-1.5 h-1.5 bg-gray-500 rounded-full" aria-hidden="true"></span>
+                                <Link to="/shipping-policy" className="text-gray-300 hover:text-secondary transition-colors">Shipping Policy</Link>
+                            </li>
+                            <li className="flex items-center gap-2">
+                                <span className="w-1.5 h-1.5 bg-gray-500 rounded-full" aria-hidden="true"></span>
+                                <Link to="/track-order" className="text-gray-300 hover:text-secondary transition-colors">Track Order</Link>
+                            </li>
+                            <li className="flex items-center gap-2">
+                                <span className="w-1.5 h-1.5 bg-gray-500 rounded-full" aria-hidden="true"></span>
+                                <Link to="/opt-out" className="text-gray-300 hover:text-secondary transition-colors">Communication Preferences</Link>
+                            </li>
+                        </ul>
+                    </nav>
                 </div>
 
                 {/* Get in Touch Section */}
@@ -94,34 +121,47 @@ const Footer = () => {
                     
                     <div className="space-y-4">
                         <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-black/25 rounded-xl flex items-center justify-center text-secondary flex-shrink-0">
+                            <div className="w-10 h-10 bg-black/25 rounded-xl flex items-center justify-center text-secondary flex-shrink-0" aria-hidden="true">
                                 <Phone size={18} />
                             </div>
                             <div>
                                 <p className="text-[9px] text-gray-400 uppercase font-bold tracking-wider leading-none mb-1">Phone & WhatsApp</p>
-                                <a 
-                                    href="https://wa.me/918980411390" 
-                                    target="_blank" 
-                                    rel="noopener noreferrer" 
-                                    className="text-xs font-bold text-gray-200 hover:text-secondary transition-colors"
-                                >
-                                    +91 89804 11390
-                                </a>
+                                <div className="flex flex-col gap-0.5">
+                                    <a 
+                                        href="https://wa.me/918980411390" 
+                                        target="_blank" 
+                                        rel="noopener noreferrer" 
+                                        className="text-xs font-bold text-gray-200 hover:text-secondary transition-colors"
+                                    >
+                                        +91 89804 11390
+                                    </a>
+                                    <a 
+                                        href="tel:+917990934095" 
+                                        className="text-xs font-medium text-gray-300 hover:text-secondary transition-colors"
+                                    >
+                                        +91 79909 34095
+                                    </a>
+                                </div>
                             </div>
                         </div>
 
                         <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-black/25 rounded-xl flex items-center justify-center text-secondary flex-shrink-0">
+                            <div className="w-10 h-10 bg-black/25 rounded-xl flex items-center justify-center text-secondary flex-shrink-0" aria-hidden="true">
                                 <Mail size={18} />
                             </div>
                             <div>
                                 <p className="text-[9px] text-gray-400 uppercase font-bold tracking-wider leading-none mb-1">Email</p>
-                                <p className="text-xs font-bold text-gray-200">hridved.customercare@gmail.com</p>
+                                <a 
+                                    href="mailto:hridved.customercare@gmail.com"
+                                    className="text-xs font-bold text-gray-200 hover:text-secondary transition-colors"
+                                >
+                                    hridved.customercare@gmail.com
+                                </a>
                             </div>
                         </div>
 
                         <div className="flex items-start gap-3">
-                            <div className="w-10 h-10 bg-black/25 rounded-xl flex items-center justify-center text-secondary flex-shrink-0">
+                            <div className="w-10 h-10 bg-black/25 rounded-xl flex items-center justify-center text-secondary flex-shrink-0" aria-hidden="true">
                                 <MapPin size={18} />
                             </div>
                             <div>

@@ -43,6 +43,19 @@ const Header = () => {
         return () => window.removeEventListener('scroll', handleScroll);
     }, [lastScrollY]);
 
+    // Keyboard accessibility for ESC key to close search, drawer, and user menu
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (e.key === 'Escape') {
+                if (isSearchOpen) setIsSearchOpen(false);
+                if (isOpen) setIsOpen(false);
+                if (showUserMenu) setShowUserMenu(false);
+            }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [isSearchOpen, isOpen, showUserMenu]);
+
     const handleSearch = (e) => {
         e.preventDefault();
         const trimmed = keyword.trim();
@@ -122,9 +135,10 @@ const Header = () => {
                                         className="rounded-full px-4 py-1.5 text-sm focus:outline-none w-full shadow-sm bg-white/20 text-white placeholder-gray-300 backdrop-blur-sm border border-white/30"
                                         value={keyword}
                                         onChange={(e) => setKeyword(e.target.value)}
+                                        onKeyDown={(e) => { if (e.key === 'Escape') setIsSearchOpen(false); }}
                                         onBlur={() => !keyword && setIsSearchOpen(false)}
                                     />
-                                    <button type="submit" className="absolute right-3 top-1/2 -translate-y-1/2 hover:text-secondary text-white">
+                                    <button type="submit" aria-label="Submit search" className="absolute right-3 top-1/2 -translate-y-1/2 hover:text-secondary text-white">
                                         <Search size={16} />
                                     </button>
                                 </motion.form>
@@ -136,6 +150,8 @@ const Header = () => {
                                 whileHover={{ scale: 1.1 }}
                                 whileTap={{ scale: 0.9 }}
                                 onClick={() => setIsSearchOpen(true)}
+                                aria-label="Open search bar"
+                                aria-expanded={isSearchOpen}
                                 className="p-2 rounded-full hover:bg-black/5 transition text-white"
                             >
                                 <Search size={22} />
@@ -263,6 +279,8 @@ const Header = () => {
                     <div className="lg:hidden">
                         <motion.button
                             onClick={() => setIsOpen(true)}
+                            aria-label="Open navigation menu"
+                            aria-expanded={isOpen}
                             className="p-2 rounded-lg text-white"
                             whileTap={{ scale: 0.9 }}
                         >
@@ -305,6 +323,7 @@ const Header = () => {
                                 </div>
                                 <button 
                                     onClick={() => setIsOpen(false)} 
+                                    aria-label="Close navigation menu"
                                     className="p-1.5 rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors"
                                 >
                                     <X size={20} />
