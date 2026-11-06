@@ -17,6 +17,7 @@ import SEO from '../components/SEO';
 import ProductCard from '../components/ProductCard';
 import Badge from '../components/Badge';
 import DiwaliMahasaleBanner from '../components/DiwaliMahasaleBanner';
+import HeroBanner from '../components/HeroBanner';
 import { useCart } from '../context/CartContext';
 import { useFlyingElement } from '../hooks/useFlyingElement';
 import { useAuth } from '../context/AuthContext';
@@ -53,9 +54,7 @@ const HomePage = () => {
         } catch { return []; }
     });
     const [isLoadingCategories, setIsLoadingCategories] = useState(false);
-    const [isHeroLoaded, setIsHeroLoaded] = useState(true);
-    const [activeSlide, setActiveSlide] = useState(0);
-    const [activeVideoUrl, setActiveVideoUrl] = useState(null);
+        const [activeVideoUrl, setActiveVideoUrl] = useState(null);
     const [activeReelIndex, setActiveReelIndex] = useState(0);
     const [openFaqIndex, setOpenFaqIndex] = useState(null);
     const [newsletterEmail, setNewsletterEmail] = useState('');
@@ -101,47 +100,6 @@ const HomePage = () => {
         if (url.includes('/embed')) return url;
         return url;
     };
-
-    const defaultSlides = [
-        {
-            badge: "FLAGSHIP BAL RASAYANA",
-            title: content?.hero?.title || "Hridved Suvarnaprashan Drops 15ml",
-            subtitle: content?.hero?.subtitle || "Classical 24K Swarna Bhasma, Medhya Brahmi & Cow Ghee formulation. Daily immunity, memory & intellect booster for children (0-16 yrs).",
-            image: getImageUrl(content?.hero?.image) || "https://res.cloudinary.com/dzyyckpal/image/upload/v1786369409/hridved_uploads/766194416_17900478183546574_2292074687249109710_n-1786369409386.jpg",
-            ctaText: content?.hero?.ctaText || "Shop Suvarnaprashan Drop",
-            link: content?.hero?.ctaLink || "/product/69999d3f601a51e1407f45cc"
-        },
-        ...(content?.hero2?.image ? [{
-            badge: "HAIR CARE RITUAL",
-            title: content?.hero2?.title || "Unlock the Secret to Healthier Hair",
-            subtitle: content?.hero2?.subtitle || "A luxurious Ayurvedic hair oil infused with Rosemary & Saffron for deep nourishment.",
-            image: getImageUrl(content?.hero2?.image) || "",
-            ctaText: content?.hero2?.ctaText || "Try Hridved",
-            link: content?.hero2?.ctaLink || "/shop"
-        }] : []),
-        {
-            badge: "100% PURE & CERTIFIED",
-            title: content?.hero3?.title || "Handcrafted in Small Batches.",
-            subtitle: content?.hero3?.subtitle || "Slow-cooked for 72 hours in traditional vessels. Lab-tested against 140+ safety parameters.",
-            image: getImageUrl(content?.hero3?.image) || "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=1200&auto=format",
-            ctaText: content?.hero3?.ctaText || "Our Purity Story",
-            link: content?.hero3?.ctaLink || "/about"
-        }
-    ];
-
-    const slides = defaultSlides.filter(s => !!s.image).length > 0
-        ? defaultSlides.filter(s => !!s.image)
-        : defaultSlides;
-
-    const currentSlide = slides[activeSlide % slides.length] || slides[0];
-
-    useEffect(() => {
-        if (!slides.length) return;
-        const slideInterval = setInterval(() => {
-            setActiveSlide(prev => (prev + 1) % slides.length);
-        }, 7000);
-        return () => clearInterval(slideInterval);
-    }, [slides.length]);
 
     // Fast Stale-While-Revalidate caching: 0ms load from localStorage + background update from MongoDB
     useEffect(() => {
@@ -208,15 +166,7 @@ const HomePage = () => {
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, [activeVideoUrl, activeReelIndex]);
 
-    const handlePrevSlide = () => {
-        setActiveSlide(prev => (prev - 1 + slides.length) % slides.length);
-    };
-
-    const handleNextSlide = () => {
-        setActiveSlide(prev => (prev + 1) % slides.length);
-    };
-
-    const reelReviews = content?.videos?.items?.length > 0 ? content.videos.items : [
+        const reelReviews = content?.videos?.items?.length > 0 ? content.videos.items : [
         {
             title: "GUT & DIGESTION WELLNESS",
             image: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=600&auto=format",
@@ -473,113 +423,8 @@ const HomePage = () => {
 
                 <div className="min-h-screen bg-background">
 
-                    {/* Hero Section Carousel Slider - Contained with preserved aspect ratio & split luxury layout */}
-                    <section className="container mx-auto px-4 pt-6 pb-12 sm:pb-16 relative">
-                        <div className="relative w-full min-h-[560px] md:h-[600px] lg:h-[640px] rounded-[2rem] sm:rounded-[2.5rem] overflow-hidden shadow-2xl bg-gradient-to-br from-[#053807]/92 via-[#0b4311]/88 to-[#032405]/92 backdrop-blur-xl border border-emerald-500/20 flex items-center">
-
-                            {/* Ambient Blurred Background (Matches Current Slide Colors with Botanical Glow) */}
-                            <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                                <img
-                                    src={currentSlide.image}
-                                    alt=""
-                                    className="w-full h-full object-cover blur-3xl opacity-30 scale-125 transform transition-all duration-1000 mix-blend-overlay"
-                                />
-                                {/* Transparent Green Botanical Gradient Overlay */}
-                                <div className="absolute inset-0 bg-gradient-to-r from-[#053807]/95 via-[#053807]/75 to-[#053807]/40 md:to-transparent"></div>
-                                {/* Golden & Emerald Glow Highlights */}
-                                <div className="absolute -right-24 top-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-secondary/15 rounded-full blur-[120px] pointer-events-none"></div>
-                                <div className="absolute -left-10 -bottom-20 w-[400px] h-[400px] bg-emerald-500/15 rounded-full blur-[100px] pointer-events-none"></div>
-                            </div>
-
-                            {/* Slide Content */}
-                            <div
-                                key={activeSlide}
-                                className="relative z-10 w-full h-full flex flex-col md:flex-row items-center justify-between px-6 sm:px-10 md:px-12 lg:px-16 py-8 sm:py-10 md:py-8 gap-6 md:gap-10 transition-opacity duration-500 ease-out"
-                            >
-                                {/* Left Column: Typography & Action */}
-                                <div className="w-full md:w-1/2 lg:w-7/12 flex flex-col justify-center text-white z-20 order-2 md:order-1 text-center md:text-left items-center md:items-start">
-                                    {/* Pill Badge */}
-                                    <div className="mb-3 sm:mb-4">
-                                        <span className="inline-flex items-center gap-1.5 bg-secondary text-primary font-black px-4 py-1.5 rounded-full text-[11px] sm:text-xs uppercase tracking-[0.2em] shadow-md border border-secondary/30">
-                                            <Sparkles size={13} className="text-primary animate-pulse" />
-                                            {currentSlide.badge}
-                                        </span>
-                                    </div>
-
-                                    {/* Title */}
-                                    <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-sans font-black text-white mb-3 sm:mb-4 leading-[1.18] drop-shadow-lg tracking-tight">
-                                        {currentSlide.title}
-                                    </h1>
-
-                                    {/* Subtitle */}
-                                    <p className="text-xs sm:text-sm md:text-base text-gray-200/90 font-light leading-relaxed max-w-lg mb-6 sm:mb-8">
-                                        {currentSlide.subtitle}
-                                    </p>
-
-                                    {/* CTA Button and Trust Notes */}
-                                    <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 sm:gap-6">
-                                        <Link to={currentSlide.link}>
-                                            <button className="inline-flex items-center gap-2.5 bg-secondary text-primary hover:bg-white hover:text-primary px-8 sm:px-10 py-3.5 sm:py-4 rounded-full font-black text-xs uppercase tracking-[0.2em] transition-all duration-300 shadow-xl hover:scale-105 active:scale-95 group border-none cursor-pointer">
-                                                <span>{currentSlide.ctaText || "Shop Collection"}</span>
-                                                <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
-                                            </button>
-                                        </Link>
-
-                                        <div className="hidden sm:flex items-center gap-3 text-xs text-gray-300/80 font-medium border-l border-white/20 pl-4 py-1">
-                                            <span className="flex items-center gap-1"><ShieldCheck size={14} className="text-secondary" /> 100% Pure</span>
-                                            <span>•</span>
-                                            <span className="flex items-center gap-1"><Leaf size={14} className="text-secondary" /> Ayurvedic</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Right Column: High Quality Product Showcase (Aspect Ratio 100% Preserved) */}
-                                <div className="w-full md:w-1/2 lg:w-5/12 h-[260px] sm:h-[340px] md:h-full flex items-center justify-center md:justify-end relative z-10 order-1 md:order-2">
-                                    <div className="relative h-full w-full flex items-center justify-center md:justify-end p-2 sm:p-4">
-                                        <img
-                                            src={currentSlide.image}
-                                            alt={currentSlide.title || "Hridved Product"}
-                                            className="max-h-[240px] sm:max-h-[320px] md:max-h-[460px] lg:max-h-[500px] w-auto max-w-full object-contain rounded-2xl shadow-2xl drop-shadow-[0_20px_40px_rgba(0,0,0,0.7)] border border-white/10 hover:scale-[1.02] transition-transform duration-500"
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Slider Navigation Arrows - styled top right with sleek green glassmorphism */}
-                            <div className="absolute top-5 right-5 sm:top-6 sm:right-6 z-30 flex gap-2">
-                                <button
-                                    onClick={handlePrevSlide}
-                                    aria-label="Previous slide"
-                                    className="w-10 h-10 bg-primary/60 hover:bg-primary text-white backdrop-blur-md rounded-full flex items-center justify-center shadow-lg border border-white/20 transition-all active:scale-90 hover:scale-105 cursor-pointer"
-                                >
-                                    <ChevronLeft size={20} />
-                                </button>
-                                <button
-                                    onClick={handleNextSlide}
-                                    aria-label="Next slide"
-                                    className="w-10 h-10 bg-primary/60 hover:bg-primary text-white backdrop-blur-md rounded-full flex items-center justify-center shadow-lg border border-white/20 transition-all active:scale-90 hover:scale-105 cursor-pointer"
-                                >
-                                    <ChevronRight size={20} />
-                                </button>
-                            </div>
-
-                            {/* Dot Indicators - bottom centered with green glassmorphism */}
-                            <div className="absolute bottom-5 sm:bottom-6 left-1/2 -translate-x-1/2 z-30 flex items-center gap-2 bg-primary/60 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/15">
-                                {slides.map((_, index) => (
-                                    <button
-                                        key={index}
-                                        onClick={() => setActiveSlide(index)}
-                                        aria-label={`Go to slide ${index + 1}`}
-                                        className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
-                                            activeSlide === index 
-                                                ? 'w-7 bg-secondary shadow-sm shadow-secondary/50' 
-                                                : 'w-2 bg-white/40 hover:bg-white/70'
-                                        }`}
-                                    />
-                                ))}
-                            </div>
-                        </div>
-                    </section>
+                    {/* Section 1: Hero Banner (Redesigned in Prompt 03) */}
+                    <HeroBanner content={content} />
 
                     {/* Slogan Intro Section - "Ayurveda. Simplified. Wellness That Works." format */}
                     <section className="py-16 md:py-24 text-center max-w-4xl mx-auto px-4">
