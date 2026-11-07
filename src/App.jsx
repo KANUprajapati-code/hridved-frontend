@@ -36,6 +36,7 @@ const lazyWithRetry = (importFn) =>
 
 // Lazy loaded secondary components
 const ShopPage = lazyWithRetry(() => import('./pages/ShopPage'));
+const CategoryLandingPage = lazyWithRetry(() => import('./pages/CategoryLandingPage'));
 const ProductPage = lazyWithRetry(() => import('./pages/ProductPage'));
 const CartPage = lazyWithRetry(() => import('./pages/CartPage'));
 const WishlistPage = lazyWithRetry(() => import('./pages/WishlistPage'));
@@ -113,6 +114,10 @@ function App() {
                                                         <Route element={<MainLayout />}>
                                                             <Route path="/" element={<HomePage />} />
                                                             <Route path="/shop" element={<ShopPage />} />
+                                                        <Route path="/category/:slug" element={<CategoryLandingPage />} />
+                                                        <Route path="/concern/:slug" element={<CategoryLandingPage />} />
+                                                        <Route path="/shop/category/:slug" element={<CategoryLandingPage />} />
+                                                        <Route path="/shop/concern/:slug" element={<CategoryLandingPage />} />
                                                             <Route path="/product/:id" element={<ProductPage />} />
                                                             <Route path="/cart" element={<CartPage />} />
                                                             <Route path="/wishlist" element={<WishlistPage />} />

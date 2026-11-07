@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ShoppingCart, User, Search, Menu, X, Home, ShoppingBag, FileText, Compass, Info, Phone, Shield, LogOut, MapPin, Facebook, Instagram, Twitter, Mail, Heart } from 'lucide-react';
+import { ShoppingCart, User, Search, Menu, X, Home, ShoppingBag, FileText, Compass, Info, Phone, Shield, LogOut, MapPin, Facebook, Instagram, Twitter, Mail, Heart, ChevronDown, ArrowRight, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
@@ -109,7 +109,89 @@ const Header = () => {
                 {/* Desktop Nav */}
                 <nav className="hidden lg:flex space-x-6 xl:space-x-8 items-center font-medium mx-4">
                     <Link to="/" className="hover:text-secondary transition text-gray-100">Home</Link>
-                    <Link to="/shop" className="hover:text-secondary transition text-gray-100">Shop</Link>
+                    {/* Shop Mega Menu Dropdown */}
+                    <div className="relative group py-2">
+                        <Link 
+                            to="/shop" 
+                            className="inline-flex items-center gap-1 hover:text-secondary transition text-gray-100 focus:outline-none focus:text-secondary font-medium"
+                            aria-haspopup="true"
+                        >
+                            <span>Shop</span>
+                            <ChevronDown size={14} className="group-hover:rotate-180 transition-transform duration-200 text-gray-300" />
+                        </Link>
+
+                        {/* Dropdown Menu Container */}
+                        <div className="absolute top-full left-0 pt-2 w-[440px] opacity-0 invisible group-hover:opacity-100 group-hover:visible group-focus-within:opacity-100 group-focus-within:visible transition-all duration-200 z-50 pointer-events-none group-hover:pointer-events-auto group-focus-within:pointer-events-auto">
+                            <div className="bg-white text-gray-900 rounded-2xl shadow-2xl border border-gray-100 p-5 overflow-hidden">
+                                <div className="flex items-center justify-between pb-3 mb-3 border-b border-gray-100">
+                                    <span className="text-[10px] font-black uppercase tracking-widest text-secondary flex items-center gap-1">
+                                        <Sparkles size={11} className="text-secondary" />
+                                        Ayurvedic Apothecary
+                                    </span>
+                                    <Link to="/shop" className="text-xs font-bold text-primary hover:text-secondary flex items-center gap-1">
+                                        <span>Shop All Formulations</span>
+                                        <ArrowRight size={12} />
+                                    </Link>
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-4">
+                                    {/* Column 1: By Category */}
+                                    <div>
+                                        <p className="text-[10px] font-black uppercase tracking-wider text-gray-400 mb-2">By Category</p>
+                                        <ul className="space-y-1.5 text-xs">
+                                            <li>
+                                                <Link to="/category/child-care" className="block py-1.5 px-2 rounded-lg hover:bg-gray-50 text-gray-700 hover:text-primary font-medium transition-colors">
+                                                    👶 Child Care
+                                                </Link>
+                                            </li>
+                                            <li>
+                                                <Link to="/category/skin-care" className="block py-1.5 px-2 rounded-lg hover:bg-gray-50 text-gray-700 hover:text-primary font-medium transition-colors">
+                                                    ✨ Skin Care
+                                                </Link>
+                                            </li>
+                                            <li>
+                                                <Link to="/category/hair-care" className="block py-1.5 px-2 rounded-lg hover:bg-gray-50 text-gray-700 hover:text-primary font-medium transition-colors">
+                                                    🌿 Hair Care
+                                                </Link>
+                                            </li>
+                                            <li>
+                                                <Link to="/category/immunity" className="block py-1.5 px-2 rounded-lg hover:bg-gray-50 text-gray-700 hover:text-primary font-medium transition-colors">
+                                                    🛡️ Immunity & Rasayana
+                                                </Link>
+                                            </li>
+                                        </ul>
+                                    </div>
+
+                                    {/* Column 2: By Concern */}
+                                    <div className="border-l border-gray-100 pl-4">
+                                        <p className="text-[10px] font-black uppercase tracking-wider text-gray-400 mb-2">Shop by Concern</p>
+                                        <ul className="space-y-1.5 text-xs">
+                                            <li>
+                                                <Link to="/concern/bal-rasayana" className="block py-1.5 px-2 rounded-lg hover:bg-gray-50 text-gray-700 hover:text-primary font-medium transition-colors">
+                                                    Bal Rasayana (Immunity)
+                                                </Link>
+                                            </li>
+                                            <li>
+                                                <Link to="/concern/keshya-care" className="block py-1.5 px-2 rounded-lg hover:bg-gray-50 text-gray-700 hover:text-primary font-medium transition-colors">
+                                                    Keshya Care (Hair Fall)
+                                                </Link>
+                                            </li>
+                                            <li>
+                                                <Link to="/concern/varnya-care" className="block py-1.5 px-2 rounded-lg hover:bg-gray-50 text-gray-700 hover:text-primary font-medium transition-colors">
+                                                    Varnya Care (Skin Radiance)
+                                                </Link>
+                                            </li>
+                                            <li>
+                                                <Link to="/concern/sandhi-care" className="block py-1.5 px-2 rounded-lg hover:bg-gray-50 text-gray-700 hover:text-primary font-medium transition-colors">
+                                                    Sandhi Care (Joint Comfort)
+                                                </Link>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <Link to="/blogs" className="hover:text-secondary transition text-gray-100">Blog</Link>
                     <Link to="/about" className="hover:text-secondary transition text-gray-100">About us</Link>
                     <Link to="/contact" className="hover:text-secondary transition text-gray-100">Contact</Link>
@@ -429,8 +511,42 @@ const Header = () => {
                                         className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-50 text-gray-700 hover:text-primary transition-all text-xs font-bold group"
                                     >
                                         <ShoppingBag size={16} className="text-gray-400 group-hover:text-primary transition-colors" />
-                                        Shop Products
+                                        Shop All Products
                                     </Link>
+
+                                    {/* Mobile Categories Submenu */}
+                                    <div className="pl-6 py-1 space-y-1 border-l-2 border-primary/10 ml-5 my-1">
+                                        <p className="text-[9px] uppercase font-bold text-gray-400 mb-1">Categories</p>
+                                        <Link to="/category/child-care" onClick={() => setIsOpen(false)} className="block py-1 text-xs text-gray-600 hover:text-primary">
+                                            • Child Care
+                                        </Link>
+                                        <Link to="/category/skin-care" onClick={() => setIsOpen(false)} className="block py-1 text-xs text-gray-600 hover:text-primary">
+                                            • Skin Care
+                                        </Link>
+                                        <Link to="/category/hair-care" onClick={() => setIsOpen(false)} className="block py-1 text-xs text-gray-600 hover:text-primary">
+                                            • Hair Care
+                                        </Link>
+                                        <Link to="/category/immunity" onClick={() => setIsOpen(false)} className="block py-1 text-xs text-gray-600 hover:text-primary">
+                                            • Immunity
+                                        </Link>
+                                    </div>
+
+                                    {/* Mobile Concerns Submenu */}
+                                    <div className="pl-6 py-1 space-y-1 border-l-2 border-secondary/20 ml-5 my-1">
+                                        <p className="text-[9px] uppercase font-bold text-secondary mb-1">Shop by Concern</p>
+                                        <Link to="/concern/bal-rasayana" onClick={() => setIsOpen(false)} className="block py-1 text-xs text-gray-600 hover:text-primary">
+                                            • Bal Rasayana (Child Immunity)
+                                        </Link>
+                                        <Link to="/concern/keshya-care" onClick={() => setIsOpen(false)} className="block py-1 text-xs text-gray-600 hover:text-primary">
+                                            • Keshya Care (Hair Fall)
+                                        </Link>
+                                        <Link to="/concern/varnya-care" onClick={() => setIsOpen(false)} className="block py-1 text-xs text-gray-600 hover:text-primary">
+                                            • Varnya Care (Skin Glow)
+                                        </Link>
+                                        <Link to="/concern/sandhi-care" onClick={() => setIsOpen(false)} className="block py-1 text-xs text-gray-600 hover:text-primary">
+                                            • Sandhi Care (Joint Comfort)
+                                        </Link>
+                                    </div>
                                     <Link 
                                         to="/blogs" 
                                         onClick={() => setIsOpen(false)}

@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useLocation, Link, useNavigate } from 'react-router-dom';
 import api from '../utils/api';
 import ProductCard from '../components/ProductCard';
+import Breadcrumbs from '../components/Breadcrumbs';
 import QuickViewModal from '../components/QuickViewModal';
 import { Filter, ChevronDown, ArrowRight, Star, X, Search, PackageOpen, Sparkles, Building2, Check } from 'lucide-react';
 import AnimatedPage from '../components/AnimatedPage';
@@ -58,6 +59,14 @@ const ShopPage = () => {
 
     const [isRefetching, setIsRefetching] = useState(false);
     const [selectedCategories, setSelectedCategories] = useState([]);
+    const [selectedConcerns, setSelectedConcerns] = useState([]);
+    const [concernsList, setConcernsList] = useState([
+        { name: 'Bal Rasayana (Child Immunity & Growth)', slug: 'bal-rasayana' },
+        { name: 'Keshya Care (Hair Fall & Scalp Health)', slug: 'keshya-care' },
+        { name: 'Varnya Care (Skin Radiance & Clarity)', slug: 'varnya-care' },
+        { name: 'Rasayana (Daily Vitality & Ojas)', slug: 'rasayana-vitality' },
+        { name: 'Sandhi Care (Joint & Muscle Comfort)', slug: 'sandhi-care' }
+    ]);
     const [minPrice, setMinPrice] = useState(0);
     const [maxPrice, setMaxPrice] = useState(10000);
     const [minRating, setMinRating] = useState(0);
@@ -83,6 +92,7 @@ const ShopPage = () => {
     // Accordion states
     const [openSections, setOpenSections] = useState({
         categories: true,
+        concerns: true,
         price: true,
         ratings: true,
         availability: true
@@ -101,6 +111,7 @@ const ShopPage = () => {
     // Initialize state from URL
     useEffect(() => {
         const cat = searchParams.get('category');
+        const con = searchParams.get('concern');
         const minP = searchParams.get('minPrice');
         const maxP = searchParams.get('maxPrice');
         const rat = searchParams.get('rating');
@@ -110,6 +121,10 @@ const ShopPage = () => {
 
         if (cat) setSelectedCategories(cat.split(','));
         else setSelectedCategories([]);
+        setSelectedConcerns([]);
+
+        if (con) setSelectedConcerns(con.split(','));
+        else setSelectedConcerns([]);
 
         if (minP && !isNaN(minP)) setMinPrice(Number(minP));
         else setMinPrice(0);
@@ -173,6 +188,13 @@ const ShopPage = () => {
 
         const fetchInitialData = async () => {
             try {
+                // Fetch concerns
+                api.get('/concerns').then(({ data }) => {
+                    if (!isCancelled && data && Array.isArray(data) && data.length > 0) {
+                        setConcernsList(data);
+                    }
+                }).catch(() => {});
+
                 // Fetch categories
                 api.get('/categories').then(({ data }) => {
                     if (!isCancelled && data && Array.isArray(data)) {
@@ -284,6 +306,13 @@ const ShopPage = () => {
         updateFilters({ category: newCategories });
     };
 
+    const handleConcernToggle = (concernName) => {
+        const newConcerns = selectedConcerns.includes(concernName)
+            ? selectedConcerns.filter(c => c !== concernName)
+            : [...selectedConcerns, concernName];
+        updateFilters({ concern: newConcerns });
+    };
+
     const handlePriceChange = () => {
         updateFilters({ minPrice, maxPrice });
     };
@@ -337,11 +366,11 @@ const ShopPage = () => {
                 {/* Minimal Header with Breadcrumbs, Search, and Category Quick Chips */}
                 <div className="bg-white border-b border-gray-100 py-4 shadow-xs">
                     <div className="container mx-auto px-4">
-                        <div className="flex items-center text-xs text-gray-500 mb-2">
-                            <Link to="/" className="hover:text-primary">Home</Link>
-                            <span className="mx-2">/</span>
-                            <span className="text-gray-800 font-bold">Shop</span>
-                        </div>
+                        <Breadcrumbs items={[
+                            { label: 'Shop', path: '/shop' },
+                            ...(selectedCategories.length > 0 ? [{ label: selectedCategories.join(', ') }] : []),
+                            ...(selectedConcerns.length > 0 ? [{ label: selectedConcerns.join(', ') }] : [])
+                        ]} />
                         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
                             <div>
                                 <h1 className="text-3xl md:text-5xl font-display font-bold text-primary">Ayurvedic Apothecary</h1>
@@ -404,6 +433,29 @@ const ShopPage = () => {
                                     >
                                         <span>{cat.name}</span>
                                         {isSelected && <Check className="w-3 h-3 text-secondary" />}
+                                    </button>
+                                );
+                            })}
+                        </div>
+
+                        {/* Horizontal Quick Concern Chips */}
+                        <div className="flex items-center gap-2 overflow-x-auto pb-2 pt-1 no-scrollbar">
+                            <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 shrink-0">By Concern:</span>
+                            {concernsList.map((con) => {
+                                const isSelected = selectedConcerns.includes(con.name);
+                                return (
+                                    <button
+                                        key={con.slug || con.name}
+                                        type="button"
+                                        onClick={() => handleConcernToggle(con.name)}
+                                        className={`px-3 py-1 rounded-full text-[11px] font-medium shrink-0 transition-all cursor-pointer flex items-center gap-1 ${
+                                            isSelected
+                                                ? 'bg-secondary text-primary font-bold shadow-xs'
+                                                : 'bg-white border border-gray-200 text-gray-600 hover:border-secondary hover:text-primary'
+                                        }`}
+                                    >
+                                        <span>{con.name.split('(')[0].trim()}</span>
+                                        {isSelected && <Check className="w-2.5 h-2.5 text-primary" />}
                                     </button>
                                 );
                             })}
