@@ -7,6 +7,7 @@ import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/WishlistContext';
 import { headerVariants, dropdownVariants, tapVariants } from '../utils/animations';
 import LoadingSpinner from './LoadingSpinner';
+import SearchBar from './SearchBar';
 import { trackWebsiteEvent } from '../utils/websiteAnalytics';
 
 const Header = () => {
@@ -201,44 +202,53 @@ const Header = () => {
                 <div className="flex items-center space-x-3 sm:space-x-4 md:space-x-6">
                     {/* Search Component */}
                     <div className="relative">
+                        <motion.button
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.9 }}
+                            onClick={() => setIsSearchOpen(true)}
+                            aria-label="Open search bar"
+                            aria-expanded={isSearchOpen}
+                            className="p-2 rounded-full hover:bg-black/5 transition text-white cursor-pointer"
+                        >
+                            <Search size={22} />
+                        </motion.button>
+
                         <AnimatePresence>
                             {isSearchOpen && (
-                                <motion.form
-                                    initial={{ width: 0, opacity: 0 }}
-                                    animate={{ width: typeof window !== 'undefined' && window.innerWidth < 640 ? '160px' : '240px', opacity: 1 }}
-                                    exit={{ width: 0, opacity: 0 }}
-                                    onSubmit={handleSearch}
-                                    className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center"
-                                >
-                                    <input
-                                        autoFocus
-                                        type="text"
-                                        placeholder="Search..."
-                                        className="rounded-full px-4 py-1.5 text-sm focus:outline-none w-full shadow-sm bg-white/20 text-white placeholder-gray-300 backdrop-blur-sm border border-white/30"
-                                        value={keyword}
-                                        onChange={(e) => setKeyword(e.target.value)}
-                                        onKeyDown={(e) => { if (e.key === 'Escape') setIsSearchOpen(false); }}
-                                        onBlur={() => !keyword && setIsSearchOpen(false)}
-                                    />
-                                    <button type="submit" aria-label="Submit search" className="absolute right-3 top-1/2 -translate-y-1/2 hover:text-secondary text-white">
-                                        <Search size={16} />
-                                    </button>
-                                </motion.form>
+                                <div className="fixed inset-0 z-[100] flex items-start justify-center pt-24 px-4 bg-black/60 backdrop-blur-xs">
+                                    <motion.div
+                                        initial={{ opacity: 0, y: -20, scale: 0.97 }}
+                                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                                        exit={{ opacity: 0, y: -20, scale: 0.97 }}
+                                        transition={{ duration: 0.2 }}
+                                        className="bg-white rounded-3xl shadow-2xl border border-gray-100 w-full max-w-2xl p-5 sm:p-6 relative text-gray-900"
+                                        onClick={(e) => e.stopPropagation()}
+                                    >
+                                        <div className="flex items-center justify-between pb-3 mb-3 border-b border-gray-100">
+                                            <div className="flex items-center gap-2">
+                                                <span className="text-xs font-black uppercase tracking-wider text-primary">HRIDVED Search</span>
+                                                <span className="text-[10px] text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full font-medium">Classical Formulas & Herbs</span>
+                                            </div>
+                                            <button
+                                                type="button"
+                                                onClick={() => setIsSearchOpen(false)}
+                                                className="p-1.5 text-gray-400 hover:text-gray-700 rounded-full hover:bg-gray-100 transition-colors cursor-pointer"
+                                                aria-label="Close search"
+                                            >
+                                                <X size={18} />
+                                            </button>
+                                        </div>
+
+                                        <SearchBar
+                                            autoFocus
+                                            placeholder="Search formulations, SKU, herbs (e.g., Suvarnaprashan, Kumkumadi)..."
+                                            onSearchComplete={() => setIsSearchOpen(false)}
+                                        />
+                                    </motion.div>
+                                    <div className="fixed inset-0 -z-10" onClick={() => setIsSearchOpen(false)} />
+                                </div>
                             )}
                         </AnimatePresence>
-
-                        {!isSearchOpen && (
-                            <motion.button
-                                whileHover={{ scale: 1.1 }}
-                                whileTap={{ scale: 0.9 }}
-                                onClick={() => setIsSearchOpen(true)}
-                                aria-label="Open search bar"
-                                aria-expanded={isSearchOpen}
-                                className="p-2 rounded-full hover:bg-black/5 transition text-white"
-                            >
-                                <Search size={22} />
-                            </motion.button>
-                        )}
                     </div>
 
                     {/* Wishlist */}
@@ -479,16 +489,10 @@ const Header = () => {
 
                             {/* Search bar within drawer */}
                             <div className="p-4 border-b border-gray-100 bg-gray-50/30">
-                                <form onSubmit={handleSearch} className="relative">
-                                    <input
-                                        type="text"
-                                        placeholder="Search products..."
-                                        className="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-xl bg-white text-xs focus:outline-none focus:border-primary text-gray-800 placeholder-gray-400 transition-colors"
-                                        value={keyword}
-                                        onChange={(e) => setKeyword(e.target.value)}
-                                    />
-                                    <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
-                                </form>
+                                <SearchBar
+                                    placeholder="Search remedies, SKU, herbs..."
+                                    onSearchComplete={() => setIsOpen(false)}
+                                />
                             </div>
 
                             {/* Drawer scrollable section */}

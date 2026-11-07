@@ -3,6 +3,7 @@ import { useLocation, Link, useNavigate } from 'react-router-dom';
 import api from '../utils/api';
 import ProductCard from '../components/ProductCard';
 import Breadcrumbs from '../components/Breadcrumbs';
+import SearchBar from '../components/SearchBar';
 import QuickViewModal from '../components/QuickViewModal';
 import { Filter, ChevronDown, ArrowRight, Star, X, Search, PackageOpen, Sparkles, Building2, Check } from 'lucide-react';
 import AnimatedPage from '../components/AnimatedPage';
@@ -379,29 +380,14 @@ const ShopPage = () => {
                                 </p>
                             </div>
 
-                            {/* In-page Real-time Search Input */}
-                            <form onSubmit={handleSearchSubmit} className="relative w-full md:w-80">
-                                <div className="relative">
-                                    <input
-                                        type="text"
-                                        value={searchTerm}
-                                        onChange={(e) => setSearchTerm(e.target.value)}
-                                        placeholder="Search remedies by name or herb..."
-                                        className="w-full pl-10 pr-9 py-2.5 rounded-full border border-gray-200 bg-gray-50 text-xs sm:text-sm text-gray-900 focus:outline-hidden focus:border-primary focus:bg-white focus:ring-2 focus:ring-primary/20 transition-all"
-                                    />
-                                    <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-                                    {searchTerm && (
-                                        <button
-                                            type="button"
-                                            onClick={handleClearSearch}
-                                            aria-label="Clear search"
-                                            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 p-0.5 cursor-pointer"
-                                        >
-                                            <X className="w-3.5 h-3.5" />
-                                        </button>
-                                    )}
-                                </div>
-                            </form>
+                            {/* In-page Autocomplete Search Bar */}
+                            <div className="w-full md:w-80">
+                                <SearchBar
+                                    initialQuery={searchTerm}
+                                    placeholder="Search remedies, SKU, herbs..."
+                                    onSearch={(term) => updateFilters({ keyword: term })}
+                                />
+                            </div>
                         </div>
 
                         {/* Horizontal Quick Category Chips */}
