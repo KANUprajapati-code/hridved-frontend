@@ -23,6 +23,8 @@ export default function CheckoutPaymentPage() {
     // Require explicit selection by customer: '' | 'razorpay' | 'COD'
     const [paymentMethod, setPaymentMethod] = useState('');
     const [activePaymentOrderId, setActivePaymentOrderId] = useState(null);
+    const [termsAccepted, setTermsAccepted] = useState(false);
+    const [idempotencyKey] = useState(() => `idem_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`);
 
     const hasAddress = !!checkoutData.address;
     const hasShipping = !!checkoutData.shippingMethod;
@@ -134,6 +136,13 @@ export default function CheckoutPaymentPage() {
                 paymentMethod: 'razorpay',
                 shippingProvider: checkoutData.shippingProvider || 'Wayuvega',
                 email: user?.email || checkoutData.address?.email || '',
+                idempotencyKey,
+                termsAccepted: true,
+                appliedCoupon: checkoutData.coupon ? {
+                    code: checkoutData.coupon.code,
+                    discount: discountPrice,
+                    type: checkoutData.coupon.type
+                } : undefined,
             });
 
             if (res.success) {
@@ -190,6 +199,13 @@ export default function CheckoutPaymentPage() {
                 paymentMethod: 'COD',
                 shippingProvider: checkoutData.shippingProvider || 'Wayuvega',
                 email: user?.email || checkoutData.address?.email || '',
+                idempotencyKey,
+                termsAccepted: true,
+                appliedCoupon: checkoutData.coupon ? {
+                    code: checkoutData.coupon.code,
+                    discount: discountPrice,
+                    type: checkoutData.coupon.type
+                } : undefined,
             });
 
             if (res.success) {
@@ -398,6 +414,32 @@ export default function CheckoutPaymentPage() {
                                                 </div>
                                             )}
 
+                                            {/* Explicit Terms & Conditions Acceptance (PRD Phase 5 / Prompt 09 Compliance) */}
+                                            <div className="mb-4">
+                                                <label className="flex items-start gap-2.5 p-3 rounded-xl border border-stone-200 bg-stone-50 cursor-pointer hover:bg-stone-100/80 transition-colors">
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={termsAccepted}
+                                                        onChange={(e) => {
+                                                            setTermsAccepted(e.target.checked);
+                                                            if (orderError) setOrderError('');
+                                                        }}
+                                                        className="mt-0.5 w-4 h-4 accent-[#053807] cursor-pointer rounded"
+                                                    />
+                                                    <span className="text-[11px] text-stone-700 leading-snug select-none">
+                                                        I have read and agree to Hridved's{' '}
+                                                        <Link to="/terms" target="_blank" rel="noopener noreferrer" className="text-emerald-800 font-bold underline hover:text-emerald-950">Terms & Conditions</Link>,{' '}
+                                                        <Link to="/return-policy" target="_blank" rel="noopener noreferrer" className="text-emerald-800 font-bold underline hover:text-emerald-950">Return & Refund Policy</Link>, and{' '}
+                                                        <Link to="/privacy" target="_blank" rel="noopener noreferrer" className="text-emerald-800 font-bold underline hover:text-emerald-950">Privacy Policy</Link>.
+                                                    </span>
+                                                </label>
+                                                {!termsAccepted && paymentMethod && (
+                                                    <p className="text-[10px] text-amber-800 font-medium mt-1 pl-1">
+                                                        * Please check the box above to accept the terms before proceeding.
+                                                    </p>
+                                                )}
+                                            </div>
+
                                             {!paymentMethod ? (
                                                 <div className="space-y-2">
                                                     <button
@@ -420,6 +462,7 @@ export default function CheckoutPaymentPage() {
                                                         email: user?.email || checkoutData.address?.email || '',
                                                         phone: checkoutData.address?.mobileNumber,
                                                     }}
+                                                    disabled={!termsAccepted}
                                                     onBeforePayment={createOrderBackend}
                                                     onSuccess={(verifyData) => {
                                                         trackWebsiteEvent('purchase', {
@@ -434,7 +477,7 @@ export default function CheckoutPaymentPage() {
                                             ) : (
                                                 <AnimatedButton
                                                     onClick={handleCODOrder}
-                                                    disabled={creatingOrder}
+                                                    disabled={creatingOrder || !termsAccepted}
                                                     className="w-full bg-[#053807] hover:bg-[#074609] text-white py-4 rounded-xl font-bold text-base shadow-lg transition-all flex items-center justify-center gap-2 border-none cursor-pointer disabled:opacity-50"
                                                 >
                                                     {creatingOrder ? "Confirming Order with Wayuvega..." : <>Confirm COD Order (₹{totalPrice.toLocaleString()}) <ArrowRight size={18} /></>}

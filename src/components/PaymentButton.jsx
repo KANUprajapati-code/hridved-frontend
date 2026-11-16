@@ -24,7 +24,8 @@ const PaymentButton = ({
     customerDetails = {}, 
     onSuccess, 
     onError, 
-    onBeforePayment 
+    onBeforePayment,
+    disabled = false
 }) => {
     const [loading, setLoading] = useState(false);
     const [rzpKey, setRzpKey] = useState(null);
@@ -176,7 +177,7 @@ const PaymentButton = ({
     return (
         <AnimatedButton
             onClick={handlePayment}
-            disabled={loading}
+            disabled={loading || disabled}
             className="w-full bg-primary text-white py-4 rounded-xl font-bold text-base shadow-lg hover:bg-primary/90 hover:shadow-xl transition-all flex items-center justify-center gap-2 disabled:bg-gray-400 disabled:cursor-not-allowed border-none cursor-pointer"
         >
             {loading ? (
