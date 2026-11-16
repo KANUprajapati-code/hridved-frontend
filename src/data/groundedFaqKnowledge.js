@@ -22,14 +22,14 @@ export const TRIAGE_CATEGORIES = [
     },
     {
         id: 'offers',
-        title: 'Diwali Offers & Coupons',
-        badge: 'Festive Deals',
-        description: 'Check active festive discount codes, coupon savings, and free gifts.',
+        title: 'Offers & Coupons',
+        badge: 'Discounts & Codes',
+        description: 'Check active discount codes, coupon savings, and shipping benefits.',
         quickQuestions: [
-            'Diwali offer me kitna discount mil raha hai?',
-            'DIWALI25 coupon code kaise use karein?',
-            'SHUBH100 coupon code ki eligibility kya hai?',
-            'Free gift kitne ke order par milta hai?'
+            'Kaunse coupon codes active hain?',
+            'VEDIC10 coupon code kaise use karein?',
+            'AYUSH15 coupon code ki eligibility kya hai?',
+            'Free shipping kitne ke order par milti hai?'
         ]
     },
     {
@@ -111,17 +111,17 @@ export const getGroundedAnswer = (userQuery) => {
         return {
             status: 'grounded',
             category: 'general',
-            message: `🙏 **Namaste! Main Hridved ka AI Vaidya Guide hoon.**\n\nMain aapki authentic Ayurvedic swasthya yatra mein sahayata ke liye yahan hoon. Aap mujhse poochh sakte hain:\n• 🌿 **Formulations:** Suvarnaprashan, Kumkumadi Tailam, A2 Bilona Ghee, Hair Oil, Joint Roll On\n• 🧘‍♂️ **Ayurvedic Care:** Tridosha santulan, pachan, twacha aur baalon ki dekhbhal\n• 🪔 **Offers & Support:** Diwali discounts, Free shipping above ₹999, aur live order tracking!\n\nBataiye, aaj main aapki kya seva kar sakta hoon?`,
+            message: `🙏 **Namaste! Main Hridved ka AI Vaidya Guide hoon.**\n\nMain aapki authentic Ayurvedic swasthya yatra mein sahayata ke liye yahan hoon. Aap mujhse poochh sakte hain:\n• 🌿 **Formulations:** Suvarnaprashan, Kumkumadi Tailam, A2 Bilona Ghee, Hair Oil, Joint Roll On\n• 🧘‍♂️ **Ayurvedic Care:** Tridosha santulan, pachan, twacha aur baalon ki dekhbhal\n• 🎁 **Offers & Support:** Active discount coupons, Free shipping above ₹999, aur live order tracking!\n\nBataiye, aaj main aapki kya seva kar sakta hoon?`,
             canEscalate: true
         };
     }
 
-    // 3. DIWALI OFFERS, DISCOUNTS & COUPONS
-    if (/(offer|discount|coupon|code|promo|voucher|chhoot|bachat|diwali|shubh|sale|799|999)/i.test(q)) {
+    // 3. STORE OFFERS, DISCOUNTS & COUPONS
+    if (/(offer|discount|coupon|code|promo|voucher|chhoot|bachat|sale|799|999)/i.test(q)) {
         return {
             status: 'grounded',
             category: 'offers',
-            message: `🪔 **Shubh Deepavali Ayurvedic Mahasale Offers:**\n\n1. **DIWALI25** — Sabhi Ayurvedic medicines aur oils par **FLAT 25% OFF**!\n2. **SHUBH100** — ₹999 se upar ke orders par **FLAT ₹100 Instant Discount**!\n3. 🎁 **Free Festive Gift:** ₹999 se upar ke har order par Surprise Ayurvedic Immunity Booster Gift bilkul FREE milta hai!\n4. 🚚 **Free Shipping:** ₹999+ ke sabhi orders par Free Express Delivery uplabdh hai.\n\nCheckout page par coupon code daalein aur instant bachat ka labh uthayein!`,
+            message: `🌿 **Hridved Active Wellness Offers & Coupons:**\n\n1. **VEDIC10** — Sabhi authentic Ayurvedic formulations par **10% OFF** (Min order ₹499)!\n2. **AYUSH15** — ₹1,499 se upar ke orders par **FLAT 15% OFF**!\n3. 🚚 **Free Shipping:** ₹999+ ke sabhi orders par Express Delivery bilkul FREE uplabdh hai.\n\nCart ya Checkout page par coupon code apply karein aur instant savings ka labh uthayein!`,
             canEscalate: true
         };
     }
@@ -240,7 +240,7 @@ export const getGroundedAnswer = (userQuery) => {
     return {
         status: 'grounded',
         category: 'general',
-        message: `🌿 **Ayurvedic Vaidya Guidance on "${userQuery}":**\n\nAyurveda sharir ke Prakriti aur Tridosha (Vata, Pitta, Kapha) santulan par karya karta hai.\n\n• **Aahar (Diet):** Taja, gunguna aur poshtik khana lein. Pachan aur Ojas badhane ke liye Hridved A2 Bilona Ghee ka prayog kalyankari hai.\n• **Formulations:** Bachho ke liye Suvarnaprashan, baalo ke liye Rosemary Hair Oil, skin ke liye Kumkumadi Tailam, aur joint pain ke liye Roll On oil atyant prabhavshali hain.\n• **Special Offer:** Abhi Shubh Deepavali offer mein coupon **DIWALI25** (25% off) aur **SHUBH100** uplabdh hain!\n\nAgar aapka koi vishisht sawal ya bimari ke baare mein janna hai, toh kripya vistar se batayein ya hamare **Vaidya se WhatsApp (+91 79909 34095)** par personalized advice lein!`,
+        message: `🌿 **Ayurvedic Vaidya Guidance on "${userQuery}":**\n\nAyurveda sharir ke Prakriti aur Tridosha (Vata, Pitta, Kapha) santulan par karya karta hai.\n\n• **Aahar (Diet):** Taja, gunguna aur poshtik khana lein. Pachan aur Ojas badhane ke liye Hridved A2 Bilona Ghee ka prayog kalyankari hai.\n• **Formulations:** Bachho ke liye Suvarnaprashan, baalo ke liye Rosemary Hair Oil, skin ke liye Kumkumadi Tailam, aur joint pain ke liye Roll On oil atyant prabhavshali hain.\n• **Special Offer:** Abhi store offer mein coupon **VEDIC10** (10% off) aur ₹999+ par Free Shipping uplabdh hai!\n\nAgar aapka koi vishisht sawal ya bimari ke baare mein janna hai, toh kripya vistar se batayein ya hamare **Vaidya se WhatsApp (+91 79909 34095)** par personalized advice lein!`,
         canEscalate: true
     };
 };

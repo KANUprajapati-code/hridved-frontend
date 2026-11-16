@@ -2,8 +2,8 @@ import { useState, useEffect, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { 
-    Trash2, ShoppingBag, Truck, ShieldCheck, RefreshCw, Plus, Minus, 
-    ArrowRight, Lock, CheckCircle2, AlertCircle, Tag, Sparkles 
+    Trash2, ShoppingBag, Truck, ShieldCheck, Plus, Minus, 
+    ArrowRight, Lock, CheckCircle2, AlertCircle, Tag, Sparkles, X, Check
 } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
@@ -19,14 +19,24 @@ import { trackLeadEvent } from '../utils/tracking';
 import { trackWebsiteEvent } from '../utils/websiteAnalytics';
 
 const CartPage = () => {
-    const { cart, removeFromCart, updateCartItemQuantity, clearCart, calculateShipping, calculateCodFee, shippingConfig } = useCart();
-    const { user, openAuthModal } = useAuth();
-    const { checkoutData, applyCoupon, updateAddress } = useCheckout();
+    const { 
+        cart, 
+        removeFromCart, 
+        updateCartItemQuantity, 
+        clearCart,
+        serverTotals,
+        appliedCoupon,
+        applyCouponCode,
+        removeCouponCode,
+        activeCoupons
+    } = useCart();
+    
+    const { user } = useAuth();
+    const { updateAddress, applyCoupon } = useCheckout();
     const navigate = useNavigate();
     const { addToast } = useContext(ToastContext) || {};
 
-    const [promoCode, setPromoCode] = useState(checkoutData.coupon?.code || '');
-    const [appliedCoupon, setAppliedCoupon] = useState(checkoutData.coupon || null);
+    const [promoInput, setPromoInput] = useState('');
     const [couponError, setCouponError] = useState('');
     const [couponLoading, setCouponLoading] = useState(false);
     const [recommendedProducts, setRecommendedProducts] = useState([]);
@@ -99,84 +109,76 @@ const CartPage = () => {
         return Object.keys(errors).length === 0;
     };
 
-    // Calculate core pricing
-    const subtotal = cartItems.reduce((acc, item) => acc + (Number(item.qty) || 1) * (Number(item.price) || 0), 0);
-
-    // Calculate coupon discount
-    let discount = 0;
-    if (appliedCoupon) {
-        if (appliedCoupon.type === 'percentage') {
-            discount = Math.round((subtotal * appliedCoupon.discount) / 100);
-        } else {
-            discount = Math.min(subtotal, Number(appliedCoupon.discount) || 0);
-        }
-    }
-
-    const discountedSubtotal = Math.max(0, subtotal - discount);
-    const shipping = calculateShipping ? calculateShipping(discountedSubtotal) : 0;
+    // Server-recalculated totals
+    const subtotal = serverTotals.itemsPrice || cartItems.reduce((acc, item) => acc + (Number(item.qty) || 1) * (Number(item.price) || 0), 0);
+    const discount = serverTotals.discount || 0;
+    const shipping = serverTotals.shippingPrice;
     const isFreeShipping = shipping === 0;
-    const threshold = Number(shippingConfig?.freeShippingThreshold) || 0;
-    const hasThreshold = !shippingConfig?.isFreeShipping && threshold > 0 && Number(shippingConfig?.shippingFee) > 0;
-    const amountNeeded = hasThreshold ? Math.max(0, threshold - discountedSubtotal) : 0;
-    const progressPercent = hasThreshold ? Math.min(100, Math.round((discountedSubtotal / threshold) * 100)) : 100;
-
-    // Per-item statutory GST calculation
-    const tax = cartItems.reduce((acc, item) => {
-        const itemGst = item.gst || 0;
-        return acc + ((item.price * item.qty * itemGst) / 100);
-    }, 0);
-
-    const codCharge = calculateCodFee ? calculateCodFee(paymentMethod) : 0;
-    const grandTotal = discountedSubtotal + shipping + tax + codCharge;
+    const freeShippingThreshold = serverTotals.freeShippingThreshold || 999;
+    const amountNeeded = serverTotals.amountNeededForFreeShipping;
+    const progressPercent = Math.min(100, Math.round((Math.max(0, subtotal - discount) / freeShippingThreshold) * 100));
+    const grandTotal = serverTotals.totalPrice || Math.max(0, subtotal - discount + shipping);
 
     useEffect(() => {
         if (cartItems.length > 0) {
             trackWebsiteEvent('view_cart', { cartTotal: subtotal });
         }
-    }, [cartItems.length]);
+    }, [cartItems.length, subtotal]);
 
     // Coupon Handlers
     const handleApplyCoupon = async () => {
-        if (!promoCode.trim()) return;
+        if (!promoInput.trim()) return;
 
         try {
             setCouponLoading(true);
             setCouponError('');
-            const { data } = await api.post('/coupons/validate', {
-                code: promoCode.trim().toUpperCase(),
-                cartTotal: subtotal
-            });
+            const res = await applyCouponCode(promoInput.trim());
 
-            setAppliedCoupon(data);
-            applyCoupon(data, data.type === 'percentage' ? Math.round((subtotal * data.discount) / 100) : data.discount);
-            if (addToast) addToast(`Coupon ${data.code} applied successfully!`, 'success');
+            if (res.success) {
+                if (addToast) addToast(`Coupon ${res.coupon.code} applied! Saved ₹${res.coupon.appliedDiscount}`, 'success');
+                setPromoInput('');
+                if (applyCoupon) applyCoupon(res.coupon, res.coupon.appliedDiscount);
+            } else {
+                setCouponError(res.message);
+                if (addToast) addToast(res.message, 'error');
+            }
         } catch (error) {
             const msg = error.response?.data?.message || 'Invalid or expired promo code';
             setCouponError(msg);
-            setAppliedCoupon(null);
-            applyCoupon(null, 0);
             if (addToast) addToast(msg, 'error');
         } finally {
             setCouponLoading(false);
         }
     };
 
-    const handleRemoveCoupon = () => {
-        setAppliedCoupon(null);
-        setPromoCode('');
+    const handleSelectQuickCoupon = async (code) => {
+        setCouponLoading(true);
         setCouponError('');
-        applyCoupon(null, 0);
+        const res = await applyCouponCode(code);
+        if (res.success) {
+            if (addToast) addToast(`Coupon ${code} applied! Saved ₹${res.coupon.appliedDiscount}`, 'success');
+            if (applyCoupon) applyCoupon(res.coupon, res.coupon.appliedDiscount);
+        } else {
+            setCouponError(res.message);
+            if (addToast) addToast(res.message, 'error');
+        }
+        setCouponLoading(false);
+    };
+
+    const handleRemoveCoupon = () => {
+        removeCouponCode();
+        setPromoInput('');
+        setCouponError('');
+        if (applyCoupon) applyCoupon(null, 0);
         if (addToast) addToast('Coupon removed', 'info');
     };
 
     // Online Secure Checkout Handler
     const handleProceedToOnlineCheckout = () => {
-        // Persist applied coupon into checkout state
-        if (appliedCoupon) {
+        if (appliedCoupon && applyCoupon) {
             applyCoupon(appliedCoupon, discount);
         }
         
-        // If shipping form has valid fields, save as active address in checkoutData
         if (shippingDetails.fullName && shippingDetails.mobileNumber && shippingDetails.pincode) {
             updateAddress({
                 ...shippingDetails,
@@ -187,7 +189,7 @@ const CartPage = () => {
         navigate('/checkout/address');
     };
 
-    // Fast WhatsApp Checkout Handler
+    // Fast WhatsApp Checkout Handler with verified server prices
     const handleWhatsAppCheckout = async () => {
         if (!validateForm()) {
             if (addToast) addToast('Please fill all required delivery details', 'error');
@@ -203,6 +205,9 @@ const CartPage = () => {
                     image: item.image,
                     price: item.price,
                     qty: item.qty,
+                    packSize: item.packSize || '',
+                    sku: item.sku || '',
+                    selectedVariant: item.selectedVariant || null,
                     weight: item.weight || 0.5
                 })),
                 shippingAddress: {
@@ -214,11 +219,12 @@ const CartPage = () => {
                     state: shippingDetails.state,
                     pincode: shippingDetails.pincode
                 },
+                couponCode: appliedCoupon?.code || null,
                 email: shippingDetails.email,
                 itemsPrice: subtotal,
-                taxPrice: tax,
+                taxPrice: 0,
                 shippingPrice: shipping,
-                codPrice: codCharge,
+                codPrice: paymentMethod === 'COD' ? 50 : 0,
                 totalPrice: grandTotal,
                 discountAmount: discount,
                 paymentMethod: paymentMethod === 'COD' ? 'WhatsApp COD' : 'WhatsApp Prepaid'
@@ -248,9 +254,7 @@ const CartPage = () => {
                 msg += `Coupon (${appliedCoupon.code}): -₹${discount.toLocaleString()}\n`;
             }
             msg += `Shipping: ${shipping === 0 ? 'FREE' : '₹' + shipping}\n`;
-            if (tax > 0) msg += `GST: ₹${tax.toFixed(2)}\n`;
-            if (codCharge > 0) msg += `COD Surcharge: ₹${codCharge}\n`;
-            msg += `*Grand Total: ₹${grandTotal.toFixed(2)}*\n\n`;
+            msg += `*Grand Total: ₹${grandTotal.toLocaleString()}*\n\n`;
 
             msg += `📦 *Delivery Address:*\n`;
             msg += `Recipient: ${shippingDetails.fullName}\n`;
@@ -271,13 +275,10 @@ const CartPage = () => {
             
             window.open(waLink, '_blank', 'noopener,noreferrer');
             
-            if (addToast) addToast('Order generated! Opening WhatsApp...', 'success');
+            if (addToast) addToast('Order created! Opening WhatsApp...', 'success');
             
-            // Clear items and redirect to shop
             if (typeof clearCart === 'function') {
                 clearCart();
-            } else {
-                cartItems.forEach(item => removeFromCart(item.product || item._id));
             }
             setTimeout(() => navigate('/shop'), 2000);
         } catch (error) {
@@ -309,6 +310,20 @@ const CartPage = () => {
                             <ArrowRight size={16} />
                         </Link>
                     </div>
+
+                    {/* Recommendations below empty state */}
+                    {recommendedProducts.length > 0 && (
+                        <div className="container mx-auto px-4 max-w-5xl mt-16">
+                            <h3 className="text-xl font-serif font-bold text-primary mb-6 text-center">
+                                Bestselling Classical Remedies
+                            </h3>
+                            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                                {recommendedProducts.map((p) => (
+                                    <ProductCard key={p._id} product={p} />
+                                ))}
+                            </div>
+                        </div>
+                    )}
                 </div>
             </AnimatedPage>
         );
@@ -326,8 +341,8 @@ const CartPage = () => {
                                 <span className="flex items-center gap-1.5 text-secondary font-bold">
                                     <Truck size={15} />
                                     {isFreeShipping 
-                                        ? (hasThreshold ? '🎉 FREE SHIPPING UNLOCKED!' : '🎉 FREE DELIVERY ON ALL ORDERS!')
-                                        : `Add ₹${amountNeeded.toLocaleString()} more to unlock FREE delivery`}
+                                        ? '🎉 FREE COURIER SHIPPING UNLOCKED!' 
+                                        : `Add ₹${amountNeeded.toLocaleString()} more to unlock FREE pan-India delivery`}
                                 </span>
                                 <span className="text-[11px] opacity-80 font-mono">
                                     {progressPercent}%
@@ -366,6 +381,21 @@ const CartPage = () => {
                         </div>
                     </div>
 
+                    {/* Stock Warnings Banner if any stock changed server-side */}
+                    {serverTotals.stockWarnings && serverTotals.stockWarnings.length > 0 && (
+                        <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 mb-6 text-xs text-amber-900 shadow-2xs">
+                            <div className="flex items-center gap-2 font-bold text-amber-950 mb-1">
+                                <AlertCircle size={16} className="text-amber-700" />
+                                <span>Inventory Notice:</span>
+                            </div>
+                            <ul className="list-disc list-inside space-y-1 text-amber-800">
+                                {serverTotals.stockWarnings.map((warn, i) => (
+                                    <li key={i}>{warn.message}</li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
+
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-12">
                         
                         {/* Left Column: Cart Items List */}
@@ -402,6 +432,11 @@ const CartPage = () => {
                                                                 {variantName}
                                                             </Badge>
                                                         )}
+                                                        {item.packSize && (
+                                                            <span className="text-[9px] text-gray-500 bg-gray-100 px-1.5 py-0.2 rounded font-medium">
+                                                                {item.packSize}
+                                                            </span>
+                                                        )}
                                                     </div>
 
                                                     <Link 
@@ -411,8 +446,11 @@ const CartPage = () => {
                                                         {item.name}
                                                     </Link>
 
-                                                    <div className="text-[11px] sm:text-xs text-gray-500 mt-1">
-                                                        Unit Price: <span className="font-semibold text-gray-800 font-sans">₹{item.price}</span>
+                                                    <div className="flex items-baseline gap-2 text-[11px] sm:text-xs text-gray-500 mt-1">
+                                                        <span>Price: <strong className="text-gray-900 font-sans">₹{item.price}</strong></span>
+                                                        {item.mrp > item.price && (
+                                                            <span className="line-through text-gray-400">₹{item.mrp}</span>
+                                                        )}
                                                     </div>
                                                 </div>
 
@@ -427,7 +465,7 @@ const CartPage = () => {
                                                         >
                                                             <Minus size={12} />
                                                         </button>
-                                                        <span className="w-7 sm:w-8 text-center text-xs font-bold text-gray-900">
+                                                        <span className="w-7 sm:w-8 text-center text-xs font-bold text-gray-900 font-sans">
                                                             {item.qty}
                                                         </span>
                                                         <button
@@ -463,7 +501,7 @@ const CartPage = () => {
 
                             {/* Serviceability Check Strip */}
                             <div className="mt-6">
-                                <PincodeShippingCheck productPrice={discountedSubtotal} />
+                                <PincodeShippingCheck productPrice={subtotal} />
                             </div>
                         </div>
 
@@ -476,40 +514,40 @@ const CartPage = () => {
                                     Order Summary
                                 </h2>
 
-                                {/* Calculation Breakdown */}
+                                {/* Calculation Breakdown (Server Verified) */}
                                 <div className="space-y-3.5 mb-6 text-xs sm:text-sm">
                                     <div className="flex justify-between text-gray-600">
-                                        <span>Basket Subtotal</span>
-                                        <span className="font-bold text-gray-900">₹{subtotal.toLocaleString()}</span>
+                                        <span>Formulations Subtotal</span>
+                                        <span className="font-bold text-gray-900 font-sans">₹{subtotal.toLocaleString()}</span>
                                     </div>
+
+                                    {serverTotals.mrpSavings > 0 && (
+                                        <div className="flex justify-between text-emerald-700 text-xs">
+                                            <span>MRP Direct Savings</span>
+                                            <span className="font-bold">Save ₹{serverTotals.mrpSavings.toLocaleString()}</span>
+                                        </div>
+                                    )}
 
                                     {appliedCoupon && (
                                         <div className="flex justify-between text-emerald-700 bg-emerald-50 p-2.5 rounded-xl border border-emerald-100">
                                             <span className="font-medium flex items-center gap-1.5">
                                                 <Tag size={14} /> Coupon ({appliedCoupon.code})
                                             </span>
-                                            <span className="font-bold">-₹{discount.toLocaleString()}</span>
+                                            <span className="font-bold font-sans">-₹{discount.toLocaleString()}</span>
                                         </div>
                                     )}
 
                                     <div className="flex justify-between text-gray-600">
-                                        <span>Standard Shipping</span>
-                                        <span className={`font-bold ${isFreeShipping ? 'text-emerald-700' : 'text-gray-900'}`}>
+                                        <span>Pan-India Courier Shipping</span>
+                                        <span className={`font-bold ${isFreeShipping ? 'text-emerald-700' : 'text-gray-900 font-sans'}`}>
                                             {isFreeShipping ? 'FREE' : `₹${shipping}`}
                                         </span>
                                     </div>
 
-                                    <div className="flex justify-between text-gray-600">
-                                        <span>Statutory GST (Taxes)</span>
-                                        <span className="font-bold text-gray-900">₹{tax.toFixed(2)}</span>
+                                    <div className="flex justify-between text-gray-500 text-xs">
+                                        <span>Statutory GST & Taxes</span>
+                                        <span className="font-medium text-emerald-700">Inclusive</span>
                                     </div>
-
-                                    {paymentMethod === 'COD' && codCharge > 0 && (
-                                        <div className="flex justify-between text-gray-600">
-                                            <span>Cash on Delivery Convenience Fee</span>
-                                            <span className="font-bold text-gray-900">₹{codCharge}</span>
-                                        </div>
-                                    )}
 
                                     <div className="border-t border-accent/30 pt-3 flex justify-between items-baseline">
                                         <span className="text-base font-bold text-primary">Grand Total</span>
@@ -517,12 +555,12 @@ const CartPage = () => {
                                             <span className="text-2xl font-sans font-black text-primary">
                                                 ₹{grandTotal.toLocaleString()}
                                             </span>
-                                            <p className="text-[10px] text-gray-500">All duties & taxes included</p>
+                                            <p className="text-[10px] text-gray-500">All duties & statutory taxes included</p>
                                         </div>
                                     </div>
                                 </div>
 
-                                {/* Promo Code Accordion */}
+                                {/* Promo Code Accordion / Active Coupons */}
                                 <div className="mb-6 bg-[#FDFBF7] p-3.5 rounded-2xl border border-accent/40">
                                     <label className="text-[11px] font-bold uppercase tracking-wider text-primary mb-2 block flex items-center gap-1.5">
                                         <Tag size={13} className="text-secondary" />
@@ -530,17 +568,20 @@ const CartPage = () => {
                                     </label>
 
                                     {appliedCoupon ? (
-                                        <div className="flex items-center justify-between bg-emerald-50 border border-emerald-200 p-2 rounded-xl text-xs">
+                                        <div className="flex items-center justify-between bg-emerald-50 border border-emerald-200 p-2.5 rounded-xl text-xs">
                                             <div>
-                                                <span className="font-bold text-emerald-800">{appliedCoupon.code}</span>
-                                                <p className="text-[10px] text-emerald-600 mt-0.5">Applied discount active</p>
+                                                <div className="flex items-center gap-1.5">
+                                                    <Check size={14} className="text-emerald-700" />
+                                                    <span className="font-bold text-emerald-800">{appliedCoupon.code}</span>
+                                                </div>
+                                                <p className="text-[10px] text-emerald-600 mt-0.5">{appliedCoupon.description || 'Coupon active'}</p>
                                             </div>
                                             <button
                                                 type="button"
                                                 onClick={handleRemoveCoupon}
-                                                className="text-xs text-rose-600 hover:text-rose-700 font-bold px-2 py-1 cursor-pointer"
+                                                className="text-xs text-rose-600 hover:text-rose-700 font-bold px-2 py-1 cursor-pointer flex items-center gap-1"
                                             >
-                                                Remove
+                                                <X size={13} /> Remove
                                             </button>
                                         </div>
                                     ) : (
@@ -548,25 +589,55 @@ const CartPage = () => {
                                             <div className="flex gap-2">
                                                 <input
                                                     type="text"
-                                                    value={promoCode}
+                                                    value={promoInput}
                                                     onChange={(e) => {
-                                                        setPromoCode(e.target.value.toUpperCase());
+                                                        setPromoInput(e.target.value.toUpperCase());
                                                         setCouponError('');
                                                     }}
-                                                    placeholder="e.g. WELCOME10"
+                                                    placeholder="Enter code (e.g. VEDIC10)"
                                                     className="flex-1 px-3 py-1.5 bg-white border border-gray-200 rounded-xl text-xs uppercase font-medium focus:outline-hidden focus:border-primary text-gray-900"
                                                 />
                                                 <button
                                                     type="button"
                                                     onClick={handleApplyCoupon}
-                                                    disabled={couponLoading || !promoCode.trim()}
+                                                    disabled={couponLoading || !promoInput.trim()}
                                                     className="px-4 py-1.5 bg-primary text-white text-xs font-bold uppercase rounded-xl hover:bg-primary/90 disabled:opacity-50 transition cursor-pointer"
                                                 >
                                                     {couponLoading ? 'Checking...' : 'Apply'}
                                                 </button>
                                             </div>
+
                                             {couponError && (
-                                                <p className="text-[11px] text-rose-600 mt-1.5">{couponError}</p>
+                                                <p className="text-[11px] text-rose-600 mt-1.5 flex items-center gap-1">
+                                                    <AlertCircle size={12} /> {couponError}
+                                                </p>
+                                            )}
+
+                                            {/* Quick Available Coupons Chips */}
+                                            {activeCoupons.length > 0 && (
+                                                <div className="mt-3 pt-2.5 border-t border-gray-100">
+                                                    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1.5">
+                                                        Available Coupons:
+                                                    </span>
+                                                    <div className="flex flex-wrap gap-1.5">
+                                                        {activeCoupons.map((c) => (
+                                                            <button
+                                                                key={c.code}
+                                                                type="button"
+                                                                onClick={() => handleSelectQuickCoupon(c.code)}
+                                                                disabled={couponLoading}
+                                                                className="px-2 py-1 bg-white border border-secondary/40 text-primary text-[10px] font-bold rounded-lg hover:bg-secondary/10 transition cursor-pointer flex items-center gap-1 shadow-2xs"
+                                                                title={c.description}
+                                                            >
+                                                                <Tag size={10} className="text-secondary" />
+                                                                <span>{c.code}</span>
+                                                                <span className="text-gray-400 font-normal">
+                                                                    ({c.type === 'percentage' ? `${c.discount}%` : `₹${c.discount}`})
+                                                                </span>
+                                                            </button>
+                                                        ))}
+                                                    </div>
+                                                </div>
                                             )}
                                         </div>
                                     )}
@@ -702,7 +773,7 @@ const CartPage = () => {
                                                     : 'border-gray-200 bg-[#FDFBF7] text-gray-700'
                                             }`}
                                         >
-                                            <span className="text-[11px] sm:text-xs">Cash on Delivery (+₹50)</span>
+                                            <span className="text-[11px] sm:text-xs">Cash on Delivery</span>
                                         </button>
                                     </div>
                                 </div>

@@ -4,7 +4,6 @@ import Footer from './Footer';
 import MobileNavigation from './MobileNavigation';
 import CartDrawer from './CartDrawer';
 import AIAssistantModal from './AIAssistantModal';
-import DiwaliDecorations from './DiwaliDecorations';
 
 const MainLayout = () => {
     return (
@@ -17,7 +16,6 @@ const MainLayout = () => {
                 Skip to main content
             </a>
 
-            <DiwaliDecorations />
             <Header />
             <main id="main-content" tabIndex="-1" className="flex-grow focus:outline-none">
                 <Outlet />

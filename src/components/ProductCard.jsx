@@ -17,7 +17,7 @@ import { trackLeadEvent } from '../utils/tracking';
  * - Actual price & valid MRP/discount percentage
  * - Stock indicator (Sold Out, Low Stock, In Stock)
  * - Real rating only (no fabricated ratings when reviews = 0)
- * - Badges: Diwali Special, Bestseller, Classical Ayurveda
+ * - Badges: Bestseller, Classical Ayurveda, Low Stock
  * - Add to Cart / Quick Add with tactile feedback & animation
  * - WCAG 2.2 AA keyboard accessible (focus rings, aria-labels)
  */
@@ -62,9 +62,8 @@ const ProductCard = ({ product, onQuickView }) => {
                     <div className="absolute top-3 left-3 right-3 z-20 flex justify-between items-start pointer-events-none">
                         <div className="flex flex-col gap-1.5">
                             {product.isBestseller && (
-                                <span className="bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-gray-950 text-[9px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider shadow-md border border-amber-300 flex items-center gap-1">
-                                    <span>🪔</span>
-                                    <span>Diwali Special</span>
+                                <span className="bg-[#D4AF37] text-gray-950 text-[9px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider shadow-sm flex items-center gap-1">
+                                    <span>★ Bestseller</span>
                                 </span>
                             )}
                             {product.countInStock > 0 && product.countInStock <= 5 && (

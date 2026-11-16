@@ -42,7 +42,7 @@ const AIAssistantModal = () => {
         {
             id: 'welcome',
             sender: 'assistant',
-            text: '🙏 Namaste! Main aapka Hridved AI Vaidya Guide hoon.\n\nMain aapke swasthya, Ayurvedic formulations (Suvarnaprashan, Hair Oil, A2 Ghee, Kumkumadi), order tracking aur Diwali offers se jude har sawal ka javab dene ke liye yahan hoon. Aap mujhse koi bhi sawal poochh sakte hain!',
+            text: '🙏 Namaste! Main aapka Hridved AI Vaidya Guide hoon.\n\nMain aapke swasthya, Ayurvedic formulations (Suvarnaprashan, Hair Oil, A2 Ghee, Kumkumadi), order tracking aur offers & coupons se jude har sawal ka javab dene ke liye yahan hoon. Aap mujhse koi bhi sawal poochh sakte hain!',
             time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
             status: 'grounded'
         }
