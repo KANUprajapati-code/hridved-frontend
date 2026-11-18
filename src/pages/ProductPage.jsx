@@ -83,7 +83,13 @@ const ProductPage = () => {
 
     useEffect(() => {
         if (product?._id) {
-            trackWebsiteEvent('product_view', { productId: product._id });
+            trackWebsiteEvent('view_item', {
+                productId: product._id,
+                product: product,
+                name: product.name,
+                price: Number(product.price) || 0,
+                category: product.category,
+            });
         }
     }, [product?._id]);
 
@@ -248,6 +254,11 @@ const ProductPage = () => {
 
     // Vaidya WhatsApp Consultation link
     const handleVaidyaConsult = () => {
+        trackWebsiteEvent('whatsapp_click', {
+            productId: product?._id,
+            name: product?.name,
+            price: Number(activeVariant?.price || product?.price) || 0,
+        });
         const message = encodeURIComponent(
             `Namaste Hridved Vaidya, I am reviewing "${product.name}" (${activeVariant.name}, ₹${activeVariant.price}). Can you please guide me on its dosage, classical anupana, and suitability for my health concerns?`
         );

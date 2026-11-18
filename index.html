@@ -7,20 +7,37 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Hridved Ayurveda | Ancient Wisdom, Modern Purity</title>
   
-  <!-- HRIDVED AYURVEDA GA4 (With Google Consent Mode) -->
+  <!-- HRIDVED AYURVEDA GA4 & PERFORMANCE MARKETING (Google Consent Mode v2) -->
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
+    var isConsentDenied = false;
+    try {
+      isConsentDenied = localStorage.getItem('hridved_analytics_consent') === 'no';
+    } catch (e) {}
+
     gtag('consent', 'default', {
-      'analytics_storage': 'denied',
-      'ad_storage': 'denied',
-      'ad_user_data': 'denied',
-      'ad_personalization': 'denied'
+      'analytics_storage': isConsentDenied ? 'denied' : 'granted',
+      'ad_storage': isConsentDenied ? 'denied' : 'granted',
+      'ad_user_data': isConsentDenied ? 'denied' : 'granted',
+      'ad_personalization': isConsentDenied ? 'denied' : 'granted'
     });
     gtag('js', new Date());
     gtag('config', 'G-VJ0G98SBVZ', { send_page_view: false });
   </script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-VJ0G98SBVZ"></script>
+
+  <!-- Meta Pixel (Facebook & Instagram Ads) Base Code -->
+  <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+  </script>
   <meta name="google-site-verification" content="ryOX4-6nvPucjyljEA5wBTFyQfS3qD37Zap1k2cEfQk" />
   <meta name="description" content="Hridved - Ancient Ayurveda, Modern Wellness. Pure formulations for your modern lifestyle. Handcrafted with wisdom from ancient texts, delivered with modern purity standards." />
   <meta property="og:title" content="Hridved | Ancient Ayurveda, Modern Wellness" />

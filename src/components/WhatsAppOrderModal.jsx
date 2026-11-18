@@ -5,6 +5,7 @@ import { ToastContext } from '../context/ToastContext';
 import { useAuth } from '../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { trackLeadEvent } from '../utils/tracking';
+import { trackWebsiteEvent, getUtmParams } from '../utils/websiteAnalytics';
 
 const WhatsAppOrderModal = ({ product, isOpen, onClose }) => {
     const { addToast } = useContext(ToastContext) || {};
@@ -153,10 +154,19 @@ const WhatsAppOrderModal = ({ product, isOpen, onClose }) => {
                 codPrice: paymentMethod === 'COD' ? 50 : 0,
                 totalPrice: finalPrice + (finalPrice > 999 ? 0 : 50) + (paymentMethod === 'COD' ? 50 : 0),
                 discountAmount: discountAmount,
-                paymentMethod: paymentMethod === 'COD' ? 'WhatsApp COD' : 'WhatsApp Prepaid'
+                paymentMethod: paymentMethod === 'COD' ? 'WhatsApp COD' : 'WhatsApp Prepaid',
+                marketingAttribution: getUtmParams(),
             };
 
             const { data } = await api.post('/orders/whatsapp', orderData);
+
+            trackWebsiteEvent('whatsapp_order', {
+                productId: product._id,
+                name: product.name,
+                price: product.price,
+                orderId: data?._id,
+                totalPrice: orderData.totalPrice,
+            });
 
             trackLeadEvent({
                 actionType: 'whatsapp_order',

@@ -38,6 +38,7 @@ const OrderListPage = () => {
                             <th className="py-3 px-4 font-bold text-gray-700">USER</th>
                             <th className="py-3 px-4 font-bold text-gray-700">DATE</th>
                             <th className="py-3 px-4 font-bold text-gray-700">TOTAL</th>
+                            <th className="py-3 px-4 font-bold text-gray-700">SOURCE</th>
                             <th className="py-3 px-4 font-bold text-gray-700">PAID</th>
                             <th className="py-3 px-4 font-bold text-gray-700">DELIVERED</th>
                             <th className="py-3 px-4 font-bold text-gray-700">DETAILS</th>
@@ -49,7 +50,24 @@ const OrderListPage = () => {
                                 <td className="py-3 px-4 text-sm">{order._id}</td>
                                 <td className="py-3 px-4 text-sm">{order.user && order.user.name}</td>
                                 <td className="py-3 px-4 text-sm">{order.createdAt.substring(0, 10)}</td>
-                                <td className="py-3 px-4 text-sm">₹{order.totalPrice}</td>
+                                <td className="py-3 px-4 text-sm font-semibold">₹{order.totalPrice}</td>
+                                <td className="py-3 px-4 text-xs">
+                                    {order.marketingAttribution?.utmSource ? (
+                                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 font-semibold border border-emerald-200">
+                                            {order.marketingAttribution.utmSource} {order.marketingAttribution.utmCampaign ? `(${order.marketingAttribution.utmCampaign})` : ''}
+                                        </span>
+                                    ) : order.marketingAttribution?.gclid ? (
+                                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-blue-50 text-blue-800 font-semibold border border-blue-200">
+                                            Google Ad
+                                        </span>
+                                    ) : order.marketingAttribution?.fbclid ? (
+                                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-800 font-semibold border border-indigo-200">
+                                            Meta Ad
+                                        </span>
+                                    ) : (
+                                        <span className="text-gray-400">Direct</span>
+                                    )}
+                                </td>
                                 <td className="py-3 px-4 text-sm">
                                     {order.isPaid ? (
                                         <span className="text-green-600 font-bold">{order.paidAt.substring(0, 10)}</span>

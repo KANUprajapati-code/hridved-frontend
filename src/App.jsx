@@ -15,7 +15,7 @@ import ScrollToTop from './components/ScrollToTop';
 import MainLayout from './components/MainLayout';
 import SimpleLoader from './components/SimpleLoader';
 import AnalyticsConsent from './components/AnalyticsConsent';
-import { trackWebsiteEvent } from './utils/websiteAnalytics';
+import { trackWebsiteEvent, captureUtmParameters, initMarketingTracking } from './utils/websiteAnalytics';
 import HomePage from './pages/HomePage';
 
 // Resilient lazy load with auto-recovery on deployment bundle updates
@@ -92,7 +92,18 @@ const WebsiteAnalyticsPage = lazy(() => import('./pages/admin/WebsiteAnalyticsPa
 
 function WebsiteEventTracker() {
     const location = useLocation();
-    useEffect(() => { trackWebsiteEvent('page_view'); }, [location.pathname]);
+
+    useEffect(() => {
+        // Initialize dynamic performance marketing (Meta Pixel, GA4) on mount
+        initMarketingTracking();
+    }, []);
+
+    useEffect(() => {
+        // Capture UTM parameters on arrival and route changes
+        captureUtmParameters();
+        trackWebsiteEvent('page_view');
+    }, [location.pathname, location.search]);
+
     return <AnalyticsConsent />;
 }
 

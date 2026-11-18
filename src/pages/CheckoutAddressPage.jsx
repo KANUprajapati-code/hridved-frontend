@@ -67,7 +67,10 @@ export default function CheckoutAddressPage() {
     };
 
     useEffect(() => { 
-        trackWebsiteEvent('begin_checkout');
+        trackWebsiteEvent('begin_checkout', {
+            cartTotal: cart?.cartTotal || 0,
+            items: cart?.cartItems || []
+        });
         if (checkoutData.orderId) {
             setOrderId(null, null);
         }

@@ -10,7 +10,7 @@ import AnimatedPage from '../components/AnimatedPage';
 import AnimatedButton from '../components/AnimatedButton';
 import ScrollReveal from '../components/ScrollReveal';
 import { CreditCard, Lock, ChevronLeft, ArrowRight, MapPin, Package, Smartphone, ShieldCheck, CheckCircle2 } from 'lucide-react';
-import { trackWebsiteEvent } from '../utils/websiteAnalytics';
+import { trackWebsiteEvent, getUtmParams } from '../utils/websiteAnalytics';
 
 export default function CheckoutPaymentPage() {
     const navigate = useNavigate();
@@ -138,6 +138,7 @@ export default function CheckoutPaymentPage() {
                 email: user?.email || checkoutData.address?.email || '',
                 idempotencyKey: onlineIdempotencyKey,
                 termsAccepted: true,
+                marketingAttribution: getUtmParams(),
                 appliedCoupon: checkoutData.coupon ? {
                     code: checkoutData.coupon.code,
                     discount: discountPrice,
@@ -202,6 +203,7 @@ export default function CheckoutPaymentPage() {
                 email: user?.email || checkoutData.address?.email || '',
                 idempotencyKey: codIdempotencyKey,
                 termsAccepted: true,
+                marketingAttribution: getUtmParams(),
                 appliedCoupon: checkoutData.coupon ? {
                     code: checkoutData.coupon.code,
                     discount: discountPrice,

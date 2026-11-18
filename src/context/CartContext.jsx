@@ -256,7 +256,13 @@ export const CartProvider = ({ children }) => {
         }
 
         try {
-            trackWebsiteEvent('add_to_cart', { productId: product._id });
+            trackWebsiteEvent('add_to_cart', {
+                productId: product._id,
+                name: product.name,
+                price: parseFloat(product.price) || 0,
+                qty: Math.max(1, parseInt(qty)),
+                product: product,
+            });
             const cartItemData = {
                 product: product._id,
                 _id: product._id,
@@ -319,6 +325,16 @@ export const CartProvider = ({ children }) => {
         if (!id) return;
         
         try {
+            const removingItem = (cart?.cartItems || []).find(it => (it.product || it._id) === id);
+            if (removingItem) {
+                trackWebsiteEvent('remove_from_cart', {
+                    productId: id,
+                    name: removingItem.name,
+                    price: parseFloat(removingItem.price) || 0,
+                    qty: Number(removingItem.qty) || 1,
+                });
+            }
+
             let updatedCart;
             if (user) {
                 try {
