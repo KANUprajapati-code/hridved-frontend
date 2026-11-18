@@ -187,15 +187,37 @@ export default function CheckoutAddressPage() {
     };
 
     const handleContinue = async () => {
-        // If form is visible and user hasn't explicitly hit Save Address yet, auto-validate and proceed
-        if (showForm && (!selectedAddressId || addresses.length === 0)) {
+        // If form is visible, auto-validate and save new address, then proceed
+        if (showForm) {
             if (!validateForm()) return;
-            const newAddr = { ...formData, _id: user ? 'user_addr_' + Date.now() : 'guest_' + Date.now() };
-            updateAddress(newAddr);
-            localStorage.setItem('shippingAddress', JSON.stringify(newAddr));
-            updateStep(2);
-            navigate('/checkout/shipping');
-            return;
+            try {
+                setSubmitting(true);
+                clearError();
+                let savedAddr = null;
+                if (user) {
+                    const { data } = await api.post('/addresses', formData);
+                    setAddresses(prev => [...prev, data]);
+                    setSelectedAddressId(data._id);
+                    savedAddr = data;
+                } else {
+                    const guestAddr = { ...formData, _id: 'guest_' + Date.now() };
+                    setAddresses([guestAddr]);
+                    setSelectedAddressId(guestAddr._id);
+                    savedAddr = guestAddr;
+                }
+                setShowForm(false);
+                updateAddress(savedAddr);
+                localStorage.setItem('shippingAddress', JSON.stringify(savedAddr));
+                updateStep(2);
+                navigate('/checkout/shipping');
+                return;
+            } catch (err) {
+                console.error('Error saving address:', err);
+                setErrorMessage(err.response?.data?.message || 'Failed to save address');
+                return;
+            } finally {
+                setSubmitting(false);
+            }
         }
 
         if (!selectedAddressId) {
@@ -212,6 +234,8 @@ export default function CheckoutAddressPage() {
                 localStorage.setItem('shippingAddress', JSON.stringify(selectedAddr));
                 updateStep(2);
                 navigate('/checkout/shipping');
+            } else {
+                setErrorMessage('Please select a valid delivery address');
             }
         } catch (error) {
             console.error('Error:', error);
@@ -221,15 +245,13 @@ export default function CheckoutAddressPage() {
         }
     };
 
-    const { subtotal, gstPrice, grandTotal } = useMemo(() => {
+    const { subtotal, grandTotal } = useMemo(() => {
         const items = cart?.cartItems || [];
         const sub = items.reduce((acc, item) => acc + (item.price * item.qty), 0);
-        const gst = items.reduce((acc, item) => acc + (item.price * item.qty * (item.gst || 0) / 100), 0);
         const discount = checkoutData.discount || 0;
         return {
             subtotal: sub,
-            gstPrice: gst,
-            grandTotal: Math.max(0, sub + gst - discount)
+            grandTotal: Math.max(0, sub - discount)
         };
     }, [cart?.cartItems, checkoutData.discount]);
 
@@ -525,8 +547,8 @@ export default function CheckoutAddressPage() {
                                         </div>
                                     )}
                                     <div className="flex justify-between text-gray-600">
-                                        <span>GST</span>
-                                        <span>₹{gstPrice.toFixed(2)}</span>
+                                        <span>Taxes & GST</span>
+                                        <span className="font-bold text-emerald-800">Included in MRP</span>
                                     </div>
                                     <div className="border-t border-gray-200 my-2 pt-2 flex justify-between font-bold text-gray-900 text-lg">
                                         <span>Total</span>
@@ -541,10 +563,10 @@ export default function CheckoutAddressPage() {
                         <div className="flex justify-end pt-6 border-t border-gray-100">
                             <AnimatedButton
                                 onClick={handleContinue}
-                                disabled={!selectedAddressId || submitting}
-                                className="w-full md:w-auto px-8 bg-primary text-white py-3 rounded-xl font-bold text-lg shadow-lg hover:bg-opacity-90 hover:shadow-xl transition-all transform hover:-translate-y-1 disabled:bg-gray-300 disabled:cursor-not-allowed border-none"
+                                disabled={(!selectedAddressId && !showForm) || submitting}
+                                className="w-full md:w-auto px-8 bg-primary text-white py-3 rounded-xl font-bold text-lg shadow-lg hover:bg-opacity-90 hover:shadow-xl transition-all transform hover:-translate-y-1 disabled:bg-gray-300 disabled:cursor-not-allowed border-none cursor-pointer"
                             >
-                                Continue to Shipping
+                                Continue to Delivery Method
                             </AnimatedButton>
                         </div>
                     </div>

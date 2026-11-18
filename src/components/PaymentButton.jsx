@@ -25,6 +25,7 @@ const PaymentButton = ({
     onSuccess, 
     onError, 
     onBeforePayment,
+    onDismiss,
     disabled = false
 }) => {
     const [loading, setLoading] = useState(false);
@@ -138,6 +139,7 @@ const PaymentButton = ({
                     ondismiss: function () {
                         setLoading(false);
                         console.log("Payment modal dismissed by user.");
+                        if (onDismiss) onDismiss();
                     }
                 }
             };

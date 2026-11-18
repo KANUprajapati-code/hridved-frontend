@@ -102,16 +102,14 @@ export default function CheckoutShippingPage() {
         }
     };
 
-    const { subtotal, gstPrice, grandTotal } = useMemo(() => {
+    const { subtotal, grandTotal } = useMemo(() => {
         const items = cart?.cartItems || [];
         const sub = items.reduce((acc, item) => acc + (item.price * item.qty), 0);
-        const gst = items.reduce((acc, item) => acc + (item.price * item.qty * (item.gst || 0) / 100), 0);
         const discount = checkoutData.discount || 0;
         const shipping = checkoutData.shippingCost || 0;
         return {
             subtotal: sub,
-            gstPrice: gst,
-            grandTotal: Math.max(0, sub + gst + shipping - discount)
+            grandTotal: Math.max(0, sub + shipping - discount)
         };
     }, [cart?.cartItems, checkoutData.discount, checkoutData.shippingCost]);
 
@@ -230,8 +228,8 @@ export default function CheckoutShippingPage() {
                                         </span>
                                     </div>
                                     <div className="flex justify-between text-gray-600">
-                                        <span>GST</span>
-                                        <span>₹{gstPrice.toFixed(2)}</span>
+                                        <span>Taxes & GST</span>
+                                        <span className="font-bold text-emerald-800">Included in MRP</span>
                                     </div>
                                     <div className="border-t border-gray-200 my-2 pt-2 flex justify-between font-bold text-gray-900 text-lg">
                                         <span>Total</span>

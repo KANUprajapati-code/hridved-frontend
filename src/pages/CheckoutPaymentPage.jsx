@@ -91,13 +91,12 @@ export default function CheckoutPaymentPage() {
     const calculateTotals = () => {
         const cartItems = cart?.cartItems || [];
         const itemsPrice = cartItems.reduce((total, item) => total + (item.price * item.qty), 0);
-        const taxPrice = cartItems.reduce((total, item) => total + (item.price * item.qty * (item.gst || 0) / 100), 0);
         const shippingPrice = checkoutData.shippingCost || 0;
         const discountPrice = checkoutData.discount || 0;
         const codPrice = (paymentMethod === 'COD' && calculateCodFee) ? calculateCodFee('COD') : 0;
-        const totalPrice = Math.max(0, itemsPrice + taxPrice + shippingPrice + codPrice - discountPrice);
+        const totalPrice = Math.max(0, itemsPrice + shippingPrice + codPrice - discountPrice);
 
-        return { itemsPrice, taxPrice, shippingPrice, codPrice, totalPrice, discountPrice };
+        return { itemsPrice, taxPrice: 0, shippingPrice, codPrice, totalPrice, discountPrice };
     };
 
     const createOrderBackend = async () => {
@@ -114,6 +113,7 @@ export default function CheckoutPaymentPage() {
 
             const { itemsPrice, taxPrice, shippingPrice, totalPrice, discountPrice } = calculateTotals();
             const cartItems = cart?.cartItems || [];
+            const onlineIdempotencyKey = `idem_rzp_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
 
             const { data: res } = await api.post('/checkout/create-order', {
                 addressId: checkoutData.address?._id,
@@ -136,7 +136,7 @@ export default function CheckoutPaymentPage() {
                 paymentMethod: 'razorpay',
                 shippingProvider: checkoutData.shippingProvider || 'Wayuvega',
                 email: user?.email || checkoutData.address?.email || '',
-                idempotencyKey,
+                idempotencyKey: onlineIdempotencyKey,
                 termsAccepted: true,
                 appliedCoupon: checkoutData.coupon ? {
                     code: checkoutData.coupon.code,
@@ -177,6 +177,7 @@ export default function CheckoutPaymentPage() {
 
             const { itemsPrice, taxPrice, shippingPrice, totalPrice, discountPrice, codPrice } = calculateTotals();
             const cartItems = cart?.cartItems || [];
+            const codIdempotencyKey = `idem_cod_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
 
             const { data: res } = await api.post('/checkout/create-order', {
                 addressId: checkoutData.address?._id,
@@ -199,7 +200,7 @@ export default function CheckoutPaymentPage() {
                 paymentMethod: 'COD',
                 shippingProvider: checkoutData.shippingProvider || 'Wayuvega',
                 email: user?.email || checkoutData.address?.email || '',
-                idempotencyKey,
+                idempotencyKey: codIdempotencyKey,
                 termsAccepted: true,
                 appliedCoupon: checkoutData.coupon ? {
                     code: checkoutData.coupon.code,
@@ -286,8 +287,8 @@ export default function CheckoutPaymentPage() {
                                                 </div>
                                             )}
                                             <div className="flex justify-between text-stone-600">
-                                                <span>GST (Taxes)</span>
-                                                <span className="font-bold text-stone-900">₹{taxPrice.toFixed(2)}</span>
+                                                <span>Taxes & GST</span>
+                                                <span className="font-bold text-emerald-800">Included in MRP</span>
                                             </div>
                                             {checkoutData.discount > 0 && (
                                                 <div className="flex justify-between text-emerald-700 font-bold">
@@ -464,6 +465,11 @@ export default function CheckoutPaymentPage() {
                                                     }}
                                                     disabled={!termsAccepted}
                                                     onBeforePayment={createOrderBackend}
+                                                    onDismiss={() => {
+                                                        setActivePaymentOrderId(null);
+                                                        setCreatingOrder(false);
+                                                        setOrderError('Online payment window closed. You can retry paying online or choose Cash on Delivery (COD) below.');
+                                                    }}
                                                     onSuccess={(verifyData) => {
                                                         trackWebsiteEvent('purchase', {
                                                             orderId: activePaymentOrderId || checkoutData.orderId,
@@ -480,7 +486,7 @@ export default function CheckoutPaymentPage() {
                                                     disabled={creatingOrder || !termsAccepted}
                                                     className="w-full bg-[#053807] hover:bg-[#074609] text-white py-4 rounded-xl font-bold text-base shadow-lg transition-all flex items-center justify-center gap-2 border-none cursor-pointer disabled:opacity-50"
                                                 >
-                                                    {creatingOrder ? "Confirming Order with Wayuvega..." : <>Confirm COD Order (₹{totalPrice.toLocaleString()}) <ArrowRight size={18} /></>}
+                                                    {creatingOrder ? "Confirming COD Order..." : <>Confirm COD Order (₹{totalPrice.toLocaleString()}) <ArrowRight size={18} /></>}
                                                 </AnimatedButton>
                                             )}
 
