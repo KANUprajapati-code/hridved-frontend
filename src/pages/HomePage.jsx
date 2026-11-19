@@ -232,19 +232,53 @@ const HomePage = () => {
         countInStock: 100
     };
 
-    const baseUnitPrice = heroProduct.price || 999;
     const baseUnitMrp = heroProduct.mrp || 999;
 
-    const heroPacks = [
+    const heroPacks = (heroProduct.variants && heroProduct.variants.length > 0) ? [
+        {
+            id: '15ml',
+            title: heroProduct.variants[0]?.name || '1 Pack (15ml)',
+            badge: '5% OFF',
+            duration: '30-Day Immuno Course',
+            bottleCount: 1,
+            price: Number(heroProduct.variants[0]?.price) || 949,
+            mrp: Number(heroProduct.variants[0]?.mrp) || baseUnitMrp,
+            savings: (Number(heroProduct.variants[0]?.mrp) || baseUnitMrp) - (Number(heroProduct.variants[0]?.price) || 949),
+            discountPct: 5,
+        },
+        {
+            id: '30ml',
+            title: heroProduct.variants[1]?.name || '2 Pack (2x15ml)',
+            badge: '10% OFF',
+            duration: '60-Day Brain & Growth Pack',
+            bottleCount: 2,
+            price: Number(heroProduct.variants[1]?.price) || 1798,
+            mrp: Number(heroProduct.variants[1]?.mrp) || (baseUnitMrp * 2),
+            savings: (Number(heroProduct.variants[1]?.mrp) || (baseUnitMrp * 2)) - (Number(heroProduct.variants[1]?.price) || 1798),
+            discountPct: 10,
+            isPopular: true
+        },
+        {
+            id: '45ml',
+            title: heroProduct.variants[2]?.name || '3 Pack (3x15ml)',
+            badge: '15% OFF',
+            duration: '90-Day Complete Sanskar Kit',
+            bottleCount: 3,
+            price: Number(heroProduct.variants[2]?.price) || 2547,
+            mrp: Number(heroProduct.variants[2]?.mrp) || (baseUnitMrp * 3),
+            savings: (Number(heroProduct.variants[2]?.mrp) || (baseUnitMrp * 3)) - (Number(heroProduct.variants[2]?.price) || 2547),
+            discountPct: 15,
+        }
+    ] : [
         {
             id: '15ml',
             title: '1 Pack (15ml)',
             badge: '5% OFF',
             duration: '30-Day Immuno Course',
             bottleCount: 1,
-            price: Math.round(baseUnitPrice * 0.95),
+            price: Math.round(baseUnitMrp * 0.95),
             mrp: baseUnitMrp,
-            savings: Math.round(baseUnitMrp - (baseUnitPrice * 0.95)),
+            savings: Math.round(baseUnitMrp - (baseUnitMrp * 0.95)),
             discountPct: 5,
         },
         {
@@ -253,9 +287,9 @@ const HomePage = () => {
             badge: '10% OFF',
             duration: '60-Day Brain & Growth Pack',
             bottleCount: 2,
-            price: Math.round((baseUnitPrice * 2) * 0.90),
+            price: Math.round((baseUnitMrp * 2) * 0.90),
             mrp: baseUnitMrp * 2,
-            savings: Math.round((baseUnitMrp * 2) - ((baseUnitPrice * 2) * 0.90)),
+            savings: Math.round((baseUnitMrp * 2) - ((baseUnitMrp * 2) * 0.90)),
             discountPct: 10,
             isPopular: true
         },
@@ -265,9 +299,9 @@ const HomePage = () => {
             badge: '15% OFF',
             duration: '90-Day Complete Sanskar Kit',
             bottleCount: 3,
-            price: Math.round((baseUnitPrice * 3) * 0.85),
+            price: Math.round((baseUnitMrp * 3) * 0.85),
             mrp: baseUnitMrp * 3,
-            savings: Math.round((baseUnitMrp * 3) - ((baseUnitPrice * 3) * 0.85)),
+            savings: Math.round((baseUnitMrp * 3) - ((baseUnitMrp * 3) * 0.85)),
             discountPct: 15,
         }
     ];

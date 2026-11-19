@@ -31,11 +31,46 @@ const ProductCard = ({ product, onQuickView }) => {
     const { animateAddToCart } = useFlyingElement();
     const imageRef = useRef(null);
 
-    // Extract pack size from product or name
-    const packSize = product.packSize || product.name.match(/\b\d+\s*(?:ml|gm|g|kg|l)\b/i)?.[0] || '';
-    const hasDiscount = product.mrp > product.price;
-    const discountPercent = hasDiscount ? Math.round(((product.mrp - product.price) / product.mrp) * 100) : 0;
+    // Resolve variants for product (including Suvarnaprashan fallback)
+    const availableVariants = (product.variants && Array.isArray(product.variants) && product.variants.length > 0)
+        ? product.variants
+        : (product._id === '69999d3f601a51e1407f45cc' || product.name?.toLowerCase().includes('suvrnaprasan drop 15ml'))
+            ? [
+                { id: 'single', name: '1 Pack (15ml)', shortName: '1 Pack', price: 949, mrp: 999, stock: 91, multiplier: 1 },
+                { id: 'twin', name: '2 Pack (2x15ml)', shortName: '2 Pack', price: 1798, mrp: 1998, stock: 45, multiplier: 2 },
+                { id: 'triple', name: '3 Pack (3x15ml)', shortName: '3 Pack', price: 2547, mrp: 2997, stock: 30, multiplier: 3 }
+            ]
+            : null;
+
+    const [selectedVariantId, setSelectedVariantId] = useState(
+        availableVariants ? availableVariants[0].id : 'single'
+    );
+
+    const activeVariant = availableVariants
+        ? (availableVariants.find(v => v.id === selectedVariantId) || availableVariants[0])
+        : null;
+
+    const currentPrice = activeVariant ? Number(activeVariant.price) : Number(product.price);
+    const currentMrp = activeVariant ? Number(activeVariant.mrp) : Number(product.mrp || product.price);
+    const hasDiscount = currentMrp > currentPrice;
+    const discountPercent = hasDiscount ? Math.round(((currentMrp - currentPrice) / currentMrp) * 100) : 0;
     const hasGenuineReviews = Boolean(product.numReviews && product.numReviews > 0);
+
+    // Extract pack size from product, active variant, or name
+    const packSize = activeVariant ? (activeVariant.shortName || activeVariant.name) : (product.packSize || product.name.match(/\b\d+\s*(?:ml|gm|g|kg|l)\b/i)?.[0] || '');
+
+    const getItemForCart = () => {
+        if (!activeVariant) return product;
+        return {
+            ...product,
+            name: activeVariant.id === 'single' ? product.name : `${product.name} (${activeVariant.shortName || activeVariant.name})`,
+            price: currentPrice,
+            mrp: currentMrp,
+            sku: activeVariant.sku || product.sku,
+            selectedVariant: activeVariant.name,
+            countInStock: activeVariant.stock ?? product.countInStock,
+        };
+    };
 
     return (
         <div
@@ -90,7 +125,7 @@ const ProductCard = ({ product, onQuickView }) => {
                             onClick={(e) => {
                                 e.preventDefault();
                                 e.stopPropagation();
-                                onQuickView(product);
+                                onQuickView(getItemForCart());
                             }}
                             aria-label={`Quick view ${product.name}`}
                             className="absolute bottom-3 right-3 z-20 w-8 h-8 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center text-primary shadow-sm hover:bg-primary hover:text-white transition-all transform opacity-0 group-hover:opacity-100 duration-300 cursor-pointer focus:opacity-100 focus:outline-none focus:ring-2 focus:ring-primary"
@@ -170,19 +205,55 @@ const ProductCard = ({ product, onQuickView }) => {
                     </div>
                 </div>
 
+                {/* Variant Selection Pills (for products with pack variations like Suvarnaprashan) */}
+                {availableVariants && availableVariants.length > 1 && (
+                    <div className="flex items-center justify-center gap-1.5 mb-2 px-1">
+                        {availableVariants.map((v) => {
+                            const isSel = (activeVariant?.id || availableVariants[0].id) === v.id;
+                            const vPrice = Number(v.price);
+                            const vMrp = Number(v.mrp || vPrice);
+                            const vDiscount = vMrp > vPrice ? Math.round(((vMrp - vPrice) / vMrp) * 100) : 0;
+                            const pillLabel = v.id === 'single' ? '1 Pack' : v.id === 'twin' ? '2 Pack' : v.id === 'triple' ? '3 Pack' : (v.shortName || v.name);
+                            return (
+                                <button
+                                    key={v.id}
+                                    type="button"
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        setSelectedVariantId(v.id);
+                                    }}
+                                    className={`px-2 py-0.5 text-[10px] font-bold rounded-lg transition-all cursor-pointer border flex items-center gap-1 ${
+                                        isSel
+                                            ? 'bg-primary text-white border-primary shadow-xs'
+                                            : 'bg-gray-50 text-gray-700 border-gray-200 hover:border-gray-300'
+                                    }`}
+                                >
+                                    <span>{pillLabel}</span>
+                                    {vDiscount > 0 && (
+                                        <span className={`text-[9px] ${isSel ? 'text-secondary font-black' : 'text-emerald-700 font-bold'}`}>
+                                            {vDiscount}%
+                                        </span>
+                                    )}
+                                </button>
+                            );
+                        })}
+                    </div>
+                )}
+
                 {/* Pricing Display */}
                 <div className="flex items-baseline justify-center gap-1.5 sm:gap-2 mb-3 min-h-[26px] text-center px-1">
                     <span className="text-xs sm:text-sm font-black text-primary font-sans">
-                        ₹{product.price}
+                        ₹{currentPrice}
                     </span>
                     {hasDiscount && (
                         <span className="text-[11px] sm:text-xs text-gray-400 line-through font-medium">
-                            ₹{product.mrp}
+                            ₹{currentMrp}
                         </span>
                     )}
                     {hasDiscount && (
                         <span className="bg-emerald-50 text-emerald-800 text-[9px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded-md border border-emerald-100">
-                            Save ₹{product.mrp - product.price}
+                            Save ₹{currentMrp - currentPrice}
                         </span>
                     )}
                 </div>
@@ -192,13 +263,14 @@ const ProductCard = ({ product, onQuickView }) => {
                     <button
                         onClick={(e) => {
                             e.preventDefault();
+                            const item = getItemForCart();
                             if (!user) {
                                 openAuthModal({
                                     title: 'Login to Add to Cart',
-                                    description: `Please verify your phone to add ${product.name} to cart`,
+                                    description: `Please verify your phone to add ${item.name} to cart`,
                                     onSuccess: () => {
-                                        addToCart(product, 1);
-                                        trackLeadEvent({ actionType: 'add_to_cart', product });
+                                        addToCart(item, 1);
+                                        trackLeadEvent({ actionType: 'add_to_cart', product: item });
                                     },
                                 });
                                 return;
@@ -209,8 +281,8 @@ const ProductCard = ({ product, onQuickView }) => {
                             }
                             setCardAdded(true);
                             setTimeout(() => setCardAdded(false), 1200);
-                            addToCart(product, 1);
-                            trackLeadEvent({ actionType: 'add_to_cart', product });
+                            addToCart(item, 1);
+                            trackLeadEvent({ actionType: 'add_to_cart', product: item });
                         }}
                         aria-label={`Add ${product.name} to cart`}
                         className={`w-full h-8 sm:h-9.5 rounded-xl transition-all duration-300 flex items-center justify-center gap-1.5 font-bold text-[10px] sm:text-[11px] uppercase tracking-wider active:scale-[0.98] disabled:opacity-50 text-center cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary ${
@@ -237,8 +309,9 @@ const ProductCard = ({ product, onQuickView }) => {
                         onClick={(e) => {
                             e.preventDefault();
                             e.stopPropagation();
-                            addToCart(product, 1);
-                            trackLeadEvent({ actionType: 'buy_now', product });
+                            const item = getItemForCart();
+                            addToCart(item, 1);
+                            trackLeadEvent({ actionType: 'buy_now', product: item });
                             navigate('/checkout/address');
                         }}
                         aria-label={`Buy ${product.name} now`}

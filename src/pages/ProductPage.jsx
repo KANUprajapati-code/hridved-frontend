@@ -97,54 +97,90 @@ const ProductPage = () => {
     const variants = useMemo(() => {
         if (!product) return [];
         if (product.variants && Array.isArray(product.variants) && product.variants.length > 0) {
-            return product.variants;
+            return product.variants.map((v) => {
+                const vPrice = Number(v.price) || 0;
+                const vMrp = Number(v.mrp) || vPrice;
+                const vSavings = vMrp > vPrice ? vMrp - vPrice : 0;
+                const vDiscountPct = vMrp > vPrice ? Math.round(((vMrp - vPrice) / vMrp) * 100) : 0;
+                const short = v.id === 'single' ? '1 Pack (15ml)' : v.id === 'twin' ? '2 Pack (2x15ml)' : v.id === 'triple' ? '3 Pack (3x15ml)' : (v.shortName || v.name);
+                return {
+                    id: v.id,
+                    name: v.name,
+                    shortName: short,
+                    multiplier: v.multiplier || (v.id === 'triple' ? 3 : v.id === 'twin' ? 2 : 1),
+                    price: vPrice,
+                    mrp: vMrp,
+                    sku: v.sku || `${product.sku || 'HRV'}-${v.id}`,
+                    stock: v.stock ?? Math.floor((product.countInStock || 100) / (v.multiplier || 1)),
+                    badge: `${vDiscountPct}% OFF`,
+                    savings: vSavings,
+                    discountPct: vDiscountPct,
+                };
+            });
         }
 
-        const basePrice = Number(product.price) || 0;
-        const baseMrp = Number(product.mrp) || basePrice;
+        const baseMrp = Number(product.mrp) || 999;
         const baseStock = Number(product.countInStock) || 0;
         const idSuffix = (product._id || '').slice(-6).toUpperCase();
         const packLabel = product.packSize ? ` (${product.packSize})` : '';
+
+        // Standard pack calculations:
+        // Variant 1: 5% OFF (MRP 999 -> 949)
+        const singlePrice = product.price && Number(product.price) < baseMrp ? Number(product.price) : Math.round(baseMrp * 0.95);
+        const singleSavings = baseMrp - singlePrice;
+        const singleDiscountPct = Math.round((singleSavings / baseMrp) * 100);
+
+        // Variant 2: 10% OFF (MRP 1998 -> 1798)
+        const twinMrp = baseMrp * 2;
+        const twinPrice = Math.round(twinMrp * 0.90);
+        const twinSavings = twinMrp - twinPrice;
+        const twinDiscountPct = 10;
+
+        // Variant 3: 15% OFF (MRP 2997 -> 2547)
+        const tripleMrp = baseMrp * 3;
+        const triplePrice = Math.round(tripleMrp * 0.85);
+        const tripleSavings = tripleMrp - triplePrice;
+        const tripleDiscountPct = 15;
 
         return [
             {
                 id: 'single',
                 name: `Standard Pack${packLabel}`,
-                shortName: product.packSize || 'Single Pack',
+                shortName: '1 Pack (15ml)',
                 multiplier: 1,
-                price: basePrice,
+                price: singlePrice,
                 mrp: baseMrp,
                 sku: product.sku || `HRV-${idSuffix}-1PK`,
                 stock: baseStock,
-                badge: null,
-                savings: baseMrp > basePrice ? baseMrp - basePrice : 0,
-                discountPct: baseMrp > basePrice ? Math.round(((baseMrp - basePrice) / baseMrp) * 100) : 0,
+                badge: `${singleDiscountPct}% OFF`,
+                savings: singleSavings,
+                discountPct: singleDiscountPct,
             },
             {
                 id: 'twin',
-                name: `Double Value Pack (2x ${product.packSize || 'Units'})`,
-                shortName: 'Pack of 2',
+                name: `Double Value Pack (2x ${product.packSize || '15ml'})`,
+                shortName: '2 Pack (2x15ml)',
                 multiplier: 2,
-                price: Math.round(basePrice * 2 * 0.9), // 10% bundle savings
-                mrp: baseMrp * 2,
+                price: twinPrice,
+                mrp: twinMrp,
                 sku: `${product.sku || `HRV-${idSuffix}`}-2PK`,
                 stock: Math.floor(baseStock / 2),
                 badge: '10% OFF',
-                savings: (baseMrp * 2) - Math.round(basePrice * 2 * 0.9),
-                discountPct: Math.round((((baseMrp * 2) - Math.round(basePrice * 2 * 0.9)) / (baseMrp * 2)) * 100),
+                savings: twinSavings,
+                discountPct: twinDiscountPct,
             },
             {
                 id: 'triple',
-                name: `3-Month Treatment Course (3x ${product.packSize || 'Units'})`,
-                shortName: 'Pack of 3',
+                name: `3-Month Treatment Course (3x ${product.packSize || '15ml'})`,
+                shortName: '3 Pack (3x15ml)',
                 multiplier: 3,
-                price: Math.round(basePrice * 3 * 0.85), // 15% course savings
-                mrp: baseMrp * 3,
+                price: triplePrice,
+                mrp: tripleMrp,
                 sku: `${product.sku || `HRV-${idSuffix}`}-3PK`,
                 stock: Math.floor(baseStock / 3),
                 badge: '15% OFF',
-                savings: (baseMrp * 3) - Math.round(basePrice * 3 * 0.85),
-                discountPct: Math.round((((baseMrp * 3) - Math.round(basePrice * 3 * 0.85)) / (baseMrp * 3)) * 100),
+                savings: tripleSavings,
+                discountPct: tripleDiscountPct,
             },
         ];
     }, [product]);
@@ -152,16 +188,20 @@ const ProductPage = () => {
     // Active variant object
     const activeVariant = useMemo(() => {
         if (!variants || variants.length === 0) {
+            const vPrice = Number(product?.price) || 949;
+            const vMrp = Number(product?.mrp) || 999;
+            const vSavings = vMrp > vPrice ? vMrp - vPrice : 0;
+            const vDiscountPct = vMrp > vPrice ? Math.round(((vMrp - vPrice) / vMrp) * 100) : 0;
             return {
                 id: 'single',
                 name: 'Standard Pack',
-                shortName: 'Standard Pack',
-                price: product?.price || 0,
-                mrp: product?.mrp || 0,
+                shortName: '1 Pack (15ml)',
+                price: vPrice,
+                mrp: vMrp,
                 sku: product?.sku || `HRV-${(product?._id || '').slice(-6).toUpperCase()}-1PK`,
                 stock: product?.countInStock || 0,
-                savings: (product?.mrp || 0) > (product?.price || 0) ? (product.mrp - product.price) : 0,
-                discountPct: (product?.mrp || 0) > (product?.price || 0) ? Math.round(((product.mrp - product.price) / product.mrp) * 100) : 0,
+                savings: vSavings,
+                discountPct: vDiscountPct,
             };
         }
         return variants.find(v => v.id === selectedVariantId) || variants[0];
