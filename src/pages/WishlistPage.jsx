@@ -103,7 +103,7 @@ const WishlistPage = () => {
                         </Link>
                     </motion.div>
                 ) : (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 max-w-sm sm:max-w-none mx-auto w-full">
                         <AnimatePresence>
                             {wishlist.map((item) => {
                                 const productId = item._id || item;

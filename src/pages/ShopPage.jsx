@@ -738,7 +738,7 @@ const ShopPage = () => {
                             )}
 
                             {loading && products.length === 0 ? (
-                                <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-sm sm:max-w-none mx-auto w-full">
                                     <ProductCardSkeleton count={6} />
                                 </div>
                             ) : products.length === 0 ? (
@@ -758,7 +758,7 @@ const ShopPage = () => {
                                     </button>
                                 </div>
                             ) : (
-                                <div className={`grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 transition-opacity duration-150 ${isRefetching ? 'opacity-60' : 'opacity-100'}`}>
+                                <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-sm sm:max-w-none mx-auto w-full transition-opacity duration-150 ${isRefetching ? 'opacity-60' : 'opacity-100'}`}>
                                     {products.map((product) => (
                                         <div key={product._id} className="h-full">
                                             <ProductCard product={product} onQuickView={handleQuickView} />

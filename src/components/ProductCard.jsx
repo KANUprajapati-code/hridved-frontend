@@ -171,24 +171,24 @@ const ProductCard = ({ product, onQuickView }) => {
                 </div>
 
                 {/* Pricing Display */}
-                <div className="flex items-baseline justify-center gap-1.5 sm:gap-2 mb-3 min-h-[26px] text-center px-1">
-                    <span className="text-xs sm:text-sm font-black text-primary font-sans">
+                <div className="flex items-baseline justify-center gap-2 mb-3 min-h-[26px] text-center px-1">
+                    <span className="text-sm sm:text-base font-black text-primary font-sans">
                         ₹{product.price}
                     </span>
                     {hasDiscount && (
-                        <span className="text-[11px] sm:text-xs text-gray-400 line-through font-medium">
+                        <span className="text-xs sm:text-sm text-gray-400 line-through font-medium">
                             ₹{product.mrp}
                         </span>
                     )}
                     {hasDiscount && (
-                        <span className="bg-emerald-50 text-emerald-800 text-[9px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded-md border border-emerald-100">
+                        <span className="bg-emerald-50 text-emerald-800 text-[10px] sm:text-[11px] font-bold px-2 py-0.5 rounded-md border border-emerald-100">
                             Save ₹{product.mrp - product.price}
                         </span>
                     )}
                 </div>
 
                 {/* Action Buttons: Add to Cart & Buy Now */}
-                <div className="flex flex-col sm:grid sm:grid-cols-2 gap-1.5 mt-auto pt-1 w-full">
+                <div className="grid grid-cols-2 gap-2 mt-auto pt-1 w-full">
                     <button
                         onClick={(e) => {
                             e.preventDefault();
@@ -213,7 +213,7 @@ const ProductCard = ({ product, onQuickView }) => {
                             trackLeadEvent({ actionType: 'add_to_cart', product });
                         }}
                         aria-label={`Add ${product.name} to cart`}
-                        className={`w-full h-8 sm:h-9.5 rounded-xl transition-all duration-300 flex items-center justify-center gap-1.5 font-bold text-[10px] sm:text-[11px] uppercase tracking-wider active:scale-[0.98] disabled:opacity-50 text-center cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary ${
+                        className={`w-full h-9 sm:h-9.5 rounded-xl transition-all duration-300 flex items-center justify-center gap-1.5 font-bold text-[10.5px] sm:text-[11px] uppercase tracking-wider active:scale-[0.98] disabled:opacity-50 text-center cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary ${
                             cardAdded
                                 ? 'bg-emerald-700 text-white shadow-sm'
                                 : 'bg-primary text-white hover:bg-opacity-95 hover:shadow-md'
@@ -243,7 +243,7 @@ const ProductCard = ({ product, onQuickView }) => {
                         }}
                         aria-label={`Buy ${product.name} now`}
                         disabled={product.countInStock === 0}
-                        className="w-full h-8 sm:h-9.5 bg-gradient-to-r from-secondary to-[#c59e2b] text-primary rounded-xl hover:brightness-105 hover:shadow-md transition-all duration-300 flex items-center justify-center gap-1.5 font-bold text-[10px] sm:text-[11px] uppercase tracking-wider active:scale-[0.98] disabled:opacity-50 text-center cursor-pointer shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary"
+                        className="w-full h-9 sm:h-9.5 bg-gradient-to-r from-secondary to-[#c59e2b] text-primary rounded-xl hover:brightness-105 hover:shadow-md transition-all duration-300 flex items-center justify-center gap-1.5 font-bold text-[10.5px] sm:text-[11px] uppercase tracking-wider active:scale-[0.98] disabled:opacity-50 text-center cursor-pointer shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary"
                         title={`Buy ${product.name} Now`}
                     >
                         <Zap size={13} className="shrink-0 fill-current" />

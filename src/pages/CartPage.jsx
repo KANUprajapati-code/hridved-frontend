@@ -317,7 +317,7 @@ const CartPage = () => {
                             <h3 className="text-xl font-serif font-bold text-primary mb-6 text-center">
                                 Bestselling Classical Remedies
                             </h3>
-                            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-sm sm:max-w-none mx-auto w-full">
                                 {recommendedProducts.map((p) => (
                                     <ProductCard key={p._id} product={p} />
                                 ))}
@@ -816,7 +816,7 @@ const CartPage = () => {
                             <h3 className="text-xl sm:text-2xl font-serif font-bold text-primary mb-6">
                                 Recommended Formulations For You
                             </h3>
-                            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-6">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-sm sm:max-w-none mx-auto w-full">
                                 {recommendedProducts.map((p) => (
                                     <ProductCard key={p._id} product={p} />
                                 ))}
