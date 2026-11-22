@@ -15,65 +15,29 @@ const QuickViewModal = ({ product, isOpen, onClose }) => {
     const [quantity, setQuantity] = useState(1);
     const isWishlisted = isInWishlist(product?._id);
 
-    const availableVariants = (product?.variants && Array.isArray(product.variants) && product.variants.length > 0)
-        ? product.variants
-        : (product?._id === '69999d3f601a51e1407f45cc' || product?.name?.toLowerCase().includes('suvrnaprasan drop 15ml'))
-            ? [
-                { id: 'single', name: '1 Pack (15ml)', shortName: '1 Pack', price: 949, mrp: 999, stock: 91, multiplier: 1 },
-                { id: 'twin', name: '2 Pack (2x15ml)', shortName: '2 Pack', price: 1798, mrp: 1998, stock: 45, multiplier: 2 },
-                { id: 'triple', name: '3 Pack (3x15ml)', shortName: '3 Pack', price: 2547, mrp: 2997, stock: 30, multiplier: 3 }
-            ]
-            : null;
-
-    const [selectedVariantId, setSelectedVariantId] = useState(
-        availableVariants ? availableVariants[0].id : 'single'
-    );
-
-    const activeVariant = availableVariants
-        ? (availableVariants.find(v => v.id === selectedVariantId) || availableVariants[0])
-        : null;
-
-    const currentPrice = activeVariant ? Number(activeVariant.price) : Number(product?.price || 0);
-    const currentMrp = activeVariant ? Number(activeVariant.mrp) : Number(product?.mrp || product?.originalPrice || currentPrice);
-
     if (!isOpen || !product) return null;
 
-    const getItemForCart = () => {
-        if (!activeVariant) return product;
-        return {
-            ...product,
-            name: activeVariant.id === 'single' ? product.name : `${product.name} (${activeVariant.shortName || activeVariant.name})`,
-            price: currentPrice,
-            mrp: currentMrp,
-            sku: activeVariant.sku || product.sku,
-            selectedVariant: activeVariant.name,
-            countInStock: activeVariant.stock ?? product.countInStock,
-        };
-    };
-
     const handleBuyNow = () => {
-        const item = getItemForCart();
-        addToCart(item, quantity);
-        trackLeadEvent({ actionType: 'buy_now', product: item });
+        addToCart(product, quantity);
+        trackLeadEvent({ actionType: 'buy_now', product });
         onClose();
         navigate('/checkout/address');
     };
 
     const handleAddToCart = () => {
-        const item = getItemForCart();
         if (!user) {
             openAuthModal({
                 title: 'Login to Add to Cart',
-                description: `Please verify your phone to add ${item.name} to cart`,
+                description: `Please verify your phone to add ${product.name} to cart`,
                 onSuccess: () => {
-                    addToCart(item, quantity);
-                    trackLeadEvent({ actionType: 'add_to_cart', product: item });
+                    addToCart(product, quantity);
+                    trackLeadEvent({ actionType: 'add_to_cart', product });
                 },
             });
             return;
         }
-        addToCart(item, quantity);
-        trackLeadEvent({ actionType: 'add_to_cart', product: item });
+        addToCart(product, quantity);
+        trackLeadEvent({ actionType: 'add_to_cart', product });
     };
 
     return (
@@ -137,60 +101,23 @@ const QuickViewModal = ({ product, isOpen, onClose }) => {
                             </div>
 
                             {/* Price */}
-                            <div className="mb-4">
-                                <div className="flex items-center gap-3">
+                            <div className="mb-6">
+                                <div className="flex items-center gap-4">
                                     <span className="text-3xl font-bold text-gray-900 font-sans">
-                                        ₹{currentPrice}
+                                        ₹{product.price}
                                     </span>
-                                    {currentMrp > currentPrice && (
+                                    {product.mrp && Number(product.mrp) > Number(product.price) && (
                                         <span className="text-lg text-gray-400 line-through font-medium">
-                                            ₹{currentMrp}
+                                            ₹{product.mrp}
                                         </span>
                                     )}
-                                    {currentMrp > currentPrice && (
+                                    {product.mrp && Number(product.mrp) > Number(product.price) && (
                                         <span className="bg-emerald-50 text-emerald-800 text-xs font-bold px-2 py-0.5 rounded-md border border-emerald-100">
-                                            {Math.round(((currentMrp - currentPrice) / currentMrp) * 100)}% OFF
+                                            {Math.round(((product.mrp - product.price) / product.mrp) * 100)}% OFF
                                         </span>
                                     )}
                                 </div>
                             </div>
-
-                            {/* Variant Selection Pills */}
-                            {availableVariants && availableVariants.length > 1 && (
-                                <div className="mb-4">
-                                    <label className="text-xs font-bold uppercase tracking-wider text-gray-700 block mb-2">
-                                        Select Pack:
-                                    </label>
-                                    <div className="flex flex-wrap gap-2">
-                                        {availableVariants.map((v) => {
-                                            const isSel = (activeVariant?.id || availableVariants[0].id) === v.id;
-                                            const vPrice = Number(v.price);
-                                            const vMrp = Number(v.mrp || vPrice);
-                                            const vDiscount = vMrp > vPrice ? Math.round(((vMrp - vPrice) / vMrp) * 100) : 0;
-                                            const pillLabel = v.id === 'single' ? '1 Pack' : v.id === 'twin' ? '2 Pack' : v.id === 'triple' ? '3 Pack' : (v.shortName || v.name);
-                                            return (
-                                                <button
-                                                    key={v.id}
-                                                    type="button"
-                                                    onClick={() => setSelectedVariantId(v.id)}
-                                                    className={`px-3 py-1.5 text-xs font-bold rounded-xl transition-all cursor-pointer border flex items-center gap-1.5 ${
-                                                        isSel
-                                                            ? 'bg-primary text-white border-primary shadow-xs'
-                                                            : 'bg-gray-50 text-gray-700 border-gray-200 hover:border-gray-300'
-                                                    }`}
-                                                >
-                                                    <span>{pillLabel}</span>
-                                                    {vDiscount > 0 && (
-                                                        <span className={`text-[10px] ${isSel ? 'text-secondary font-black' : 'text-emerald-700 font-bold'}`}>
-                                                            ({vDiscount}% OFF)
-                                                        </span>
-                                                    )}
-                                                </button>
-                                            );
-                                        })}
-                                    </div>
-                                </div>
-                            )}
 
                             {/* Description */}
                             <div className="mb-6">
