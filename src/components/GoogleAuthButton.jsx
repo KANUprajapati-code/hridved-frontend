@@ -5,10 +5,14 @@ import { motion } from 'framer-motion';
 import api from '../utils/api';
 import { useAuth } from '../context/AuthContext';
 
+const DEFAULT_GOOGLE_CLIENT_ID = '71984050536-acp2k06vltsbb3vejj80k0rffhgl48c7.apps.googleusercontent.com';
+
 const GoogleAuthButton = ({ text = 'Continue with Google', redirect = '/' }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [googleClientId, setGoogleClientId] = useState(null);
+  const [googleClientId, setGoogleClientId] = useState(
+    import.meta.env.VITE_GOOGLE_CLIENT_ID || DEFAULT_GOOGLE_CLIENT_ID
+  );
   const { user, googleLogin } = useAuth();
   const navigate = useNavigate();
 
@@ -21,13 +25,13 @@ const GoogleAuthButton = ({ text = 'Continue with Google', redirect = '/' }) => 
           setGoogleClientId(response.data.googleClientId);
         }
       } catch (err) {
-        console.error('Failed to fetch Google Client ID:', err);
+        console.warn('Google Client ID using configured default:', err.message);
       }
     };
 
     fetchGoogleClientId();
 
-    // Load Google Identity Services (New)
+    // Load Google Identity Services
     if (!document.querySelector('script[src="https://accounts.google.com/gsi/client"]')) {
       const script = document.createElement('script');
       script.async = true;
@@ -41,6 +45,8 @@ const GoogleAuthButton = ({ text = 'Continue with Google', redirect = '/' }) => 
     setLoading(true);
     setError(null);
 
+    const activeClientId = googleClientId || DEFAULT_GOOGLE_CLIENT_ID;
+
     try {
       if (!window.google || !window.google.accounts || !window.google.accounts.oauth2) {
         throw new Error('Google Identity Services not loaded');
@@ -48,7 +54,7 @@ const GoogleAuthButton = ({ text = 'Continue with Google', redirect = '/' }) => 
 
       // Use Token Model for custom buttons
       const client = google.accounts.oauth2.initTokenClient({
-        client_id: googleClientId,
+        client_id: activeClientId,
         scope: 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email',
         callback: async (tokenResponse) => {
           if (tokenResponse && tokenResponse.access_token) {
@@ -57,7 +63,6 @@ const GoogleAuthButton = ({ text = 'Continue with Google', redirect = '/' }) => 
               await googleLogin(tokenResponse.access_token);
 
               // Redirect to specified page with FULL REFRESH to ensure state is clean
-              // This satisfies the user's request for "auto metic refresh"
               window.location.href = redirect;
             } catch (err) {
               console.error('Backend Google auth error:', err);
@@ -77,7 +82,7 @@ const GoogleAuthButton = ({ text = 'Continue with Google', redirect = '/' }) => 
 
       // Trigger the popup IMMEDIATELY after creation
       client.requestAccessToken();
-      setLoading(false); // Hide loading since popup is now managed by Google
+      setLoading(false);
 
     } catch (err) {
       console.error('Google sign-in error:', err);
@@ -85,10 +90,6 @@ const GoogleAuthButton = ({ text = 'Continue with Google', redirect = '/' }) => 
       setLoading(false);
     }
   };
-
-  if (!googleClientId || googleClientId === 'NOT_CONFIGURED') {
-    return null;
-  }
 
   return (
     <div className="w-full">
@@ -109,7 +110,7 @@ const GoogleAuthButton = ({ text = 'Continue with Google', redirect = '/' }) => 
         whileTap={{ scale: loading ? 1 : 0.98 }}
         className={`w-full flex items-center justify-center gap-3 px-4 py-2.5 border border-gray-300 rounded-lg font-medium transition-all ${loading
           ? 'bg-gray-100 cursor-not-allowed text-gray-600'
-          : 'bg-white hover:bg-gray-50 text-gray-700 hover:shadow-md'
+          : 'bg-white hover:bg-gray-50 text-gray-700 hover:shadow-md cursor-pointer'
           }`}
       >
         <svg className="w-5 h-5" viewBox="0 0 48 48">
@@ -119,7 +120,7 @@ const GoogleAuthButton = ({ text = 'Continue with Google', redirect = '/' }) => 
           <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z" />
           <path fill="none" d="M0 0h48v48H0z" />
         </svg>
-        {loading ? 'Signing in...' : text}
+        <span>{text}</span>
       </motion.button>
     </div>
   );
