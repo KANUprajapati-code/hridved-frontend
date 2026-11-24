@@ -261,6 +261,7 @@ const ProductPage = () => {
             price: activeVariant.price,
             mrp: activeVariant.mrp,
             sku: activeVariant.sku,
+            variantId: activeVariant.id,
             selectedVariant: activeVariant.shortName || activeVariant.name,
             countInStock: activeVariant.stock,
         };

@@ -109,15 +109,23 @@ const CartPage = () => {
         return Object.keys(errors).length === 0;
     };
 
-    // Server-recalculated totals
-    const subtotal = serverTotals.itemsPrice || cartItems.reduce((acc, item) => acc + (Number(item.qty) || 1) * (Number(item.price) || 0), 0);
+    // Verified cart totals calculation
+    const calculatedItemsSubtotal = cartItems.reduce((acc, item) => acc + (Number(item.qty) || 1) * (Number(item.price) || 0), 0);
+    const calculatedMrpTotal = cartItems.reduce((acc, item) => acc + (Number(item.qty) || 1) * (Number(item.mrp || item.price) || 0), 0);
+    // If serverTotals is populated and consistent with actual cart items, use server subtotal; otherwise use calculated subtotal
+    const subtotal = (serverTotals.itemsPrice > 0 && Math.abs(serverTotals.itemsPrice - calculatedItemsSubtotal) < 5)
+        ? serverTotals.itemsPrice
+        : calculatedItemsSubtotal;
+    const mrpSavings = (serverTotals.mrpSavings > 0 && serverTotals.itemsPrice === subtotal)
+        ? serverTotals.mrpSavings
+        : Math.max(0, calculatedMrpTotal - subtotal);
     const discount = serverTotals.discount || 0;
-    const shipping = serverTotals.shippingPrice;
-    const isFreeShipping = shipping === 0;
-    const freeShippingThreshold = serverTotals.freeShippingThreshold || 999;
-    const amountNeeded = serverTotals.amountNeededForFreeShipping;
+    const isFreeShipping = (subtotal - discount) >= 999;
+    const shipping = isFreeShipping || subtotal === 0 ? 0 : 49;
+    const freeShippingThreshold = 999;
+    const amountNeeded = Math.max(0, freeShippingThreshold - Math.max(0, subtotal - discount));
     const progressPercent = Math.min(100, Math.round((Math.max(0, subtotal - discount) / freeShippingThreshold) * 100));
-    const grandTotal = serverTotals.totalPrice || Math.max(0, subtotal - discount + shipping);
+    const grandTotal = Math.max(0, subtotal - discount + shipping);
 
     useEffect(() => {
         if (cartItems.length > 0) {
@@ -521,10 +529,10 @@ const CartPage = () => {
                                         <span className="font-bold text-gray-900 font-sans">₹{subtotal.toLocaleString()}</span>
                                     </div>
 
-                                    {serverTotals.mrpSavings > 0 && (
+                                    {mrpSavings > 0 && (
                                         <div className="flex justify-between text-emerald-700 text-xs">
                                             <span>MRP Direct Savings</span>
-                                            <span className="font-bold">Save ₹{serverTotals.mrpSavings.toLocaleString()}</span>
+                                            <span className="font-bold">Save ₹{mrpSavings.toLocaleString()}</span>
                                         </div>
                                     )}
 

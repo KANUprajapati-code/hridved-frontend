@@ -314,6 +314,7 @@ const HomePage = () => {
         price: currentPack.price,
         mrp: currentPack.mrp,
         countInStock: heroProduct.countInStock || 100,
+        variantId: currentPack.id,
         selectedVariant: currentPack.title,
         multiplier: currentPack.bottleCount || 1,
     };

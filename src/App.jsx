@@ -1,6 +1,7 @@
 
-import { useState, useEffect, lazy, Suspense } from 'react';
+import { Component, useState, useEffect, lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { RotateCw, AlertTriangle } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { AuthProvider } from './context/AuthContext';
 import { WishlistProvider } from './context/WishlistContext';
@@ -20,19 +21,65 @@ import HomePage from './pages/HomePage';
 
 // Resilient lazy load with auto-recovery on deployment bundle updates
 const lazyWithRetry = (importFn) =>
-    lazy(() =>
-        importFn().catch((error) => {
+    lazy(async () => {
+        try {
+            return await importFn();
+        } catch (error) {
             console.warn('[Vite] Dynamic chunk import failed, refreshing page with latest assets...', error);
-            const key = 'chunk_reload_' + window.location.pathname;
+            const key = 'chunk_reload_' + (window.location.pathname || 'app');
             if (!sessionStorage.getItem(key)) {
                 sessionStorage.setItem(key, 'true');
                 window.location.reload();
-                return new Promise(() => {});
+                // Short safety timeout to avoid indefinite hanging before reload completes
+                await new Promise((resolve) => setTimeout(resolve, 2500));
             }
             sessionStorage.removeItem(key);
             throw error;
-        })
-    );
+        }
+    });
+
+// Resilient Route Error Boundary to prevent blank screens or infinite loader freezes
+class RouteErrorBoundary extends Component {
+    constructor(props) {
+        super(props);
+        this.state = { hasError: false, error: null };
+    }
+    static getDerivedStateFromError(error) {
+        return { hasError: true, error };
+    }
+    componentDidCatch(error, errorInfo) {
+        console.error('Route render error captured by RouteErrorBoundary:', error, errorInfo);
+    }
+    handleReload = () => {
+        try {
+            sessionStorage.clear();
+        } catch (e) {}
+        window.location.reload();
+    };
+    render() {
+        if (this.state.hasError) {
+            return (
+                <div className="min-h-[60vh] flex flex-col items-center justify-center p-6 text-center bg-[#FDFBF7]">
+                    <div className="w-16 h-16 rounded-full bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-700 mb-4 shadow-sm">
+                        <AlertTriangle size={28} />
+                    </div>
+                    <h2 className="text-xl font-serif font-bold text-gray-900 mb-2">Formulation Page Updating</h2>
+                    <p className="text-xs sm:text-sm text-gray-600 max-w-md mb-6 leading-relaxed">
+                        A fresh update of the Hridved Ayurveda platform was deployed. Tap below to reload the latest version seamlessly.
+                    </p>
+                    <button
+                        onClick={this.handleReload}
+                        className="inline-flex items-center gap-2 px-6 py-2.5 bg-primary text-white text-xs font-bold uppercase tracking-wider rounded-xl hover:bg-primary/90 transition shadow-md cursor-pointer"
+                    >
+                        <RotateCw size={14} />
+                        <span>Refresh Page</span>
+                    </button>
+                </div>
+            );
+        }
+        return this.props.children;
+    }
+}
 
 // Lazy loaded secondary components
 const ShopPage = lazyWithRetry(() => import('./pages/ShopPage'));
@@ -120,8 +167,9 @@ function App() {
                                 <CheckoutProvider>
                                     <div className="min-h-screen bg-background">
                                         <ScrollToTop />
-                                        <Suspense fallback={<SimpleLoader />}>
-                                            <Routes>
+                                        <RouteErrorBoundary>
+                                            <Suspense fallback={<SimpleLoader />}>
+                                                <Routes>
                                                         {/* Public Routes */}
                                                         <Route element={<MainLayout />}>
                                                             <Route path="/" element={<HomePage />} />
@@ -191,6 +239,7 @@ function App() {
 
                                                 </Routes>
                                             </Suspense>
+                                        </RouteErrorBoundary>
                                     </div>
                             </CheckoutProvider>
                         </CartProvider>

@@ -140,16 +140,27 @@ export const CartProvider = ({ children }) => {
             });
 
             if (data.success) {
+                // Ensure itemsPrice from server never inexplicably diverges from legitimate client cart item totals
+                const localSubtotal = items.reduce((sum, it) => sum + (Number(it.price) || 0) * (Number(it.qty) || 1), 0);
+                const localMrpTotal = items.reduce((sum, it) => sum + (Number(it.mrp || it.price) || 0) * (Number(it.qty) || 1), 0);
+                const verifiedItemsPrice = (data.itemsPrice && data.itemsPrice > 0) ? data.itemsPrice : localSubtotal;
+                const verifiedMrpTotal = (data.mrpTotal && data.mrpTotal > 0) ? data.mrpTotal : localMrpTotal;
+                const verifiedMrpSavings = Math.max(0, verifiedMrpTotal - verifiedItemsPrice);
+                const discount = data.discount || 0;
+                const postDiscountSubtotal = Math.max(0, verifiedItemsPrice - discount);
+                const shippingPrice = data.shippingPrice !== undefined ? data.shippingPrice : (postDiscountSubtotal >= 999 || verifiedItemsPrice === 0 ? 0 : 49);
+                const totalPrice = postDiscountSubtotal + shippingPrice;
+
                 setServerTotals({
-                    itemsPrice: data.itemsPrice || 0,
-                    mrpTotal: data.mrpTotal || 0,
-                    mrpSavings: data.mrpSavings || 0,
-                    discount: data.discount || 0,
-                    shippingPrice: data.shippingPrice || 0,
+                    itemsPrice: verifiedItemsPrice,
+                    mrpTotal: verifiedMrpTotal,
+                    mrpSavings: verifiedMrpSavings,
+                    discount: discount,
+                    shippingPrice: shippingPrice,
                     freeShippingThreshold: data.freeShippingThreshold || 999,
-                    amountNeededForFreeShipping: data.amountNeededForFreeShipping || 0,
+                    amountNeededForFreeShipping: data.amountNeededForFreeShipping ?? Math.max(0, 999 - postDiscountSubtotal),
                     taxPrice: data.taxPrice || 0,
-                    totalPrice: data.totalPrice || 0,
+                    totalPrice: totalPrice,
                     coupon: data.coupon || null,
                     couponError: data.couponError || null,
                     stockWarnings: data.stockWarnings || [],
@@ -177,13 +188,16 @@ export const CartProvider = ({ children }) => {
             console.error('Server cart recalculation failed, using offline fallback:', error);
             // Offline fallback
             const fallbackSubtotal = items.reduce((sum, it) => sum + (Number(it.price) || 0) * (Number(it.qty) || 1), 0);
-            const fallbackShipping = fallbackSubtotal >= 999 ? 0 : 49;
+            const fallbackMrpTotal = items.reduce((sum, it) => sum + (Number(it.mrp || it.price) || 0) * (Number(it.qty) || 1), 0);
+            const fallbackSavings = Math.max(0, fallbackMrpTotal - fallbackSubtotal);
+            const fallbackShipping = fallbackSubtotal >= 999 || fallbackSubtotal === 0 ? 0 : 49;
             setServerTotals(prev => ({
                 ...prev,
                 itemsPrice: fallbackSubtotal,
-                mrpTotal: fallbackSubtotal,
-                mrpSavings: 0,
+                mrpTotal: fallbackMrpTotal,
+                mrpSavings: fallbackSavings,
                 shippingPrice: fallbackShipping,
+                amountNeededForFreeShipping: Math.max(0, 999 - fallbackSubtotal),
                 totalPrice: fallbackSubtotal + fallbackShipping,
                 loading: false,
             }));
@@ -256,24 +270,33 @@ export const CartProvider = ({ children }) => {
         }
 
         try {
+            const numQty = Math.max(1, parseInt(qty) || 1);
+            const itemPrice = parseFloat(product.price) || 0;
+            const itemMrp = parseFloat(product.mrp || product.price) || itemPrice;
+            const variantId = product.variantId || product.selectedVariantId || (product.selectedVariant?.id) || null;
+            const variantLabel = typeof product.selectedVariant === 'string'
+                ? product.selectedVariant
+                : (product.selectedVariant?.name || product.selectedVariant?.title || null);
+
             trackWebsiteEvent('add_to_cart', {
                 productId: product._id,
                 name: product.name,
-                price: parseFloat(product.price) || 0,
-                qty: Math.max(1, parseInt(qty)),
+                price: itemPrice,
+                qty: numQty,
                 product: product,
             });
             const cartItemData = {
                 product: product._id,
                 _id: product._id,
                 name: product.name,
-                qty: Math.max(1, parseInt(qty)),
+                qty: numQty,
                 image: product.image,
-                price: parseFloat(product.price),
-                mrp: parseFloat(product.mrp || product.price),
+                price: itemPrice,
+                mrp: itemMrp,
                 sku: product.sku || '',
                 packSize: product.packSize || '',
-                selectedVariant: product.selectedVariant || null,
+                variantId: variantId,
+                selectedVariant: variantLabel,
                 gst: product.gst || 0,
                 weight: product.weight || 0.5,
             };
@@ -301,12 +324,18 @@ export const CartProvider = ({ children }) => {
 
     const updateLocalCart = (currentCart, newItem) => {
         const existingItems = Array.isArray(currentCart?.cartItems) ? currentCart.cartItems : [];
+        const newPid = String(newItem.product || newItem._id);
         const incomingVar = String(newItem.selectedVariant || '').trim().toLowerCase();
+        
+        // Find if this product exists; if incoming has a variant, replace older empty/default pack of same medicine
         const itemIndex = existingItems.findIndex(item => {
-            const sameProduct = String(item.product) === String(newItem.product) || 
-                               String(item._id) === String(newItem._id);
+            const sameProduct = String(item.product) === newPid || String(item._id) === newPid;
+            if (!sameProduct) return false;
             const itemVar = String(item.selectedVariant || '').trim().toLowerCase();
-            return sameProduct && (incomingVar ? itemVar === incomingVar : true);
+            if (incomingVar) {
+                return itemVar === incomingVar || !itemVar;
+            }
+            return true;
         });
 
         let updatedItems;

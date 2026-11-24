@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
     Sparkles, X, Send, MessageCircle, HelpCircle, 
@@ -35,6 +35,8 @@ const renderFormattedText = (text) => {
 
 const AIAssistantModal = () => {
     const navigate = useNavigate();
+    const location = useLocation();
+    const isCartOrCheckout = location.pathname.startsWith('/cart') || location.pathname.startsWith('/checkout') || location.pathname.startsWith('/admin');
     const [isOpen, setIsOpen] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [inputText, setInputText] = useState('');
@@ -212,7 +214,7 @@ const AIAssistantModal = () => {
             {/* Floating Trigger Button */}
             <div className="fixed bottom-24 lg:bottom-8 right-4 sm:right-6 z-40">
                 <AnimatePresence>
-                    {!isOpen && (
+                    {!isOpen && !isCartOrCheckout && (
                         <motion.button
                             initial={{ scale: 0, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
