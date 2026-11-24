@@ -80,23 +80,47 @@ const ProductListPage = () => {
                             </thead>
                             <tbody>
                                 {products.map((product) => (
-                                    <tr key={product._id} className="border-b last:border-0 hover:bg-gray-50 transition">
-                                        <td className="py-3 px-4 text-sm">{product._id}</td>
-                                        <td className="py-3 px-4 text-sm font-medium">{product.name}</td>
+                                    <tr key={product._id} className="border-b last:border-0 hover:bg-gray-50/80 transition">
+                                        <td className="py-3 px-4 text-xs font-mono text-gray-400">{product._id?.slice(-6)}</td>
+                                        <td className="py-3 px-4 text-sm">
+                                            <div className="flex items-center gap-3">
+                                                {product.image && (
+                                                    <img src={product.image} alt={product.name} className="w-10 h-10 object-contain rounded-lg bg-stone-50 border border-stone-200 shrink-0" />
+                                                )}
+                                                <div>
+                                                    <Link to={`/admin/product/${product._id}/edit`} className="text-gray-900 hover:text-primary font-bold hover:underline block leading-snug">
+                                                        {product.name}
+                                                    </Link>
+                                                    <span className="text-[11px] text-gray-400 font-mono">{product.sku || 'No SKU'}</span>
+                                                </div>
+                                            </div>
+                                        </td>
                                         <td className="py-3 px-4 text-sm font-bold text-primary">₹{product.price}</td>
                                         <td className="py-3 px-4 text-sm text-gray-400 line-through">₹{product.mrp || 0}</td>
-                                        <td className="py-3 px-4 text-sm">{product.category}</td>
-                                        <td className="py-3 px-4 text-sm">HRIDVED</td>
-                                        <td className="py-3 px-4 text-sm flex gap-3">
-                                            <Link to={`/admin/product/${product._id}/edit`} className="text-blue-600 hover:text-blue-800">
-                                                <Edit2 size={18} />
-                                            </Link>
-                                            <button
-                                                onClick={() => deleteHandler(product._id)}
-                                                className="text-red-500 hover:text-red-700"
-                                            >
-                                                <Trash2 size={18} />
-                                            </button>
+                                        <td className="py-3 px-4 text-sm">
+                                            <span className="inline-block px-2 py-0.5 bg-gray-100 text-gray-700 rounded-md text-xs font-medium">
+                                                {product.category}
+                                            </span>
+                                        </td>
+                                        <td className="py-3 px-4 text-sm text-gray-500 font-medium">HRIDVED</td>
+                                        <td className="py-3 px-4 text-sm">
+                                            <div className="flex items-center gap-2">
+                                                <Link
+                                                    to={`/admin/product/${product._id}/edit`}
+                                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg text-xs font-bold transition-all shadow-xs cursor-pointer"
+                                                    title="Edit product formulation and variations"
+                                                >
+                                                    <Edit2 size={14} />
+                                                    <span>Edit</span>
+                                                </Link>
+                                                <button
+                                                    onClick={() => deleteHandler(product._id)}
+                                                    className="p-1.5 text-gray-400 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
+                                                    title="Delete product"
+                                                >
+                                                    <Trash2 size={16} />
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>
                                 ))}

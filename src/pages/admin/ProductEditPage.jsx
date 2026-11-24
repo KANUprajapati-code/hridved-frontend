@@ -30,6 +30,7 @@ const ProductEditPage = () => {
     const [uploading, setUploading] = useState(false);
     const [saving, setSaving] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [fetchError, setFetchError] = useState(null);
     const [categories, setCategories] = useState([]);
 
     useEffect(() => {
@@ -65,6 +66,7 @@ const ProductEditPage = () => {
                 setLoading(false);
             } catch (error) {
                 console.error('Error fetching product:', error);
+                setFetchError(error.response?.data?.message || 'Product not found or failed to load');
                 if (addToast) addToast('Failed to load product details', 'error');
                 setLoading(false);
             }
@@ -243,6 +245,26 @@ const ProductEditPage = () => {
     };
 
     if (loading) return <div className="text-center py-20 text-gray-500 font-bold">Loading Product Details...</div>;
+
+    if (fetchError) {
+        return (
+            <div className="container mx-auto px-4 py-16 max-w-md text-center">
+                <div className="bg-white border border-gray-200 rounded-3xl p-8 shadow-sm">
+                    <div className="w-12 h-12 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <AlertCircle size={24} />
+                    </div>
+                    <h2 className="text-lg font-bold text-gray-900 mb-2">Product Not Found</h2>
+                    <p className="text-xs text-gray-500 mb-6">{fetchError}</p>
+                    <Link
+                        to="/admin/productlist"
+                        className="inline-flex items-center gap-2 px-5 py-2.5 bg-primary text-white text-xs font-bold uppercase tracking-wider rounded-xl hover:bg-opacity-95 transition shadow-sm"
+                    >
+                        <ArrowLeft size={16} /> Return to Products List
+                    </Link>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="container mx-auto px-4 py-8 max-w-4xl">

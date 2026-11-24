@@ -144,11 +144,9 @@ const HomePage = () => {
                     try { localStorage.setItem('hridved_cached_categories', JSON.stringify(categoriesRes.data)); } catch (e) {}
                 }
                 setIsLoadingCategories(false);
-                setIsHeroLoaded(true);
             } catch (error) {
                 console.error("Failed to load data from MongoDB", error);
                 setIsLoadingCategories(false);
-                setIsHeroLoaded(true);
             }
         };
         fetchData();
