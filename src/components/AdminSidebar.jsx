@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, ShoppingBag, ShoppingCart, Users, FileText, LogOut, MessageSquare, Layout, ListOrdered, Tag, ArrowLeft, X, Truck, Calendar, Megaphone } from 'lucide-react';
+import { LayoutDashboard, ShoppingBag, ShoppingCart, Users, FileText, LogOut, MessageSquare, Layout, ListOrdered, Tag, ArrowLeft, X, Truck, Calendar, Megaphone, ShieldCheck } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 const AdminSidebar = ({ isMobileOpen, setIsMobileOpen }) => {
@@ -12,6 +12,7 @@ const AdminSidebar = ({ isMobileOpen, setIsMobileOpen }) => {
 
     const navItems = [
         { name: 'Dashboard', path: '/admin', icon: <LayoutDashboard size={20} /> },
+        { name: 'Health & Bug Monitor', path: '/admin/system-health', icon: <ShieldCheck size={20} /> },
         { name: 'Audience & Leads', path: '/admin/marketing', icon: <Megaphone size={20} /> },
         { name: 'Website funnel', path: '/admin/website-analytics', icon: <ShoppingCart size={20} /> },
         { name: 'Products', path: '/admin/productlist', icon: <ShoppingBag size={20} /> },

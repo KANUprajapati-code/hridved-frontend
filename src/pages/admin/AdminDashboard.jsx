@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { TrendingUp, Users, ShoppingBag, Calendar, AlertCircle, ArrowRight, Package, Settings } from 'lucide-react';
+import { TrendingUp, Users, ShoppingBag, Calendar, AlertCircle, ArrowRight, Package, Settings, ShieldCheck, Activity } from 'lucide-react';
 import api from '../../utils/api';
 
 const AdminDashboard = () => {
@@ -30,6 +30,32 @@ const AdminDashboard = () => {
 
     return (
         <div>
+            {/* System Health & Autonomous Monitor Banner */}
+            <div className="mb-8 bg-gradient-to-r from-emerald-950 via-primary to-[#063308] text-white p-5 sm:p-6 rounded-3xl shadow-sm border border-emerald-900/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div className="flex items-center gap-3.5">
+                    <div className="p-3 bg-white/10 rounded-2xl text-secondary shadow-inner">
+                        <ShieldCheck size={28} />
+                    </div>
+                    <div>
+                        <div className="flex items-center gap-2">
+                            <h3 className="text-base font-bold text-white">System Health & Autonomous Bug Monitor</h3>
+                            <span className="px-2 py-0.5 bg-emerald-500/20 text-emerald-300 text-[10px] font-black uppercase rounded-full border border-emerald-400/30 tracking-wider">Operational</span>
+                        </div>
+                        <p className="text-xs text-gray-300 mt-1">
+                            Continuous monitoring of mathematical calculations, cart variations, bundle pricing, and inventory consistency.
+                        </p>
+                    </div>
+                </div>
+                <Link
+                    to="/admin/system-health"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-secondary to-[#c59e2b] text-primary hover:brightness-105 text-xs font-bold uppercase tracking-wider rounded-xl transition-all shadow-md shrink-0 cursor-pointer"
+                >
+                    <Activity size={15} />
+                    <span>Diagnostics & Auto-Fix</span>
+                    <ArrowRight size={14} />
+                </Link>
+            </div>
+
             {/* Dashboard Stats Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                 {/* Revenue Card */}

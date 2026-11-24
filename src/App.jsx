@@ -89,6 +89,7 @@ const DoctorCategoryListPage = lazy(() => import('./pages/admin/DoctorCategoryLi
 const ShopPageEdit = lazy(() => import('./pages/admin/ShopPageEdit'));
 const AudienceMarketingPage = lazy(() => import('./pages/admin/AudienceMarketingPage'));
 const WebsiteAnalyticsPage = lazy(() => import('./pages/admin/WebsiteAnalyticsPage'));
+const SystemHealthPage = lazy(() => import('./pages/admin/SystemHealthPage'));
 
 function WebsiteEventTracker() {
     const location = useLocation();
@@ -185,6 +186,7 @@ function App() {
                                                         <Route path="shoppage" element={<ShopPageEdit />} />
                                                         <Route path="marketing" element={<AudienceMarketingPage />} />
                                                         <Route path="website-analytics" element={<WebsiteAnalyticsPage />} />
+                                                        <Route path="system-health" element={<SystemHealthPage />} />
                                                     </Route>
 
                                                 </Routes>

@@ -301,18 +301,21 @@ export const CartProvider = ({ children }) => {
 
     const updateLocalCart = (currentCart, newItem) => {
         const existingItems = Array.isArray(currentCart?.cartItems) ? currentCart.cartItems : [];
-        const itemIndex = existingItems.findIndex(item => 
-            String(item.product) === String(newItem.product) || 
-            String(item._id) === String(newItem._id)
-        );
+        const incomingVar = String(newItem.selectedVariant || '').trim().toLowerCase();
+        const itemIndex = existingItems.findIndex(item => {
+            const sameProduct = String(item.product) === String(newItem.product) || 
+                               String(item._id) === String(newItem._id);
+            const itemVar = String(item.selectedVariant || '').trim().toLowerCase();
+            return sameProduct && (incomingVar ? itemVar === incomingVar : true);
+        });
 
         let updatedItems;
         if (itemIndex > -1) {
             updatedItems = [...existingItems];
             updatedItems[itemIndex] = { 
                 ...updatedItems[itemIndex], 
+                ...newItem,
                 qty: newItem.qty,
-                selectedVariant: newItem.selectedVariant || updatedItems[itemIndex].selectedVariant,
             };
         } else {
             updatedItems = [...existingItems, newItem];

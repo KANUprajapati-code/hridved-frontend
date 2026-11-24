@@ -261,7 +261,7 @@ const ProductPage = () => {
             price: activeVariant.price,
             mrp: activeVariant.mrp,
             sku: activeVariant.sku,
-            selectedVariant: activeVariant.name,
+            selectedVariant: activeVariant.shortName || activeVariant.name,
             countInStock: activeVariant.stock,
         };
     };
