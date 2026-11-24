@@ -173,6 +173,23 @@ const OrderPage = () => {
         }
     };
 
+    const [deliverLoading, setDeliverLoading] = useState(false);
+
+    const handleMarkAsDelivered = async () => {
+        if (!window.confirm(`Mark Order #${order._id?.slice(-8).toUpperCase()} as Delivered?`)) return;
+        try {
+            setDeliverLoading(true);
+            const { data } = await api.put(`/orders/${order._id}/deliver`);
+            setOrder(data);
+            alert('Order marked as Delivered successfully!');
+        } catch (err) {
+            console.error('Deliver update error:', err);
+            alert(err.response?.data?.message || 'Failed to update order to Delivered');
+        } finally {
+            setDeliverLoading(false);
+        }
+    };
+
     if (loading) {
         return (
             <div className="min-h-[70vh] flex flex-col items-center justify-center p-6 bg-emerald-50/30">
@@ -487,6 +504,36 @@ const OrderPage = () => {
                                             Shipment is successfully registered with Wayuvega under AWB: <strong>{activeAwb}</strong>
                                         </div>
                                     )}
+
+                                    {/* Delivery Status Control */}
+                                    <div className="pt-4 border-t border-stone-100">
+                                        <h4 className="text-xs font-bold uppercase tracking-wider text-stone-600 mb-2">
+                                            Delivery Status Control
+                                        </h4>
+                                        {Boolean(order.isDelivered || order.shippingStatus === 'Delivered' || order.orderStatus === 'Delivered') ? (
+                                            <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-center">
+                                                <span className="text-xs font-bold text-emerald-800 flex items-center justify-center gap-1.5">
+                                                    <CheckCircle2 size={16} className="text-emerald-700" />
+                                                    Delivered to Customer
+                                                </span>
+                                                {order.deliveredAt && (
+                                                    <span className="text-[11px] text-emerald-600 block mt-0.5">
+                                                        Delivered on {new Date(order.deliveredAt).toLocaleString('en-IN')}
+                                                    </span>
+                                                )}
+                                            </div>
+                                        ) : (
+                                            <button
+                                                type="button"
+                                                onClick={handleMarkAsDelivered}
+                                                disabled={deliverLoading}
+                                                className="w-full bg-emerald-700 hover:bg-emerald-800 text-white py-2.5 px-4 rounded-xl font-bold text-xs uppercase tracking-wider shadow transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                                            >
+                                                <CheckCircle2 size={16} />
+                                                <span>{deliverLoading ? 'Updating Status...' : 'Mark Order as Delivered'}</span>
+                                            </button>
+                                        )}
+                                    </div>
 
                                     {/* Manual Tracking Override */}
                                     <div className="pt-4 border-t border-stone-100">
