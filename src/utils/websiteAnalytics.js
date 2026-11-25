@@ -133,7 +133,7 @@ export const initMarketingTracking = async () => {
     captureUtmParameters();
 
     // Determine Meta Pixel ID from env, window, or backend
-    let pixelId = import.meta.env.VITE_META_PIXEL_ID || window.__META_PIXEL_ID__;
+    let pixelId = import.meta.env.VITE_META_PIXEL_ID || window.__META_PIXEL_ID__ || '3710521579103194';
 
     if (!pixelId) {
         try {
@@ -151,13 +151,17 @@ export const initMarketingTracking = async () => {
         }
     }
 
-    if (pixelId && typeof window.fbq === 'function' && !isMetaPixelInitialized) {
-        try {
-            window.fbq('init', String(pixelId).trim());
-            window.fbq('track', 'PageView');
+    if (pixelId && typeof window.fbq === 'function') {
+        if (!isMetaPixelInitialized) {
             isMetaPixelInitialized = true;
-        } catch (e) {
-            console.debug('[Analytics] Meta Pixel initialization failed:', e?.message);
+            if (window.__META_PIXEL_INITIALIZED_ID__ !== String(pixelId).trim()) {
+                try {
+                    window.fbq('init', String(pixelId).trim());
+                    window.__META_PIXEL_INITIALIZED_ID__ = String(pixelId).trim();
+                } catch (e) {
+                    console.debug('[Analytics] Meta Pixel initialization failed:', e?.message);
+                }
+            }
         }
     }
 };
