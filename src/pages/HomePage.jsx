@@ -22,7 +22,7 @@ import { useFlyingElement } from '../hooks/useFlyingElement';
 import { useAuth } from '../context/AuthContext';
 
 const HomePage = () => {
-    const { addToCart } = useCart();
+    const { addToCart, openCartDrawer } = useCart();
     const { animateAddToCart } = useFlyingElement();
     const { user, openAuthModal } = useAuth();
     const navigate = useNavigate();
@@ -321,16 +321,6 @@ const HomePage = () => {
 
     const handleHeroAddToCart = (e) => {
         e.preventDefault();
-        if (!user) {
-            openAuthModal({
-                title: 'Login to Add to Bag',
-                description: `Please verify your phone to add ${heroProduct.name} to your bag`,
-                onSuccess: () => {
-                    addToCart(heroCartPayload, 1);
-                }
-            });
-            return;
-        }
         const cartIcon = document.getElementById('cart-icon-container');
         if (heroImageRef.current) {
             animateAddToCart(heroImageRef.current, cartIcon, heroProduct.image);
@@ -338,6 +328,7 @@ const HomePage = () => {
         setHeroAdded(true);
         setTimeout(() => setHeroAdded(false), 1500);
         addToCart(heroCartPayload, 1);
+        if (openCartDrawer) openCartDrawer();
     };
 
     const handleHeroBuyNow = (e) => {

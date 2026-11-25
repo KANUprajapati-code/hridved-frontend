@@ -23,7 +23,7 @@ import { trackLeadEvent } from '../utils/tracking';
  */
 const ProductCard = ({ product, onQuickView }) => {
     const navigate = useNavigate();
-    const { addToCart } = useCart();
+    const { addToCart, openCartDrawer } = useCart();
     const { user, openAuthModal } = useAuth();
     const { isInWishlist, toggleWishlist } = useWishlist();
     const isWishlisted = isInWishlist(product._id);
@@ -49,6 +49,8 @@ const ProductCard = ({ product, onQuickView }) => {
                         className="w-full h-full block focus:outline-none focus:ring-2 focus:ring-primary rounded-2xl" 
                         ref={imageRef}
                         aria-label={`View details for ${product.name}`}
+                        onMouseEnter={() => import('../pages/ProductPage')}
+                        onTouchStart={() => import('../pages/ProductPage')}
                     >
                         <ProductImage
                             src={product.image}
@@ -117,6 +119,8 @@ const ProductCard = ({ product, onQuickView }) => {
                 <Link 
                     to={`/product/${product._id}`} 
                     className="block mb-2 focus:outline-none focus:ring-1 focus:ring-primary rounded-full"
+                    onMouseEnter={() => import('../pages/ProductPage')}
+                    onTouchStart={() => import('../pages/ProductPage')}
                 >
                     <div className="bg-accent/10 group-hover:bg-primary/5 transition-all text-primary font-bold text-center py-2 px-2.5 sm:px-4 rounded-full text-[11px] sm:text-xs uppercase tracking-wider line-clamp-2 min-h-[38px] sm:min-h-[44px] flex items-center justify-center leading-tight">
                         {product.name}
@@ -192,17 +196,6 @@ const ProductCard = ({ product, onQuickView }) => {
                     <button
                         onClick={(e) => {
                             e.preventDefault();
-                            if (!user) {
-                                openAuthModal({
-                                    title: 'Login to Add to Cart',
-                                    description: `Please verify your phone to add ${product.name} to cart`,
-                                    onSuccess: () => {
-                                        addToCart(product, 1);
-                                        trackLeadEvent({ actionType: 'add_to_cart', product });
-                                    },
-                                });
-                                return;
-                            }
                             const cartIcon = document.getElementById('cart-icon-container');
                             if (imageRef.current) {
                                 animateAddToCart(imageRef.current, cartIcon, product.image);
@@ -211,6 +204,7 @@ const ProductCard = ({ product, onQuickView }) => {
                             setTimeout(() => setCardAdded(false), 1200);
                             addToCart(product, 1);
                             trackLeadEvent({ actionType: 'add_to_cart', product });
+                            if (openCartDrawer) openCartDrawer();
                         }}
                         aria-label={`Add ${product.name} to cart`}
                         className={`w-full h-9 sm:h-9.5 rounded-xl transition-all duration-300 flex items-center justify-center gap-1.5 font-bold text-[10.5px] sm:text-[11px] uppercase tracking-wider active:scale-[0.98] disabled:opacity-50 text-center cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary ${

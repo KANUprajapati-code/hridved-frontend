@@ -138,6 +138,27 @@ const AudienceMarketingPage = lazy(() => import('./pages/admin/AudienceMarketing
 const WebsiteAnalyticsPage = lazy(() => import('./pages/admin/WebsiteAnalyticsPage'));
 const SystemHealthPage = lazy(() => import('./pages/admin/SystemHealthPage'));
 
+// Preload high-priority storefront routes during browser idle time for instant, zero-lag navigation
+if (typeof window !== 'undefined') {
+    const idlePreload = () => {
+        try {
+            import('./pages/ShopPage');
+            import('./pages/ProductPage');
+            import('./pages/CategoryLandingPage');
+            import('./pages/CartPage');
+            import('./pages/CheckoutAddressPage');
+            import('./pages/ProfilePage');
+        } catch {
+            // Silently ignore idle preload errors
+        }
+    };
+    if ('requestIdleCallback' in window) {
+        window.requestIdleCallback(idlePreload, { timeout: 2500 });
+    } else {
+        setTimeout(idlePreload, 1200);
+    }
+}
+
 function WebsiteEventTracker() {
     const location = useLocation();
 

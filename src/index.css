@@ -43,6 +43,19 @@
 
 html {
   scroll-behavior: smooth;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body, button, a, input, select, textarea, [role="button"], label {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Instant button tactile feedback */
+button:active:not(:disabled), [role="button"]:active:not(:disabled) {
+  transform: scale(0.98);
+  transition: transform 0.05s ease;
 }
 
 body {

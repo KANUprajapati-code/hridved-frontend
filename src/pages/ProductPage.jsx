@@ -43,7 +43,7 @@ const ProductPage = () => {
     const [isBulkModalOpen, setIsBulkModalOpen] = useState(false);
     const [isAddedState, setIsAddedState] = useState(false);
 
-    const { addToCart } = useCart();
+    const { addToCart, openCartDrawer } = useCart();
     const { user, openAuthModal } = useAuth();
     const { isInWishlist, toggleWishlist } = useWishlist();
     const isWishlisted = isInWishlist(product?._id);
@@ -57,21 +57,21 @@ const ProductPage = () => {
             setLoading(true);
             const { data } = await api.get(`/products/${id}`);
             setProduct(data);
+            setLoading(false);
 
-            // Fetch related products from the same category
+            // Fetch related products from the same category in background
             try {
-                const { data: allProductsData } = await api.get('/products');
+                const { data: allProductsData } = await api.get(`/products?category=${encodeURIComponent(data.category || '')}&limit=5`);
                 const productsList = allProductsData.products || allProductsData || [];
                 const filtered = productsList
-                    .filter(p => p.category === data.category && p._id !== data._id)
+                    .filter(p => p._id !== data._id)
                     .slice(0, 4);
                 setRelatedProducts(filtered);
             } catch (err) {
-                console.error("Error fetching related products", err);
+                console.debug("Related products fetch skipped", err);
             }
         } catch (error) {
             console.error("Error fetching product", error);
-        } finally {
             setLoading(false);
         }
     };
@@ -283,6 +283,7 @@ const ProductPage = () => {
         addToCart(item, qty);
         trackLeadEvent({ actionType: 'add_to_cart', product: item });
         if (addToast) addToast(`Added ${item.name} (x${qty}) to cart!`, 'success');
+        if (openCartDrawer) openCartDrawer();
     };
 
     // Buy Now handler

@@ -7,7 +7,7 @@ import { useCart } from '../context/CartContext';
 const MobileNavigation = () => {
     const location = useLocation();
     const { user } = useAuth();
-    const { cart } = useCart();
+    const { cart, openCartDrawer } = useCart();
     
     const currentPath = location.pathname;
 
@@ -23,22 +23,27 @@ const MobileNavigation = () => {
             label: 'Shop',
             path: '/shop',
             icon: ShoppingBag,
+            preload: () => import('../pages/ShopPage'),
         },
         {
             label: 'Contact',
             path: '/contact',
             icon: MessageCircle,
+            preload: () => import('../pages/ContactPage'),
         },
         {
             label: 'Cart',
             path: '/cart',
             icon: ShoppingCart,
             badge: cartCount,
+            isCart: true,
+            preload: () => import('../pages/CartPage'),
         },
         {
             label: 'Profile',
             path: user ? '/profile' : '/login',
             icon: User,
+            preload: () => import('../pages/ProfilePage'),
         }
     ];
 
@@ -75,6 +80,14 @@ const MobileNavigation = () => {
                             aria-label={item.label}
                             aria-current={active ? 'page' : undefined}
                             className="relative flex flex-col items-center justify-center flex-1 h-full py-1 group outline-none focus:outline-none focus:ring-1 focus:ring-primary/20 rounded-xl"
+                            onMouseEnter={item.preload}
+                            onTouchStart={item.preload}
+                            onClick={(e) => {
+                                if (item.isCart && openCartDrawer) {
+                                    e.preventDefault();
+                                    openCartDrawer();
+                                }
+                            }}
                         >
                             <motion.div 
                                 whileTap={{ scale: 0.9 }}

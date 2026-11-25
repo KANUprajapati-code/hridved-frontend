@@ -301,22 +301,27 @@ export const CartProvider = ({ children }) => {
                 weight: product.weight || 0.5,
             };
 
-            let updatedCart;
+            // 1. Instant optimistic update to local state & storage (0ms UI lag!)
+            const optimisticCart = updateLocalCart(cart, cartItemData);
+            setCart(optimisticCart);
+            saveToLocalStorage(optimisticCart);
+
+            // 2. Background non-blocking sync with server
             if (user) {
-                try {
-                    const { data } = await api.post('/cart', cartItemData);
-                    updatedCart = data;
-                } catch (error) {
-                    console.error('Error adding to cart on server', error);
-                    updatedCart = updateLocalCart(cart, cartItemData);
-                }
-            } else {
-                updatedCart = updateLocalCart(cart, cartItemData);
+                api.post('/cart', cartItemData)
+                    .then(({ data }) => {
+                        if (data && data.cartItems) {
+                            setCart(data);
+                            saveToLocalStorage(data);
+                        }
+                    })
+                    .catch((err) => {
+                        console.error('Background server cart sync skipped or failed:', err?.message);
+                    });
             }
 
-            setCart(updatedCart);
-            saveToLocalStorage(updatedCart);
-            recalculateServerTotals(updatedCart.cartItems, appliedCoupon?.code);
+            // 3. Background totals recalculation
+            recalculateServerTotals(optimisticCart.cartItems, appliedCoupon?.code);
         } catch (error) {
             console.error('Error adding to cart', error);
         }
