@@ -648,15 +648,7 @@ const HomePage = () => {
                                                                         : 'border-gray-200 bg-white hover:border-gray-300'
                                                                 }`}
                                                             >
-                                                                <div className={`absolute -top-2.5 right-3 font-black text-[9px] px-2 py-0.5 rounded-full uppercase tracking-wider shadow-sm ${
-                                                                    pack.discountPct === 15 
-                                                                        ? 'bg-amber-600 text-white' 
-                                                                        : pack.discountPct === 10 
-                                                                        ? 'bg-secondary text-primary' 
-                                                                        : 'bg-emerald-700 text-white'
-                                                                }`}>
-                                                                    {pack.discountPct}% OFF{pack.isPopular ? ' • POPULAR' : ''}
-                                                                </div>
+
                                                                 <div>
                                                                     <div className="flex items-center justify-between mb-1">
                                                                         <span className="text-xs font-black text-gray-900">{pack.duration}</span>
@@ -683,9 +675,7 @@ const HomePage = () => {
                                                     <div className="flex items-baseline gap-2.5 mt-0.5">
                                                         <span className="text-3xl font-black text-primary">₹{currentPack.price}</span>
                                                         <span className="text-sm text-gray-400 line-through">₹{currentPack.mrp}</span>
-                                                        <span className="bg-emerald-100 text-emerald-800 text-[10px] font-black px-2.5 py-0.5 rounded-full">
-                                                            Save ₹{currentPack.savings} ({currentPack.discountPct}% OFF)
-                                                        </span>
+
                                                     </div>
                                                 </div>
                                                 <div className="text-right">
