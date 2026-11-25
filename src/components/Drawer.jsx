@@ -29,11 +29,14 @@ const Drawer = ({
 
   useEffect(() => {
     if (isOpen) {
-      const originalOverflow = document.body.style.overflow;
+      const originalBodyOverflow = document.body.style.overflow;
+      const originalDocOverflow = document.documentElement.style.overflow;
       document.body.style.overflow = 'hidden';
+      document.documentElement.style.overflow = 'hidden';
       window.addEventListener('keydown', handleKeyDown);
       return () => {
-        document.body.style.overflow = originalOverflow;
+        document.body.style.overflow = originalBodyOverflow;
+        document.documentElement.style.overflow = originalDocOverflow;
         window.removeEventListener('keydown', handleKeyDown);
       };
     }
@@ -59,7 +62,7 @@ const Drawer = ({
       role="dialog"
       aria-modal="true"
       aria-labelledby={title ? 'drawer-title' : undefined}
-      className="fixed inset-0 z-50 overflow-hidden"
+      className="fixed inset-0 z-50 overflow-hidden overscroll-contain"
     >
       {/* Backdrop */}
       <div
@@ -71,7 +74,7 @@ const Drawer = ({
       {/* Drawer Surface */}
       <div
         className={`
-          fixed bg-white shadow-2xl border-accent/30 flex flex-col z-10 transition-transform duration-300 ease-in-out
+          fixed bg-white shadow-2xl border-accent/30 flex flex-col z-10 transition-transform duration-300 ease-in-out overscroll-contain
           ${positionStyles[position] || positionStyles.right}
           ${className}
         `}
@@ -105,7 +108,7 @@ const Drawer = ({
         )}
 
         {/* Scrollable Content */}
-        <div className="flex-1 overflow-y-auto p-4 sm:p-6 font-body text-gray-800">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 font-body text-gray-800 overscroll-contain touch-pan-y">
           {children}
         </div>
 

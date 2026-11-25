@@ -120,7 +120,9 @@ const CategoryLandingPage = () => {
                 } else {
                     // Category mode
                     const catName = currentMeta.name;
-                    const prodRes = await api.get(`/products?category=${encodeURIComponent(catName)}`);
+                    const cleanSlugName = slug ? slug.replace(/-/g, ' ') : '';
+                    const queryCategories = Array.from(new Set([catName, cleanSlugName, catName.toLowerCase()])).filter(Boolean).join(',');
+                    const prodRes = await api.get(`/products?category=${encodeURIComponent(queryCategories)}`);
                     if (!isCancelled) {
                         setProducts(prodRes.data?.products || []);
                         setLoading(false);

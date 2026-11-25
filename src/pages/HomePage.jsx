@@ -633,9 +633,6 @@ const HomePage = () => {
                                                     <span className="text-xs font-black text-gray-700 uppercase tracking-wider">
                                                         Select Your Course / Pack:
                                                     </span>
-                                                    <span className="text-[11px] text-secondary font-bold">
-                                                        {currentPack.badge}
-                                                    </span>
                                                 </div>
 
                                                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">

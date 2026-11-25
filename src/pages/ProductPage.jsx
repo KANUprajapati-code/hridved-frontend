@@ -359,8 +359,6 @@ const ProductPage = () => {
         { id: 'usage', label: 'Directions & Safety' },
         { id: 'documents', label: 'Lab Reports & Quality' },
         { id: 'faqs', label: 'Product FAQs' },
-        { id: 'manufacturer', label: 'Manufacturer & Statutory' },
-        { id: 'reviews', label: `Customer Reviews (${product.numReviews || 0})` },
     ];
 
     const manufacturer = product.manufacturerDetails || {
@@ -484,56 +482,15 @@ const ProductPage = () => {
                                         {product.name}
                                     </h1>
 
-                                    {/* Honest Star Rating & Review Link (PRD Compliant) */}
-                                    <div className="flex items-center gap-3 mb-4">
-                                        {hasGenuineReviews ? (
-                                            <>
-                                                <div className="flex items-center text-secondary">
-                                                    {[...Array(5)].map((_, i) => (
-                                                        <Star 
-                                                            key={i} 
-                                                            size={16} 
-                                                            fill={i < Math.round(product.rating || 5) ? "currentColor" : "none"} 
-                                                            className={i < Math.round(product.rating || 5) ? "" : "text-gray-200"} 
-                                                        />
-                                                    ))}
-                                                </div>
-                                                <span className="text-xs font-bold text-gray-700">
-                                                    {Number(product.rating).toFixed(1)}
-                                                </span>
-                                                <span className="text-xs text-gray-400 border-l border-gray-300 pl-3">
-                                                    <button 
-                                                        onClick={() => {
-                                                            setActiveTab('reviews');
-                                                            const el = document.getElementById('product-information-tabs');
-                                                            if (el) el.scrollIntoView({ behavior: 'smooth' });
-                                                        }}
-                                                        className="hover:text-primary hover:underline cursor-pointer"
-                                                    >
-                                                        {product.numReviews} Verified Reviews
-                                                    </button>
-                                                </span>
-                                            </>
-                                        ) : (
-                                            <div className="flex items-center gap-2">
-                                                <span className="bg-emerald-50 text-emerald-800 text-[11px] font-bold px-2.5 py-0.5 rounded-full border border-emerald-200 flex items-center gap-1">
-                                                    <CheckCircle2 size={12} className="text-emerald-700" />
-                                                    <span>Classical Ayurveda</span>
-                                                </span>
-                                                <span className="text-xs text-gray-400">
-                                                    <button 
-                                                        onClick={() => {
-                                                            setActiveTab('reviews');
-                                                            const el = document.getElementById('product-information-tabs');
-                                                            if (el) el.scrollIntoView({ behavior: 'smooth' });
-                                                        }}
-                                                        className="hover:text-primary hover:underline cursor-pointer"
-                                                    >
-                                                        Be the first to review
-                                                    </button>
-                                                </span>
-                                            </div>
-                                        )}
+                                    {/* Classical Ayurveda Trust Badge */}
+                                    <div className="flex items-center gap-2 mb-4">
+                                        <span className="bg-emerald-50 text-emerald-800 text-[11px] font-bold px-2.5 py-0.5 rounded-full border border-emerald-200 flex items-center gap-1">
+                                            <CheckCircle2 size={12} className="text-emerald-700" />
+                                            <span>100% Classical Ayurveda</span>
+                                        </span>
+                                        <span className="text-[11px] text-gray-500 font-medium">
+                                            Lab Tested & AYUSH Certified
+                                        </span>
                                     </div>
 
                                     {/* Child Age Guidance Banner (for Child Care products) */}
@@ -1064,179 +1021,7 @@ const ProductPage = () => {
                                 </div>
                             )}
 
-                            {/* Tab 6: Manufacturer & Statutory Details */}
-                            {activeTab === 'manufacturer' && (
-                                <div className="space-y-6">
-                                    <h3 className="text-xl font-serif font-bold text-primary">Statutory & Manufacturer Information</h3>
-                                    
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-                                        <div className="p-4 rounded-2xl border border-gray-100 bg-[#FDFBF7]">
-                                            <span className="text-[10px] uppercase font-bold text-gray-400 block mb-1">Manufacturer Name:</span>
-                                            <span className="font-bold text-gray-800 text-sm">{manufacturer.name}</span>
-                                        </div>
 
-                                        <div className="p-4 rounded-2xl border border-gray-100 bg-[#FDFBF7]">
-                                            <span className="text-[10px] uppercase font-bold text-gray-400 block mb-1">AYUSH Manufacturing License:</span>
-                                            <span className="font-bold text-emerald-800 text-sm">{manufacturer.ayushLicense}</span>
-                                        </div>
-
-                                        <div className="p-4 rounded-2xl border border-gray-100 bg-[#FDFBF7]">
-                                            <span className="text-[10px] uppercase font-bold text-gray-400 block mb-1">FSSAI Central License:</span>
-                                            <span className="font-mono font-bold text-gray-800 text-sm">{manufacturer.fssaiLicense}</span>
-                                        </div>
-
-                                        <div className="p-4 rounded-2xl border border-gray-100 bg-[#FDFBF7]">
-                                            <span className="text-[10px] uppercase font-bold text-gray-400 block mb-1">Country of Origin:</span>
-                                            <span className="font-bold text-gray-800 text-sm">{manufacturer.countryOfOrigin}</span>
-                                        </div>
-
-                                        <div className="sm:col-span-2 p-4 rounded-2xl border border-gray-100 bg-[#FDFBF7]">
-                                            <span className="text-[10px] uppercase font-bold text-gray-400 block mb-1">Manufacturing Campus Address:</span>
-                                            <span className="text-gray-700">{manufacturer.address}</span>
-                                        </div>
-
-                                        <div className="sm:col-span-2 p-4 rounded-2xl border border-gray-100 bg-[#FDFBF7]">
-                                            <span className="text-[10px] uppercase font-bold text-gray-400 block mb-1">Customer Care & Batch Feedback:</span>
-                                            <span className="text-gray-700">{manufacturer.customerCare}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-
-                            {/* Tab 7: Reviews */}
-                            {activeTab === 'reviews' && (
-                                <div>
-                                    {/* Ratings Summary Header */}
-                                    <div className="bg-[#FDFBF7] border border-accent/40 rounded-2xl p-6 mb-8 flex flex-col sm:flex-row items-center justify-between gap-6">
-                                        <div className="text-center sm:text-left">
-                                            {hasGenuineReviews ? (
-                                                <>
-                                                    <div className="text-4xl sm:text-5xl font-sans font-black text-primary">
-                                                        {Number(product.rating).toFixed(1)}
-                                                    </div>
-                                                    <div className="flex text-secondary my-1.5 justify-center sm:justify-start">
-                                                        {[...Array(5)].map((_, i) => (
-                                                            <Star 
-                                                                key={i} 
-                                                                size={18} 
-                                                                fill={i < Math.round(product.rating || 5) ? "currentColor" : "none"} 
-                                                            />
-                                                        ))}
-                                                    </div>
-                                                    <p className="text-xs text-gray-500">Based on {product.numReviews} genuine customer experiences</p>
-                                                </>
-                                            ) : (
-                                                <>
-                                                    <div className="text-xl font-serif font-bold text-primary mb-1">
-                                                        Authentic Customer Experiences
-                                                    </div>
-                                                    <p className="text-xs text-gray-500">No customer reviews posted yet for this batch. Be the first patron to share your journey.</p>
-                                                </>
-                                            )}
-                                        </div>
-
-                                        <div className="text-xs text-gray-600 max-w-sm text-center sm:text-right">
-                                            <p className="font-medium">All reviews on Hridved are submitted by verified patrons who purchased and experienced this classical formulation.</p>
-                                        </div>
-                                    </div>
-
-                                    {/* Reviews List */}
-                                    <div className="space-y-4 mb-10">
-                                        {(!product.reviews || product.reviews.length === 0) ? (
-                                            <div className="text-center py-12 bg-gray-50 rounded-2xl border border-dashed border-gray-200">
-                                                <Star size={32} className="text-secondary mx-auto mb-2 opacity-50" />
-                                                <h4 className="font-bold text-gray-700 text-sm">Be the first to review this formulation</h4>
-                                                <p className="text-xs text-gray-500 mt-1">Share your experience to help fellow seekers in their healing journey.</p>
-                                            </div>
-                                        ) : (
-                                            product.reviews.map((rev) => (
-                                                <div key={rev._id} className="p-4 sm:p-5 rounded-2xl border border-gray-100 bg-[#FDFBF7]/30">
-                                                    <div className="flex items-center justify-between mb-2">
-                                                        <div className="flex items-center gap-2">
-                                                            <div className="w-7 h-7 rounded-full bg-primary text-secondary font-bold text-xs flex items-center justify-center">
-                                                                {rev.name ? rev.name.charAt(0).toUpperCase() : 'P'}
-                                                            </div>
-                                                            <span className="font-bold text-sm text-gray-800">{rev.name}</span>
-                                                            <span className="text-[10px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100">
-                                                                Verified Buyer
-                                                            </span>
-                                                        </div>
-                                                        <span className="text-xs text-gray-400">
-                                                            {rev.createdAt ? new Date(rev.createdAt).toLocaleDateString() : 'Recent'}
-                                                        </span>
-                                                    </div>
-                                                    <div className="flex text-secondary text-xs mb-2">
-                                                        {[...Array(5)].map((_, i) => (
-                                                            <Star key={i} size={14} fill={i < rev.rating ? "currentColor" : "none"} />
-                                                        ))}
-                                                    </div>
-                                                    <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">{rev.comment}</p>
-                                                </div>
-                                            ))
-                                        )}
-                                    </div>
-
-                                    {/* Write Review Form */}
-                                    <div className="pt-8 border-t border-accent/40">
-                                        <h3 className="text-lg sm:text-xl font-serif font-bold text-primary mb-4">Write a Customer Review</h3>
-                                        {user ? (
-                                            <form onSubmit={submitReviewHandler} className="max-w-xl space-y-4">
-                                                <div>
-                                                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-2">Your Rating</label>
-                                                    <div className="flex gap-2">
-                                                        {[1, 2, 3, 4, 5].map((star) => (
-                                                            <button
-                                                                key={star}
-                                                                type="button"
-                                                                onClick={() => setRating(star)}
-                                                                className={`p-1.5 rounded-lg transition-colors cursor-pointer ${rating >= star ? 'text-secondary' : 'text-gray-300'}`}
-                                                            >
-                                                                <Star size={26} fill={rating >= star ? "currentColor" : "none"} />
-                                                            </button>
-                                                        ))}
-                                                    </div>
-                                                </div>
-
-                                                <div>
-                                                    <label htmlFor="review-comment" className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-2">
-                                                        Your Experience
-                                                    </label>
-                                                    <textarea
-                                                        id="review-comment"
-                                                        rows="3"
-                                                        value={comment}
-                                                        onChange={(e) => setComment(e.target.value)}
-                                                        className="w-full px-4 py-3 bg-[#FDFBF7] border border-accent/40 rounded-xl focus:outline-hidden focus:border-primary text-xs sm:text-sm font-body text-gray-900 transition-colors"
-                                                        placeholder="Share how this formulation supported your wellness routine..."
-                                                        required
-                                                    ></textarea>
-                                                </div>
-
-                                                <button
-                                                    type="submit"
-                                                    disabled={reviewLoading}
-                                                    className="px-8 py-2.5 bg-primary text-white text-xs font-bold uppercase tracking-wider rounded-xl hover:bg-primary/90 transition shadow-sm disabled:opacity-50 cursor-pointer"
-                                                >
-                                                    {reviewLoading ? 'Submitting...' : 'Post Review'}
-                                                </button>
-                                            </form>
-                                        ) : (
-                                            <div className="p-6 bg-[#FDFBF7] rounded-2xl border border-accent/40 flex flex-col sm:flex-row items-center justify-between gap-4">
-                                                <div>
-                                                    <h5 className="font-bold text-primary text-sm">Have you experienced this formulation?</h5>
-                                                    <p className="text-xs text-gray-600 mt-0.5">Please sign in to write an authentic review and share your feedback.</p>
-                                                </div>
-                                                <button
-                                                    onClick={() => openAuthModal({ title: 'Sign In to Review', description: 'Verify your phone number to submit a verified product review.' })}
-                                                    className="px-6 py-2 bg-primary text-white text-xs font-bold uppercase tracking-wider rounded-xl hover:bg-primary/90 transition shadow-xs cursor-pointer shrink-0"
-                                                >
-                                                    Sign In to Review
-                                                </button>
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-                            )}
 
                         </div>
                     </div>

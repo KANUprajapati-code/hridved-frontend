@@ -57,6 +57,20 @@ const Header = () => {
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, [isSearchOpen, isOpen, showUserMenu]);
 
+    // Lock background webpage scroll on mobile when menu drawer is open
+    useEffect(() => {
+        if (isOpen) {
+            const prevBodyOverflow = document.body.style.overflow;
+            const prevDocOverflow = document.documentElement.style.overflow;
+            document.body.style.overflow = 'hidden';
+            document.documentElement.style.overflow = 'hidden';
+            return () => {
+                document.body.style.overflow = prevBodyOverflow;
+                document.documentElement.style.overflow = prevDocOverflow;
+            };
+        }
+    }, [isOpen]);
+
     const handleSearch = (e) => {
         e.preventDefault();
         const trimmed = keyword.trim();
@@ -399,7 +413,7 @@ const Header = () => {
                             animate={{ x: 0 }}
                             exit={{ x: '100%' }}
                             transition={{ type: 'spring', damping: 26, stiffness: 220 }}
-                            className="fixed top-0 right-0 bottom-0 w-80 max-w-[85vw] bg-white text-gray-900 shadow-2xl z-[101] lg:hidden flex flex-col font-sans border-l border-gray-100 overflow-hidden"
+                            className="fixed top-0 right-0 bottom-0 w-80 max-w-[85vw] bg-white text-gray-900 shadow-2xl z-[101] lg:hidden flex flex-col font-sans border-l border-gray-100 overflow-hidden overscroll-contain"
                         >
                             {/* Drawer Header */}
                             <div className="p-5 flex items-center justify-between border-b border-gray-100 bg-gray-50/50">
@@ -494,7 +508,7 @@ const Header = () => {
                             </div>
 
                             {/* Drawer scrollable section */}
-                            <div className="flex-grow overflow-y-auto p-4 space-y-6 custom-scrollbar">
+                            <div className="flex-grow overflow-y-auto p-4 space-y-6 custom-scrollbar overscroll-contain touch-pan-y">
                                 {/* Navigation Links */}
                                 <div className="space-y-1">
                                     <p className="text-[9px] uppercase font-black tracking-widest text-gray-400 px-3 mb-2">Navigation</p>
